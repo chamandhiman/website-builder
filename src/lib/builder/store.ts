@@ -5,8 +5,9 @@
  import { create } from "zustand";
  import { nanoid } from "nanoid"; 
  import type { SectionTemplate } from "./sections";
- import type { WidgetInstance } from "@/components/builder/widgets/widgetRegistry";
- import { createWidgetElementDuplicateEntry } from "@/components/builder/widgets/elementDuplication";
+import type { WidgetInstance } from "@/components/builder/widgets/widgetRegistry";
+import { createWidgetElementDuplicateEntry } from "@/components/builder/widgets/elementDuplication";
+import { createWidgetInstance, getWidgetBootstrapExport } from "@/components/builder/widgets/widgetRegistry";
  import { getWidgetChildItems, mergeWidgetChildData, setWidgetChildItems, type WidgetChildLocation } from "@/components/builder/widgets/childWidgetUtils";
  import { useCloudProjectsStore } from "./cloudProjectsStore";
 import { normalizeFontSizeToPx } from "@/components/builder/widgets/fontSize";
@@ -117,6 +118,10 @@ export interface Project {
   name: string;
   pages: Page[];
   currentPageId: string;
+  source?: "template" | "custom";
+  layout?: {
+    type: "default" | "custom";
+  };
   /** Single shared header for all pages. */
   sharedHeader?: PageSection | null;
   /** Single shared footer for all pages. */
@@ -135,6 +140,7 @@ export interface Project {
   selectedTemplateId?: string | null;
   description?: string;
   keywords?: string;
+  isTemplate?: boolean;
 }
 
 interface HistoryEntry {
@@ -221,6 +227,7 @@ interface BuilderState {
 
   createProject: (name?: string) => string;
   newProject: (name?: string) => string;
+  createTemplateProject: (name: string) => string;
   selectProject: (id: string) => void;
   loadProject: (id: string) => void;
   loadCloudProject: (id: string) => Promise<void>;
@@ -239,6 +246,7 @@ interface BuilderState {
   selectPage: (id: string) => void;
 
   addSection: (tpl: SectionTemplate, index?: number) => string;
+  addTemplateWidget: (typeOrId: string, index?: number) => string;
   applyTemplate: (tpl: TemplateDefinition) => void;
   updateSection: (id: string, patch: Partial<PageSection>) => void;
   updateWidgetInstance: (id: string, patch: Partial<WidgetInstance>) => void;
@@ -321,6 +329,8 @@ function migrateProject(raw: unknown): Project {
       name: p.name ?? "Untitled",
       pages,
       currentPageId: p.currentPageId,
+      source: p.source ?? "custom",
+      layout: p.layout?.type === "custom" ? { type: "custom" } : { type: "default" },
       sharedHeader: p.sharedHeader ?? null,
       sharedFooter: p.sharedFooter ?? null,
       sharedChromeMigrated: p.sharedChromeMigrated,
@@ -358,6 +368,8 @@ function migrateProject(raw: unknown): Project {
       name: p.name ?? "Untitled",
       pages,
       currentPageId: pageId,
+      source: p.source ?? "custom",
+      layout: p.layout?.type === "custom" ? { type: "custom" } : { type: "default" },
       sharedHeader: p.sharedHeader ?? null,
       sharedFooter: p.sharedFooter ?? null,
       sharedChromeMigrated: p.sharedChromeMigrated,
@@ -497,6 +509,8 @@ function emptyProject(name = "Untitled Project"): Project {
     name,
     pages,
     currentPageId: pageId,
+    source: "custom",
+    layout: { type: "default" },
     sharedHeader,
     sharedFooter,
     sharedChromeMigrated: true,
@@ -780,11 +794,70 @@ export const useBuilder = create<BuilderState>((set, get) => ({
   }).then(() => {
     try {
       useCloudProjectsStore.getState().refreshProjects();
-    } catch (err) {
+    } catch {
       // ignore
     }
   });
   return p.id;
+},
+
+createTemplateProject: (name: string) => {
+  const p = emptyProject(name);
+  const page = p.pages[0];
+
+  const templateProject: Project = {
+    ...p,
+    name,
+    pages: [
+      {
+        ...page,
+        name: "Template Preview",
+        slug: "template-preview",
+        sections: [],
+        useGlobalHeader: false,
+        useGlobalFooter: false,
+        hideHeader: true,
+        hideFooter: true,
+      },
+    ],
+    currentPageId: page.id,
+    sharedHeader: null,
+    sharedFooter: null,
+    sharedChromeMigrated: true,
+    isTemplate: true,
+    selectedTemplateId: null,
+  };
+
+  set((s) => ({
+    projects: { ...s.projects, [templateProject.id]: templateProject },
+    currentProjectId: templateProject.id,
+    selectedSectionId: null,
+    showProjectDashboard: false,
+    leftPanelOpen: null,
+    leftPanelView: "widgets",
+
+    history: [{
+      pageId: page.id,
+      sections: [],
+      sharedHeader: null,
+      sharedFooter: null,
+      globalCss: templateProject.globalCss,
+      globalJs: templateProject.globalJs,
+    }],
+    historyIndex: 0,
+  }));
+
+  get().persist();
+  void get().saveProjectToCloud().catch((error) => {
+    console.error("Failed to save template project to Firestore", error);
+  }).then(() => {
+    try {
+      useCloudProjectsStore.getState().refreshProjects();
+    } catch {
+      // ignore
+    }
+  });
+  return templateProject.id;
 },
 
   selectProject: (id) => {
@@ -1096,19 +1169,347 @@ export const useBuilder = create<BuilderState>((set, get) => ({
     return sectionId;
   },
 
+  addTemplateWidget: (typeOrId: string, index?: number): string => {
+    const project = get().currentProject();
+    if (!project) return "";
+    const page = getCurrentPage(project);
+    if (!page) return "";
+
+    const registration = getWidgetRegistration(typeOrId);
+    if (!registration) return "";
+
+    const sectionId = `template-${nanoid(8)}`;
+    const widgetInstance = createWidgetInstance(typeOrId, { id: sectionId });
+    const section: PageSection = {
+      id: sectionId,
+      templateId: "",
+      name: registration.displayName,
+      html: "",
+      widgetInstance,
+      animation: { type: "fade-up", duration: 700, delay: 0 },
+    };
+
+    const sections = [...page.sections];
+    const at = index ?? sections.length;
+    sections.splice(at, 0, section);
+    updatePageSections(set, get, sections);
+    get().pushHistory();
+    set({ selectedSectionId: sectionId, selectedWidgetId: widgetInstance.id });
+    return sectionId;
+  },
+
   applyTemplate: (tpl) => {
     const current = get().currentProject();
     if (!current) return;
 
+    set((s) => {
+      if (!s.currentProjectId) return s;
+      const cur = s.projects[s.currentProjectId];
+      if (!cur) return s;
+      return {
+        projects: {
+          ...s.projects,
+          [s.currentProjectId]: {
+            ...cur,
+            sharedHeader: null,
+            sharedFooter: null,
+          },
+        },
+      };
+    });
+
+    const WIDGET_TYPE_MAP: Record<string, string> = {
+      header: "navbar",
+      hero: "hero",
+      features: "grid",
+      stats: "grid",
+      services: "services",
+      about: "about",
+      process: "grid",
+      capabilities: "grid",
+      work: "grid",
+      caseStudies: "grid",
+      testimonials: "grid",
+      insights: "grid",
+      progress: "progress",
+      carousel: "carousel",
+      cta: "cta",
+      footer: "footer",
+      contact: "container",
+    };
+
+    const mapTemplateContentToWidgetContent = (widgetType: string, templateContent: any): any => {
+      if (!templateContent) return {};
+      switch (widgetType) {
+        case "navbar": {
+          const links = Array.isArray(templateContent.links)
+            ? templateContent.links.map((link: any) => ({
+                label: link.label,
+                href: link.href,
+                linkedPageId: link.href?.replace?.("/", "") || link.href,
+                autoLabel: false,
+              }))
+            : [];
+          return {
+            logoText: templateContent.logoText || templateContent.brand || "Brand",
+            logoHref: templateContent.logoHref || templateContent.brandHref || "#",
+            logoImageSrc: templateContent.logoImageSrc || "",
+            navItems: links,
+            showCta: !!templateContent.cta,
+            ctaEnabled: !!templateContent.cta,
+            ctaLabel: templateContent.cta?.label || "",
+            ctaHref: templateContent.cta?.href || "#",
+            sticky: false,
+            variant: "Classic Light",
+          };
+        }
+        case "hero": {
+          const children: any[] = [];
+          if (templateContent.eyebrow) {
+            children.push({
+              id: "badge",
+              type: "text",
+              data: { content: { text: String(templateContent.eyebrow) }, style: { display: "inline-flex" }, advanced: { visibility: true } },
+            });
+          }
+          if (templateContent.title) {
+            children.push({
+              id: "heading",
+              type: "heading",
+              data: { content: { text: String(templateContent.title) }, style: {}, advanced: { visibility: true } },
+            });
+          }
+          if (templateContent.subtitle) {
+            children.push({
+              id: "subheading",
+              type: "text",
+              data: { content: { text: String(templateContent.subtitle) }, style: {}, advanced: { visibility: true } },
+            });
+          }
+          if (templateContent.body) {
+            children.push({
+              id: "description",
+              type: "text",
+              data: { content: { text: String(templateContent.body) }, style: {}, advanced: { visibility: true } },
+            });
+          }
+          if (templateContent.primaryCta) {
+            children.push({
+              id: "primaryButton",
+              type: "button",
+              data: { content: { text: String(templateContent.primaryCta.label), url: String(templateContent.primaryCta.href) }, style: { display: "inline" }, advanced: { visibility: true } },
+            });
+          }
+          if (templateContent.secondaryCta) {
+            children.push({
+              id: "secondaryButton",
+              type: "button",
+              data: { content: { text: String(templateContent.secondaryCta.label), url: String(templateContent.secondaryCta.href) }, style: { display: "inline" }, advanced: { visibility: true } },
+            });
+          }
+          if (templateContent.image) {
+            children.push({
+              id: "image",
+              type: "image",
+              data: { content: { src: String(templateContent.image), alt: "Hero visual" }, style: {}, advanced: { visibility: true } },
+            });
+          }
+          return {
+            children,
+            badge: templateContent.eyebrow || "",
+            heading: templateContent.title || "",
+            subheading: templateContent.subtitle || "",
+            description: templateContent.body || "",
+            primaryButton: templateContent.primaryCta ? { text: String(templateContent.primaryCta.label), url: String(templateContent.primaryCta.href) } : undefined,
+            secondaryButton: templateContent.secondaryCta ? { text: String(templateContent.secondaryCta.label), url: String(templateContent.secondaryCta.href) } : undefined,
+            image: templateContent.image || "",
+            mediaAlt: "Hero visual",
+          };
+        }
+        case "services": {
+          const services = Array.isArray(templateContent.items)
+            ? templateContent.items.map((item: any, idx: number) => ({
+                id: `service-${idx}`,
+                src: item.image || "",
+                alt: item.title || `Service ${idx + 1}`,
+                name: item.title || "",
+                showHeading: true,
+                heading: item.title || "",
+                showDescription: true,
+                description: item.body || "",
+                showButton: !!item.cta,
+                buttonLabel: item.cta?.label || "",
+                buttonUrl: item.cta?.href || "#",
+              }))
+            : [];
+          return { services };
+        }
+        case "about": {
+          const features = Array.isArray(templateContent.bullets)
+            ? templateContent.bullets.map((text: string, idx: number) => ({
+                id: `feature-${idx}`,
+                text,
+                icon: "check",
+              }))
+            : [];
+          return {
+            eyebrow: templateContent.eyebrow || "",
+            heading: templateContent.title || "",
+            description: templateContent.body || "",
+            features,
+            showButton: !!templateContent.cta,
+            buttonLabel: templateContent.cta?.label || "",
+            buttonUrl: templateContent.cta?.href || "#",
+            showImage: !!templateContent.image,
+            imageSrc: templateContent.image || "",
+            imageAlt: templateContent.imageAlt || "About visual",
+          };
+        }
+        case "cta": {
+          return {
+            eyebrow: templateContent.eyebrow || "",
+            showEyebrow: !!templateContent.eyebrow,
+            heading: templateContent.title || "",
+            showHeading: !!templateContent.title,
+            paragraph: templateContent.body || "",
+            showParagraph: !!templateContent.body,
+            showPrimaryButton: !!templateContent.primaryCta,
+            primaryButtonLabel: templateContent.primaryCta?.label || "",
+            primaryButtonUrl: templateContent.primaryCta?.href || "#",
+            showSecondaryButton: !!templateContent.secondaryCta,
+            secondaryButtonLabel: templateContent.secondaryCta?.label || "",
+            secondaryButtonUrl: templateContent.secondaryCta?.href || "#",
+          };
+        }
+        case "footer": {
+          const links = Array.isArray(templateContent.links)
+            ? templateContent.links.map((link: any) => ({
+                id: `footer-link-${Math.random().toString(36).slice(2, 8)}`,
+                label: link.label,
+                href: link.href,
+                openInNewTab: false,
+              }))
+            : [];
+          const social = Array.isArray(templateContent.social)
+            ? templateContent.social.map((item: any) => ({
+                id: `footer-social-${Math.random().toString(36).slice(2, 8)}`,
+                platform: item.provider || item.platform || "custom",
+                href: item.href || "#",
+                label: item.label || item.provider || item.platform || "Social",
+              }))
+            : [];
+          return {
+            showBrand: true,
+            brandName: templateContent.brand || "",
+            brandDescription: templateContent.description || "",
+            brandHref: "#",
+            brandAlignment: "left",
+            columns: [],
+            showPhone: false,
+            showEmail: false,
+            showAddress: false,
+            showHours: false,
+            showSocial: social.length > 0,
+            socialItems: social,
+            socialAlignment: "left",
+            socialOpenInNewTab: true,
+            showBottomBar: true,
+            copyrightText: templateContent.legal || templateContent.copyright || `© ${new Date().getFullYear()} ${templateContent.brand || "Brand"}. All rights reserved.`,
+            showAllRightsReserved: false,
+            legalLinks: links,
+            showBottomDivider: true,
+          };
+        }
+        case "grid": {
+          const sourceItems = Array.isArray(templateContent.items)
+            ? templateContent.items
+            : Array.isArray(templateContent.plans)
+              ? templateContent.plans
+              : [];
+          const count = Math.max(1, Math.min(6, Number(templateContent.columns) || 1));
+          const columns = Array.from({ length: count }, (_, columnIndex) => createGridColumn(getEqualColumnSpan(count), `column-${columnIndex + 1}`));
+          sourceItems.forEach((item: any, idx: number) => {
+            const children: any[] = [];
+            if (item.image) children.push({ id: `image-${idx}`, type: "image", data: { content: { src: item.image, alt: item.title || `Item ${idx + 1}` } } });
+            children.push({ id: `heading-${idx}`, type: "heading", data: { content: { text: item.title || item.name || item.heading || "" } } });
+            children.push({ id: `text-${idx}`, type: "text", data: { content: { text: item.body || item.description || item.text || "" } } });
+            if (item.cta?.label || item.buttonLabel) children.push({ id: `button-${idx}`, type: "button", data: { content: { text: item.cta?.label || item.buttonLabel, url: item.cta?.href || item.buttonUrl || "#" } } });
+            columns[idx % count].children.push(...children);
+          });
+          return { columns };
+        }
+        case "container": {
+          return {
+            title: templateContent.title || templateContent.heading || "",
+            description: templateContent.body || templateContent.description || templateContent.text || "",
+            children: [],
+          };
+        }
+        case "progress": {
+          return {
+            label: templateContent.label || templateContent.name || "Skill",
+            value: Number(templateContent.value ?? templateContent.progress ?? 0),
+            showValue: templateContent.showValue !== false,
+          };
+        }
+        case "carousel": {
+          return {
+            ...templateContent,
+            slides: Array.isArray(templateContent.slides)
+              ? templateContent.slides.map((slide: any, index: number) => ({
+                  id: slide.id || `slide-${index + 1}`,
+                  src: slide.src || slide.image || "",
+                  alt: slide.alt || slide.name || `Slide ${index + 1}`,
+                  name: slide.name || slide.author || `Slide ${index + 1}`,
+                  link: slide.link || "",
+                  quote: slide.quote || slide.text || "",
+                  author: slide.author || slide.name || "",
+                  role: slide.role || "",
+                  company: slide.company || "",
+                }))
+              : [],
+          };
+        }
+        default:
+          return templateContent;
+      }
+    };
+
     const createSection = (section: any, key?: string, delayOffset = 0): PageSection => {
       const shared: "header" | "footer" | undefined = section.type === "header" ? "header" : section.type === "footer" ? "footer" : undefined;
+      const widgetType = section.widgetType || WIDGET_TYPE_MAP[section.type];
+      let widgetInstance: WidgetInstance | undefined;
+
+      if (widgetType) {
+        try {
+          const mappedContent = mapTemplateContentToWidgetContent(widgetType, section.content);
+          widgetInstance = createWidgetInstance(widgetType, {
+            id: `${widgetType}-${nanoid(6)}`,
+            content: mappedContent,
+            style: section.style,
+            layout: section.layout,
+            responsive: section.responsive,
+            animation: section.animation,
+            advanced: section.advanced,
+          });
+        } catch (e) {
+          console.warn(`[applyTemplate] Failed to create widget instance for ${widgetType}:`, e);
+        }
+      }
+
+      const html = widgetInstance
+        ? getWidgetBootstrapExport(widgetInstance.type, widgetInstance, { editorMode: true }) || section.html
+        : section.html;
+
       return {
         id: nanoid(8),
         templateId: `${tpl.id}-${section.name}-${key ?? nanoid(8)}`,
         name: section.name,
-        html: section.html,
+        html,
         style: section.style,
         className: section.className,
+        domId: section.domId || section.content?.sectionId,
+        widgetInstance,
         collapsed: section.collapsed,
         hidden: section.hidden,
         animation: { type: "fade-up", duration: 700, delay: delayOffset },
@@ -1120,6 +1521,8 @@ export const useBuilder = create<BuilderState>((set, get) => ({
     const resetProjectBase: Partial<Project> = {
       name: current.name || tpl.name,
       selectedTemplateId: tpl.id,
+      source: "template",
+      layout: { type: "custom" },
       globalCss: tpl.globalCss ?? current.globalCss ?? "/* Global CSS */\n",
       globalJs: tpl.globalJs ?? current.globalJs ?? "// Global JS\n",
       customHead: tpl.customHead ?? current.customHead ?? "",
@@ -1153,8 +1556,14 @@ export const useBuilder = create<BuilderState>((set, get) => ({
       };
     };
 
-    const templateSharedHeaderDefs = (tpl.sharedSections ?? []).filter((section) => section.type === "header");
-    const templateSharedFooterDefs = (tpl.sharedSections ?? []).filter((section) => section.type === "footer");
+    const templateSections = [
+      ...(tpl.sharedSections ?? []),
+      ...(tpl.sections ?? []),
+      ...((tpl.pages ?? []).flatMap((page) => page.sections ?? [])),
+    ];
+    const customLayout = true;
+    const templateSharedHeaderDefs = customLayout ? templateSections.filter((section) => section.type === "header") : [];
+    const templateSharedFooterDefs = customLayout ? templateSections.filter((section) => section.type === "footer") : [];
     const sharedHeader = templateSharedHeaderDefs[0]
       ? {
           ...createSection(templateSharedHeaderDefs[0], `${tpl.id}-shared-header`, 0),
@@ -1162,7 +1571,7 @@ export const useBuilder = create<BuilderState>((set, get) => ({
           shared: "header" as const,
           sharedKey: "global-header",
         }
-      : createDefaultSharedHeader();
+      : customLayout ? null : createDefaultSharedHeader();
     const sharedFooter = templateSharedFooterDefs[0]
       ? {
           ...createSection(templateSharedFooterDefs[0], `${tpl.id}-shared-footer`, 0),
@@ -1170,11 +1579,11 @@ export const useBuilder = create<BuilderState>((set, get) => ({
           shared: "footer" as const,
           sharedKey: "global-footer",
         }
-      : createDefaultSharedFooter();
+      : customLayout ? null : createDefaultSharedFooter();
 
     if (tpl.pages && tpl.pages.length > 0) {
       const pages = tpl.pages.map(buildTemplatePage);
-      const syncedHeader = syncSharedHeaderNav(sharedHeader, pages) || sharedHeader;
+      const syncedHeader = customLayout ? sharedHeader : syncSharedHeaderNav(sharedHeader, pages) || sharedHeader;
       const firstPageId = pages[0].id;
       updateCurrent(set, get, {
         ...resetProjectBase,
@@ -1194,17 +1603,7 @@ export const useBuilder = create<BuilderState>((set, get) => ({
         const name = String(section.name || "").toLowerCase();
         return !name.includes("header") && !name.includes("footer") && !name.includes("nav");
       })
-      .map((section, index) => ({
-      id: nanoid(8),
-      templateId: `${tpl.id}-${index}`,
-      name: section.name,
-      html: section.html,
-      style: section.style,
-      className: section.className,
-      collapsed: section.collapsed,
-      hidden: section.hidden,
-      animation: { type: "fade-up", duration: 700, delay: index * 80 },
-    }));
+      .map((section, index) => createSection(section, `${tpl.id}-${index}`, index * 80));
     const page = {
       id: nanoid(8),
       name: "Home",
@@ -1215,7 +1614,7 @@ export const useBuilder = create<BuilderState>((set, get) => ({
       hideHeader: false,
       hideFooter: false,
     };
-    const syncedHeader = syncSharedHeaderNav(sharedHeader, [page]) || sharedHeader;
+    const syncedHeader = customLayout ? sharedHeader : syncSharedHeaderNav(sharedHeader, [page]) || sharedHeader;
     updateCurrent(set, get, {
       ...resetProjectBase,
       pages: [page],
@@ -1289,10 +1688,17 @@ export const useBuilder = create<BuilderState>((set, get) => ({
   },
 
   removeSection: (id) => {
+    console.log("[DEBUG] removeSection called", { id, currentProjectId: get().currentProjectId, selectedSectionId: get().selectedSectionId });
     const cur = get().currentProject();
-    if (!cur) return;
+    if (!cur) {
+      console.log("[DEBUG] removeSection abort: no current project");
+      return;
+    }
     const page = getCurrentPage(cur);
-    if (!page) return;
+    if (!page) {
+      console.log("[DEBUG] removeSection abort: no current page");
+      return;
+    }
 
     // Shared chrome is never deleted with a page section remove — hide on this page instead.
     if (id === SHARED_HEADER_SECTION_ID || id === cur.sharedHeader?.id) {
@@ -1338,9 +1744,12 @@ export const useBuilder = create<BuilderState>((set, get) => ({
     get().pushHistory();
 
     const currentlySelected = get().selectedSectionId;
+    const nextPage = getCurrentPage(get().currentProject());
+    console.log("[DEBUG] removeSection after update", { currentlySelected, nextPageSectionCount: nextPage?.sections?.length });
     if (currentlySelected === id) {
       const nextPage = getCurrentPage(get().currentProject());
       const nextId = nextPage?.sections?.[Math.min(Math.max(0, removedIndex), (nextPage.sections.length || 1) - 1)]?.id ?? null;
+      console.log("[DEBUG] removeSection selecting new section", { nextId, nextPageSections: nextPage?.sections?.map((s: any) => s.id) });
       set({ selectedSectionId: nextId });
     }
   },
@@ -1871,6 +2280,7 @@ function updateCurrent(
   patch: Partial<Project>,
   persist = true,
 ) {
+  console.log("[DEBUG] updateCurrent", { patchKeys: Object.keys(patch), currentProjectId: get().currentProjectId });
   set((s) => {
     if (!s.currentProjectId) return s;
     const cur = s.projects[s.currentProjectId];

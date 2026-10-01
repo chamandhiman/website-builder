@@ -151,7 +151,10 @@ export function buildCarouselBootstrapMarkup(
       const media = link
         ? `<a href="${escapeHtml(link)}"${slide.openInNewTab ? ' target="_blank" rel="noopener noreferrer"' : ""} style="display:block;width:100%;height:100%;">${img}</a>`
         : img;
-      return `<div class="wto-carousel-slide" data-carousel-slide="1" data-slide-id="${escapeHtml(slide.id)}"${attr("data-wto-widget-element-key", slide.id, editorMode)}${attr("data-wto-widget-element-type", "image", editorMode)} role="group" aria-roledescription="slide" aria-label="Slide ${index + 1} of ${slides.length}">${media}</div>`;
+      const caption = slide.quote || slide.author
+        ? `<div style="position:absolute;left:8%;right:8%;bottom:12%;padding:20px;color:#fff;background:rgba(10,12,16,.78);border:1px solid rgba(255,255,255,.12);border-radius:8px;"><div style="font-size:clamp(16px,2vw,26px);font-weight:600;line-height:1.35;">${escapeHtml(slide.quote || "")}</div><div style="margin-top:10px;font-size:14px;font-weight:700;">${escapeHtml(slide.author || "")}</div><div style="margin-top:3px;font-size:12px;opacity:.8;">${escapeHtml([slide.role, slide.company].filter(Boolean).join(" · "))}</div></div>`
+        : "";
+      return `<div class="wto-carousel-slide" data-carousel-slide="1" data-slide-id="${escapeHtml(slide.id)}"${attr("data-wto-widget-element-key", slide.id, editorMode)}${attr("data-wto-widget-element-type", "image", editorMode)} role="group" aria-roledescription="slide" aria-label="Slide ${index + 1} of ${slides.length}">${media}${caption}</div>`;
     })
     .join("");
 

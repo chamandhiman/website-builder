@@ -76,6 +76,7 @@ export function sanitizeForFirestore(value: any, seen?: WeakSet<any>): any {
       email: user.email || "",
       photoURL: user.photoURL || "",
       plan: "Free",
+      role: "user",
       createdAt: serverTimestamp(),
       lastLogin: serverTimestamp(),
     });
@@ -84,4 +85,24 @@ export function sanitizeForFirestore(value: any, seen?: WeakSet<any>): any {
       lastLogin: serverTimestamp(),
     });
   }
+}
+
+export async function getUserRole(uid: string): Promise<"user" | "super_admin" | null> {
+  const userRef = doc(db, "users", uid);
+  const snapshot = await getDoc(userRef);
+  if (!snapshot.exists()) return null;
+  const data = snapshot.data() as Record<string, any>;
+  const role = data.role;
+  if (role === "super_admin") return "super_admin";
+
+  if (!role) {
+    await updateDoc(userRef, { role: "user" });
+  }
+
+  return "user";
+}
+
+export async function setUserRole(uid: string, role: "user" | "super_admin"): Promise<void> {
+  const userRef = doc(db, "users", uid);
+  await updateDoc(userRef, { role });
 }

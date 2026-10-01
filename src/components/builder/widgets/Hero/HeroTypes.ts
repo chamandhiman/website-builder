@@ -22,8 +22,12 @@ export interface HeroContentGroup extends Record<string, unknown> {
 }
 
 export interface HeroStyleGroup extends Record<string, unknown> {
-  backgroundType?: "solid" | "gradient" | "image";
+  backgroundType?: "solid" | "gradient" | "image" | "video";
   backgroundColor?: string;
+  backgroundImage?: string;
+  backgroundPosition?: string;
+  backgroundSize?: string;
+  backgroundRepeat?: string;
   headingColor?: string;
   textColor?: string;
   buttonStyle?: "solid" | "outline" | "ghost";
@@ -52,6 +56,47 @@ export interface HeroStyleGroup extends Record<string, unknown> {
   glowPositionALeft?: string;
   glowPositionBBottom?: string;
   glowPositionBRight?: string;
+  overlayEnabled?: boolean;
+  overlayColor?: string;
+  overlayOpacity?: number;
+  videoSrc?: string;
+  videoPoster?: string;
+  videoAutoplay?: boolean;
+  videoMuted?: boolean;
+  videoLoop?: boolean;
+  videoShowControls?: boolean;
+  videoType?: "uploaded" | "youtube" | "vimeo";
+  youtubeUrl?: string;
+  vimeoUrl?: string;
+  gradientType?: "linear" | "radial";
+  gradientDirection?: string;
+  gradientStart?: string;
+  gradientMid?: string;
+  gradientEnd?: string;
+  gradientOpacity?: number;
+  heroHeight?: string;
+  heroMinHeight?: string;
+  verticalAlignment?: "top" | "center" | "bottom";
+  contentMaxWidth?: string;
+  headingFontSize?: string;
+  buttonRadius?: string;
+  sectionPadding?: string;
+  imageFit?: "cover" | "contain" | "fill";
+  imageWidth?: string;
+  imageRadius?: string;
+  imageShadow?: string;
+  badgeText?: string;
+  roleText?: string;
+  introductionText?: string;
+  profileImageSrc?: string;
+  profileImageShape?: "circle" | "rounded" | "square";
+  socialLinks?: string;
+  availabilityBadge?: string;
+  experienceBadge?: string;
+  productImageSrc?: string;
+  productImageRadius?: string;
+  productImageShadow?: string;
+  splitImagePosition?: "left" | "right";
 }
 
 export interface HeroLayoutGroup extends Record<string, unknown> {
@@ -229,8 +274,6 @@ function buildHeroChildItemsFromLegacy(heroData: HeroWidgetData): ContainerChild
   );
 
   const imageSrc = resolveImageSource(content.mediaSrc);
-  // console.log("HERO MEDIA SRC", content.mediaSrc);
-  // console.log("HERO RESOLVED SRC", imageSrc);
   if (imageSrc.trim()) {
     children.push(
       createContainerChildItem("image", {
@@ -339,20 +382,307 @@ export function getHeroChildItems(heroData: HeroWidgetData): ContainerChildItem[
   return children.length > 0 ? children : buildHeroChildItemsFromLegacy(heroData);
 }
 
-function getHeroContentLayout(variant: string) {
-  switch (variant) {
-    case "Split":
-      return "split";
-    case "Centered":
-      return "centered";
-    default:
-      return "classic";
+export function getVariantBackground(variant: string, style: Record<string, unknown>) {
+  if (variant === "Image Background") {
+    if (style.backgroundImage && typeof style.backgroundImage === "string") {
+      return {
+        backgroundImage: `url(${style.backgroundImage})`,
+        backgroundSize: style.backgroundSize || "cover",
+        backgroundPosition: style.backgroundPosition || "center",
+        backgroundRepeat: style.backgroundRepeat || "no-repeat",
+      };
+    }
+    return {
+      background: style.backgroundColor || "#0f172a",
+    };
   }
+
+  if (variant === "Video Background") {
+    return {
+      background: "#0f172a",
+    };
+  }
+
+  if (variant === "Gradient") {
+    const direction = style.gradientDirection || "135deg";
+    const start = style.gradientStart || "#0f172a";
+    const mid = style.gradientMid || "#1e3a8a";
+    const end = style.gradientEnd || "#2563eb";
+    const opacity = style.gradientOpacity ?? 1;
+    if (style.gradientMid) {
+      return {
+        background: `linear-gradient(${direction}, ${start} 0%, ${mid} 50%, ${end} 100%)`,
+        opacity,
+      };
+    }
+    return {
+      background: `linear-gradient(${direction}, ${start}, ${end})`,
+      opacity,
+    };
+  }
+
+  if (variant === "Dark") {
+    return {
+      background: style.backgroundColor || "#050505",
+    };
+  }
+
+  if (variant === "Product/SaaS") {
+    return {
+      background: style.backgroundColor || "#ffffff",
+    };
+  }
+
+  if (variant === "Personal/Portfolio") {
+    return {
+      background: style.backgroundColor || "#f8fafc",
+    };
+  }
+
+  if (variant === "Split Layout") {
+    return {
+      background: style.backgroundColor || "#ffffff",
+    };
+  }
+
+  if (variant === "Centered") {
+    if (style.backgroundImage && typeof style.backgroundImage === "string") {
+      return {
+        backgroundImage: `url(${style.backgroundImage})`,
+        backgroundSize: style.backgroundSize || "cover",
+        backgroundPosition: style.backgroundPosition || "center",
+        backgroundRepeat: style.backgroundRepeat || "no-repeat",
+      };
+    }
+    return {
+      background: style.backgroundColor || "#0f172a",
+    };
+  }
+
+  return {
+    background: style.backgroundColor || "#0f172a",
+  };
+}
+
+export function getVariantHeadingStyle(variant: string, style: Record<string, unknown>) {
+  const commonDark = {
+    textColor: style.headingColor || "#ffffff",
+    fontSize: style.headingFontSize || "48px",
+    fontWeight: "800",
+    lineHeight: "1.1",
+    letterSpacing: "-0.02em",
+  };
+
+  if (variant === "Image Background" || variant === "Video Background" || variant === "Dark" || variant === "Centered") {
+    return commonDark;
+  }
+
+  if (variant === "Gradient") {
+    return {
+      textColor: style.headingColor || "#f8fafc",
+      fontSize: style.headingFontSize || "48px",
+      fontWeight: "800",
+      lineHeight: "0.95",
+      letterSpacing: "-0.04em",
+    };
+  }
+
+  if (variant === "Product/SaaS") {
+    return {
+      textColor: style.headingColor || "#0f172a",
+      fontSize: style.headingFontSize || "44px",
+      fontWeight: "800",
+      lineHeight: "1.1",
+      letterSpacing: "-0.02em",
+    };
+  }
+
+  if (variant === "Personal/Portfolio") {
+    return {
+      textColor: style.headingColor || "#0f172a",
+      fontSize: style.headingFontSize || "48px",
+      fontWeight: "800",
+      lineHeight: "1.1",
+      letterSpacing: "-0.02em",
+    };
+  }
+
+  if (variant === "Split Layout") {
+    return {
+      textColor: style.headingColor || "#0f172a",
+      fontSize: style.headingFontSize || "48px",
+      fontWeight: "800",
+      lineHeight: "1.1",
+      letterSpacing: "-0.02em",
+    };
+  }
+
+  return commonDark;
+}
+
+export function getVariantTextStyle(variant: string, style: Record<string, unknown>) {
+  if (variant === "Image Background" || variant === "Video Background" || variant === "Dark" || variant === "Centered") {
+    return {
+      textColor: style.textColor || "#cbd5e1",
+      fontSize: "16px",
+      lineHeight: "1.7",
+    };
+  }
+
+  if (variant === "Product/SaaS" || variant === "Personal/Portfolio" || variant === "Split Layout") {
+    return {
+      textColor: style.textColor || "#475569",
+      fontSize: "16px",
+      lineHeight: "1.7",
+    };
+  }
+
+  if (variant === "Gradient") {
+    return {
+      textColor: style.textColor || "#e2e8f0",
+      fontSize: "16px",
+      lineHeight: "1.7",
+    };
+  }
+
+  return {
+    textColor: style.textColor || "#94a3b8",
+    fontSize: "16px",
+    lineHeight: "1.85",
+  };
+}
+
+export function getVariantButtonStyle(variant: string, childId: string, style: Record<string, unknown>) {
+  const baseStyle: Record<string, unknown> = {
+    borderRadius: style.buttonRadius || "999px",
+    shadow: true,
+  };
+
+  if (childId === "primaryButton") {
+    if (variant === "Image Background" || variant === "Video Background" || variant === "Dark" || variant === "Centered") {
+      return {
+        ...baseStyle,
+        variant: "Solid",
+        color: "Custom",
+        customColor: style.buttonColor || "#2F80ED",
+        fontWeight: "700",
+        background: style.buttonColor || "#2F80ED",
+      };
+    }
+
+    if (variant === "Product/SaaS" || variant === "Personal/Portfolio" || variant === "Split Layout") {
+      return {
+        ...baseStyle,
+        variant: "Solid",
+        color: "Custom",
+        customColor: style.buttonColor || "#2F80ED",
+        fontWeight: "700",
+        background: style.buttonColor || "#2F80ED",
+      };
+    }
+
+    return {
+      ...baseStyle,
+      variant: "Gradient",
+      color: "Custom",
+      customColor: style.buttonColor || "#7c3aed",
+      fontWeight: "700",
+      background: "linear-gradient(90deg, #7c3aed, #ec4899, #f97316)",
+    };
+  }
+
+  if (childId === "secondaryButton") {
+    if (variant === "Image Background" || variant === "Video Background" || variant === "Dark" || variant === "Centered") {
+      return {
+        ...baseStyle,
+        variant: "Outline",
+        color: "Custom",
+        customColor: "#ffffff",
+        borderWidth: "1px",
+        backgroundColor: "rgba(255,255,255,0.15)",
+        backdropFilter: "blur(10px)",
+      };
+    }
+
+    if (variant === "Product/SaaS" || variant === "Personal/Portfolio" || variant === "Split Layout") {
+      return {
+        ...baseStyle,
+        variant: "Outline",
+        color: "Custom",
+        customColor: style.buttonColor || "#2F80ED",
+        borderWidth: "1px",
+        backgroundColor: "transparent",
+      };
+    }
+
+    return {
+      ...baseStyle,
+      variant: "Outline",
+      color: "Custom",
+      customColor: "rgba(255,255,255,0.88)",
+      borderWidth: "1px",
+      backgroundColor: "rgba(255,255,255,0.08)",
+      backdropFilter: "blur(10px)",
+    };
+  }
+
+  return baseStyle;
+}
+
+export function getVariantImageStyle(variant: string, style: Record<string, unknown>) {
+  if (variant === "Product/SaaS") {
+    return {
+      width: "100%",
+      height: "auto",
+      objectFit: style.imageFit || "cover",
+      borderRadius: style.productImageRadius || style.borderRadius || "24px",
+      boxShadow: style.productImageShadow || "0 40px 100px rgba(0,0,0,0.12)",
+    };
+  }
+
+  if (variant === "Personal/Portfolio") {
+    const shape = style.profileImageShape || "circle";
+    const radiusMap = { circle: "50%", rounded: "24px", square: "16px" };
+    return {
+      width: style.imageWidth || "100%",
+      height: "auto",
+      objectFit: style.imageFit || "cover",
+      borderRadius: radiusMap[shape as keyof typeof radiusMap] || "50%",
+      boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+    };
+  }
+
+  if (variant === "Split Layout") {
+    return {
+      width: style.imageWidth || "100%",
+      height: "100%",
+      objectFit: style.imageFit || "cover",
+      borderRadius: style.imageRadius || style.borderRadius || "0px",
+      boxShadow: style.imageShadow || "none",
+    };
+  }
+
+  if (variant === "Gradient") {
+    return {
+      width: "100%",
+      height: "auto",
+      objectFit: style.imageFit || "contain",
+      borderRadius: style.imageRadius || "24px",
+      boxShadow: "0 40px 100px rgba(0,0,0,0.25)",
+    };
+  }
+
+  return {
+    width: "100%",
+    height: "auto",
+    objectFit: style.imageFit || "cover",
+    borderRadius: style.borderRadius || "32px",
+  };
 }
 
 export function normalizeHeroChildItem(heroData: HeroWidgetData, child: ContainerChildItem): ContainerChildItem {
   const childData = getContainerChildWidgetData(child);
-  const layout = getHeroContentLayout(heroData.variant ?? "Classic");
+  const variant = heroData.variant ?? "Image Background";
 
   const injectedChildData = {
     ...childData,
@@ -365,124 +695,123 @@ export function normalizeHeroChildItem(heroData: HeroWidgetData, child: Containe
     variant: childData.variant,
   };
 
-  if ((child.type === "heading" || child.type === "text") && !injectedChildData.style?.textColor) {
+  if (child.type === "heading") {
+    const headingStyle = getVariantHeadingStyle(variant, heroData.style as Record<string, unknown>);
     injectedChildData.style = {
       ...injectedChildData.style,
-      textColor:
-        injectedChildData.style?.color ||
-        (child.type === "heading" ? heroData.style.headingColor : heroData.style.textColor) ||
-        undefined,
+      textColor: injectedChildData.style?.textColor ?? headingStyle.textColor,
+      fontSize: injectedChildData.style?.fontSize ?? headingStyle.fontSize,
+      fontWeight: injectedChildData.style?.fontWeight ?? headingStyle.fontWeight,
+      lineHeight: injectedChildData.style?.lineHeight ?? headingStyle.lineHeight,
+      letterSpacing: injectedChildData.style?.letterSpacing ?? (headingStyle as any).letterSpacing,
+    };
+    if ((injectedChildData.style as any)?.gradientStart) {
+      injectedChildData.variant = injectedChildData.variant ?? "Gradient";
+    }
+  }
+
+  if (child.id === "badge") {
+    injectedChildData.style = {
+      ...injectedChildData.style,
+      color: injectedChildData.style?.color ?? "#e0e7ff",
+      backgroundColor: injectedChildData.style?.backgroundColor ?? "rgba(124,58,237,0.18)",
+      borderRadius: injectedChildData.style?.borderRadius ?? "999px",
+      padding: injectedChildData.style?.padding ?? "0.65rem 1rem",
+      fontSize: injectedChildData.style?.fontSize ?? "12px",
+      fontWeight: injectedChildData.style?.fontWeight ?? "700",
+      letterSpacing: injectedChildData.style?.letterSpacing ?? "0.14em",
+      textTransform: injectedChildData.style?.textTransform ?? "uppercase",
     };
   }
 
-  if (layout === "classic") {
-    if (child.type === "heading") {
-      injectedChildData.style = {
-        ...injectedChildData.style,
-        textColor: injectedChildData.style?.textColor ?? "#f8fafc",
-        fontSize: injectedChildData.style?.fontSize ?? "48px",
-        fontWeight: injectedChildData.style?.fontWeight ?? "800",
-        lineHeight: injectedChildData.style?.lineHeight ?? "0.95",
-        letterSpacing: injectedChildData.style?.letterSpacing ?? "-0.04em",
-        gradientStart: injectedChildData.style?.gradientStart ?? "#c084fc",
-        gradientEnd: injectedChildData.style?.gradientEnd ?? "#fb7185",
-      };
-      injectedChildData.variant = injectedChildData.variant ?? "Gradient";
-    }
+  if (child.id === "subheading") {
+    const textStyle = getVariantTextStyle(variant, heroData.style as Record<string, unknown>);
+    injectedChildData.style = {
+      ...injectedChildData.style,
+      color: injectedChildData.style?.color ?? textStyle.textColor,
+      fontSize: injectedChildData.style?.fontSize ?? textStyle.fontSize,
+      lineHeight: injectedChildData.style?.lineHeight ?? textStyle.lineHeight,
+    };
+  }
 
-    if (child.id === "badge") {
-      injectedChildData.style = {
-        ...injectedChildData.style,
-        color: injectedChildData.style?.color ?? "#e0e7ff",
-        backgroundColor: injectedChildData.style?.backgroundColor ?? "rgba(124,58,237,0.18)",
-        borderRadius: injectedChildData.style?.borderRadius ?? "999px",
-        padding: injectedChildData.style?.padding ?? "0.65rem 1rem",
-        fontSize: injectedChildData.style?.fontSize ?? "12px",
-        fontWeight: injectedChildData.style?.fontWeight ?? "700",
-        letterSpacing: injectedChildData.style?.letterSpacing ?? "0.14em",
-        textTransform: injectedChildData.style?.textTransform ?? "uppercase",
-      };
-    }
+  if (child.id === "description") {
+    const textStyle = getVariantTextStyle(variant, heroData.style as Record<string, unknown>);
+    injectedChildData.style = {
+      ...injectedChildData.style,
+      color: injectedChildData.style?.color ?? textStyle.textColor,
+      fontSize: injectedChildData.style?.fontSize ?? textStyle.fontSize,
+      lineHeight: injectedChildData.style?.lineHeight ?? textStyle.lineHeight,
+    };
+  }
 
-    if (child.id === "subheading") {
-      injectedChildData.style = {
-        ...injectedChildData.style,
-        color: injectedChildData.style?.color ?? "#cbd5e1",
-        fontSize: injectedChildData.style?.fontSize ?? "16px",
-        lineHeight: injectedChildData.style?.lineHeight ?? "1.7",
-      };
-    }
+  if (child.type === "button") {
+    const btnStyle = getVariantButtonStyle(variant, child.id, heroData.style as Record<string, unknown>);
+    injectedChildData.style = {
+      ...injectedChildData.style,
+      borderRadius: injectedChildData.style?.borderRadius ?? btnStyle.borderRadius,
+      shadow: injectedChildData.style?.shadow ?? btnStyle.shadow,
+    };
 
-    if (child.id === "description") {
-      injectedChildData.style = {
-        ...injectedChildData.style,
-        color: injectedChildData.style?.color ?? "#94a3b8",
-        fontSize: injectedChildData.style?.fontSize ?? "16px",
-        lineHeight: injectedChildData.style?.lineHeight ?? "1.85",
-      };
-    }
-
-    if (child.type === "button") {
-      injectedChildData.style = {
-        ...injectedChildData.style,
-        borderRadius: injectedChildData.style?.borderRadius ?? "999px",
-        shadow: injectedChildData.style?.shadow ?? true,
-      };
-
-      if (child.id === "primaryButton") {
-        injectedChildData.variant = injectedChildData.variant ?? "Gradient";
-        injectedChildData.content = {
-          ...injectedChildData.content,
-          text: injectedChildData.content?.text ?? "Get Started Free",
-          url: String(injectedChildData.content?.url ?? "#"),
-        };
-        injectedChildData.style = {
-          ...injectedChildData.style,
-          variant: injectedChildData.style?.variant ?? "Gradient",
-          color: injectedChildData.style?.color ?? "Custom",
-          customColor: injectedChildData.style?.customColor ?? "#7c3aed",
-          fontWeight: injectedChildData.style?.fontWeight ?? "700",
-          background: injectedChildData.style?.background ?? "linear-gradient(90deg, #7c3aed, #ec4899, #f97316)",
-        };
-      }
-
-      if (child.id === "secondaryButton") {
-        injectedChildData.variant = injectedChildData.variant ?? "Outline";
-        injectedChildData.content = {
-          ...injectedChildData.content,
-          text: injectedChildData.content?.text ?? "View Live Demo",
-          url: String(injectedChildData.content?.url ?? "#"),
-        };
-        injectedChildData.style = {
-          ...injectedChildData.style,
-          variant: injectedChildData.style?.variant ?? "Outline",
-          color: injectedChildData.style?.color ?? "Custom",
-          customColor: injectedChildData.style?.customColor ?? "rgba(255,255,255,0.88)",
-          borderWidth: injectedChildData.style?.borderWidth ?? "1px",
-          backgroundColor: injectedChildData.style?.backgroundColor ?? "rgba(255,255,255,0.08)",
-          backdropFilter: injectedChildData.style?.backdropFilter ?? "blur(10px)",
-        };
-      }
-    }
-
-    if (child.type === "image") {
+    if (child.id === "primaryButton") {
+      injectedChildData.variant = injectedChildData.variant ?? btnStyle.variant;
       injectedChildData.content = {
         ...injectedChildData.content,
-        src: injectedChildData.content?.src ?? "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80",
-        alt: injectedChildData.content?.alt ?? "Hero illustration",
+        text: injectedChildData.content?.text ?? "Get Started Free",
+        url: String(injectedChildData.content?.url ?? "#"),
       };
       injectedChildData.style = {
         ...injectedChildData.style,
-        width: injectedChildData.style?.width ?? "100%",
-        height: injectedChildData.style?.height ?? "auto",
-        objectFit: injectedChildData.style?.objectFit ?? "cover",
-        borderRadius: injectedChildData.style?.borderRadius ?? "32px",
-      };
-      injectedChildData.layout = {
-        ...injectedChildData.layout,
-        alignment: injectedChildData.layout?.alignment ?? "center",
+        variant: injectedChildData.style?.variant ?? btnStyle.variant,
+        color: injectedChildData.style?.color ?? btnStyle.color,
+        customColor: injectedChildData.style?.customColor ?? btnStyle.customColor,
+        fontWeight: injectedChildData.style?.fontWeight ?? btnStyle.fontWeight,
+        background: injectedChildData.style?.background ?? btnStyle.background,
       };
     }
+
+    if (child.id === "secondaryButton") {
+      injectedChildData.variant = injectedChildData.variant ?? btnStyle.variant;
+      injectedChildData.content = {
+        ...injectedChildData.content,
+        text: injectedChildData.content?.text ?? "Learn more",
+        url: String(injectedChildData.content?.url ?? "#"),
+      };
+      injectedChildData.style = {
+        ...injectedChildData.style,
+        variant: injectedChildData.style?.variant ?? btnStyle.variant,
+        color: injectedChildData.style?.color ?? btnStyle.color,
+        customColor: injectedChildData.style?.customColor ?? btnStyle.customColor,
+        borderWidth: injectedChildData.style?.borderWidth ?? (btnStyle as any).borderWidth,
+        backgroundColor: injectedChildData.style?.backgroundColor ?? (btnStyle as any).backgroundColor,
+        backdropFilter: injectedChildData.style?.backdropFilter ?? (btnStyle as any).backdropFilter,
+      };
+    }
+  }
+
+  if (child.type === "image") {
+    const imgStyle = getVariantImageStyle(variant, heroData.style as Record<string, unknown>);
+    const defaultSrc = variant === "Personal/Portfolio"
+      ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80"
+      : variant === "Product/SaaS"
+        ? "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80"
+        : "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80";
+    injectedChildData.content = {
+      ...injectedChildData.content,
+      src: injectedChildData.content?.src ?? defaultSrc,
+      alt: injectedChildData.content?.alt ?? (variant === "Personal/Portfolio" ? "Profile photo" : "Hero illustration"),
+    };
+    injectedChildData.style = {
+      ...injectedChildData.style,
+      width: injectedChildData.style?.width ?? imgStyle.width,
+      height: injectedChildData.style?.height ?? imgStyle.height,
+      objectFit: injectedChildData.style?.objectFit ?? imgStyle.objectFit,
+      borderRadius: injectedChildData.style?.borderRadius ?? imgStyle.borderRadius,
+      boxShadow: injectedChildData.style?.boxShadow ?? imgStyle.boxShadow,
+    };
+    injectedChildData.layout = {
+      ...injectedChildData.layout,
+      alignment: injectedChildData.layout?.alignment ?? "center",
+    };
   }
 
   return {
@@ -552,8 +881,8 @@ const defaultHeroChildren: ContainerChildItem[] = [
       content: {
         src: {
           sourceType: "stock",
-          src: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-          url: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+          src: "https://plus.unsplash.com/premium_photo-1723291237759-99f918377002",
+          url: "https://plus.unsplash.com/premium_photo-1723291237759-99f918377002",
           filename: "hero-stock-preview.jpg",
           provider: "Builder stock preview",
           attribution: "",
@@ -602,19 +931,25 @@ const defaultHeroChildren: ContainerChildItem[] = [
 export const defaultHeroWidgetData: HeroWidgetData = {
   id: "hero-widget-v2",
   type: "hero",
-  variant: "Classic",
+  variant: "Image Background",
   content: {
     children: defaultHeroChildren,
     statsVisible: false,
   },
   style: {
-    backgroundType: "solid",
-    backgroundColor: "#0f1430",
+    backgroundType: "image",
+    backgroundImage: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1600&q=80",
+    backgroundPosition: "center",
+    backgroundSize: "cover",
+    backgroundRepeat: "no-repeat",
+    overlayEnabled: true,
+    overlayColor: "#000000",
+    overlayOpacity: 0.45,
     headingColor: "#ffffff",
     textColor: "#cbd5e1",
     buttonStyle: "solid",
-    buttonColor: "#7c3aed",
-    accentColor: "#7c3aed",
+    buttonColor: "#2F80ED",
+    accentColor: "#2F80ED",
     borderRadius: "1rem",
     shadow: "sm",
     paddingY: 6,
@@ -624,7 +959,7 @@ export const defaultHeroWidgetData: HeroWidgetData = {
     statsOffsetTop: "1.5rem",
     statsOffsetRight: "1rem",
     statsWidth: "240px",
-    glowVisible: true,
+    glowVisible: false,
     glowColorA: "rgba(56,189,248,0.35)",
     glowColorB: "rgba(124,58,237,0.45)",
     glowOpacity: 0.9,
@@ -637,8 +972,8 @@ export const defaultHeroWidgetData: HeroWidgetData = {
     glowPositionBRight: "-8%",
   },
   layout: {
-    align: "left",
-    columns: "split",
+    align: "center",
+    columns: "stacked",
     containerWidth: "standard",
     contentWidth: "standard",
     imagePosition: "right",
@@ -668,4 +1003,701 @@ export const defaultHeroWidgetData: HeroWidgetData = {
   },
 };
 
- 
+export function getVariantDefaultData(variant: string): HeroWidgetData {
+  const base = {
+    id: `hero-${variant.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Math.random().toString(36).slice(2, 8)}`,
+    type: "hero",
+    variant,
+    content: {
+      children: [] as ContainerChildItem[],
+      statsVisible: false,
+    } as HeroContentGroup,
+    style: {} as HeroStyleGroup,
+    layout: {
+      align: "center",
+      columns: "stacked",
+      containerWidth: "standard",
+      contentWidth: "standard",
+      imagePosition: "right",
+      padding: DEFAULT_HERO_PADDING,
+      margin: DEFAULT_ZERO_SPACING,
+    } as HeroLayoutGroup,
+    responsive: {
+      mobileStack: true,
+      hideImageOnMobile: false,
+      hideOnMobile: false,
+      hideOnTablet: false,
+      hideOnDesktop: false,
+      mobilePadding: "1rem",
+    } as HeroResponsiveGroup,
+    animation: {
+      enabled: false,
+      type: "none",
+      duration: 400,
+      delay: 0,
+    } as HeroAnimationGroup,
+    advanced: {
+      id: `hero-${variant.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+      className: "",
+      dataAttributes: {},
+      customCss: "",
+      visibility: true,
+    } as HeroAdvancedGroup,
+  } as HeroWidgetData;
+
+  switch (variant) {
+    case "Image Background": {
+      const children: ContainerChildItem[] = [
+        createContainerChildItem("text", {
+          id: "badge",
+          data: {
+            content: { text: "New standard" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("heading", {
+          id: "heading",
+          data: {
+            content: { text: "Build something remarkable" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("text", {
+          id: "subheading",
+          data: {
+            content: { text: "Launch faster with a production-ready hero section." },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("text", {
+          id: "description",
+          data: {
+            content: { text: "Easily customize this block from the property panel. Change the background, overlay, and CTAs without touching code." },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("button", {
+          id: "primaryButton",
+          data: {
+            content: { text: "Get started", url: "#" },
+            style: { display: "inline" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("button", {
+          id: "secondaryButton",
+          data: {
+            content: { text: "View case studies", url: "#" },
+            style: { display: "inline" },
+            advanced: { visibility: true },
+          },
+        }),
+      ];
+      return {
+        ...base,
+        content: { ...base.content, children },
+        style: {
+          ...base.style,
+          backgroundType: "image",
+          backgroundImage: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1600&q=80",
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          overlayEnabled: true,
+          overlayColor: "#000000",
+          overlayOpacity: 0.45,
+          headingColor: "#ffffff",
+          textColor: "#cbd5e1",
+          buttonStyle: "solid",
+          buttonColor: "#2F80ED",
+          accentColor: "#2F80ED",
+          borderRadius: "1rem",
+        },
+        layout: {
+          ...base.layout,
+          align: "center",
+        },
+      };
+    }
+
+    case "Split Layout": {
+      const children: ContainerChildItem[] = [
+        createContainerChildItem("text", {
+          id: "badge",
+          data: {
+            content: { text: "New collection" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("heading", {
+          id: "heading",
+          data: {
+            content: { text: "Designed for modern teams" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("text", {
+          id: "subheading",
+          data: {
+            content: { text: "A clean split layout that keeps your message and visual in perfect balance." },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("text", {
+          id: "description",
+          data: {
+            content: { text: "Use the property panel to swap the image, adjust spacing, and change alignment." },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("button", {
+          id: "primaryButton",
+          data: {
+            content: { text: "Get started", url: "#" },
+            style: { display: "inline" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("button", {
+          id: "secondaryButton",
+          data: {
+            content: { text: "Learn more", url: "#" },
+            style: { display: "inline" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("image", {
+          id: "image",
+          data: {
+            content: {
+              src: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80",
+              alt: "Split layout image",
+            },
+            advanced: { visibility: true },
+          },
+        }),
+      ];
+      return {
+        ...base,
+        content: { ...base.content, children },
+        style: {
+          ...base.style,
+          backgroundColor: "#ffffff",
+          headingColor: "#0f172a",
+          textColor: "#475569",
+          buttonStyle: "solid",
+          buttonColor: "#2F80ED",
+          accentColor: "#2F80ED",
+          imageFit: "cover",
+          imageWidth: "100%",
+          imageRadius: "0px",
+          imageShadow: "none",
+          splitImagePosition: "right",
+        },
+        layout: {
+          ...base.layout,
+          align: "left",
+          columns: "split",
+          imagePosition: "right",
+        },
+      };
+    }
+
+    case "Centered": {
+      const children: ContainerChildItem[] = [
+        createContainerChildItem("text", {
+          id: "badge",
+          data: {
+            content: { text: "Coming soon" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("heading", {
+          id: "heading",
+          data: {
+            content: { text: "The future of content" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("text", {
+          id: "subheading",
+          data: {
+            content: { text: "A centered hero with a full-width background image and no foreground image clutter." },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("text", {
+          id: "description",
+          data: {
+            content: { text: "Focus attention on your message with a clean centered layout." },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("button", {
+          id: "primaryButton",
+          data: {
+            content: { text: "Get started", url: "#" },
+            style: { display: "inline" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("button", {
+          id: "secondaryButton",
+          data: {
+            content: { text: "Contact sales", url: "#" },
+            style: { display: "inline" },
+            advanced: { visibility: true },
+          },
+        }),
+      ];
+      return {
+        ...base,
+        content: { ...base.content, children },
+        style: {
+          ...base.style,
+          backgroundType: "image",
+          backgroundImage: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1600&q=80",
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          overlayEnabled: true,
+          overlayColor: "#000000",
+          overlayOpacity: 0.5,
+          headingColor: "#ffffff",
+          textColor: "#cbd5e1",
+          buttonStyle: "solid",
+          buttonColor: "#2F80ED",
+          accentColor: "#2F80ED",
+          heroHeight: "100vh",
+          heroMinHeight: "560px",
+          verticalAlignment: "center",
+          contentMaxWidth: "720px",
+          headingFontSize: "52px",
+          buttonRadius: "999px",
+        },
+        layout: {
+          ...base.layout,
+          align: "center",
+        },
+      };
+    }
+
+    case "Video Background": {
+      const children: ContainerChildItem[] = [
+        createContainerChildItem("text", {
+          id: "badge",
+          data: {
+            content: { text: "Immersive" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("heading", {
+          id: "heading",
+          data: {
+            content: { text: "See it in motion" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("text", {
+          id: "subheading",
+          data: {
+            content: { text: "A real video background with a customizable overlay and centered content." },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("text", {
+          id: "description",
+          data: {
+            content: { text: "Choose YouTube, Vimeo, or upload your own video file." },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("button", {
+          id: "primaryButton",
+          data: {
+            content: { text: "Start free trial", url: "#" },
+            style: { display: "inline" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("button", {
+          id: "secondaryButton",
+          data: {
+            content: { text: "Watch demo", url: "#" },
+            style: { display: "inline" },
+            advanced: { visibility: true },
+          },
+        }),
+      ];
+      return {
+        ...base,
+        content: { ...base.content, children },
+        style: {
+          ...base.style,
+          videoType: "youtube",
+          youtubeUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&loop=1&playlist=dQw4w9WgXcQ&controls=0",
+          overlayEnabled: true,
+          overlayColor: "#000000",
+          overlayOpacity: 0.55,
+          headingColor: "#ffffff",
+          textColor: "#cbd5e1",
+          buttonStyle: "solid",
+          buttonColor: "#2F80ED",
+          accentColor: "#2F80ED",
+          videoAutoplay: true,
+          videoMuted: true,
+          videoLoop: true,
+          videoShowControls: false,
+          heroHeight: "100vh",
+          heroMinHeight: "560px",
+          verticalAlignment: "center",
+          contentMaxWidth: "720px",
+          headingFontSize: "52px",
+          buttonRadius: "999px",
+        },
+        layout: {
+          ...base.layout,
+          align: "center",
+        },
+      };
+    }
+
+    case "Gradient": {
+      const children: ContainerChildItem[] = [
+        createContainerChildItem("text", {
+          id: "badge",
+          data: {
+            content: { text: "Analytics" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("heading", {
+          id: "heading",
+          data: {
+            content: { text: "Data-driven growth" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("text", {
+          id: "subheading",
+          data: {
+            content: { text: "A real gradient background with a foreground product image on the right." },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("text", {
+          id: "description",
+          data: {
+            content: { text: "Customize gradient colors, direction, and the right-side illustration from the property panel." },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("button", {
+          id: "primaryButton",
+          data: {
+            content: { text: "Get started", url: "#" },
+            style: { display: "inline" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("button", {
+          id: "secondaryButton",
+          data: {
+            content: { text: "View docs", url: "#" },
+            style: { display: "inline" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("image", {
+          id: "image",
+          data: {
+            content: {
+              src: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
+              alt: "Analytics dashboard",
+            },
+            advanced: { visibility: true },
+          },
+        }),
+      ];
+      return {
+        ...base,
+        content: { ...base.content, children },
+        style: {
+          ...base.style,
+          gradientType: "linear",
+          gradientDirection: "135deg",
+          gradientStart: "#0f172a",
+          gradientMid: "#1e3a8a",
+          gradientEnd: "#2563eb",
+          gradientOpacity: 1,
+          headingColor: "#f8fafc",
+          textColor: "#e2e8f0",
+          buttonStyle: "solid",
+          buttonColor: "#2F80ED",
+          accentColor: "#60a5fa",
+          imageFit: "contain",
+          imageRadius: "24px",
+          imageShadow: "0 40px 100px rgba(0,0,0,0.25)",
+        },
+        layout: {
+          ...base.layout,
+          align: "left",
+          columns: "split",
+          containerWidth: "wide",
+        },
+      };
+    }
+
+    case "Dark": {
+      const children: ContainerChildItem[] = [
+        createContainerChildItem("text", {
+          id: "badge",
+          data: {
+            content: { text: "Performance" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("heading", {
+          id: "heading",
+          data: {
+            content: { text: "Ship with confidence" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("text", {
+          id: "subheading",
+          data: {
+            content: { text: "A deliberate dark visual system with optional glow and accent highlights." },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("text", {
+          id: "description",
+          data: {
+            content: { text: "Edit the background color, accent color, and glow settings to match your brand." },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("button", {
+          id: "primaryButton",
+          data: {
+            content: { text: "Get started", url: "#" },
+            style: { display: "inline" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("button", {
+          id: "secondaryButton",
+          data: {
+            content: { text: "View documentation", url: "#" },
+            style: { display: "inline" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("image", {
+          id: "image",
+          data: {
+            content: {
+              src: "https://images.unsplash.com/photo-1550751827-4bd374c3a6f6?auto=format&fit=crop&w=1200&q=80",
+              alt: "Dark product preview",
+            },
+            advanced: { visibility: true },
+          },
+        }),
+      ];
+      return {
+        ...base,
+        content: { ...base.content, children },
+        style: {
+          ...base.style,
+          backgroundColor: "#050505",
+          headingColor: "#ffffff",
+          textColor: "#94a3b8",
+          buttonStyle: "solid",
+          buttonColor: "#2F80ED",
+          accentColor: "#2F80ED",
+          glowVisible: true,
+          glowColorA: "rgba(56,189,248,0.35)",
+          glowColorB: "rgba(124,58,237,0.45)",
+          glowOpacity: 0.9,
+          glowBlur: "80px",
+          glowSizeA: "260px",
+          glowSizeB: "240px",
+          glowPositionATop: "-10%",
+          glowPositionALeft: "-14%",
+          glowPositionBBottom: "-14%",
+          glowPositionBRight: "-8%",
+          imageFit: "cover",
+          imageRadius: "24px",
+          imageShadow: "0 40px 100px rgba(0,0,0,0.5)",
+        },
+        layout: {
+          ...base.layout,
+          align: "left",
+        },
+      };
+    }
+
+    case "Product/SaaS": {
+      const children: ContainerChildItem[] = [
+        createContainerChildItem("text", {
+          id: "badge",
+          data: {
+            content: { text: "New release" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("heading", {
+          id: "heading",
+          data: {
+            content: { text: "Build better websites" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("text", {
+          id: "subheading",
+          data: {
+            content: { text: "without writing code." },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("text", {
+          id: "description",
+          data: {
+            content: { text: "Create polished marketing pages in minutes using the property panel." },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("button", {
+          id: "primaryButton",
+          data: {
+            content: { text: "Start building", url: "#" },
+            style: { display: "inline" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("button", {
+          id: "secondaryButton",
+          data: {
+            content: { text: "View demo", url: "#" },
+            style: { display: "inline" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("image", {
+          id: "image",
+          data: {
+            content: {
+              src: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80",
+              alt: "Product dashboard",
+            },
+            advanced: { visibility: true },
+          },
+        }),
+      ];
+      return {
+        ...base,
+        content: { ...base.content, children },
+        style: {
+          ...base.style,
+          backgroundColor: "#ffffff",
+          headingColor: "#0f172a",
+          textColor: "#475569",
+          buttonStyle: "solid",
+          buttonColor: "#2F80ED",
+          accentColor: "#2F80ED",
+          productImageRadius: "24px",
+          productImageShadow: "0 40px 100px rgba(0,0,0,0.12)",
+        },
+        layout: {
+          ...base.layout,
+          align: "left",
+        },
+      };
+    }
+
+    case "Personal/Portfolio": {
+      const children: ContainerChildItem[] = [
+        createContainerChildItem("text", {
+          id: "badge",
+          data: {
+            content: { text: "Hello, I'm" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("heading", {
+          id: "heading",
+          data: {
+            content: { text: "Alex Morgan" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("text", {
+          id: "subheading",
+          data: {
+            content: { text: "Product Designer" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("text", {
+          id: "description",
+          data: {
+            content: { text: "I craft clean digital experiences for startups and established brands." },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("button", {
+          id: "primaryButton",
+          data: {
+            content: { text: "View work", url: "#" },
+            style: { display: "inline" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("button", {
+          id: "secondaryButton",
+          data: {
+            content: { text: "Contact me", url: "#" },
+            style: { display: "inline" },
+            advanced: { visibility: true },
+          },
+        }),
+        createContainerChildItem("image", {
+          id: "image",
+          data: {
+            content: {
+              src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
+              alt: "Profile photo",
+            },
+            advanced: { visibility: true },
+          },
+        }),
+      ];
+      return {
+        ...base,
+        content: { ...base.content, children },
+        style: {
+          ...base.style,
+          backgroundColor: "#f8fafc",
+          headingColor: "#0f172a",
+          textColor: "#475569",
+          buttonStyle: "solid",
+          buttonColor: "#2F80ED",
+          accentColor: "#2F80ED",
+          profileImageShape: "circle",
+          imageFit: "cover",
+          imageWidth: "320px",
+          imageRadius: "50%",
+          imageShadow: "0 20px 60px rgba(0,0,0,0.15)",
+        },
+        layout: {
+          ...base.layout,
+          align: "left",
+        },
+      };
+    }
+
+    default:
+      return base;
+  }
+}

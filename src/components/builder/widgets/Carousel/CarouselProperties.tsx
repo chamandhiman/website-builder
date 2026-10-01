@@ -316,6 +316,26 @@ export function CarouselProperties({
                 onChange={(next) => updateSlide(selectedSlide.id, { name: next })}
               />
               <TextControl
+                label="Quote"
+                value={String(selectedSlide.quote ?? "")}
+                onChange={(next) => updateSlide(selectedSlide.id, { quote: next })}
+              />
+              <TextControl
+                label="Author"
+                value={String(selectedSlide.author ?? "")}
+                onChange={(next) => updateSlide(selectedSlide.id, { author: next })}
+              />
+              <TextControl
+                label="Role"
+                value={String(selectedSlide.role ?? "")}
+                onChange={(next) => updateSlide(selectedSlide.id, { role: next })}
+              />
+              <TextControl
+                label="Company"
+                value={String(selectedSlide.company ?? "")}
+                onChange={(next) => updateSlide(selectedSlide.id, { company: next })}
+              />
+              <TextControl
                 label="Image link"
                 value={String(selectedSlide.link ?? "")}
                 onChange={(next) => updateSlide(selectedSlide.id, { link: next })}

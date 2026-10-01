@@ -109,7 +109,12 @@ function TemplatesPage() {
 
         {/* Templates Grid */}
         <div>
-          {filteredTemplates.length === 0 ? (
+          {TEMPLATE_LIBRARY.length === 0 ? (
+            <div className="rounded-sm border-2 border-dashed border-[#363636] bg-[#1F1F1F] p-12 text-center">
+              <p className="text-lg text-[#969696]">No templates available yet.</p>
+              <p className="mt-2 text-sm text-[#696969]">Templates will be available soon. Start with a blank project to create your website.</p>
+            </div>
+          ) : filteredTemplates.length === 0 ? (
             <div className="rounded-sm border-2 border-dashed border-[#363636] bg-[#1F1F1F] p-12 text-center">
               <p className="text-[#969696]">No templates found matching your search. Try a different term or filter.</p>
             </div>

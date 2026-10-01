@@ -54,6 +54,27 @@ export function InspectorPanel() {
 
   const isTextElement = selectedChildWidget && (selectedChildWidget.childWidgetInstance.type === "text" || selectedChildWidget.childWidgetInstance.type === "heading");
   const elementType = isTextElement ? "Text" : selectedElement?.elementType === "image" ? "Image" : selectedElement?.elementType === "button" ? "Button" : "Section";
+  const textChild = selectedChildWidget?.childWidgetInstance.type === "text" ? selectedChildWidget.childWidgetInstance : null;
+  const [content, setContent] = useState(() => (textChild?.content as any)?.text || (textChild?.content as any)?.content || "");
+  const [fontFamily, setFontFamily] = useState(() => (textChild?.style as any)?.fontFamily || "Inter");
+  const [fontWeight, setFontWeight] = useState(() => (textChild?.style as any)?.fontWeight || "700");
+  const [fontSize, setFontSize] = useState(() => (textChild?.style as any)?.fontSize || "64px");
+  const [lineHeight, setLineHeight] = useState(() => (textChild?.style as any)?.lineHeight || "1.1");
+  const [letterSpacing, setLetterSpacing] = useState(() => (textChild?.style as any)?.letterSpacing || "0px");
+  const [textColor, setTextColor] = useState(() => (textChild?.style as any)?.textColor || (textChild?.style as any)?.color || "#FFFFFF");
+  const [textAlign, setTextAlign] = useState(() => (textChild?.style as any)?.textAlign || "left");
+
+  useEffect(() => {
+    if (!textChild) return;
+    setContent((textChild.content as any)?.text || (textChild.content as any)?.content || "");
+    setFontFamily((textChild.style as any)?.fontFamily || "Inter");
+    setFontWeight((textChild.style as any)?.fontWeight || "700");
+    setFontSize((textChild.style as any)?.fontSize || "64px");
+    setLineHeight((textChild.style as any)?.lineHeight || "1.1");
+    setLetterSpacing((textChild.style as any)?.letterSpacing || "0px");
+    setTextColor((textChild.style as any)?.textColor || (textChild.style as any)?.color || "#FFFFFF");
+    setTextAlign((textChild.style as any)?.textAlign || "left");
+  }, [textChild?.id]);
 
   if (!section) {
     return (
@@ -69,28 +90,6 @@ export function InspectorPanel() {
   }
 
   if (selectedChildWidget && selectedChildWidget.childWidgetInstance.type === "text") {
-    const child = selectedChildWidget.childWidgetInstance;
-    const [content, setContent] = useState((child.content as any)?.text || (child.content as any)?.content || "");
-    const [fontFamily, setFontFamily] = useState((child.style as any)?.fontFamily || "Inter");
-    const [fontWeight, setFontWeight] = useState((child.style as any)?.fontWeight || "700");
-    const [fontSize, setFontSize] = useState((child.style as any)?.fontSize || "64px");
-    const [lineHeight, setLineHeight] = useState((child.style as any)?.lineHeight || "1.1");
-    const [letterSpacing, setLetterSpacing] = useState((child.style as any)?.letterSpacing || "0px");
-    const [textColor, setTextColor] = useState((child.style as any)?.textColor || (child.style as any)?.color || "#FFFFFF");
-    const [textAlign, setTextAlign] = useState((child.style as any)?.textAlign || "left");
-
-    useEffect(() => {
-      const newChild = selectedChildWidget!.childWidgetInstance;
-      setContent((newChild.content as any)?.text || (newChild.content as any)?.content || "");
-      setFontFamily((newChild.style as any)?.fontFamily || "Inter");
-      setFontWeight((newChild.style as any)?.fontWeight || "700");
-      setFontSize((newChild.style as any)?.fontSize || "64px");
-      setLineHeight((newChild.style as any)?.lineHeight || "1.1");
-      setLetterSpacing((newChild.style as any)?.letterSpacing || "0px");
-      setTextColor((newChild.style as any)?.textColor || (newChild.style as any)?.color || "#FFFFFF");
-      setTextAlign((newChild.style as any)?.textAlign || "left");
-    }, [selectedChildWidget?.childWidgetInstance.id]);
-
     const commit = (patch: Record<string, unknown>) => {
       if (!section?.widgetInstance || !selectedChildWidget) return;
       const resolvedColumnId = selectedChildWidget.columnId || selectedElement?.columnId || selectedElement?.childContainerId || findGridColumnIdForChild(section.widgetInstance, selectedChildWidget.child.id);

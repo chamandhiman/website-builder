@@ -225,10 +225,10 @@ export async function resolveAssetValue(entry?: BuilderAssetEntry): Promise<stri
   const value = getAssetValue(entry);
   if (!value) return undefined;
   if (
-    /^builder:\/\/images\//.test(value) &&
     entry &&
     typeof entry !== "string" &&
-    entry.imageId
+    entry.imageId &&
+    /^builder:\/\/images\//.test(entry.src)
   ) {
     const objectUrl = await getImageObjectUrl(entry.imageId);
     return objectUrl ?? value;

@@ -76,7 +76,7 @@ export const defaultImageWidgetData: ImageWidgetData = {
   variant: "Standard",
   content: {
     src: createStockImageReference(
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80"
+      "https://plus.unsplash.com/premium_photo-1723291237759-99f918377002"
     ),
     url: "",
     openInNewTab: false,

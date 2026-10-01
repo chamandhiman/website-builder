@@ -217,7 +217,7 @@ export const SECTION_LIBRARY: SectionTemplate[] = [
         <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-none" data-carousel-track style="transition: transform 0.5s ease-in-out; transform: translateX(0%);">
           <article class="min-w-[300px] shrink-0 rounded-[1.75rem] bg-slate-950 text-white shadow-2xl overflow-hidden">
             <div class="aspect-[4/3] overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80" alt="Student driving" class="h-full w-full object-cover" data-wto-idx="0" />
+              <img src="https://plus.unsplash.com/premium_photo-1723291237759-99f918377002" alt="Student driving" class="h-full w-full object-cover" data-wto-idx="0" />
             </div>
             <div class="p-6">
               <p class="text-xs uppercase tracking-[0.3em] text-cyan-300">Student success</p>
@@ -413,7 +413,7 @@ export const SECTION_LIBRARY: SectionTemplate[] = [
   <div class="max-w-6xl mx-auto px-6 py-20">
     <h2 class="text-4xl font-bold text-gray-900">Selected Work</h2>
     <div class="mt-10 grid md:grid-cols-3 gap-6">
-      <div class="rounded-2xl overflow-hidden aspect-[4/3]"><img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80" alt="Project image" class="w-full h-full object-cover" /></div>
+      <div class="rounded-2xl overflow-hidden aspect-[4/3]"><img src="https://plus.unsplash.com/premium_photo-1723291237759-99f918377002" alt="Project image" class="w-full h-full object-cover" /></div>
       <div class="rounded-2xl overflow-hidden aspect-[4/3]"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80" alt="Project image" class="w-full h-full object-cover" /></div>
       <div class="rounded-2xl overflow-hidden aspect-[4/3]"><img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80" alt="Project image" class="w-full h-full object-cover" /></div>
       <div class="rounded-2xl overflow-hidden aspect-[4/3]"><img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80" alt="Project image" class="w-full h-full object-cover" /></div>

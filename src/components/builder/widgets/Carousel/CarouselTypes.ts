@@ -14,6 +14,10 @@ export interface CarouselSlide {
   link?: string;
   openInNewTab?: boolean;
   name?: string;
+  quote?: string;
+  author?: string;
+  role?: string;
+  company?: string;
 }
 
 export interface CarouselContentGroup extends Record<string, unknown> {

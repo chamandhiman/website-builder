@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { faMagic, faBars, faHeading, faParagraph, faHandPointer, faImage, faSquare, faColumns, faCopyright, faImages, faTableCells, faCircleQuestion, faBriefcase, faBuilding, faBullhorn } from "@fortawesome/free-solid-svg-icons";
+import { faMagic, faBars, faHeading, faParagraph, faHandPointer, faImage, faSquare, faColumns, faCopyright, faImages, faTableCells, faCircleQuestion, faBriefcase, faBuilding, faBullhorn, faChartLine } from "@fortawesome/free-solid-svg-icons";
 import { About } from "./About/About";
 import { AboutProperties } from "./About/AboutProperties";
 import { buildAboutBootstrapMarkup } from "./About/AboutBootstrapExport";
@@ -61,6 +61,10 @@ import { Grid } from "./Grid/Grid";
 import { GridProperties } from "./Grid/GridProperties";
 import { buildGridBootstrapMarkup } from "./Grid/GridBootstrapExport";
 import { defaultGridWidgetData, syncGridInstanceToVariant } from "./Grid/GridTypes";
+import { Progress } from "./Progress/Progress";
+import { ProgressProperties } from "./Progress/ProgressProperties";
+import { buildProgressBootstrapMarkup } from "./Progress/ProgressBootstrapExport";
+import { defaultProgressWidgetData } from "./Progress/ProgressTypes";
 import { registerWidgetEditableElements, type WidgetEditableElementDefinition } from "./elementSelection";
 import { renderSectionWidthBootstrapWrapper } from "./BaseWidget";
 import { getWidgetBackgroundCss } from "./BackgroundStyle";
@@ -317,8 +321,8 @@ registerWidget({
   propertiesComponent: HeroProperties,
   bootstrapExporter: buildHeroBootstrapMarkup,
   defaultData: defaultHeroWidgetData,
-  supportedVariants: ["Classic", "Split", "Centered"],
-  defaultVariant: "Classic",
+  supportedVariants: ["Image Background", "Split Layout", "Centered", "Video Background", "Gradient", "Dark", "Product/SaaS", "Personal/Portfolio"],
+  defaultVariant: "Image Background",
   supportsChildren: true,
   childElementTypes: ["heading", "text", "button", "image", "container"],
 });
@@ -444,6 +448,27 @@ registerWidget({
 });
 
 registerWidgetEditableElements("grid", [{ key: "content", type: "container", label: "Grid Content" }] satisfies WidgetEditableElementDefinition[]);
+
+registerWidgetEditableElements("progress", [
+  { key: "label", type: "text", label: "Skill Name" },
+  { key: "value", type: "text", label: "Progress" },
+] satisfies WidgetEditableElementDefinition[]);
+
+registerWidget({
+  id: "progress-v1",
+  type: "progress",
+  displayName: "Progress Bar",
+  icon: faChartLine,
+  category: "Content",
+  preview: "Editable percentage progress bar.",
+  description: "A reusable progress bar with editable percentage, colors, dimensions, and typography.",
+  component: Progress,
+  propertiesComponent: ProgressProperties,
+  bootstrapExporter: buildProgressBootstrapMarkup,
+  defaultData: defaultProgressWidgetData,
+  supportedVariants: ["Bar"],
+  defaultVariant: "Bar",
+});
 
 registerWidget({
   id: "grid-v1",

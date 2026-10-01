@@ -1257,20 +1257,6 @@ export const RUNTIME_SCRIPT = `
       const a = target && target.closest ? target.closest('a') : null;
       if (!a) return;
       const href = a.getAttribute('href') || '';
-      // allow in-page anchors to scroll
-      if (href.startsWith('#')) {
-        if (scrollToHash(href, e)) return;
-        e.preventDefault();
-        return;
-      }
-      // explicit previewable links marked by data attributes
-      const allowPreview = a.getAttribute('data-allow-preview') === 'true' || a.getAttribute('data-wto-allow-preview') === 'true' || a.dataset?.allowPreview === 'true' || a.dataset?.wtoAllowPreview === 'true';
-      if (allowPreview && href) {
-        e.preventDefault();
-        try { parent.postMessage({ __wto: true, type: 'open-preview-link', payload: { href } }, '*'); } catch(_) {}
-        return;
-      }
-      // Block all other navigations inside editor
       e.preventDefault();
     } catch (err) {
       try { parent.postMessage({ __wto: true, type: 'console', payload: { level: 'error', args: [String(err && err.stack ? err.stack : err)] } }, '*'); } catch (_) {}
@@ -2371,17 +2357,19 @@ export const RUNTIME_SCRIPT = `
         const anchor = target.closest("a");
         if (anchor) {
           const href = anchor.getAttribute("href") || "";
-          const normalized = href.replace(/^[.\/]+/, "").replace(/\\.html(?:[?#].*)?$/, "");
-          if (!href || href === "#") {
-            e.preventDefault();
-          }
-          if (href && href !== "#" && scrollToHash(href, e)) {
-            return;
-          }
-          if (/^(?!https?:|mailto:).+\\.html(?:[?#].*)?$/.test(href)) {
-            e.preventDefault();
-            send("navigate-page", { slug: normalized });
-            return;
+          if (!document.body || document.body.getAttribute('data-builder-edit-mode') !== '1') {
+            const normalized = href.replace(/^[.\/]+/, "").replace(/\\.html(?:[?#].*)?$/, "");
+            if (!href || href === "#") {
+              e.preventDefault();
+            }
+            if (href && href !== "#" && scrollToHash(href, e)) {
+              return;
+            }
+            if (/^(?!https?:|mailto:).+\\.html(?:[?#].*)?$/.test(href)) {
+              e.preventDefault();
+              send("navigate-page", { slug: normalized });
+              return;
+            }
           }
         }
       }
@@ -2440,7 +2428,7 @@ export const RUNTIME_SCRIPT = `
         columnId: selection.columnId || null,
       });
     } catch (err) {
-      try { send("console", { level: "error", args: [String(err && err.stack ? err.stack : err)] }); } catch (_){ }
+      try { send("console", { level: "error", args: [String(err && err.stack ? err.stack : err)] }); } catch (_){}
       console.error("wto-runtime onClick error", err);
     }
   }
@@ -2584,6 +2572,11 @@ export const RUNTIME_SCRIPT = `
   
       e.stopPropagation();
       const href = a.getAttribute('href') || '';
+      if (document.body.getAttribute('data-builder-edit-mode') === '1') {
+        e.preventDefault();
+        closeMenu();
+        return;
+      }
       if (href.startsWith('#')) {
         e.preventDefault();
         if (scrollToHash(href, e)) {
@@ -3130,7 +3123,7 @@ ${fontAwesomeStyles}
  ${bootstrapScript}
  <script>${editable ? RUNTIME_SCRIPT : EXPORT_RUNTIME}</script>
  <script>try{new Function(${escapeInlineScript(globalJs || "")})();}catch(e){console.error(e)}</script>
- ${previewNavScript(pages, currentPageSlug)}
+ ${editable ? "" : previewNavScript(pages, currentPageSlug)}
  </body>
  </html>`;
  }
@@ -3464,8 +3457,11 @@ function escapeHtml(s: string) {
 function styleToString(style?: Record<string, string>) {
   if (!style) return "";
   return Object.entries(style)
-    .filter(([, v]) => v.trim())
-    .map(([k, v]) => `${k}:${v}`)
+    .filter(([, v]) => {
+      const str = typeof v === "string" ? v : String(v);
+      return str.trim();
+    })
+    .map(([k, v]) => `${k}:${typeof v === "string" ? v : String(v)}`)
     .join(";");
 }
 

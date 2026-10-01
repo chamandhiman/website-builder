@@ -130,7 +130,7 @@ export function composePageSections(
   }
 
   for (const section of page.sections ?? []) {
-    if (isNavbarSection(section) || isFooterSection(section)) continue;
+    if (!project.isTemplate && (isNavbarSection(section) || isFooterSection(section))) continue;
     out.push(section);
   }
 
@@ -291,11 +291,18 @@ export function migrateSharedChrome(project: Project): Project {
     sharedFooter = extractFirstChrome(project.pages, isFooterSection, "footer");
   }
 
-  // New/empty projects and migrated ones always get defaults when missing.
-  if (!sharedHeader) {
+  const useCustomLayout = project.source === "template" || project.layout?.type === "custom";
+
+  if (project.source === "template") {
+    if (sharedHeader?.templateId === "shared-navbar") sharedHeader = null;
+    if (sharedFooter?.templateId === "shared-footer") sharedFooter = null;
+  }
+
+  // New/empty projects and migrated default-layout projects get defaults when missing.
+  if (!sharedHeader && !useCustomLayout) {
     sharedHeader = createDefaultSharedHeader(project.pages);
   }
-  if (!sharedFooter) {
+  if (!sharedFooter && !useCustomLayout) {
     sharedFooter = createDefaultSharedFooter();
   }
 

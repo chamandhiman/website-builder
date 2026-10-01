@@ -12,10 +12,17 @@ import { PropertyPanel as TabbedPropertyPanel } from "@/components/builder/prope
 import { useBuilder, pageOf } from "@/lib/builder/store";
 import { findSectionInProject } from "@/lib/builder/sharedChrome";
 import { nanoid } from "nanoid";
-import { Plus, Trash2, Copy, Eye, EyeOff, UploadCloud, Facebook, Twitter, Instagram, Linkedin, ChevronUp, ChevronDown } from "lucide-react";
+import { Plus, Trash2, Copy, Eye, EyeOff, UploadCloud, Facebook, Twitter, Instagram, Linkedin, ChevronUp, ChevronDown, Save } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import type { ContainerChildItem } from "@/components/builder/widgets/Container/ContainerTypes";
+import { useAuth } from "@/lib/auth";
+import { saveAsTemplate, getTemplate } from "@/services/templates";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 const inputCls =
   "h-10 w-full rounded-xl border border-[#363636] bg-[#171717] px-3 text-sm text-[#F5F5F5] shadow-sm transition-all outline-none focus:border-[#FACC15] focus:ring-2 focus:ring-[#FACC15]/20";
@@ -493,12 +500,72 @@ export function PropertiesPanel() {
   const pushHistory = useBuilder((s) => s.pushHistory);
   const addAsset = useBuilder((s) => s.addAsset);
 
+  const { user } = useAuth();
+  const isSuperAdmin = user?.role === "super_admin";
+
   const clearSelection = () => {
     selectElement(null);
     select(null);
   };
 
-  // Hooks must run unconditionally â€” define local React hooks here
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [templateName, setTemplateName] = useState("");
+  const [templateSlug, setTemplateSlug] = useState("");
+  const [templateCategory, setTemplateCategory] = useState("");
+  const [savingTemplate, setSavingTemplate] = useState(false);
+  const [editingTemplateId, setEditingTemplateId] = useState<string | null>(null);
+
+  const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : new URLSearchParams();
+  const urlTemplateId = searchParams.get("templateId");
+
+  useEffect(() => {
+    if (!urlTemplateId || !isSuperAdmin) return;
+    let cancelled = false;
+    getTemplate(urlTemplateId).then((tpl) => {
+      if (cancelled || !tpl) return;
+      setEditingTemplateId(tpl.id);
+      setTemplateName(tpl.name);
+      setTemplateSlug(tpl.slug);
+      setTemplateCategory(tpl.category);
+    });
+    return () => { cancelled = true; };
+  }, [urlTemplateId, isSuperAdmin]);
+
+  const buildWidgetConfig = (currentWidgetInstance: any) => {
+    const { id, ...config } = currentWidgetInstance;
+    return config as Record<string, unknown>;
+  };
+
+  const handleSaveAsTemplate = async (currentWidgetInstance: any) => {
+    if (!user || !templateName.trim() || !templateSlug.trim() || !templateCategory.trim()) return;
+    setSavingTemplate(true);
+    try {
+      const slug = templateSlug.trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+      await saveAsTemplate({
+        name: templateName.trim(),
+        slug,
+        category: templateCategory.trim(),
+        widgetType: currentWidgetInstance.type,
+        config: buildWidgetConfig(currentWidgetInstance),
+        uid: user.id,
+        existingTemplateId: editingTemplateId || undefined,
+      });
+      toast.success(editingTemplateId ? "Template updated" : "Template saved");
+      setSaveDialogOpen(false);
+      if (!editingTemplateId) {
+        setTemplateName("");
+        setTemplateSlug("");
+        setTemplateCategory("");
+      }
+    } catch (err) {
+      console.error("Failed to save template:", err);
+      toast.error("Failed to save template");
+    } finally {
+      setSavingTemplate(false);
+    }
+  };
+
+  // Hooks must run unconditionally — define local React hooks here
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const draggedIndexRef = useRef<number | null>(null);
 
@@ -605,14 +672,45 @@ export function PropertiesPanel() {
 
   if (widgetInstance && WidgetPropertiesComponent) {
     return (
-      <div className="h-full overflow-hidden bg-white">
-        <WidgetPropertiesComponent
-          value={widgetInstance}
-          onClose={clearSelection}
-          onChange={(nextValue) => {
-            updateWidgetInstance(widgetInstance.id, nextValue);
-            pushHistory();
-          }}
+      <div className="h-full overflow-hidden bg-white flex flex-col">
+        {isSuperAdmin && (
+          <div className="shrink-0 border-b border-[#363636] bg-[#171717] px-3 py-2">
+            <Button
+              size="sm"
+              onClick={() => setSaveDialogOpen(true)}
+              className="w-full bg-[#FACC15] text-[#111111] hover:bg-[#FDE047] h-8 rounded-md text-xs font-medium"
+            >
+              <Save className="mr-1.5 h-3.5 w-3.5" />
+              {editingTemplateId ? "Save to Template" : "Save as Template"}
+            </Button>
+          </div>
+        )}
+        <div className="flex-1 min-h-0 overflow-hidden">
+          <WidgetPropertiesComponent
+            value={widgetInstance}
+            onClose={clearSelection}
+            onChange={(nextValue) => {
+              updateWidgetInstance(widgetInstance.id, nextValue);
+              pushHistory();
+            }}
+          />
+        </div>
+
+        <TemplateSaveDialog
+          open={saveDialogOpen}
+          onOpenChange={setSaveDialogOpen}
+          isSuperAdmin={isSuperAdmin}
+          editingTemplateId={editingTemplateId}
+          templateName={templateName}
+          templateSlug={templateSlug}
+          templateCategory={templateCategory}
+          savingTemplate={savingTemplate}
+          widgetInstance={widgetInstance}
+          user={user}
+          onTemplateNameChange={setTemplateName}
+          onTemplateSlugChange={setTemplateSlug}
+          onTemplateCategoryChange={setTemplateCategory}
+          onSave={handleSaveAsTemplate}
         />
       </div>
     );
@@ -3273,6 +3371,96 @@ function setFooterCopyrightFontSize(html: string, size: string) {
   const nextStyle = [style, size ? `font-size:${size}` : ''].filter(Boolean).join(';');
   el.setAttribute('style', nextStyle);
   return serialize(doc);
+}
+
+type TemplateSaveDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  isSuperAdmin: boolean;
+  editingTemplateId: string | null;
+  templateName: string;
+  templateSlug: string;
+  templateCategory: string;
+  savingTemplate: boolean;
+  widgetInstance: any;
+  user: any;
+  onTemplateNameChange: (value: string) => void;
+  onTemplateSlugChange: (value: string) => void;
+  onTemplateCategoryChange: (value: string) => void;
+  onSave: () => void;
+};
+
+function TemplateSaveDialog({
+  open,
+  onOpenChange,
+  isSuperAdmin,
+  editingTemplateId,
+  templateName,
+  templateSlug,
+  templateCategory,
+  savingTemplate,
+  widgetInstance,
+  user,
+  onTemplateNameChange,
+  onTemplateSlugChange,
+  onTemplateCategoryChange,
+  onSave,
+}: TemplateSaveDialogProps) {
+  if (!isSuperAdmin) return null;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="w-[calc(100vw-32px)] max-w-[480px] overflow-hidden rounded-[20px] border border-[#363636] bg-[#1F1F1F] p-0 shadow-2xl">
+        <DialogHeader className="border-b border-[#363636] px-5 pb-4 pt-5">
+          <DialogTitle className="text-base font-semibold text-[#F5F5F5]">
+            {editingTemplateId ? "Save to Template" : "Save as Template"}
+          </DialogTitle>
+          <DialogDescription className="text-xs text-[#969696]">
+            {editingTemplateId
+              ? "Update the existing template with the current widget configuration."
+              : "Save this widget configuration as a reusable template."}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-3 px-5 py-4">
+          <div className="space-y-1.5">
+            <Label className="text-xs font-medium text-[#F5F5F5]">Template Name</Label>
+            <Input
+              value={templateName}
+              onChange={(e) => onTemplateNameChange(e.target.value)}
+              placeholder="Hero - Image Background"
+              className="h-9 rounded-lg border-[#363636] bg-[#171717] text-[#F5F5F5] placeholder:text-[#969696]"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs font-medium text-[#F5F5F5]">Slug</Label>
+            <Input
+              value={templateSlug}
+              onChange={(e) => onTemplateSlugChange(e.target.value)}
+              placeholder="hero-image-background"
+              className="h-9 rounded-lg border-[#363636] bg-[#171717] text-[#F5F5F5] placeholder:text-[#969696]"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs font-medium text-[#F5F5F5]">Category</Label>
+            <Input
+              value={templateCategory}
+              onChange={(e) => onTemplateCategoryChange(e.target.value)}
+              placeholder="Marketing"
+              className="h-9 rounded-lg border-[#363636] bg-[#171717] text-[#F5F5F5] placeholder:text-[#969696]"
+            />
+          </div>
+        </div>
+        <DialogFooter className="border-t border-[#363636] px-5 py-3">
+          <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={savingTemplate} className="text-[#969696] hover:text-[#F5F5F5] hover:bg-[#242424] h-8 px-3 rounded-md text-xs">
+            Cancel
+          </Button>
+          <Button onClick={() => onSave(widgetInstance)} disabled={savingTemplate || !templateName.trim() || !templateSlug.trim() || !templateCategory.trim()} className="bg-[#FACC15] text-[#111111] hover:bg-[#FDE047] h-8 px-4 rounded-md text-xs">
+            {savingTemplate ? "Saving..." : editingTemplateId ? "Update Template" : "Save Template"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
 }
 
 export default PropertiesPanel;

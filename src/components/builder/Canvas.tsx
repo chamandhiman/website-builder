@@ -1,4 +1,4 @@
-import { useBuilder, pageOf, composePageSections, SHARED_HEADER_SECTION_ID, SHARED_FOOTER_SECTION_ID } from "@/lib/builder/store";
+import { useBuilder, pageOf, composePageSections, SHARED_HEADER_SECTION_ID, SHARED_FOOTER_SECTION_ID, type Project } from "@/lib/builder/store";
 import { SECTION_LIBRARY } from "@/lib/builder/sections";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMounted } from "@/hooks/use-mounted";
@@ -10,7 +10,7 @@ import { createGridColumn, getEqualColumnSpan, resolveGridColumnCount } from "@/
 import { nanoid } from "nanoid";
 import { UploadCloud } from "lucide-react";
 
-function composedInsertToPageIndex(project: NonNullable<ReturnType<typeof useBuilder.getState>["currentProject"]>, insertIndex: number) {
+function composedInsertToPageIndex(project: Project | null, insertIndex: number) {
   const page = pageOf(project);
   const composed = composePageSections(project, page, { includeHiddenChrome: true });
   let pageIdx = 0;
@@ -57,6 +57,7 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
   const [draggingSectionId, setDraggingSectionId] = useState<string | null>(null);
   const libraryDragRef = useRef<{ kind?: string; widgetId?: string; variant?: string; sectionId?: string } | null>(null);
   const [srcDoc, setSrcDoc] = useState("");
+  const [srcDocVersion, setSrcDocVersion] = useState(0);
   const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null);
   const [containerDropTarget, setContainerDropTarget] = useState<{ containerId: string; insertIndex: number } | null>(null);
   const [previewCycle, setPreviewCycle] = useState(0);
@@ -513,14 +514,14 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
   useEffect(() => {
     if (!project) return;
     const build = async () => {
-      const iframeWindow = iframeRefToUse.current?.contentWindow;
-      if (iframeWindow) {
-        pendingScrollTopRef.current = iframeWindow.scrollY ?? iframeWindow.pageYOffset ?? 0;
-      }
-      pendingOuterScrollTopRef.current = wrapperRef.current?.scrollTop ?? null;
-      const resolvedAssets = await resolvePreviewAssets();
-      setSrcDoc(
-        buildPreviewHTML({
+      try {
+        const iframeWindow = iframeRefToUse.current?.contentWindow;
+        if (iframeWindow) {
+          pendingScrollTopRef.current = iframeWindow.scrollY ?? iframeWindow.pageYOffset ?? 0;
+        }
+        pendingOuterScrollTopRef.current = wrapperRef.current?.scrollTop ?? null;
+        const resolvedAssets = await resolvePreviewAssets();
+        const html = buildPreviewHTML({
           sections: composePageSections(project, pageOf(project), { includeHiddenChrome: true }),
           globalCss: project.globalCss,
           globalJs: project.globalJs,
@@ -534,8 +535,13 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
           currentPageSlug: pageOf(project)?.slug,
           previewCssHref: APP_CSS_HREF,
           device,
-        }),
-      );
+        });
+        console.log("[DEBUG] buildPreviewHTML completed, length:", html.length);
+        setSrcDoc(html);
+        setSrcDocVersion((v) => v + 1);
+      } catch (err) {
+        console.error("[DEBUG] build failed:", err);
+      }
     };
 
     if (skipRebuildRef.current) {
@@ -549,6 +555,10 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
     void build();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [structuralKey, htmlKey, previewCycle]);
+
+  useEffect(() => {
+    console.log("[DEBUG] srcDoc updated, version:", srcDocVersion, "length:", srcDoc.length);
+  }, [srcDoc, srcDocVersion]);
 
   useEffect(() => {
     const doc = iframeRefToUse.current?.contentDocument;
@@ -582,6 +592,7 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
     function onMsg(e: MessageEvent) {
       const data = e.data as { __wto?: boolean; type?: string; payload?: Record<string, unknown> };
       if (!data || !data.__wto) return;
+      console.log("[DEBUG] postMessage received", { type: data.type, payloadKeys: data.payload ? Object.keys(data.payload) : [] });
       if (data.type === "select") {
         const sectionId = String(data.payload?.sectionId ?? "");
         select(sectionId);
@@ -779,11 +790,14 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
       if (data.type === "section-action") {
         const sid = String(data.payload?.sectionId ?? "");
         const act = String(data.payload?.action ?? "");
+        console.log("[DEBUG] section-action received", { sid, act, payload: data.payload });
         if (!sid) return;
         const state = useBuilder.getState();
         const cur = state.currentProject();
+        console.log("[DEBUG] currentProject", { projectId: cur?.id, currentProjectId: state.currentProjectId, sectionCount: cur?.pages?.[0]?.sections?.length });
         const secs = cur ? pageOf(cur)?.sections ?? [] : [];
         const fromIdx = secs.findIndex((s: any) => s.id === sid);
+        console.log("[DEBUG] section index", { fromIdx, sectionId: sid, found: fromIdx >= 0 });
         if (act === "move") {
           state.selectSection(sid);
         }

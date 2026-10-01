@@ -53,6 +53,7 @@ export function DemoView({ projectId }: { projectId: string }) {
       console.log("[PREVIEW:RECEIVER] payload accepted", { projectId: data.projectId, pageId: data.pageId, projectName: data.project.name, pages: data.project.pages?.length });
       setProj(data.project);
       projRef.current = data.project;
+      setNotFound(false);
       const requestedPageId = data.pageId ?? data.project.currentPageId ?? data.project.pages?.[0]?.id ?? null;
       const fallbackPageId = requestedPageId ?? data.project.pages?.[0]?.id ?? null;
       setActivePageId(fallbackPageId);
@@ -98,6 +99,7 @@ export function DemoView({ projectId }: { projectId: string }) {
           console.log("[PREVIEW:RECEIVER] localStorage project loaded", { projectId: p.id, pageParam, matchedPageId: matchedPage?.id, pageCount: p.pages?.length, requestedPageId, fallbackPageId });
           setProj(p);
           projRef.current = p;
+          setNotFound(false);
           setActivePageId(fallbackPageId);
           loadedFromStorage = true;
         }
@@ -166,11 +168,6 @@ export function DemoView({ projectId }: { projectId: string }) {
       cancelled = true;
     };
   }, [mounted, authReady, user?.id, actualProjectId, proj, notFound, cloudLoading]);
-
-  useEffect(() => {
-    if (!notFound || !user?.id || proj) return;
-    setNotFound(false);
-  }, [user?.id, notFound, proj]);
 
   useEffect(() => {
     if (!mounted || !proj) return;
@@ -270,7 +267,7 @@ export function DemoView({ projectId }: { projectId: string }) {
 
   console.log("[PREVIEW:IFRAME] render check", { mounted, hasProject, activePageId, previewHtmlLength: previewHtml?.length, notFound, cloudLoading, cloudError });
 
-  if (!hasProject || activePageId === null || !previewHtml) {
+  if (!hasProject || activePageId === null || (!previewHtml && !notFound)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-center p-8">
         <div>

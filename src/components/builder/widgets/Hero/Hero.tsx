@@ -1,684 +1,674 @@
-import { defaultHeroWidgetData, getHeroChildItems, isHeroWidgetData, normalizeHeroChildItem } from "./HeroTypes";
-import type { WidgetData } from "../widgetRegistry";
 import { BaseWidget } from "../BaseWidget";
-import { createWidgetInstance, getWidgetRegistration } from "../widgetRegistry"; 
-import {
-  getChildWidgetData,
-  type ContainerChildItem,
-} from "../Container/ContainerTypes";
-import { useBuilder } from "@/lib/builder/store";
-import { getSpacingBoxStyle, resolveHeroLayoutMargin, resolveHeroLayoutPadding } from "../spacing";
+import { defaultHeroWidgetData, getHeroChildItems, getVariantBackground, getVariantButtonStyle, getVariantHeadingStyle, getVariantImageStyle, getVariantTextStyle, isHeroWidgetData, normalizeHeroChildItem } from "./HeroTypes";
+import type { WidgetData, ContainerChildItem } from "../widgetRegistry";
+import { createWidgetInstance, getWidgetBootstrapExport, getWidgetRegistration } from "../widgetRegistry";
+import { getResponsiveSpacingCss, resolveHeroLayoutMargin, resolveHeroLayoutPadding } from "../spacing";
 
-export interface HeroProps {
-  data: WidgetData;
-}
+function resolveVideoBackground(style: Record<string, unknown>) {
+  const videoType = style.videoType || "uploaded";
+  const youtubeUrl = String(style.youtubeUrl || "");
+  const vimeoUrl = String(style.vimeoUrl || "");
+  const videoSrc = String(style.videoSrc || "");
+  const autoplay = style.videoAutoplay ?? true;
+  const muted = style.videoMuted ?? true;
+  const loop = style.videoLoop ?? true;
+  const showControls = style.videoShowControls ?? false;
+  const poster = String(style.videoPoster || "");
 
-function getVariantLayout(variant: string) {
-  switch (variant) {
-    case "Split":
-      return "split";
-    case "Centered":
-      return "centered";
-    default:
-      return "classic";
-  }
-}
-
-export function Hero({ data = defaultHeroWidgetData }: HeroProps) {
-  const heroData = isHeroWidgetData(data) ? data : defaultHeroWidgetData;
-  const visible = heroData.advanced.visibility ?? true;
-  const layout = getVariantLayout(heroData.variant ?? defaultHeroWidgetData.variant);
-  const device = useBuilder((s) => s.device);
-  const spacingDevice = device === "tablet" || device === "mobile" ? device : "desktop";
-
-  if (!visible) {
-    return null;
-  }
-
-  const children = getHeroChildItems(heroData);
-  const imageChildren = children.filter((child) => child.type === "image");
-  const buttonChildren = children.filter((child) => child.type === "button");
-  const statsWrapperChild = children.find((child) => child.id === "statsCard");
-  const statsValueChild = children.find((child) => child.id === "statsValue");
-  const statsMetaChild = children.find((child) => child.id === "statsMeta");
-  const glowChildren: ContainerChildItem[] = [];
-  const bodyChildren = children.filter(
-    (child) =>
-      child.type !== "button" &&
-      child.type !== "image" &&
-      child.id !== "statsCard" &&
-      child.id !== "statsValue" &&
-      child.id !== "statsMeta" &&
-      child.id !== "glowA" &&
-      child.id !== "glowB"
-  );
-
-  const align = heroData.layout.align ?? "left";
-  const contentAlignment = align === "center" ? "text-center" : align === "right" ? "text-end" : "text-start";
-  const buttonAlignment = align === "center" ? "justify-content-center" : align === "right" ? "justify-content-end" : "justify-content-start";
-  const sectionClassName = layout === "classic" ? "builder-hero builder-hero-classic" : `builder-hero builder-hero--${layout}`;
-  const resolvedPadding = resolveHeroLayoutPadding(heroData.layout.padding);
-  const resolvedMargin = resolveHeroLayoutMargin(heroData.layout.margin);
-  const spacingBox = getSpacingBoxStyle(resolvedPadding, resolvedMargin, spacingDevice);
-
-  function renderChild(child: ContainerChildItem) {
-    const normalizedChild = normalizeHeroChildItem(heroData, child);
-    const childData = getChildWidgetData(normalizedChild);
-    const elementType =
-      child.type === "heading" || child.type === "text"
-        ? "text"
-        : child.type === "button"
-        ? "button"
-        : child.type === "image"
-        ? "image"
-        : "container";
-
-    const injectedChildData = {
-      ...childData,
-      content: { ...(childData.content ?? {}) },
-      style: { ...(childData.style ?? {}) },
-      layout: { ...(childData.layout ?? {}) },
-      responsive: { ...(childData.responsive ?? {}) },
-      animation: { ...(childData.animation ?? {}) },
-      advanced: { ...(childData.advanced ?? {}) },
-      variant: childData.variant,
-    } as any;
-
-    if (layout === "classic") {
-      if (child.type === "heading") {
-        injectedChildData.style = {
-          ...injectedChildData.style,
-          textColor: injectedChildData.style?.textColor ?? "#f8fafc",
-          fontSize: injectedChildData.style?.fontSize ?? "48px",
-          fontWeight: injectedChildData.style?.fontWeight ?? "800",
-          lineHeight: injectedChildData.style?.lineHeight ?? "0.95",
-          letterSpacing: injectedChildData.style?.letterSpacing ?? "-0.04em",
-          gradientStart: injectedChildData.style?.gradientStart ?? "#c084fc",
-          gradientEnd: injectedChildData.style?.gradientEnd ?? "#fb7185",
-        };
-        injectedChildData.variant = injectedChildData.variant ?? "Gradient";
-      }
-
-      if (child.id === "badge") {
-        injectedChildData.style = {
-          ...injectedChildData.style,
-          color: injectedChildData.style?.color ?? "#e0e7ff",
-          backgroundColor: injectedChildData.style?.backgroundColor ?? "rgba(124,58,237,0.18)",
-          borderRadius: injectedChildData.style?.borderRadius ?? "999px",
-          padding: injectedChildData.style?.padding ?? "0.65rem 1rem",
-          fontSize: injectedChildData.style?.fontSize ?? "12px",
-          fontWeight: injectedChildData.style?.fontWeight ?? "700",
-          letterSpacing: injectedChildData.style?.letterSpacing ?? "0.14em",
-          textTransform: injectedChildData.style?.textTransform ?? "uppercase",
-        };
-      }
-
-      if (child.id === "subheading") {
-        injectedChildData.style = {
-          ...injectedChildData.style,
-          color: injectedChildData.style?.color ?? "#cbd5e1",
-          fontSize: injectedChildData.style?.fontSize ?? "16px",
-          lineHeight: injectedChildData.style?.lineHeight ?? "1.7",
-        };
-      }
-
-      if (child.id === "description") {
-        injectedChildData.style = {
-          ...injectedChildData.style,
-          color: injectedChildData.style?.color ?? "#94a3b8",
-          fontSize: injectedChildData.style?.fontSize ?? "16px",
-          lineHeight: injectedChildData.style?.lineHeight ?? "1.85",
-        };
-      }
-
-      if (child.type === "button") {
-        injectedChildData.style = {
-          ...injectedChildData.style,
-          borderRadius: injectedChildData.style?.borderRadius ?? "999px",
-          shadow: injectedChildData.style?.shadow ?? true,
-        };
-
-        if (child.id === "primaryButton") {
-          injectedChildData.variant = injectedChildData.variant ?? "Gradient";
-          injectedChildData.content = {
-            ...injectedChildData.content,
-            text: injectedChildData.content?.text ?? "Get Started Free",
-            url: String(injectedChildData.content?.url ?? "#"),
-          };
-          injectedChildData.style = {
-            ...injectedChildData.style,
-            variant: injectedChildData.style?.variant ?? "Gradient",
-            color: injectedChildData.style?.color ?? "Custom",
-            customColor: injectedChildData.style?.customColor ?? "#7c3aed",
-            fontWeight: injectedChildData.style?.fontWeight ?? "700",
-            background: injectedChildData.style?.background ?? "linear-gradient(90deg, #7c3aed, #ec4899, #f97316)",
-          };
-        }
-
-        if (child.id === "secondaryButton") {
-          injectedChildData.variant = injectedChildData.variant ?? "Outline";
-          injectedChildData.content = {
-            ...injectedChildData.content,
-            text: injectedChildData.content?.text ?? "View Live Demo",
-            url: String(injectedChildData.content?.url ?? "#"),
-          };
-          injectedChildData.style = {
-            ...injectedChildData.style,
-            variant: injectedChildData.style?.variant ?? "Outline",
-            color: injectedChildData.style?.color ?? "Custom",
-            customColor: injectedChildData.style?.customColor ?? "rgba(255,255,255,0.88)",
-            borderWidth: injectedChildData.style?.borderWidth ?? "1px",
-            backgroundColor: injectedChildData.style?.backgroundColor ?? "rgba(255,255,255,0.08)",
-            backdropFilter: injectedChildData.style?.backdropFilter ?? "blur(10px)",
-          };
-        }
-      }
-
-      if (child.type === "image") {
-        injectedChildData.content = {
-          ...injectedChildData.content,
-          src: injectedChildData.content?.src ?? "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80",
-          alt: injectedChildData.content?.alt ?? "Website design preview",
-        };
-        injectedChildData.style = {
-          ...injectedChildData.style,
-          width: injectedChildData.style?.width ?? "100%",
-          height: injectedChildData.style?.height ?? "auto",
-          objectFit: injectedChildData.style?.objectFit ?? "cover",
-          borderRadius: injectedChildData.style?.borderRadius ?? "32px",
-        };
-        injectedChildData.layout = {
-          ...injectedChildData.layout,
-          alignment: injectedChildData.layout?.alignment ?? "center",
-        };
-      }
-    }
-
-    const childInstance = createWidgetInstance(child.type, {
-      id: `${heroData.id}-${child.id}`,
-      content: injectedChildData.content,
-      style: injectedChildData.style,
-      layout: injectedChildData.layout,
-      responsive: injectedChildData.responsive,
-      animation: injectedChildData.animation,
-      advanced: injectedChildData.advanced,
-      variant: injectedChildData.variant,
-    } as Partial<WidgetData>);
-
-    const registration = getWidgetRegistration(child.type);
-    const Component = registration?.component;
-
-    if (child.id === "statsCard") {
-      const cardStyle = childData.style as Record<string, string | number | undefined>;
-      const visibility = (childData.advanced?.visibility ?? true) as boolean;
-      return (
-        <div
-          key={child.id}
-          data-wto-parent-widget-id={heroData.id}
-          data-wto-child-id={child.id}
-          data-wto-widget-element-key={child.id}
-          data-wto-widget-element-type={elementType}
-          className="hero-stats-card"
-          style={{
-            position: "absolute",
-            top: cardStyle.top ?? "1.5rem",
-            right: cardStyle.right ?? "1rem",
-            bottom: cardStyle.bottom,
-            left: cardStyle.left,
-            width: cardStyle.width ?? "min(240px, 55%)",
-            padding: cardStyle.padding ?? "1rem 1.2rem",
-            borderRadius: cardStyle.borderRadius ?? "1.5rem",
-            background: cardStyle.backgroundColor ?? "rgba(15,23,42,0.86)",
-            border: cardStyle.border ?? "1px solid rgba(255,255,255,0.08)",
-            backdropFilter: (cardStyle.backdropFilter ?? "blur(24px)") as string,
-            boxShadow: (cardStyle.boxShadow ?? "0 40px 100px rgba(15,23,42,0.45)") as string,
-            color: (cardStyle.color ?? "#f8fafc") as string,
-            zIndex: 2,
-            display: visibility ? undefined : "none",
-          }}
-        >
-          {statsValueChild ? renderChild(statsValueChild) : null}
-          {statsMetaChild ? renderChild(statsMetaChild) : null}
-        </div>
-      );
-    }
-
-
-    const wrapperClassName =
-      layout === "classic"
-        ? child.id === "badge"
-          ? "hero-badge-wrapper"
-          : child.id === "heading"
-          ? "hero-heading-wrapper"
-          : child.id === "image"
-          ? "hero-image-inner"
-          : child.id === "statsValue"
-          ? "hero-stats-card__value"
-          : child.id === "statsMeta"
-          ? "hero-stats-card__meta"
-          : "hero-copy-block"
-        : undefined;
-
+  if (videoType === "youtube" && youtubeUrl) {
+    const embedUrl = youtubeUrl.replace("watch?v=", "embed/").replace("youtu.be/", "www.youtube.com/embed/");
     return (
-      <div
-        key={child.id}
-        className={wrapperClassName}
-        data-wto-parent-widget-id={heroData.id}
-        data-wto-child-id={child.id}
-        data-wto-widget-element-key={child.id}
-        data-wto-widget-element-type={elementType}
-      >
-        {Component ? <Component data={childInstance as WidgetData} /> : null}
-      </div>
+      <iframe
+        src={embedUrl}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          border: "none",
+          objectFit: "cover",
+          zIndex: 0,
+          pointerEvents: "none",
+        }}
+        allow="autoplay; encrypted-media"
+        allowFullScreen
+        title="Background video"
+      />
     );
   }
 
+  if (videoType === "vimeo" && vimeoUrl) {
+    const embedUrl = vimeoUrl.replace("vimeo.com/", "player.vimeo.com/video/");
+    return (
+      <iframe
+        src={`${embedUrl}?autoplay=${autoplay ? 1 : 0}&muted=${muted ? 1 : 0}&loop=${loop ? 1 : 0}&controls=${showControls ? 1 : 0}`}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          border: "none",
+          objectFit: "cover",
+          zIndex: 0,
+          pointerEvents: "none",
+        }}
+        allow="autoplay; fullscreen"
+        allowFullScreen
+        title="Background video"
+      />
+    );
+  }
+
+  if (videoSrc) {
+    return (
+      <video
+        autoPlay={autoplay}
+        muted={muted}
+        loop={loop}
+        controls={showControls}
+        poster={poster || undefined}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: 0,
+        }}
+      >
+        <source src={videoSrc} />
+      </video>
+    );
+  }
+
+  return null;
+}
+
+function resolveGradientBackground(style: Record<string, unknown>) {
+  const direction = style.gradientDirection || "135deg";
+  const start = style.gradientStart || "#0f172a";
+  const mid = style.gradientMid || "#1e3a8a";
+  const end = style.gradientEnd || "#2563eb";
+  const opacity = style.gradientOpacity ?? 1;
+
+  if (style.gradientMid) {
+    return {
+      background: `linear-gradient(${direction}, ${start} 0%, ${mid} 50%, ${end} 100%)`,
+      opacity,
+    };
+  }
+
+  return {
+    background: `linear-gradient(${direction}, ${start}, ${end})`,
+    opacity,
+  };
+}
+
+function resolveOverlay(overlayEnabled: boolean, overlayColor: string, overlayOpacity: number) {
+  if (!overlayEnabled) return null;
   return (
-<BaseWidget
-  data={heroData}
-  widgetType="hero"
-  title="Hero Widget"
-  variantLabel={heroData.variant}
-  wrapperClassName="w-full"
-  contentClassName="overflow-visible"
-  disableSectionWidthStyle={true}
->
-    <section
-      className={sectionClassName}
-      data-widget="hero-v2"
-      data-hero-id={heroData.advanced.id ?? "hero-widget-v2"}
+    <div
       style={{
-        width: "100%",
-        color: "#e2e8f0",
-        padding: spacingBox.padding,
-        margin: spacingBox.margin,
-        boxSizing: "border-box",
-        ...(layout === "classic"
-          ? {}
-          : {
-              background:
-                "radial-gradient(circle at 85% 20%, rgba(124,58,237,.35), transparent 35%), " +
-                "radial-gradient(circle at 10% 90%, rgba(37,99,235,.22), transparent 35%), " +
-                "linear-gradient(135deg, #070b1d 0%, #101735 55%, #17103a 100%)",
-            }),
+        position: "absolute",
+        inset: 0,
+        background: overlayColor,
+        opacity: overlayOpacity,
+        zIndex: 1,
+        pointerEvents: "none",
       }}
-    >
-      <div className="container">
-        {layout === "classic" ? (
-          <div className="row align-items-center g-5">
-            <div className="col-lg-7">
-              <div className={`hero-left-content ${contentAlignment}`}>
-                {bodyChildren.map(renderChild)}
+    />
+  );
+}
 
-                {buttonChildren.length > 0 ? (
-                  <>
-                    <div className={`d-flex gap-3 flex-wrap ${buttonAlignment} hero-cta-group`}>
-                      {buttonChildren.map(renderChild)}
-                    </div>
-                    {children.find((c) => c.id === "trustText") ? renderChild(children.find((c) => c.id === "trustText") as any) : null}
-                  </>
-                ) : null}
-              </div>
-            </div>
+function renderChild(child: ContainerChildItem) {
+  const normalized = normalizeHeroChildItem(heroData, child);
+  const childData = getContainerChildWidgetData(normalized);
+  const Component = (getWidgetRegistration(child.type) as any)?.component;
+  if (!Component) return null;
+  return <Component key={child.id} data={childData as WidgetData} />;
+}
 
-            <div className="col-lg-5">
-              <div className="hero-image-column position-relative">
-                {glowChildren.map(renderChild)}
-                <div className="hero-image-frame">
-                  {imageChildren.map(renderChild)}
-                </div>
-                {statsWrapperChild ? renderChild(statsWrapperChild) : null}
+export function Hero({ data }: { data: WidgetData }) {
+  const heroData = isHeroWidgetData(data) ? data : defaultHeroWidgetData;
+  const variant = heroData.variant ?? "Image Background";
+  const style = heroData.style as Record<string, unknown>;
+  const layout = heroData.layout as Record<string, unknown>;
+
+  const overlayEnabled = style.overlayEnabled ?? false;
+  const overlayColor = String(style.overlayColor || "#000000");
+  const overlayOpacity = Number(style.overlayOpacity ?? 0.5);
+
+  const spacingBox = {
+    padding: resolveHeroLayoutPadding(layout.padding),
+    margin: resolveHeroLayoutMargin(layout.margin),
+  };
+
+  const children = getHeroChildItems(heroData);
+  const bodyChildren = children.filter(
+    (child) => child.type !== "button" && child.type !== "image" && child.id !== "statsCard" && child.id !== "statsValue" && child.id !== "statsMeta" && child.id !== "glowA" && child.id !== "glowB"
+  );
+  const buttonChildren = children.filter((child) => child.type === "button");
+  const imageChildren = children.filter((child) => child.type === "image");
+  const glowChildren = children.filter((child) => child.id === "glowA" || child.id === "glowB");
+  const statsWrapperChild = children.find((child) => child.id === "statsCard");
+  const trustChild = children.find((child) => child.id === "trustText");
+
+  const contentAlignment = layout.align === "center" ? "text-center" : layout.align === "right" ? "text-end" : "text-start";
+  const buttonAlignment = layout.align === "center" ? "justify-content-center" : layout.align === "right" ? "justify-content-end" : "justify-content-start";
+
+  const sectionStyle: Record<string, unknown> = {
+    width: "100%",
+    color: "#e2e8f0",
+    padding: spacingBox.padding,
+    margin: spacingBox.margin,
+    boxSizing: "border-box",
+    position: "relative",
+    overflow: "hidden",
+  };
+
+  const variantBackground = getVariantBackground(variant, style);
+  Object.assign(sectionStyle, variantBackground);
+
+  if (style.heroHeight && typeof style.heroHeight === "string") {
+    sectionStyle.height = style.heroHeight;
+  }
+  if (style.heroMinHeight && typeof style.heroMinHeight === "string") {
+    sectionStyle.minHeight = style.heroMinHeight;
+  }
+  if (style.verticalAlignment === "center") {
+    sectionStyle.display = "flex";
+    sectionStyle.alignItems = "center";
+  } else if (style.verticalAlignment === "bottom") {
+    sectionStyle.display = "flex";
+    sectionStyle.alignItems = "flex-end";
+  } else if (style.verticalAlignment === "top") {
+    sectionStyle.display = "flex";
+    sectionStyle.alignItems = "flex-start";
+  }
+
+  const isVideoVariant = variant === "Video Background";
+  const isImageBgVariant = variant === "Image Background";
+  const isCenteredVariant = variant === "Centered";
+  const isGradientVariant = variant === "Gradient";
+  const isDarkVariant = variant === "Dark";
+  const isProductVariant = variant === "Product/SaaS";
+  const isPersonalVariant = variant === "Personal/Portfolio";
+  const isSplitVariant = variant === "Split Layout";
+
+  const renderCenteredVariant = () => (
+    <div className="container" style={{ position: "relative", zIndex: 2 }}>
+      <div className="row justify-content-center">
+        <div className="col-lg-9 col-xl-8">
+          <div className={`text-center ${style.contentMaxWidth ? `mx-auto` : ""}`} style={style.contentMaxWidth ? { maxWidth: String(style.contentMaxWidth) } : undefined}>
+            {bodyChildren.map((child) => renderChild(child))}
+
+            {buttonChildren.length > 0 ? (
+              <div className={`d-flex justify-content-center gap-3 flex-wrap mt-4`}>
+                {buttonChildren.map((child) => renderChild(child))}
               </div>
-            </div>
+            ) : null}
+
+            {trustChild ? renderChild(trustChild) : null}
           </div>
-        ) : null}
-
-        {layout === "split" ? (
-          <div className="row align-items-stretch g-0 overflow-hidden rounded-5 border shadow-lg">
-            <div className="col-lg-6 d-flex align-items-center">
-              <div className="w-100 p-4 p-md-5">
-                <div className={contentAlignment}>
-                  {bodyChildren.map(renderChild)}
-
-                  {buttonChildren.length > 0 ? (
-                    <div className={`d-flex gap-3 flex-wrap ${buttonAlignment}`}>
-                      {buttonChildren.map(renderChild)}
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            </div>
-
-            <div className="col-lg-6">
-              <div className="h-100 min-vh-50">
-                {imageChildren.map(renderChild)}
-              </div>
-            </div>
-          </div>
-        ) : null}
-
-        {layout === "centered" ? (
-          <div className="row justify-content-center">
-            <div className="col-lg-9 col-xl-8">
-              <div className="text-center">
-                {bodyChildren.map(renderChild)}
-
-                {buttonChildren.length > 0 ? (
-                  <div className="d-flex justify-content-center gap-3 flex-wrap">
-                    {buttonChildren.map(renderChild)}
-                  </div>
-                ) : null}
-
-                {imageChildren.length > 0 ? (
-                  <div className="mt-5 mx-auto" style={{ maxWidth: "620px" }}>
-                    {imageChildren.map(renderChild)}
-                  </div>
-                ) : null}
-              </div>
-            </div>
-          </div>
-        ) : null}
+        </div>
       </div>
+    </div>
+  );
 
-      <style>{`
-        .builder-hero {
-          width: 100%;
-          max-width: none;
-          position: relative;
-        }
+  const renderVideoVariant = () => (
+    <div className="container" style={{ position: "relative", zIndex: 2 }}>
+      <div className="row justify-content-center">
+        <div className="col-lg-9 col-xl-8">
+          <div className={`text-center`} style={style.contentMaxWidth ? { maxWidth: String(style.contentMaxWidth), marginLeft: "auto", marginRight: "auto" } : undefined}>
+            {bodyChildren.map((child) => renderChild(child))}
 
-        .builder-hero .container {
-          width: 100%;
-          max-width: 1200px;
-          margin-left: auto;
-          margin-right: auto;
-        }
+            {buttonChildren.length > 0 ? (
+              <div className={`d-flex justify-content-center gap-3 flex-wrap mt-4`}>
+                {buttonChildren.map((child) => renderChild(child))}
+              </div>
+            ) : null}
 
-        .builder-hero-classic {
-          display: block;
-          position: relative;
-          overflow: hidden;
-          color: #e2e8f0;
-          background: radial-gradient(circle at 80% 14%, rgba(99,102,241,0.28), transparent 26%),
-            radial-gradient(circle at 10% 88%, rgba(59,130,246,0.18), transparent 30%),
-            linear-gradient(135deg, #070b1d 0%, #0f1430 45%, #110f2f 100%);
-        }
+            {trustChild ? renderChild(trustChild) : null}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
-        .builder-hero-classic .hero-left-content {
-          max-width: 720px;
-          position: relative;
-          z-index: 1;
-          padding-right: 1rem;
-        }
+  const renderGradientVariant = () => (
+    <div className="container" style={{ position: "relative", zIndex: 2 }}>
+      <div className="row align-items-center g-5">
+        <div className="col-lg-6">
+          <div className={contentAlignment}>
+            {bodyChildren.map((child) => renderChild(child))}
 
-        .builder-hero-classic .hero-badge-wrapper {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 0.8rem 1.35rem;
-          border-radius: 999px;
-          background: rgba(124,58,237,0.18);
-          color: #e0e7ff;
-          font-weight: 700;
-          font-size: 0.78rem;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          margin-bottom: 1.6rem;
-          max-width: fit-content;
-          position: relative;
-          backdrop-filter: blur(16px);
-          border: 1px solid rgba(124,58,237,0.25);
-          box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
-        }
+            {buttonChildren.length > 0 ? (
+              <div className={`d-flex gap-3 flex-wrap ${buttonAlignment} mt-4`}>
+                {buttonChildren.map((child) => renderChild(child))}
+              </div>
+            ) : null}
+          </div>
+        </div>
 
-        .builder-hero-classic .hero-badge-wrapper::before {
-          content: "";
-          width: 0.45rem;
-          height: 0.45rem;
-          border-radius: 999px;
-          background: radial-gradient(circle, #8b5cf6 0%, rgba(139,92,246,0.7) 100%);
-          position: absolute;
-          left: 0.75rem;
-          top: 50%;
-          transform: translateY(-50%);
-          box-shadow: 0 0 20px rgba(139,92,246,0.6);
-        }
+        <div className="col-lg-6">
+          <div className="position-relative">
+            {glowChildren.map((child) => renderChild(child))}
+            <div className="position-relative" style={{ borderRadius: String(style.imageRadius || "24px"), overflow: "hidden", boxShadow: String(style.imageShadow || "0 40px 100px rgba(0,0,0,0.25)") }}>
+              {imageChildren.map((child) => renderChild(child))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
-        .builder-hero-classic .hero-heading-wrapper {
-          max-width: 12ch;
-          margin-bottom: 1rem;
-        }
+  const renderImageBackgroundVariant = () => (
+    <div className="container" style={{ position: "relative", zIndex: 2 }}>
+      <div className="row align-items-center g-5">
+        <div className="col-lg-7">
+          <div className={contentAlignment}>
+            {bodyChildren.map((child) => renderChild(child))}
 
-        .builder-hero-classic .hero-heading-wrapper h1,
-        .builder-hero-classic .hero-heading-wrapper h2,
-        .builder-hero-classic .hero-heading-wrapper h3,
-        .builder-hero-classic .hero-heading-wrapper h4,
-        .builder-hero-classic .hero-heading-wrapper h5,
-        .builder-hero-classic .hero-heading-wrapper h6 {
-          font-size: clamp(3.75rem, 5vw, 5.4rem);
-          line-height: 0.94;
-          font-weight: 900;
-          letter-spacing: -0.05em;
-          margin-bottom: 1rem;
-          background: linear-gradient(90deg, #c084fc, #ec4899 45%, #f97316 100%);
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-          color: transparent;
-          text-shadow: 0 20px 80px rgba(124,58,237,0.08);
-        }
+            {buttonChildren.length > 0 ? (
+              <>
+                <div className={`d-flex gap-3 flex-wrap ${buttonAlignment} hero-cta-group`}>
+                  {buttonChildren.map((child) => renderChild(child))}
+                </div>
+                {trustChild ? renderChild(trustChild) : null}
+              </>
+            ) : null}
+          </div>
+        </div>
 
-        .builder-hero-classic .hero-copy-block {
-          max-width: 640px;
-          max-width: 680px;
-          color: #cbd5e1;
-          font-size: 1rem;
-          line-height: 1.85;
-          margin-bottom: 0.95rem;
-        }
+        <div className="col-lg-5">
+          <div className="hero-image-column position-relative">
+            {glowChildren.map((child) => renderChild(child))}
+            <div className="hero-image-frame">
+              {imageChildren.map((child) => renderChild(child))}
+            </div>
+            {statsWrapperChild ? renderChild(statsWrapperChild) : null}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
-        .builder-hero-classic .hero-cta-group {
-          margin-top: 2.5rem;
-        }
+  const renderDarkVariant = () => (
+    <div className="container" style={{ position: "relative", zIndex: 2 }}>
+      <div className="row align-items-center g-5">
+        <div className="col-lg-6">
+          <div className={contentAlignment}>
+            {bodyChildren.map((child) => renderChild(child))}
 
-        .builder-hero-classic .hero-cta-group a {
-          min-width: 12rem;
-          padding: 0.95rem 1.7rem !important;
-          border-radius: 999px !important;
-          font-weight: 700 !important;
-          transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
-        }
+            {buttonChildren.length > 0 ? (
+              <div className={`d-flex gap-3 flex-wrap ${buttonAlignment} mt-4`}>
+                {buttonChildren.map((child) => renderChild(child))}
+              </div>
+            ) : null}
+          </div>
+        </div>
 
-        .builder-hero-classic .hero-cta-group a:hover {
-          transform: translateY(-2px);
-        }
+        <div className="col-lg-6">
+          <div className="position-relative">
+            {glowChildren.map((child) => renderChild(child))}
+            <div className="hero-image-frame position-relative" style={{ borderRadius: String(style.imageRadius || "24px"), overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)", boxShadow: String(style.imageShadow || "0 40px 100px rgba(0,0,0,0.5)") }}>
+              {imageChildren.map((child) => renderChild(child))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
-        .builder-hero-classic .hero-cta-group a:first-child {
-          background: linear-gradient(90deg, #7c3aed 0%, #ec4899 50%, #f97316 100%) !important;
-          border: 1px solid transparent !important;
-          color: #fff !important;
-          box-shadow: 0 16px 45px rgba(124,58,237,0.35) !important;
-        }
+  const renderProductVariant = () => (
+    <div className="container" style={{ position: "relative", zIndex: 2 }}>
+      <div className="row align-items-center g-5">
+        <div className="col-lg-6">
+          <div className={contentAlignment}>
+            {bodyChildren.map((child) => renderChild(child))}
 
-        .builder-hero-classic .hero-cta-group a:last-child {
-          background: rgba(255,255,255,0.08) !important;
-          border: 1px solid rgba(255,255,255,0.18) !important;
-          color: #f8fafc !important;
-          backdrop-filter: blur(15px);
-        }
+            {buttonChildren.length > 0 ? (
+              <div className={`d-flex gap-3 flex-wrap ${buttonAlignment} mt-4`}>
+                {buttonChildren.map((child) => renderChild(child))}
+              </div>
+            ) : null}
+          </div>
+        </div>
 
-        .builder-hero-classic .hero-trust-text {
-          margin-top: 1.35rem;
-          font-size: 0.95rem;
-          color: #94a3b8;
-          letter-spacing: 0.02em;
-        }
+        <div className="col-lg-6">
+          <div className="position-relative">
+            <div className="hero-image-frame position-relative" style={{ borderRadius: String(style.productImageRadius || "24px"), overflow: "hidden", border: "1px solid #e2e8f0", boxShadow: String(style.productImageShadow || "0 40px 100px rgba(0,0,0,0.12)") }}>
+              {imageChildren.map((child) => renderChild(child))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
-        .builder-hero-classic .hero-image-column {
-          position: relative;
-          min-height: 0;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          padding-top: 2rem;
-        }
+  const renderPersonalVariant = () => (
+    <div className="container" style={{ position: "relative", zIndex: 2 }}>
+      <div className="row align-items-center g-5">
+        <div className="col-lg-6">
+          <div className={contentAlignment}>
+            {bodyChildren.map((child) => renderChild(child))}
 
-        .builder-hero-classic .hero-image-frame {
-          position: relative;
-          border-radius: 32px;
-          overflow: hidden;
-          border: 1px solid rgba(124,58,237,0.18);
-          box-shadow: 0 60px 140px rgba(15,23,42,0.48);
-          max-width: 540px;
-          width: min(520px, 100%);
-          height: auto;
-          transition: transform 220ms ease;
-        }
+            {buttonChildren.length > 0 ? (
+              <div className={`d-flex gap-3 flex-wrap ${buttonAlignment} mt-4`}>
+                {buttonChildren.map((child) => renderChild(child))}
+              </div>
+            ) : null}
+          </div>
+        </div>
 
-        .builder-hero-classic .hero-image-frame:hover {
-          transform: translateY(-4px);
-        }
+        <div className="col-lg-6">
+          <div className={`d-flex justify-content-center ${contentAlignment}`}>
+            <div className="position-relative" style={{ borderRadius: String(style.imageRadius || "50%"), overflow: "hidden", border: "4px solid #fff", boxShadow: String(style.imageShadow || "0 20px 60px rgba(0,0,0,0.15)"), maxWidth: String(style.imageWidth || "320px"), width: "100%" }}>
+              {imageChildren.map((child) => renderChild(child))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
-        .builder-hero-classic .hero-image-deco {
-          position: absolute;
-          pointer-events: none;
-          border-radius: 50%;
-          filter: blur(80px);
-          opacity: 0.9;
-          z-index: 0;
-        }
+  const renderSplitVariant = () => {
+    const imagePosition = style.splitImagePosition || layout.imagePosition || "right";
+    const reverseClass = imagePosition === "left" ? "flex-row-reverse" : "";
+    return (
+      <div className="container" style={{ position: "relative", zIndex: 2 }}>
+        <div className={`row g-0 align-items-stretch overflow-hidden border shadow-lg ${reverseClass}`} style={{ borderRadius: "16px" }}>
+          <div className="col-lg-6 d-flex align-items-center" style={{ background: style.backgroundColor || "#ffffff" }}>
+            <div className="w-100 p-4 p-md-5">
+              <div className={contentAlignment}>
+                {bodyChildren.map((child) => renderChild(child))}
 
-        .builder-hero-classic .hero-image-deco--blue {
-          width: 260px;
-          height: 260px;
-          top: -10%;
-          left: -14%;
-          background: radial-gradient(circle at center, rgba(56,189,248,0.35), transparent 58%);
-        }
+                {buttonChildren.length > 0 ? (
+                  <div className={`d-flex gap-3 flex-wrap ${buttonAlignment} mt-4`}>
+                    {buttonChildren.map((child) => renderChild(child))}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          </div>
 
-        .builder-hero-classic .hero-image-deco--violet {
-          width: 240px;
-          height: 240px;
-          bottom: -14%;
-          right: -8%;
-          background: radial-gradient(circle at center, rgba(124,58,237,0.45), transparent 55%);
-        }
+          <div className="col-lg-6 position-relative">
+            <div className="h-100 position-relative" style={{ minHeight: "360px" }}>
+              {imageChildren.map((child) => renderChild(child))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
-        .builder-hero-classic .hero-image-inner {
-          width: 100%;
-          height: auto;
-          min-height: 0;
-          min-width: 100%;
-        }
+  return (
+    <BaseWidget
+      data={heroData}
+      widgetType="hero"
+      title="Hero Widget"
+      variantLabel={variant}
+      wrapperClassName="w-full"
+      contentClassName="overflow-visible"
+      disableSectionWidthStyle={true}
+    >
+      <section
+        className={[
+          "builder-hero",
+          `builder-hero--${variant.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+          isSplitVariant ? "builder-hero--split" : "",
+          isCenteredVariant ? "builder-hero--centered" : "",
+        ].filter(Boolean).join(" ")}
+        data-widget="hero-v2"
+        data-hero-id={heroData.advanced.id ?? "hero-widget-v2"}
+        style={sectionStyle}
+      >
+        {(isImageBgVariant || isVideoVariant || isCenteredVariant) && overlayEnabled && resolveOverlay(overlayEnabled, overlayColor, overlayOpacity)}
+        {isVideoVariant && resolveVideoBackground(style)}
 
-        .builder-hero-classic .hero-image-frame img {
-          width: 100%;
-          height: auto;
-          object-fit: cover;
-          display: block;
-          border-radius: 32px;
-          transform: translateZ(0);
-        }
+        {isCenteredVariant && renderCenteredVariant()}
+        {isVideoVariant && renderVideoVariant()}
+        {isGradientVariant && renderGradientVariant()}
+        {isImageBgVariant && !isCenteredVariant && renderImageBackgroundVariant()}
+        {isDarkVariant && renderDarkVariant()}
+        {isProductVariant && renderProductVariant()}
+        {isPersonalVariant && renderPersonalVariant()}
+        {isSplitVariant && renderSplitVariant()}
 
-        .builder-hero-classic .hero-stats-card {
-          position: absolute;
-          top: 1.5rem;
-          right: 1rem;
-          z-index: 2;
-          width: min(240px, 55%);
-          padding: 1rem 1.2rem;
-          border-radius: 1.5rem;
-          background: rgba(15,23,42,0.86);
-          border: 1px solid rgba(255,255,255,0.08);
-          backdrop-filter: blur(24px);
-          box-shadow: 0 40px 100px rgba(15,23,42,0.45);
-          color: #f8fafc;
-          pointer-events: none;
-        }
+        <style>{`
+          .builder-hero {
+            width: 100%;
+            max-width: none;
+            position: relative;
+          }
 
-        .builder-hero-classic .hero-stats-card__label {
-          color: #a5b4fc;
-          text-transform: uppercase;
-          letter-spacing: 0.14em;
-        }
+          .builder-hero .container {
+            width: 100%;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+          }
 
-        .builder-hero-classic .hero-stats-card__label {
-          font-size: 0.75rem;
-          font-weight: 700;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          color: #4f46e5;
-          margin-bottom: 0.55rem;
-        }
+          .builder-hero--image-background {
+            display: block;
+            position: relative;
+            overflow: hidden;
+            color: #e2e8f0;
+            min-height: 560px;
+          }
 
-        .builder-hero-classic .hero-stats-card__value {
-          font-size: 1.8rem;
-          font-weight: 800;
-          line-height: 1;
-          margin-bottom: 0.25rem;
-        }
+          .builder-hero--video-background {
+            display: block;
+            position: relative;
+            overflow: hidden;
+            color: #e2e8f0;
+            min-height: 560px;
+          }
 
-        .builder-hero-classic .hero-stats-card__meta {
-          font-size: 0.95rem;
-          color: #475569;
-        }
+          .builder-hero--video-background video,
+          .builder-hero--video-background iframe {
+            object-fit: cover;
+          }
 
-        .builder-hero--split {
-          display: flex;
-          align-items: center;
-        }
+          .builder-hero--gradient {
+            display: block;
+            position: relative;
+            overflow: hidden;
+            color: #e2e8f0;
+          }
 
-        .builder-hero--centered {
-          display: flex;
-          align-items: center;
-        }
+          .builder-hero--dark {
+            display: block;
+            position: relative;
+            overflow: hidden;
+            color: #e2e8f0;
+          }
 
-        .builder-hero--split img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          display: block;
-        }
+          .builder-hero--product-saas {
+            display: block;
+            position: relative;
+            overflow: hidden;
+            color: #0f172a;
+          }
 
-        .builder-hero-classic img {
-          width: 100%;
-          height: auto;
-          object-fit: cover;
-          border-radius: 28px;
-          display: block;
-        }
+          .builder-hero--personal-portfolio {
+            display: block;
+            position: relative;
+            overflow: hidden;
+            color: #0f172a;
+          }
 
-        .builder-hero--centered img {
-          width: 100%;
-          height: auto;
-          object-fit: cover;
-          border-radius: 28px;
-          display: block;
-        }
+          .builder-hero--split {
+            display: block;
+            position: relative;
+            overflow: hidden;
+          }
 
-        @media (max-width: 991px) {
-          .builder-hero,
-          .builder-hero-classic,
-          .builder-hero--split,
           .builder-hero--centered {
-            min-height: auto;
+            display: block;
+            position: relative;
+            overflow: hidden;
+            color: #e2e8f0;
           }
 
-          .builder-hero-classic .hero-stats-card {
-            display: none;
+          .builder-hero--centered .container {
+            position: relative;
+            z-index: 2;
           }
 
-          .builder-hero-classic .hero-image-deco--blue,
-          .builder-hero-classic .hero-image-deco--violet {
-            display: none;
+          .builder-hero--split .row {
+            min-height: 520px;
           }
 
           .builder-hero--split img {
-            min-height: 360px;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
           }
-        }
-      `}</style>
-    </section>
-  </BaseWidget>
-);
+
+          .builder-hero .hero-image-column {
+            position: relative;
+            min-height: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 2rem;
+          }
+
+          .builder-hero .hero-image-frame {
+            position: relative;
+            overflow: hidden;
+            max-width: 540px;
+            width: min(520px, 100%);
+            height: auto;
+            transition: transform 220ms ease;
+          }
+
+          .builder-hero .hero-image-frame:hover {
+            transform: translateY(-4px);
+          }
+
+          .builder-hero .hero-image-inner,
+          .builder-hero img {
+            width: 100%;
+            height: auto;
+            min-height: 0;
+            min-width: 100%;
+            object-fit: cover;
+            display: block;
+          }
+
+          .builder-hero .hero-stats-card {
+            position: absolute;
+            top: 1.5rem;
+            right: 1rem;
+            z-index: 2;
+            width: min(240px, 55%);
+            padding: 1rem 1.2rem;
+            border-radius: 1.5rem;
+            background: rgba(15,23,42,0.86);
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(24px);
+            box-shadow: 0 40px 100px rgba(15,23,42,0.45);
+            color: #f8fafc;
+            pointer-events: none;
+          }
+
+          .builder-hero .hero-stats-card__label {
+            color: #a5b4fc;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #4f46e5;
+            margin-bottom: 0.55rem;
+          }
+
+          .builder-hero .hero-stats-card__value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+          }
+
+          .builder-hero .hero-stats-card__meta {
+            font-size: 0.95rem;
+            color: #475569;
+          }
+
+          .builder-hero .hero-cta-group {
+            margin-top: 2rem;
+          }
+
+          .builder-hero .hero-cta-group a {
+            min-width: 12rem;
+            padding: 0.95rem 1.7rem !important;
+            border-radius: 999px !important;
+            font-weight: 700 !important;
+            transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+          }
+
+          .builder-hero .hero-cta-group a:hover {
+            transform: translateY(-2px);
+          }
+
+          .builder-hero .hero-cta-group a:first-child {
+            background: #2F80ED !important;
+            border: 1px solid transparent !important;
+            color: #fff !important;
+            box-shadow: 0 16px 45px rgba(47,128,237,0.35) !important;
+          }
+
+          .builder-hero .hero-cta-group a:last-child {
+            background: rgba(255,255,255,0.15) !important;
+            border: 1px solid rgba(255,255,255,0.25) !important;
+            color: #f8fafc !important;
+            backdrop-filter: blur(15px);
+          }
+
+          .builder-hero .hero-trust-text {
+            margin-top: 1.35rem;
+            font-size: 0.95rem;
+            letter-spacing: 0.02em;
+          }
+
+          @media (max-width: 991px) {
+            .builder-hero,
+            .builder-hero--image-background,
+            .builder-hero--video-background,
+            .builder-hero--gradient,
+            .builder-hero--dark,
+            .builder-hero--product-saas,
+            .builder-hero--personal-portfolio,
+            .builder-hero--split,
+            .builder-hero--centered {
+              min-height: auto;
+            }
+
+            .builder-hero--split .row {
+              flex-direction: column;
+            }
+
+            .builder-hero--split img {
+              min-height: 360px;
+            }
+
+            .builder-hero--product-saas .row,
+            .builder-hero--personal-portfolio .row {
+              flex-direction: column;
+            }
+
+            .builder-hero--product-saas .hero-image-frame,
+            .builder-hero--personal-portfolio .hero-image-frame {
+              max-width: 100%;
+              margin-top: 2rem;
+            }
+          }
+        `}</style>
+      </section>
+    </BaseWidget>
+  );
 }

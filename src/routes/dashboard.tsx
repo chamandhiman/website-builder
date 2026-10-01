@@ -18,7 +18,13 @@ function DashboardLayout() {
   const hydrated = useBuilder((s) => s.hydrated);
 
   useEffect(() => {
-    // Ensure hydration happens so projects are loaded
+    if (!authReady) return;
+    if (user?.role === "super_admin") {
+      navigate({ to: "/super-admin" as never });
+    }
+  }, [authReady, user?.role, navigate]);
+
+  useEffect(() => {
     if (!hydrated) {
       useBuilder.getState().hydrate();
     }

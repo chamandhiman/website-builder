@@ -7,6 +7,7 @@ export interface TemplateSectionDefinition {
   type?: string;
   html: string;
   content?: Record<string, any>;
+  widgetType?: string;
   animation?: {
     type?: string;
     duration?: number;
@@ -14,6 +15,7 @@ export interface TemplateSectionDefinition {
   };
   style?: Record<string, string>;
   className?: string;
+  domId?: string;
   collapsed?: boolean;
   hidden?: boolean;
 }
@@ -32,6 +34,9 @@ export interface TemplateDefinition {
   name: string;
   category: TemplateCategory;
   pageType?: TemplatePageType;
+  layout?: {
+    type: "default" | "custom";
+  };
   description: string;
   accent: string;
   thumbnail: string;
@@ -107,11 +112,12 @@ const renderHeader = (content: Record<string, any>) => {
 };
 
 const renderHero = (content: Record<string, any>) => `
-<section id="top" class="w-full bg-slate-950 text-white">
+<section id="${escapeHtml(content.sectionId ?? "top")}" class="w-full bg-slate-950 text-white">
   <div class="mx-auto grid max-w-7xl gap-10 px-6 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:py-28">
     <div class="max-w-2xl">
       <p class="mb-4 inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-sm font-medium text-slate-200">${escapeHtml(content.eyebrow ?? "Premium web experience")}</p>
       <h1 class="text-4xl font-black leading-tight sm:text-5xl">${escapeHtml(content.title ?? "We create modern websites that feel ready to grow.")}</h1>
+      ${content.subtitle ? `<p class="mt-3 text-xl font-semibold text-pink-300">${escapeHtml(content.subtitle)}</p>` : ""}
       <p class="mt-6 text-lg text-slate-300">${escapeHtml(content.body ?? "Thoughtful and polished experiences built for real businesses.")}</p>
       <div class="mt-8 flex flex-wrap gap-3">
         ${content.primaryCta ? makeLink(content.primaryCta.href, content.primaryCta.label, "rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-100") : ""}
@@ -175,7 +181,7 @@ const renderAbout = (content: Record<string, any>) => `
 </section>`;
 
 const renderFeatures = (content: Record<string, any>) => `
-<section id="features" class="w-full bg-slate-50">
+<section id="${escapeHtml(content.sectionId ?? "features")}" class="w-full bg-slate-50">
   <div class="mx-auto max-w-7xl px-6 py-20 lg:px-10">
     <div class="max-w-2xl">
       <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">${escapeHtml(content.eyebrow ?? "Features")}</p>
@@ -186,7 +192,7 @@ const renderFeatures = (content: Record<string, any>) => `
       ${(content.items ?? []).map((item: any) => `
         <div class="rounded-[1.75rem] border border-slate-200 bg-white p-8 shadow-sm">
           <h3 class="text-xl font-semibold text-slate-900">${escapeHtml(item.title ?? "Feature")}</h3>
-          <p class="mt-3 text-slate-600">${escapeHtml(item.body ?? "A strong feature deck for a polished online presence.")}</p>
+          ${Array.isArray(item.skills) ? `<div class="mt-5 space-y-4">${item.skills.map((skill: any) => `<div><div class="flex justify-between text-xs text-slate-500"><span>${escapeHtml(skill.name ?? "Skill")}</span><span>${escapeHtml(String(skill.value ?? 80))}%</span></div><div class="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-200"><div class="h-full rounded-full bg-pink-500" style="width:${Math.max(0, Math.min(100, Number(skill.value ?? 80)))}%"></div></div></div>`).join("")}</div>` : `<p class="mt-3 text-slate-600">${escapeHtml(item.body ?? "A strong feature deck for a polished online presence.")}</p>`}
         </div>
       `).join("")}
     </div>
@@ -194,7 +200,7 @@ const renderFeatures = (content: Record<string, any>) => `
 </section>`;
 
 const renderServices = (content: Record<string, any>) => `
-<section id="services" class="w-full bg-slate-50">
+<section id="${escapeHtml(content.sectionId ?? "services")}" class="w-full bg-slate-50">
   <div class="mx-auto max-w-7xl px-6 py-20 lg:px-10">
     <div class="max-w-2xl">
       <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">${escapeHtml(content.eyebrow ?? "Services")}</p>
@@ -290,7 +296,7 @@ const renderCarouselFull = (content: Record<string, any>) => `
       <div class="w-full h-full flex carousel-track" data-carousel-track style="transition: transform 0.5s ease-in-out; transform: translateX(0%);">
         ${(content.slides ?? []).map((slide: any) => `
           <div class="relative w-full flex-shrink-0 h-full">
-            <img src="${escapeHtml(slide.image ?? "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80")}" alt="${escapeHtml(slide.title ?? "Slide")}" class="h-full w-full object-cover" />
+            <img src="${escapeHtml(slide.image ?? "https://plus.unsplash.com/premium_photo-1723291237759-99f918377002")}" alt="${escapeHtml(slide.title ?? "Slide")}" class="h-full w-full object-cover" />
             <div class="absolute inset-0 bg-black/30"></div>
             <div class="absolute left-6 right-6 bottom-10 max-w-2xl rounded-[2rem] border border-white/10 bg-slate-950/75 p-8 shadow-2xl backdrop-blur sm:left-12 sm:right-auto">
               <p class="text-sm uppercase tracking-[0.3em] text-cyan-300">${escapeHtml(slide.label ?? "Program")}</p>
@@ -404,7 +410,7 @@ const renderMap = (content: Record<string, any>) => `
 </section>`;
 
 const renderPortfolio = (content: Record<string, any>) => `
-<section id="work" class="w-full bg-slate-50">
+<section id="${escapeHtml(content.sectionId ?? "work")}" class="w-full bg-slate-50">
   <div class="mx-auto max-w-7xl px-6 py-20 lg:px-10">
     <div class="max-w-2xl">
       <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">${escapeHtml(content.eyebrow ?? "Selected work")}</p>
@@ -441,7 +447,7 @@ const renderGallery = (content: Record<string, any>) => `
 </section>`;
 
 const renderTestimonials = (content: Record<string, any>) => `
-<section id="results" class="w-full bg-white">
+<section id="${escapeHtml(content.sectionId ?? "results")}" class="w-full bg-white">
   <div class="mx-auto max-w-7xl px-6 py-20 lg:px-10">
     <div class="max-w-2xl">
       <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">${escapeHtml(content.eyebrow ?? "Testimonials")}</p>
@@ -450,6 +456,7 @@ const renderTestimonials = (content: Record<string, any>) => `
     <div class="mt-12 grid gap-6 md:grid-cols-2">
       ${(content.items ?? []).map((item: any) => `
         <div class="rounded-[2rem] border border-slate-200 bg-slate-50 p-8 shadow-sm">
+          ${item.image ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name ?? "Client")}" class="h-20 w-20 rounded-lg object-cover" />` : ""}
           <p class="text-lg text-slate-600">“${escapeHtml(item.quote ?? "A thoughtful and polished experience that feels easy to trust.")}"</p>
           <div class="mt-6 flex items-center gap-4">
             <div class="flex h-11 w-11 items-center justify-center rounded-full bg-slate-900 font-semibold text-white">${escapeHtml((item.name ?? "A").split(" ").map((part: string) => part[0]).join(""))}</div>
@@ -480,6 +487,7 @@ const renderPricing = (content: Record<string, any>) => `
           <ul class="mt-6 space-y-2 text-sm text-slate-600">
             ${(plan.features ?? []).map((feature: string) => `<li class="flex gap-2"><span class="mt-1 h-2 w-2 rounded-full bg-slate-900"></span><span>${escapeHtml(feature)}</span></li>`).join("")}
           </ul>
+          ${plan.cta ? `<div class="mt-8">${makeLink(plan.cta.href, plan.cta.label, "inline-flex rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white")}</div>` : ""}
         </div>
       `).join("")}
     </div>
@@ -526,16 +534,18 @@ const renderTeam = (content: Record<string, any>) => `
 </section>`;
 
 const renderContact = (content: Record<string, any>) => `
-<section id="contact" class="w-full bg-slate-900">
+<section id="${escapeHtml(content.sectionId ?? "contact")}" class="w-full bg-slate-900">
   <div class="mx-auto max-w-7xl px-6 py-20 lg:px-10">
     <div class="rounded-[2rem] bg-white/5 p-10 text-white">
       <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-400">${escapeHtml(content.eyebrow ?? "Contact")}</p>
       <h2 class="mt-3 text-3xl font-black sm:text-4xl">${escapeHtml(content.title ?? "Let’s build something polished together.")}</h2>
       <p class="mt-4 max-w-2xl text-lg text-slate-300">${escapeHtml(content.body ?? "We’re available for new projects, thoughtful launches, and design support.")}</p>
+      ${content.image ? `<img src="${escapeHtml(content.image)}" alt="Contact visual" class="mt-8 h-48 w-full object-cover" />` : ""}
       <div class="mt-8 flex flex-wrap gap-3">
         ${content.primaryCta ? makeLink(content.primaryCta.href, content.primaryCta.label, "inline-flex rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-950") : ""}
       </div>
       ${(content.details ?? []).length ? `<ul class="mt-8 space-y-2 text-sm text-slate-300">${(content.details ?? []).map((d: string) => `<li>${escapeHtml(d)}</li>`).join("")}</ul>` : ""}
+      ${content.form ? `<form class="mt-8 grid gap-3 sm:grid-cols-2">${(content.form.fields ?? []).map((field: string) => `<input aria-label="${escapeHtml(field)}" placeholder="${escapeHtml(field)}" class="rounded border border-white/10 bg-black/20 px-4 py-3 text-sm text-white placeholder:text-slate-500 ${field === "Message" ? "sm:col-span-2" : ""}" />`).join("")}<button type="button" class="rounded bg-pink-500 px-5 py-3 text-sm font-semibold text-white sm:col-span-2">Send Message</button></form>` : ""}
     </div>
   </div>
 </section>`;
@@ -594,6 +604,67 @@ const renderFooter = (content: Record<string, any>) => {
 
 const renderRaw = (content: Record<string, any>) => content.html ?? "";
 
+const renderBrandStrip = (content: Record<string, any>) => `
+<section id="brand-strip" class="w-full bg-white border-t border-slate-200">
+  <div class="mx-auto max-w-7xl px-6 py-10 lg:px-10">
+    <p class="text-center text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">${escapeHtml(content.eyebrow ?? "Press & Awards")}</p>
+    <div class="mt-6 flex flex-wrap items-center justify-center gap-8 md:justify-between">
+      ${(content.items ?? []).map((item: any) => `
+        <img src="${escapeHtml(item.image ?? item.src ?? "")}" alt="${escapeHtml(item.alt ?? item.title ?? "Brand")}" class="h-10 w-auto object-contain" />
+      `).join("")}
+    </div>
+  </div>
+</section>`;
+
+const renderCourses = (content: Record<string, any>) => `
+<section id="courses" class="w-full bg-white">
+  <div class="mx-auto max-w-7xl px-6 py-20 lg:px-10">
+    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">${escapeHtml(content.eyebrow ?? "Discover Courses")}</p>
+        <h2 class="mt-3 text-3xl font-black text-slate-900 sm:text-4xl">${escapeHtml(content.title ?? "Our popular online courses")}</h2>
+      </div>
+      ${content.cta ? makeLink(content.cta.href, content.cta.label, "inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800") : ""}
+    </div>
+    <div class="mt-10 relative grid gap-6 md:grid-cols-3">
+      ${(content.items ?? []).map((item: any) => `
+        <div class="rounded-[1.75rem] border border-slate-200 bg-white shadow-sm">
+          <img src="${escapeHtml(item.image ?? "")}" alt="${escapeHtml(item.title ?? "Course")}" class="h-56 w-full rounded-[1.75rem] object-cover" />
+          <div class="p-5">
+            <div class="flex items-center gap-2">
+              <img src="${escapeHtml(item.instructorImage ?? "")}" alt="${escapeHtml(item.instructor ?? "")}" class="h-6 w-6 rounded-full object-cover" />
+              <span class="text-xs font-medium text-slate-600">${escapeHtml(item.instructor ?? "")}</span>
+            </div>
+            <h3 class="mt-3 text-base font-semibold text-slate-900">${escapeHtml(item.title ?? "")}</h3>
+            <div class="mt-2 flex items-center gap-1 text-yellow-500 text-xs">★★★★★</div>
+            <div class="mt-3 flex items-center justify-between text-xs text-slate-500">
+              <span>${escapeHtml(item.students ?? "")}</span>
+              <span>${escapeHtml(item.lessons ?? "")}</span>
+              <span class="font-semibold text-red-500">${escapeHtml(item.price ?? "")}</span>
+            </div>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  </div>
+</section>`;
+
+const renderNewsletter = (content: Record<string, any>) => `
+<section id="newsletter" class="w-full bg-slate-900 text-white">
+  <div class="mx-auto max-w-7xl px-6 py-16 lg:px-10">
+    <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+      <div>
+        <h2 class="text-2xl font-bold text-white">${escapeHtml(content.title ?? "Join Our Newsletter")}</h2>
+        <p class="mt-2 text-sm text-slate-300">${escapeHtml(content.body ?? "")}</p>
+      </div>
+      <form class="flex w-full flex-col gap-3 sm:flex-row" onsubmit="event.preventDefault();">
+        <input type="email" placeholder="${escapeHtml(content.placeholder ?? "Enter Your Email Address")}" class="w-full rounded-lg border border-slate-600 bg-transparent px-4 py-3 text-sm text-white placeholder:text-slate-400 sm:w-80" />
+        <button type="button" class="rounded-lg bg-red-500 px-5 py-3 text-sm font-semibold text-white hover:bg-red-400">${escapeHtml(content.buttonText ?? "Subscribe Now")}</button>
+      </form>
+    </div>
+  </div>
+</section>`;
+
 const renderSection = (section: TemplateSectionData) => {
   const content = section.content ?? {};
   switch (section.type) {
@@ -637,6 +708,12 @@ const renderSection = (section: TemplateSectionData) => {
       return renderContact(content);
     case "cta":
       return renderCta(content);
+    case "brand-strip":
+      return renderBrandStrip(content);
+    case "courses":
+      return renderCourses(content);
+    case "newsletter":
+      return renderNewsletter(content);
     case "footer":
       return renderFooter(content);
     case "raw":
@@ -651,8 +728,11 @@ const renderTemplateSections = (sections: TemplateSectionData[]) =>
     name: section.name,
     type: section.type,
     html: renderSection(section),
+    content: section.content,
+    widgetType: section.widgetType,
     style: section.style,
     className: section.className,
+    domId: section.domId,
     animation: { type: "fade-up", duration: 700, delay: 0 },
   }));
 

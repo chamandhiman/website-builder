@@ -80,7 +80,7 @@ export function createGalleryImage(partial?: Partial<GalleryImageItem>): Gallery
   const src =
     partial?.src ??
     createStockImageReference(
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+      "https://plus.unsplash.com/premium_photo-1723291237759-99f918377002",
     );
   const filename =
     typeof src === "object" && src !== null
@@ -120,7 +120,7 @@ export function isGalleryWidgetData(value: unknown): value is GalleryWidgetData 
 const SAMPLE_IMAGES = [
   {
     id: "gallery-img-1",
-    url: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+    url: "https://plus.unsplash.com/premium_photo-1723291237759-99f918377002",
     alt: "Mountain landscape at sunrise",
     name: "mountain-sunrise.jpg",
   },

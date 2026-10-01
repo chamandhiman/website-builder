@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { createUserIfNotExists } from "@/services/firestore";
+import { createUserIfNotExists, getUserRole, setUserRole } from "@/services/firestore";
 
 import {
   signInWithGoogle,
@@ -19,6 +19,7 @@ type AuthUser = {
   photoURL?: string;
   plan: "Free plan" | "Pro plan";
   initials: string;
+  role: "user" | "super_admin";
 };
 
 type AuthContextValue = {
@@ -29,6 +30,7 @@ type AuthContextValue = {
   register: (firstName: string, lastName: string, email: string, password: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
+  requireSuperAdmin: () => void;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -50,6 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email: "dev@example.com",
         plan: "Free plan",
         initials: "DU",
+        role: "user",
       };
       latestUserId.current = devUser.id;
       setUser(devUser);
@@ -100,6 +103,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       }
 
+      let role: "user" | "super_admin" = "user";
+      try {
+        const fetchedRole = await getUserRole(firebaseUser.uid);
+        if (fetchedRole === "super_admin") role = "super_admin";
+      } catch {
+        role = "user";
+      }
+
       setUser({
         id: firebaseUser.uid,
         name: firebaseUser.displayName || "User",
@@ -112,6 +123,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             .map((word) => word[0])
             .join("")
             .substring(0, 2),
+        role,
       });
       setAuthReady(true);
     });
@@ -122,7 +134,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
- 
+  
 
   const login = async (email: string, password: string) => {
     setSigningIn(true);
@@ -143,32 +155,59 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
-  await firebaseLogout();
-  setUser(null);
-};
+    await firebaseLogout();
+    setUser(null);
+  };
 
- const loginWithGoogle = async () => {
-  setSigningIn(true);
+  const loginWithGoogle = async () => {
+    setSigningIn(true);
 
-  try {
-    const result = await signInWithGoogle();
-    await createUserIfNotExists(result.user);
-  } finally {
-    setSigningIn(false);
+    try {
+      const result = await signInWithGoogle();
+      await createUserIfNotExists(result.user);
+    } finally {
+      setSigningIn(false);
+    }
+  };
+
+  const requireSuperAdmin = () => {
+    const current = useBuilder.getState().currentProject();
+    if (!current) {
+      throw new Error("Unauthorized: Super admin access required.");
+    }
+  };
+
+  const value = useMemo(
+    () => ({
+      user,
+      signingIn,
+      authReady,
+      login,
+      register,
+      loginWithGoogle,
+      logout,
+      requireSuperAdmin,
+    }),
+    [user, signingIn, authReady],
+  );
+
+  if (typeof window !== "undefined" && import.meta.env.DEV) {
+    (window as any).__wtoDevSetSuperAdmin = async (email?: string) => {
+      try {
+        const { setUserRole } = await import("@/services/firestore");
+        const { auth } = await import("@/firebase/firebase");
+        const currentUser = auth.currentUser;
+        if (!currentUser) {
+          console.warn("[DEV] No Firebase user logged in.");
+          return;
+        }
+        await setUserRole(currentUser.uid, "super_admin");
+        console.log(`[DEV] Promoted ${currentUser.email} to super_admin.`);
+      } catch (err) {
+        console.error("[DEV] Failed to set super_admin:", err);
+      }
+    };
   }
-};
-const value = useMemo(
-  () => ({
-    user,
-    signingIn,
-    authReady,
-    login,
-    register,
-    loginWithGoogle,
-    logout,
-  }),
-  [user, signingIn, authReady],
-);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
