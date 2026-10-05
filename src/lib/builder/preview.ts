@@ -1,4 +1,4 @@
-﻿import type { PageSection, Project, PageSeo, ProjectSeo } from "./store";
+import type { PageSection, Project, PageSeo, ProjectSeo } from "./store";
 import { getImageBlob, getAssetValue, type BuilderAssetEntry } from "./image-storage";
 import { getWidgetBootstrapExport, getWidgetExportContribution } from "@/components/builder/widgets/widgetRegistry";
 import { getWidgetSelectionLabel } from "@/components/builder/widgets/widgetSelectionLabels";
@@ -8,6 +8,7 @@ import {
   BOOTSTRAP_BUNDLE_JS_CDN,
   BOOTSTRAP_CSS_CDN,
   FONT_AWESOME_CDN,
+  GOOGLE_FONTS_CDN,
   WIDGET_TYPE_EXPORT_JS,
   dedupeCssBlocks,
   dedupeJsBlocks,
@@ -22,6 +23,7 @@ export const APP_CSS_TEXT = appCssRaw;
 const BOOTSTRAP_CSS_HREF = BOOTSTRAP_CSS_CDN;
 const BOOTSTRAP_JS_HREF = BOOTSTRAP_BUNDLE_JS_CDN;
 const FONT_AWESOME_HREF = FONT_AWESOME_CDN;
+const GOOGLE_FONTS_HREF = GOOGLE_FONTS_CDN;
 
 function extractCssFromViteRaw(raw: string) {
   const wrapperMatch = raw.match(/const\s+__vite__css\s*=\s*(?:JSON\.parse\()?(?:(['"`]))([\s\S]*?)\1\)?;/);
@@ -691,6 +693,80 @@ export const RUNTIME_SCRIPT = `
           columnId: selection.columnId || null,
         });
       } catch (_) {}
+    } else if (data.type === 'update-selected-element-style') {
+      try {
+        const patch = data.payload?.stylePatch || {};
+        const targetEl = currentSelectedElementWrapper || (currentSelection?.childId ? document.querySelector('[data-wto-child-id="'+currentSelection.childId+'"]') : null);
+        if (targetEl) {
+          Object.keys(patch).forEach((prop) => {
+            const val = patch[prop];
+            if (prop === 'color' || prop === 'textColor') {
+              targetEl.style.color = val;
+              if (targetEl.style.webkitTextFillColor) targetEl.style.webkitTextFillColor = val;
+              targetEl.querySelectorAll('span, strong, em, b, i, small, h1, h2, h3, h4, h5, h6, p, a').forEach((sub) => {
+                sub.style.color = val;
+                if (sub.style.webkitTextFillColor) sub.style.webkitTextFillColor = val;
+              });
+              updateColorIndicator(val);
+              fontColorButton.dataset.currentValue = val;
+            } else if (prop === 'fontSize') {
+              targetEl.style.fontSize = val;
+              fontSizeButton.dataset.currentValue = val;
+            } else if (prop === 'fontFamily') {
+              targetEl.style.fontFamily = val;
+              fontFamilyButton.dataset.currentValue = val;
+            } else if (prop === 'textAlign') {
+              targetEl.style.textAlign = val;
+            } else if (prop === 'fontWeight') {
+              targetEl.style.fontWeight = val;
+            } else if (prop === 'lineHeight') {
+              targetEl.style.lineHeight = val;
+            } else if (prop === 'letterSpacing') {
+              targetEl.style.letterSpacing = val;
+            } else if (prop === 'textTransform') {
+              targetEl.style.textTransform = val;
+            } else if (prop === 'textDecoration') {
+              targetEl.style.textDecoration = val;
+            } else {
+              try { targetEl.style[prop] = val; } catch (_) {}
+            }
+          });
+          if (currentSelection && currentSelection.widgetId) {
+            sendElementStyleUpdate(patch);
+          }
+          if (currentSection && currentSection.dataset.wtoSection) {
+            send('section-html', { sectionId: currentSection.dataset.wtoSection, html: currentSection.innerHTML });
+          }
+          positionToolbar(targetEl);
+        }
+      } catch (_) {}
+    } else if (data.type === 'update-selected-element-content') {
+      try {
+        const text = data.payload?.text ?? '';
+        const targetEl = currentSelectedElementWrapper || (currentSelection?.childId ? document.querySelector('[data-wto-child-id="'+currentSelection.childId+'"]') : null);
+        if (targetEl) {
+          targetEl.textContent = text;
+          if (currentSelection && currentSelection.widgetId) {
+            sendElementContentUpdate(currentSection?.dataset?.wtoSection, currentSelection, text);
+          }
+          if (currentSection && currentSection.dataset.wtoSection) {
+            send('section-html', { sectionId: currentSection.dataset.wtoSection, html: currentSection.innerHTML });
+          }
+          positionToolbar(targetEl);
+        }
+      } catch (_) {}
+    } else if (data.type === 'update-selected-element-href') {
+      try {
+        const href = data.payload?.href ?? '';
+        const targetEl = currentSelectedElementWrapper || (currentSelection?.childId ? document.querySelector('[data-wto-child-id="'+currentSelection.childId+'"]') : null);
+        if (targetEl) {
+          const a = targetEl.tagName === 'A' ? targetEl : targetEl.querySelector('a');
+          if (a) a.setAttribute('href', href);
+          if (currentSection && currentSection.dataset.wtoSection) {
+            send('section-html', { sectionId: currentSection.dataset.wtoSection, html: currentSection.innerHTML });
+          }
+        }
+      } catch (_) {}
     }
   });
 
@@ -731,6 +807,10 @@ export const RUNTIME_SCRIPT = `
     let current = target;
     while (current && current !== document.body) {
       if (isEditableTextNode(current)) {
+        const tag = (current.tagName || '').toLowerCase();
+        if (current === target && ['h1','h2','h3','h4','h5','h6','p','span','strong','em','b','i','small','blockquote','cite','label','a','button','summary','li'].includes(tag)) {
+          return current;
+        }
         const hasEditableChild = !!Array.from(current.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,span,strong,em,b,i,small,blockquote,cite,label,div')).find((child) => child !== current && isEditableTextNode(child));
         if (!hasEditableChild) return current;
       }
@@ -745,7 +825,13 @@ export const RUNTIME_SCRIPT = `
     let imageIndex = -1;
     let linkIndex = -1;
     Array.from(section.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,span,strong,em,b,i,small,blockquote,cite,label,div'))
-      .filter((el) => isEditableTextNode(el) && !Array.from(el.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,span,strong,em,b,i,small,blockquote,cite,label,div')).some((child) => child !== el && isEditableTextNode(child)))
+      .filter((el) => {
+        if (!isEditableTextNode(el)) return false;
+        const tag = (el.tagName || '').toLowerCase();
+        const hasDirectText = Array.from(el.childNodes).some((n) => n.nodeType === 3 && n.textContent && n.textContent.trim().length > 0);
+        const hasEditableChild = Array.from(el.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,span,strong,em,b,i,small,blockquote,cite,label,div')).some((child) => child !== el && isEditableTextNode(child));
+        return !hasEditableChild || (hasDirectText && ['h1','h2','h3','h4','h5','h6','p','li'].includes(tag));
+      })
       .forEach((el) => {
         textIndex += 1;
         el.setAttribute('data-wto-text-index', String(textIndex));
@@ -1214,15 +1300,31 @@ export const RUNTIME_SCRIPT = `
       const section = host.closest('[data-wto-section]');
       const widgetElement = host.closest('[data-wto-widget-element-key]');
       const widgetRoot = widgetElement?.closest('[data-widget-id], [data-wto-widget-root]');
-      send('element-duplicate', {
-        sectionId: section?.dataset.wtoSection ?? null,
-        widgetId: widgetRoot?.getAttribute('data-widget-id') ?? null,
-        elementKey: widgetElement?.getAttribute('data-wto-widget-element-key') ?? null,
-        elementType: widgetElement?.getAttribute('data-wto-widget-element-type') ?? null,
-        kind: widgetElement ? 'widget' : 'text',
-        index: host.getAttribute('data-wto-text-index') ?? host.getAttribute('data-wto-image-index') ?? host.getAttribute('data-wto-link-index') ?? null,
-        tag: host.tagName ? host.tagName.toLowerCase() : null,
-      });
+      if (widgetElement && widgetRoot) {
+        send('element-duplicate', {
+          sectionId: section?.dataset.wtoSection ?? null,
+          widgetId: widgetRoot?.getAttribute('data-widget-id') ?? null,
+          elementKey: widgetElement?.getAttribute('data-wto-widget-element-key') ?? null,
+          elementType: widgetElement?.getAttribute('data-wto-widget-element-type') ?? null,
+          kind: 'widget',
+          index: host.getAttribute('data-wto-text-index') ?? host.getAttribute('data-wto-image-index') ?? host.getAttribute('data-wto-link-index') ?? null,
+          tag: host.tagName ? host.tagName.toLowerCase() : null,
+        });
+        return;
+      }
+      if (section && host && host !== section && section.contains(host)) {
+        const clone = host.cloneNode(true);
+        clone.classList.remove('wto-element-selected');
+        clone.removeAttribute('draggable');
+        if (host.parentNode) {
+          host.parentNode.insertBefore(clone, host.nextSibling);
+          indexElementKinds(section);
+          send('section-html', { sectionId: section.dataset.wtoSection, html: section.innerHTML });
+          applyElementSelectionHighlight(clone);
+          setElementDragState(clone);
+          positionToolbar(clone);
+        }
+      }
     });
     document.body.appendChild(btn);
     return btn;
@@ -1351,11 +1453,15 @@ export const RUNTIME_SCRIPT = `
   fontColorButton.type = 'button';
   fontColorButton.dataset.act = 'font-color';
   fontColorButton.setAttribute('aria-label', 'Text color');
-  fontColorButton.style.cssText = toolbarButtonCss + 'padding-bottom:2px;';
-  fontColorButton.innerHTML = '<i class="fa-solid fa-palette" style="font-size:14px;width:16px;text-align:center"></i>';
+  fontColorButton.title = 'Text color';
+  fontColorButton.style.cssText = toolbarButtonCss + 'padding:0 8px;width:auto;min-width:48px;gap:6px;';
+  fontColorButton.innerHTML = '<i class="fa-solid fa-palette" style="font-size:13px;width:14px;text-align:center;color:#cbd5e1;"></i>';
   const colorIndicator = document.createElement('span');
-  colorIndicator.style.cssText = 'position:absolute;left:50%;bottom:5px;transform:translateX(-50%);width:12px;height:12px;border-radius:9999px;border:1px solid rgba(255,255,255,0.8);background:#111827;';
+  colorIndicator.style.cssText = 'width:14px;height:14px;border-radius:9999px;border:1.5px solid rgba(255,255,255,0.95);box-shadow:0 0 6px rgba(0,0,0,0.4);background:#ffffff;display:inline-block;flex-shrink:0;transition:background 0.15s,box-shadow 0.15s;';
   fontColorButton.appendChild(colorIndicator);
+  const colorHexLabel = document.createElement('span');
+  colorHexLabel.style.cssText = 'font-size:11px;font-family:monospace;font-weight:700;color:#f8fafc;letter-spacing:0.02em;line-height:1;';
+  fontColorButton.appendChild(colorHexLabel);
   styleControlWrapper.appendChild(fontFamilyButton);
   styleControlWrapper.appendChild(fontSizeButton);
   styleControlWrapper.appendChild(fontColorButton);
@@ -1377,9 +1483,9 @@ export const RUNTIME_SCRIPT = `
     { label: 'Poppins', value: 'Poppins, ui-sans-serif, system-ui, sans-serif' },
   ];
   const fontSizeOptions = ['12px','14px','16px','18px','20px','24px','28px','32px','40px','48px','56px','64px'];
-  const colorPalette = ['#111827', '#374151', '#6b7280', '#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ffffff'];
+  const colorPalette = ['#FFFFFF', '#FACC15', '#F59E0B', '#EF4444', '#EC4899', '#8B5CF6', '#3B82F6', '#10B981', '#94A3B8', '#0B0C10'];
 
-  const popoverCommonCss = 'position:fixed;display:none;z-index:10006;min-width:180px;max-width:220px;border-radius:8px;border:1px solid rgba(15,23,42,0.12);background:#ffffff;color:#111827;box-shadow:0 18px 45px rgba(15,23,42,0.12);padding:12px;gap:8px;font:14px/1.4 system-ui;max-height:min(320px, calc(100vh - 24px));overflow-y:auto;overflow-x:hidden;';
+  const popoverCommonCss = 'position:fixed;display:none;z-index:10006;min-width:250px;max-width:290px;border-radius:12px;border:1px solid rgba(15,23,42,0.14);background:#ffffff;color:#111827;box-shadow:0 20px 48px rgba(15,23,42,0.22);padding:14px;gap:8px;font:14px/1.4 system-ui;max-height:min(450px, calc(100vh - 24px));overflow-y:auto;overflow-x:hidden;';
   const fontFamilyPopover = document.createElement('div');
   fontFamilyPopover.className = '__wto-popup';
   fontFamilyPopover.style.cssText = popoverCommonCss;
@@ -1461,99 +1567,272 @@ export const RUNTIME_SCRIPT = `
   }
 
   function applyFontFamily(family) {
-    sendElementStyleUpdate({ fontFamily: family });
+    const targetEl = currentSelectedElementWrapper || (currentSelection?.childId ? document.querySelector('[data-wto-child-id="'+currentSelection.childId+'"]') : null);
+    if (targetEl) {
+      targetEl.style.fontFamily = family;
+      if (currentSection && currentSection.dataset.wtoSection) {
+        send('section-html', { sectionId: currentSection.dataset.wtoSection, html: currentSection.innerHTML });
+      }
+    }
+    if (currentSelection && currentSelection.widgetId) {
+      sendElementStyleUpdate({ fontFamily: family });
+    }
     hideAllPopovers();
   }
 
   function applyFontSize(size) {
-    sendElementStyleUpdate({ fontSize: size });
+    const targetEl = currentSelectedElementWrapper || (currentSelection?.childId ? document.querySelector('[data-wto-child-id="'+currentSelection.childId+'"]') : null);
+    if (targetEl) {
+      targetEl.style.fontSize = size;
+      if (currentSection && currentSection.dataset.wtoSection) {
+        send('section-html', { sectionId: currentSection.dataset.wtoSection, html: currentSection.innerHTML });
+      }
+    }
+    if (currentSelection && currentSelection.widgetId) {
+      sendElementStyleUpdate({ fontSize: size });
+    }
     hideAllPopovers();
   }
 
-  function applyFontColor(color) {
-    sendElementStyleUpdate({ color });
-    updateColorIndicator(color);
-  }
-
   function updateColorIndicator(color) {
-    colorIndicator.style.background = color || '#111827';
-    colorIndicator.style.border = color === '#ffffff' ? '1px solid #9ca3af' : '1px solid rgba(255,255,255,0.8)';
+    const hex = normalizeColor(color);
+    colorIndicator.style.background = hex;
+    colorIndicator.style.border = hex.toLowerCase() === '#ffffff' ? '1.5px solid #64748b' : '1.5px solid rgba(255,255,255,0.95)';
+    colorIndicator.style.boxShadow = '0 0 6px ' + hex + '88';
+    colorHexLabel.textContent = hex.toUpperCase();
+    fontColorButton.title = 'Text color: ' + hex;
   }
 
-  function renderFontFamilyPopover(currentFamily) {
-    fontFamilyPopover.innerHTML = '';
-    fontFamilyPopover.appendChild(createPopoverTitle('Font family'));
-    fontFamilyOptions.forEach((option) => {
-      const isActive = option.value === currentFamily;
-      const item = createOptionButton(option.label, option.value, isActive);
-      item.addEventListener('click', () => applyFontFamily(option.value));
-      fontFamilyPopover.appendChild(item);
+  function replaceColorInCurrentDom(oldColor, newColor) {
+    const oldNorm = normalizeColor(oldColor).toLowerCase();
+    const newNorm = normalizeColor(newColor);
+    if (!oldNorm || !newNorm || oldNorm === newNorm.toLowerCase()) return;
+
+    // A. Update CSS custom properties on :root / html / body
+    const rootStyle = document.documentElement.style;
+    const computedRoot = window.getComputedStyle(document.documentElement);
+    ['--wl-text-primary', '--wl-accent', '--wl-accent-hover', '--wl-text-secondary', '--wl-text-muted', '--color-primary', '--color-foreground'].forEach((varName) => {
+      const val = computedRoot.getPropertyValue(varName).trim();
+      if (val && normalizeColor(val).toLowerCase() === oldNorm) {
+        rootStyle.setProperty(varName, newNorm);
+      }
+    });
+
+    // B. Replace in document <style> tags
+    try {
+      document.querySelectorAll('style').forEach((st) => {
+        if (st.textContent && (st.textContent.toLowerCase().includes(oldNorm) || st.textContent.includes(oldColor))) {
+          st.textContent = st.textContent.split(oldColor).join(newNorm).split(oldNorm).join(newNorm);
+        }
+      });
+    } catch (_) {}
+
+    // C. Find all elements in document where inline style or computed color matches oldColor
+    document.querySelectorAll('[data-wto-section] *').forEach((el) => {
+      if (el.closest && (el.closest('[data-wto-toolbar]') || el.closest('.__wto-popup') || el.closest('script, style, svg'))) return;
+      const inlineColor = el.style && el.style.color ? normalizeColor(el.style.color).toLowerCase() : null;
+      if (inlineColor && inlineColor === oldNorm) {
+        el.style.color = newNorm;
+        if (el.style.webkitTextFillColor) el.style.webkitTextFillColor = newNorm;
+      } else if (!inlineColor) {
+        try {
+          const comp = window.getComputedStyle(el);
+          if (comp.color && normalizeColor(comp.color).toLowerCase() === oldNorm && isEditableTextNode(el)) {
+            el.style.color = newNorm;
+          }
+        } catch (_) {}
+      }
+    });
+
+    // D. Send updated HTML for all sections so they persist
+    document.querySelectorAll('[data-wto-section]').forEach((sec) => {
+      const sid = sec.dataset.wtoSection;
+      if (sid) {
+        send('section-html', { sectionId: sid, html: sec.innerHTML });
+      }
     });
   }
 
-  function renderFontSizePopover(currentSize) {
-    fontSizePopover.innerHTML = '';
-    fontSizePopover.appendChild(createPopoverTitle('Font size'));
-    fontSizeOptions.forEach((value) => {
-      const isActive = value === currentSize;
-      const item = createOptionButton(value, '', isActive);
-      item.addEventListener('click', () => applyFontSize(value));
-      fontSizePopover.appendChild(item);
-    });
+  function applyFontColor(oldColor, newColor, isGlobal) {
+    const targetEl = currentSelectedElementWrapper || (currentSelection?.childId ? document.querySelector('[data-wto-child-id="'+currentSelection.childId+'"]') : null);
+    
+    // 1. Immediately apply to the selected element in real time
+    if (targetEl) {
+      targetEl.style.color = newColor;
+      if (targetEl.style.webkitTextFillColor) targetEl.style.webkitTextFillColor = newColor;
+      targetEl.querySelectorAll('span, strong, em, b, i, small, h1, h2, h3, h4, h5, h6, p, a').forEach((el) => {
+        el.style.color = newColor;
+        if (el.style.webkitTextFillColor) el.style.webkitTextFillColor = newColor;
+      });
+    }
+
+    // 2. Update real-time color indicator in the tooltip above
+    updateColorIndicator(newColor);
+    fontColorButton.dataset.currentValue = newColor;
+
+    // 3. If widget selection, send style patch
+    if (currentSelection && currentSelection.widgetId) {
+      sendElementStyleUpdate({ color: newColor });
+    }
+
+    // 4. Update section HTML so persistence and preview stay in sync
+    if (currentSection && currentSection.dataset.wtoSection) {
+      send('section-html', {
+        sectionId: currentSection.dataset.wtoSection,
+        html: currentSection.innerHTML,
+      });
+    }
+
+    // 5. Global replacement across all templates / sections
+    if (isGlobal && oldColor && newColor && normalizeColor(oldColor).toLowerCase() !== normalizeColor(newColor).toLowerCase()) {
+      replaceColorInCurrentDom(oldColor, newColor);
+      send('global-color-replace', {
+        fromColor: normalizeColor(oldColor),
+        toColor: normalizeColor(newColor),
+      });
+    }
   }
 
   function renderFontColorPopover(currentColor) {
     fontColorPopover.innerHTML = '';
-    fontColorPopover.appendChild(createPopoverTitle('Text color'));
-    const currentRow = document.createElement('div');
-    currentRow.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:10px;';
-    const currentLabel = document.createElement('div');
-    currentLabel.textContent = 'Current';
-    currentLabel.style.cssText = 'font-size:12px;color:#6b7280;';
-    const currentSwatch = document.createElement('div');
-    currentSwatch.style.cssText = 'width:28px;height:28px;border-radius:9999px;background:' + currentColor + ';border:' + (currentColor === '#ffffff' ? '1px solid #d1d5db' : '1px solid transparent') + ';box-shadow:inset 0 0 0 1px rgba(0,0,0,0.08);';
-    currentRow.appendChild(currentLabel);
-    currentRow.appendChild(currentSwatch);
-    fontColorPopover.appendChild(currentRow);
+    const initialColor = normalizeColor(currentColor);
+    let activeFromColor = initialColor;
+
+    // Header
+    const titleRow = document.createElement('div');
+    titleRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;';
+    const title = document.createElement('div');
+    title.textContent = 'Text Color';
+    title.style.cssText = 'font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:0.04em;';
+    const hexBadge = document.createElement('span');
+    hexBadge.textContent = initialColor.toUpperCase();
+    hexBadge.style.cssText = 'font-size:11px;font-weight:700;padding:2px 6px;border-radius:4px;background:#f1f5f9;color:#334155;font-family:monospace;';
+    titleRow.appendChild(title);
+    titleRow.appendChild(hexBadge);
+    fontColorPopover.appendChild(titleRow);
+
+    // Live preview card showing the real-time selected color
+    const previewBox = document.createElement('div');
+    previewBox.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 10px;background:#0f172a;border-radius:8px;margin-bottom:10px;border:1px solid #1e293b;';
+    const previewDot = document.createElement('div');
+    previewDot.style.cssText = 'width:22px;height:22px;border-radius:50%;background:' + initialColor + ';border:2px solid #ffffff;box-shadow:0 0 8px ' + initialColor + '88;flex-shrink:0;';
+    const previewText = document.createElement('div');
+    previewText.textContent = 'Selected Text Color';
+    previewText.style.cssText = 'font-size:12px;font-weight:700;color:' + initialColor + ';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+    previewBox.appendChild(previewDot);
+    previewBox.appendChild(previewText);
+    fontColorPopover.appendChild(previewBox);
+
+    // Color Swatches Grid
+    const swatchTitle = document.createElement('div');
+    swatchTitle.textContent = 'Theme & Quick Swatches';
+    swatchTitle.style.cssText = 'font-size:11px;font-weight:600;color:#64748b;margin-bottom:6px;';
+    fontColorPopover.appendChild(swatchTitle);
 
     const paletteRow = document.createElement('div');
-    paletteRow.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;';
-    colorPalette.forEach((color) => {
-      const swatch = createColorSwatch(color, color === currentColor);
+    paletteRow.style.cssText = 'display:grid;grid-template-columns:repeat(5, 1fr);gap:6px;margin-bottom:12px;';
+    const curatedColors = [
+      '#FFFFFF', '#FACC15', '#F59E0B', '#EF4444', '#EC4899',
+      '#8B5CF6', '#3B82F6', '#10B981', '#94A3B8', '#0B0C10',
+    ];
+    curatedColors.forEach((color) => {
+      const isAct = normalizeColor(color).toLowerCase() === initialColor.toLowerCase();
+      const swatch = document.createElement('button');
+      swatch.type = 'button';
+      swatch.style.cssText = 'all:unset;height:26px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-sizing:border-box;border:' + (color === '#FFFFFF' ? '1px solid #cbd5e1' : '1px solid transparent') + ';background:' + color + ';' + (isAct ? 'box-shadow:0 0 0 2px #3b82f6;' : '');
+      swatch.title = color;
       swatch.addEventListener('click', () => {
-        applyFontColor(color);
-        renderFontColorPopover(color);
+        applyLiveColor(color);
       });
       paletteRow.appendChild(swatch);
     });
     fontColorPopover.appendChild(paletteRow);
 
+    // Custom Input Row (HTML5 color picker + Hex input)
+    const customTitle = document.createElement('div');
+    customTitle.textContent = 'Custom Color Picker';
+    customTitle.style.cssText = 'font-size:11px;font-weight:600;color:#64748b;margin-bottom:6px;';
+    fontColorPopover.appendChild(customTitle);
+
     const inputRow = document.createElement('div');
-    inputRow.style.cssText = 'display:flex;align-items:center;gap:8px;';
+    inputRow.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:12px;';
     const colorPicker = document.createElement('input');
     colorPicker.type = 'color';
-    colorPicker.value = currentColor || '#111827';
-    colorPicker.style.cssText = 'width:36px;height:36px;border:none;padding:0;background:transparent;cursor:pointer;';
+    colorPicker.value = initialColor;
+    colorPicker.style.cssText = 'width:36px;height:36px;border:1px solid #cbd5e1;border-radius:8px;padding:2px;background:#ffffff;cursor:pointer;flex-shrink:0;';
     const hexInput = document.createElement('input');
     hexInput.type = 'text';
-    hexInput.value = currentColor || '#111827';
-    hexInput.style.cssText = 'flex:1;min-width:80px;height:36px;padding:0 10px;border:1px solid #d1d5db;border-radius:10px;background:#f9fafb;color:#111827;font:13px/1.4 system-ui;';
-    hexInput.setAttribute('aria-label', 'Hex color');
+    hexInput.value = initialColor;
+    hexInput.style.cssText = 'flex:1;height:36px;padding:0 10px;border:1px solid #cbd5e1;border-radius:8px;background:#f8fafc;color:#0f172a;font:13px/1.4 monospace;font-weight:700;text-transform:uppercase;';
+    
     colorPicker.addEventListener('input', () => {
-      const next = String(colorPicker.value || '#111827');
-      hexInput.value = next;
-      applyFontColor(next);
-      renderFontColorPopover(next);
+      const next = colorPicker.value || '#111827';
+      hexInput.value = next.toUpperCase();
+      applyLiveColor(next);
+    });
+    hexInput.addEventListener('input', () => {
+      let next = hexInput.value.trim();
+      if (!next.startsWith('#') && /^[0-9a-fA-F]{3,6}$/.test(next)) next = '#' + next;
+      if (/^#[0-9a-fA-F]{6}$/i.test(next) || /^#[0-9a-fA-F]{3}$/i.test(next)) {
+        colorPicker.value = normalizeColor(next);
+        applyLiveColor(next);
+      }
     });
     hexInput.addEventListener('change', () => {
-      const next = String(hexInput.value || '#111827');
-      colorPicker.value = next;
-      applyFontColor(next);
-      renderFontColorPopover(next);
+      const next = normalizeColor(hexInput.value);
+      applyLiveColor(next);
     });
+
     inputRow.appendChild(colorPicker);
     inputRow.appendChild(hexInput);
     fontColorPopover.appendChild(inputRow);
+
+    // Global Option Checkbox
+    const globalSection = document.createElement('div');
+    globalSection.style.cssText = 'border-top:1px solid #e2e8f0;padding-top:10px;display:flex;flex-direction:column;gap:8px;';
+
+    const globalLabel = document.createElement('label');
+    globalLabel.style.cssText = 'display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:12px;color:#1e293b;user-select:none;line-height:1.35;';
+    const globalCheckbox = document.createElement('input');
+    globalCheckbox.type = 'checkbox';
+    globalCheckbox.checked = true; // Enabled by default as requested
+    globalCheckbox.style.cssText = 'margin-top:2px;cursor:pointer;accent-color:#3b82f6;width:15px;height:15px;';
+    const globalTextWrap = document.createElement('div');
+    globalTextWrap.innerHTML = '<span style="font-weight:700;display:block;">Change globally for all templates</span><span style="font-size:11px;color:#64748b;">Updates this color across all matching text & templates</span>';
+    globalLabel.appendChild(globalCheckbox);
+    globalLabel.appendChild(globalTextWrap);
+    globalSection.appendChild(globalLabel);
+
+    const applyGlobalBtn = document.createElement('button');
+    applyGlobalBtn.type = 'button';
+    applyGlobalBtn.style.cssText = 'all:unset;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;box-sizing:border-box;padding:8px 12px;border-radius:8px;background:#0f172a;color:#ffffff;font-size:12px;font-weight:700;cursor:pointer;transition:background 0.15s;text-align:center;';
+    applyGlobalBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles" style="color:#facc15;"></i> Apply Color Globally';
+    applyGlobalBtn.onmouseover = () => applyGlobalBtn.style.background = '#1e293b';
+    applyGlobalBtn.onmouseout = () => applyGlobalBtn.style.background = '#0f172a';
+    applyGlobalBtn.addEventListener('click', () => {
+      const activeColor = normalizeColor(hexInput.value || colorPicker.value);
+      const from = activeFromColor;
+      activeFromColor = activeColor;
+      applyFontColor(from, activeColor, true);
+      hideAllPopovers();
+    });
+    globalSection.appendChild(applyGlobalBtn);
+
+    fontColorPopover.appendChild(globalSection);
+
+    function applyLiveColor(nextColor) {
+      const normalizedNext = normalizeColor(nextColor);
+      hexBadge.textContent = normalizedNext.toUpperCase();
+      previewDot.style.background = normalizedNext;
+      previewDot.style.boxShadow = '0 0 8px ' + normalizedNext + '88';
+      previewText.style.color = normalizedNext;
+      colorPicker.value = normalizedNext;
+      hexInput.value = normalizedNext.toUpperCase();
+
+      const from = activeFromColor;
+      activeFromColor = normalizedNext;
+      applyFontColor(from, normalizedNext, globalCheckbox.checked);
+    }
   }
 
   function openPopover(button, popover, currentValue) {
@@ -1794,10 +2073,17 @@ export const RUNTIME_SCRIPT = `
       const isVisible = !!selection && !!selection.widgetType && childCapableWidgetTypes.has(selection.widgetType);
       addBtn.style.display = isVisible ? 'inline-flex' : 'none';
     }
-    const enabledStyleSelection = selection && selection.elementKind === 'widget' && selection.elementType && ['text','button'].includes(selection.elementType);
+    const activeEl = currentSelectedElementWrapper || (currentSelection?.childId ? document.querySelector('[data-wto-child-id="'+currentSelection.childId+'"]') : null);
+    const tag = (activeEl?.tagName || selection?.tag || '').toLowerCase();
+    const isTextTag = ['h1','h2','h3','h4','h5','h6','p','span','a','button','li','strong','em','b','i','small','blockquote','cite','label'].includes(tag);
+    const hasTextContent = !!(activeEl && activeEl.textContent && activeEl.textContent.trim().length > 0 && !activeEl.querySelector('section, header, footer, table'));
+    const isWidgetText = !!(selection && selection.elementKind === 'widget' && selection.elementType && ['text','button','heading'].includes(selection.elementType));
+    const isTextKind = !!(selection && (selection.elementKind === 'text' || selection.elementKind === 'link'));
+    const enabledStyleSelection = isWidgetText || isTextKind || (selection && selection.elementKind !== 'section' && (isTextTag || hasTextContent));
     if (enabledStyleSelection) {
       styleControlWrapper.style.display = 'inline-flex';
-      setStyleControlValues(selection.style || {});
+      const computedStyle = (activeEl ? getTypographyStyle(activeEl) : null) || selection?.style || {};
+      setStyleControlValues(computedStyle);
     } else {
       styleControlWrapper.style.display = 'none';
     }
@@ -1848,10 +2134,8 @@ export const RUNTIME_SCRIPT = `
       return;
     }
     const isChildSelection = currentSelection && currentSelection.widgetId && (currentSelection.childId || currentSelection.elementKey);
-   // console.log('toolbar click', { action, currentSelection, isChildSelection, widgetId: currentSelection?.widgetId, childId: currentSelection?.childId, elementKey: currentSelection?.elementKey });
     if (isChildSelection && ['move','move-up','move-down','dup','del'].includes(action)) {
       const selectedChildId = currentSelection.childId || currentSelection.elementKey || null;
-      // console.log('sending element-action', { action: action === 'dup' ? 'duplicate' : action === 'del' ? 'delete' : action, childId: selectedChildId });
       send('element-action', {
         sectionId: currentSelection.sectionId || currentSection.dataset.wtoSection,
         widgetId: currentSelection.widgetId,
@@ -1865,6 +2149,72 @@ export const RUNTIME_SCRIPT = `
         action: action === 'dup' ? 'duplicate' : action === 'del' ? 'delete' : action,
       });
       return;
+    }
+
+    const isElementInsideSection = currentSelectedElementWrapper &&
+      currentSelectedElementWrapper !== currentSection &&
+      currentSection.contains(currentSelectedElementWrapper) &&
+      (!currentSelection || currentSelection.elementKind !== 'section');
+
+    if (isElementInsideSection) {
+      const el = currentSelectedElementWrapper;
+      if (action === 'del') {
+        clearElementSelectionHighlight();
+        clearDuplicateControls();
+        unmountToolbar();
+        try {
+          const mapCardEl = el.classList?.contains('wto-map-card') ? el : el.closest?.('.wto-map-card');
+          const widgetRoot = currentSection.querySelector('[data-widget="map"]') || (currentSection.getAttribute('data-widget') === 'map' ? currentSection : null);
+          const mapWidgetId = widgetRoot ? widgetRoot.getAttribute('data-widget-id') : null;
+          if (mapCardEl && mapWidgetId) {
+            send('map-embed-update', {
+              widgetId: mapWidgetId,
+              showCard: false,
+            });
+          }
+        } catch (_) {}
+        el.remove();
+        currentSelectedElementWrapper = null;
+        currentSelection = null;
+        indexElementKinds(currentSection);
+        send('section-html', { sectionId: currentSection.dataset.wtoSection, html: currentSection.innerHTML });
+        send('select', { sectionId: null, elementKind: null });
+        return;
+      }
+      if (action === 'dup') {
+        const clone = el.cloneNode(true);
+        clone.classList.remove('wto-element-selected');
+        clone.removeAttribute('draggable');
+        if (el.parentNode) {
+          el.parentNode.insertBefore(clone, el.nextSibling);
+          indexElementKinds(currentSection);
+          send('section-html', { sectionId: currentSection.dataset.wtoSection, html: currentSection.innerHTML });
+          applyElementSelectionHighlight(clone);
+          setElementDragState(clone);
+          positionToolbar(clone);
+        }
+        return;
+      }
+      if (action === 'move-up') {
+        const prev = el.previousElementSibling;
+        if (prev && el.parentNode) {
+          el.parentNode.insertBefore(el, prev);
+          indexElementKinds(currentSection);
+          send('section-html', { sectionId: currentSection.dataset.wtoSection, html: currentSection.innerHTML });
+          positionToolbar(el);
+        }
+        return;
+      }
+      if (action === 'move-down') {
+        const next = el.nextElementSibling;
+        if (next && el.parentNode) {
+          el.parentNode.insertBefore(next, el);
+          indexElementKinds(currentSection);
+          send('section-html', { sectionId: currentSection.dataset.wtoSection, html: currentSection.innerHTML });
+          positionToolbar(el);
+        }
+        return;
+      }
     }
      
     send('section-action', { sectionId: currentSection.dataset.wtoSection, action });
@@ -2352,10 +2702,8 @@ export const RUNTIME_SCRIPT = `
       const target = getEventTarget(e);
       if (!target) return;
       if (target.closest('#__wto_tb')) return;
-      const nav = target.closest('[data-wto-nav]');
-      if (nav) {
-        const anchor = target.closest("a");
-        if (anchor) {
+      const anchor = target.closest("a");
+      if (anchor) {
           const href = anchor.getAttribute("href") || "";
           if (!document.body || document.body.getAttribute('data-builder-edit-mode') !== '1') {
             const normalized = href.replace(/^[.\/]+/, "").replace(/\\.html(?:[?#].*)?$/, "");
@@ -2372,7 +2720,6 @@ export const RUNTIME_SCRIPT = `
             }
           }
         }
-      }
       if (target.closest("[data-carousel-prev], [data-carousel-next], [data-carousel-dot], [data-carousel-items-prev], [data-carousel-items-next], [data-carousel-indicator]")) return;
       if (target.closest('[data-grid-add-child="1"]')) return;
       const section = target.closest("[data-wto-section]");
@@ -2398,6 +2745,7 @@ export const RUNTIME_SCRIPT = `
       }
 
       if (selection.elementKind === "section") {
+        currentSelectedElementWrapper = null;
         clearElementSelectionHighlight();
         setElementDragState(null);
         applyWidgetSelectionIndicators({
@@ -2406,6 +2754,7 @@ export const RUNTIME_SCRIPT = `
           widgetType: section.querySelector('[data-widget]')?.getAttribute('data-widget') || null,
         }, section);
       } else {
+        currentSelectedElementWrapper = selectionTarget;
         applyElementSelectionHighlight(selectionTarget);
         applyDuplicateControl(selectionTarget);
         setElementDragState(selectionTarget);
@@ -2413,6 +2762,11 @@ export const RUNTIME_SCRIPT = `
       }
       updateToolbarForSelection(selection);
       positionToolbar(selectionTarget);
+      const textContent = (selection.elementKind !== 'section' && selectedEl && isEditableTextNode(selectedEl)) ? getEditableTextValue(selectedEl) : undefined;
+      const href = (selection.elementKind !== 'section' && selectedEl) ? (selectedEl.getAttribute('href') || selectedEl.closest('a')?.getAttribute('href') || undefined) : undefined;
+      const imgEl = selectedEl?.tagName === 'IMG' ? selectedEl : selectedEl?.querySelector('img');
+      const src = imgEl ? imgEl.getAttribute('src') : undefined;
+      const alt = imgEl ? imgEl.getAttribute('alt') : undefined;
       send("select", {
         sectionId: selection.sectionId || section.dataset.wtoSection,
         elementKind: selection.elementKind,
@@ -2426,6 +2780,10 @@ export const RUNTIME_SCRIPT = `
         elementKey: selection.elementKey,
         elementType: selection.elementType,
         columnId: selection.columnId || null,
+        textContent,
+        href,
+        src,
+        alt,
       });
     } catch (err) {
       try { send("console", { level: "error", args: [String(err && err.stack ? err.stack : err)] }); } catch (_){}
@@ -2527,6 +2885,20 @@ export const RUNTIME_SCRIPT = `
   document.addEventListener('pointerdown', e => { if (e.detail >= 2) startTextEdit(e); }, true);
   document.addEventListener('click', onClick, true);
   document.addEventListener('dblclick', startTextEdit, true);
+  document.addEventListener('keydown', e => {
+    const active = document.activeElement;
+    if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable || active.getAttribute('contenteditable') === 'true')) {
+      return;
+    }
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      const delBtn = tb.querySelector('[data-act="del"]');
+      if (delBtn && tb.style.display !== 'none' && currentSection) {
+        e.preventDefault();
+        e.stopPropagation();
+        delBtn.click();
+      }
+    }
+  });
 
   // Animations
   const io = new IntersectionObserver(entries => entries.forEach(en => {
@@ -3089,10 +3461,12 @@ export function buildPreviewHTML(opts: {
   const previewStyles = previewCss
     ? `<style>${previewCss}</style>`
     : `<link rel="stylesheet" href="${previewCssHref ?? APP_CSS_HREF}" />`;
-  const fontAwesomeStyles = editable
-    ? `<link rel="stylesheet" href="${FONT_AWESOME_HREF}" crossorigin="anonymous" referrerpolicy="no-referrer" />`
-    : "";
+  const googleFontsStyles = `<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="${GOOGLE_FONTS_HREF}">`;
+  const fontAwesomeStyles = `<link rel="stylesheet" href="${FONT_AWESOME_HREF}" crossorigin="anonymous" referrerpolicy="no-referrer" />`;
   const bootstrapStyles = `<link rel="stylesheet" href="${BOOTSTRAP_CSS_HREF}" />`;
+  const publicStyleSheet = `<link rel="stylesheet" href="/style.css" />`;
   const bootstrapScript = `<script src="${BOOTSTRAP_JS_HREF}"></script>`;
 
   return `<!DOCTYPE html>
@@ -3102,9 +3476,11 @@ export function buildPreviewHTML(opts: {
 <meta name="viewport" content="${escapeHtml(projectSeo?.viewport ?? "width=device-width, initial-scale=1")}" />
 <title>${escapeHtml(pageTitle)}</title>
 ${metaTags}
+${googleFontsStyles}
+${fontAwesomeStyles}
 ${bootstrapStyles}
 ${previewStyles}
-${fontAwesomeStyles}
+${publicStyleSheet}
 <style>
   html, body { margin: 0; min-height: 100%; overflow-x: hidden; }
   body { margin: 0; min-height: 100%; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: #fff; color: #111827; }
@@ -3194,13 +3570,15 @@ export function buildExportBundle(opts: {
     })
     .join("\n");
 
-  const vendorCss = standalone
-    ? `<link rel="stylesheet" href="${BOOTSTRAP_CSS_HREF}" />
-<link rel="stylesheet" href="${FONT_AWESOME_HREF}" crossorigin="anonymous" referrerpolicy="no-referrer" />`
-    : "";
-  const vendorJs = standalone
-    ? `<script src="${BOOTSTRAP_JS_HREF}"></script>`
-    : "";
+  const googleFontsLink = `<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="${GOOGLE_FONTS_HREF}">`;
+  const fontAwesomeLink = `<link rel="stylesheet" href="${FONT_AWESOME_HREF}" crossorigin="anonymous" referrerpolicy="no-referrer" />`;
+  const bootstrapCssLink = `<link rel="stylesheet" href="${BOOTSTRAP_CSS_HREF}" />`;
+  const vendorCss = `${googleFontsLink}
+${fontAwesomeLink}
+${bootstrapCssLink}`;
+  const vendorJs = `<script src="${BOOTSTRAP_JS_HREF}"></script>`;
 
   const html = `<!DOCTYPE html>
 <html lang="${escapeHtml(projectSeo?.language ?? seo?.language ?? "en")}">
@@ -3211,16 +3589,20 @@ ${metaTags}
 <title>${escapeHtml(pageTitle)}</title>
 ${vendorCss}
 <link rel="stylesheet" href="./css/styles.css" />
+<link rel="stylesheet" href="./style.css" />
 ${exportHead}
 </head>
 <body>
 ${body}
 ${vendorJs}
+<script src="./js/carousel.js" defer></script>
 <script src="./js/main.js" defer></script>
 </body>
 </html>`;
 
   const cssContent = dedupeCssBlocks([
+    `@import url("${FONT_AWESOME_HREF}");`,
+    `@import url("${GOOGLE_FONTS_HREF}");`,
     RUNTIME_CSS,
     ...widgetCssBlocks,
     globalCss || "",
@@ -3350,7 +3732,12 @@ export async function buildSiteExport(project: Project) {
   const pages = (project.pages ?? []).filter((page) => !page.hidden);
   const pageMeta = pages.map((page) => ({ id: page.id, slug: page.slug }));
   const written = new Set<string>();
-  const cssBlocks: string[] = [RUNTIME_CSS, project.globalCss || ""];
+  const cssBlocks: string[] = [
+    `@import url("${FONT_AWESOME_HREF}");`,
+    `@import url("${GOOGLE_FONTS_HREF}");`,
+    RUNTIME_CSS,
+    project.globalCss || "",
+  ];
   const jsBlocks: string[] = [EXPORT_SITE_RUNTIME, WTO_CAROUSEL_RUNTIME, WTO_FAQ_RUNTIME, project.globalJs || ""];
 
   const writePage = (page: (typeof pages)[number], filename: string) => {
@@ -3401,6 +3788,14 @@ export async function buildSiteExport(project: Project) {
   files.push({
     path: "css/styles.css",
     content: dedupeCssBlocks(cssBlocks),
+  });
+  files.push({
+    path: "style.css",
+    content: dedupeCssBlocks(cssBlocks),
+  });
+  files.push({
+    path: "js/carousel.js",
+    content: WTO_CAROUSEL_RUNTIME,
   });
   files.push({
     path: "js/main.js",

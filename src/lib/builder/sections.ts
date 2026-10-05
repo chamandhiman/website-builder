@@ -1,4 +1,8 @@
-import type { WidgetInstance } from "@/components/builder/widgets/widgetRegistry";
+import {
+  type WidgetInstance,
+  createWidgetInstance,
+  getWidgetBootstrapExport,
+} from "@/components/builder/widgets/widgetRegistry";
 
 export interface SectionTemplate {
   id: string;
@@ -1057,6 +1061,62 @@ export const SECTION_LIBRARY: SectionTemplate[] = [
   </div>
 </section>`,
   },
+  // CONTACT & MAP SECTIONS
+  (() => {
+    const inst = createWidgetInstance("contact", { variant: "Split Info + Form" });
+    return {
+      id: "contact-split",
+      name: "Contact (Split Info + Form)",
+      category: "Contact",
+      thumbBg: grad("#0f172a", "#3b82f6"),
+      widgetInstance: inst,
+      html: getWidgetBootstrapExport("contact", inst),
+    };
+  })(),
+  (() => {
+    const inst = createWidgetInstance("contact", { variant: "Centered Form" });
+    return {
+      id: "contact-centered",
+      name: "Contact (Centered Form)",
+      category: "Contact",
+      thumbBg: grad("#1e293b", "#f59e0b"),
+      widgetInstance: inst,
+      html: getWidgetBootstrapExport("contact", inst),
+    };
+  })(),
+  (() => {
+    const inst = createWidgetInstance("contact", { variant: "Dark Side-by-Side" });
+    return {
+      id: "contact-dark",
+      name: "Contact (Dark Side-by-Side)",
+      category: "Contact",
+      thumbBg: grad("#111827", "#1f2937"),
+      widgetInstance: inst,
+      html: getWidgetBootstrapExport("contact", inst),
+    };
+  })(),
+  (() => {
+    const inst = createWidgetInstance("map", { variant: "Full Width Clean", content: { showCard: false } });
+    return {
+      id: "map-fullwidth",
+      name: "Google Map (Full Width)",
+      category: "Contact",
+      thumbBg: grad("#0284c7", "#0ea5e9"),
+      widgetInstance: inst,
+      html: getWidgetBootstrapExport("map", inst),
+    };
+  })(),
+  (() => {
+    const inst = createWidgetInstance("map", { variant: "Split with Card", content: { showCard: true } });
+    return {
+      id: "map-card",
+      name: "Google Map (with Location Card)",
+      category: "Contact",
+      thumbBg: grad("#047857", "#10b981"),
+      widgetInstance: inst,
+      html: getWidgetBootstrapExport("map", inst),
+    };
+  })(),
 ];
 
 export function sectionsByCategory() {

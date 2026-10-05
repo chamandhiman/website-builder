@@ -160,7 +160,7 @@ export function FAQProperties({
   };
 
   const actionBtnClass =
-    "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400";
+    "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[#707070] transition hover:bg-[#2A2A2A] hover:text-[#D0D0D0] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-[#707070]";
 
   const defaultOpenOptions = items.map((item, index) => ({
     label: `${index + 1}. ${item.question.slice(0, 42)}${item.question.length > 42 ? "…" : ""}`,
@@ -185,7 +185,7 @@ export function FAQProperties({
         <div className="space-y-3">
           <div className="min-w-0 w-full">
             <div className="mb-2 flex items-center justify-between gap-2">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                 FAQ items
               </div>
               <button
@@ -198,7 +198,7 @@ export function FAQProperties({
                   setItems([...items, next], next.id);
                   focusItemSelection(next.id);
                 }}
-                className="inline-flex shrink-0 items-center gap-1 text-[12px] font-medium text-violet-600 hover:text-violet-700"
+                className="inline-flex shrink-0 items-center gap-1 text-[12px] font-medium text-[#FACC15] hover:text-[#FDE047]"
               >
                 <FontAwesomeIcon icon={faPlus} className="h-3 w-3" />
                 Add item
@@ -212,8 +212,8 @@ export function FAQProperties({
                   <div
                     key={item.id}
                     className={[
-                      "min-w-0 overflow-hidden rounded-lg border bg-white transition",
-                      isSelected ? "border-violet-300 bg-violet-50/40" : "border-slate-200",
+                      "min-w-0 overflow-hidden rounded-lg border transition",
+                      isSelected ? "border-[#FACC15]/40 bg-[#FACC15]/5" : "border-[#2A2A2A] bg-[#1C1C1C]",
                       item.enabled === false ? "opacity-60" : "",
                     ].join(" ")}
                   >
@@ -223,7 +223,7 @@ export function FAQProperties({
                         onClick={() => selectItem(item.id)}
                         className="min-w-0 flex-1 px-1 py-1 text-left"
                       >
-                        <span className="block truncate text-[13px] font-medium text-slate-700">
+                        <span className="block truncate text-[13px] font-medium text-[#D0D0D0]">
                           {index + 1}. {item.question || "Untitled question"}
                         </span>
                       </button>
@@ -289,8 +289,8 @@ export function FAQProperties({
           </div>
 
           {selectedItem ? (
-            <div className="space-y-2.5 rounded-lg border border-slate-200 bg-slate-50/60 p-2.5">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="space-y-2.5 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-2.5">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                 Selected item {selectedIndex >= 0 ? selectedIndex + 1 : ""}
               </div>
               <TextControl
@@ -311,8 +311,8 @@ export function FAQProperties({
             </div>
           ) : null}
 
-          <div className="space-y-2.5 rounded-lg border border-slate-200 p-2.5">
-            <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="space-y-2.5 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-2.5">
+            <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
               Accordion behavior
             </div>
             <SelectControl
@@ -361,7 +361,7 @@ export function FAQProperties({
       }
       style={
         <div className="space-y-2.5">
-          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Container
           </div>
           <ColorControl
@@ -398,7 +398,7 @@ export function FAQProperties({
             onChange={(next) => updateLayout({ paddingX: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             FAQ item
           </div>
           <ColorControl
@@ -438,7 +438,7 @@ export function FAQProperties({
             onChange={(next) => updateStyle({ itemGap: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Question
           </div>
           <ColorControl
@@ -467,7 +467,7 @@ export function FAQProperties({
             onChange={(next) => updateStyle({ questionPadding: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Answer
           </div>
           <ColorControl
@@ -498,7 +498,7 @@ export function FAQProperties({
             onChange={(next) => updateStyle({ answerPadding: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Icon
           </div>
           <SelectControl
@@ -540,7 +540,7 @@ export function FAQProperties({
             onChange={(next) => updateStyle({ rotateIconWhenOpen: next })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Animation
           </div>
           <ToggleControl
@@ -594,7 +594,7 @@ export function FAQProperties({
             checked={faqValue.advanced.visibility !== false}
             onChange={(next) => updateAdvanced({ visibility: next })}
           />
-          <div className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-2 text-[12px] leading-5 text-slate-500">
+          <div className="rounded-md border border-[#2A2A2A] bg-[#1A1A1A] px-2.5 py-2 text-[11px] leading-5 text-[#707070]">
             Accordion headers use semantic buttons with aria-expanded, aria-controls, and keyboard
             support for Tab, Enter, and Space.
           </div>

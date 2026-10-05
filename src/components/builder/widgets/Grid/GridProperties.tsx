@@ -96,22 +96,22 @@ export function GridProperties({ value = defaultGridWidgetData, onChange, onClos
             options={COLUMN_OPTIONS}
             onChange={(next) => setColumnCount(Number(next))}
           />
-          <div className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-2 text-[12px] text-slate-600">
+          <div className="rounded-md border border-[#2A2A2A] bg-[#1A1A1A] px-2.5 py-2 text-[11px] text-[#888]">
             {columns.length} column slot{columns.length === 1 ? "" : "s"}. Select a grid item on the canvas to edit child properties.
           </div>
           {columns.length > 1 ? (
             <div className="space-y-2">
-              <div className="text-[10px] uppercase tracking-[0.2em] font-semibold text-slate-500">Column order</div>
+              <div className="text-[10px] uppercase tracking-[0.2em] font-semibold text-[#707070]">Column order</div>
               {columns.map((column, index) => (
                 <div
                   key={column.id}
-                  className="flex items-center justify-between rounded-[8px] border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700"
+                  className="flex items-center justify-between rounded-[8px] border border-[#2A2A2A] bg-[#1C1C1C] px-3 py-2 text-sm text-[#D0D0D0]"
                 >
                   <span>Column {index + 1}</span>
                   <div className="flex gap-2">
                     <button
                       type="button"
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-[8px] border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-[8px] border border-[#2A2A2A] bg-[#161616] text-[#D0D0D0] hover:bg-[#2A2A2A] disabled:cursor-not-allowed disabled:opacity-50"
                       onClick={() => moveColumn(index, -1)}
                       disabled={index === 0}
                     >
@@ -119,7 +119,7 @@ export function GridProperties({ value = defaultGridWidgetData, onChange, onClos
                     </button>
                     <button
                       type="button"
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-[8px] border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-[8px] border border-[#2A2A2A] bg-[#161616] text-[#D0D0D0] hover:bg-[#2A2A2A] disabled:cursor-not-allowed disabled:opacity-50"
                       onClick={() => moveColumn(index, 1)}
                       disabled={index === columns.length - 1}
                     >

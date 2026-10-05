@@ -95,7 +95,7 @@ export function HeadingProperties({ value = defaultHeadingWidgetData, onChange, 
           {headingValue.variant === "Gradient" ? (
             <button
               type="button"
-              className="inline-flex h-8 items-center justify-center rounded-md border border-slate-200 bg-white px-3 text-[12px] font-medium text-slate-700 transition hover:bg-slate-50"
+              className="inline-flex h-8 items-center justify-center rounded-md border border-[#363636] bg-[#222222] px-3 text-[12px] font-medium text-[#D0D0D0] transition hover:bg-[#2A2A2A] hover:text-[#FFFFFF]"
               onClick={() => {
                 const solidColor = String(headingValue.style.textColor || headingValue.style.gradientStart || headingValue.style.gradientEnd || "#111827").trim();
                 onChange({

@@ -35,10 +35,7 @@ export function HeroProperties({ value = defaultHeroWidgetData, onChange, onClos
       case "Image Background":
         return (
           <>
-            <div className="rounded-md border border-slate-200 bg-slate-50 p-3 text-[12px] text-slate-600">
-              Select a child element inside the hero to edit its text, button, or image.
-              <div className="mt-2 text-[11px] text-slate-500">Use the + Add Element toolbar to add heading, paragraph, button, or image children.</div>
-            </div>
+            <div className="rounded-md border border-[#2A2A2A] bg-[#1A1A1A] p-3 text-[11px] text-[#888]">Select a child element inside the hero to edit its text, button, or image. Use the <span className="text-[#FACC15]">+ Add</span> toolbar to add heading, paragraph, button, or image children.</div>
             <ImageControl
               label="Background Image"
               value={String(style.backgroundImage || "")}
@@ -95,10 +92,7 @@ export function HeroProperties({ value = defaultHeroWidgetData, onChange, onClos
       case "Split Layout":
         return (
           <>
-            <div className="rounded-md border border-slate-200 bg-slate-50 p-3 text-[12px] text-slate-600">
-              Select a child element inside the hero to edit its text, button, or image.
-              <div className="mt-2 text-[11px] text-slate-500">Use the + Add Element toolbar to add heading, paragraph, button, or image children.</div>
-            </div>
+            <div className="rounded-md border border-[#2A2A2A] bg-[#1A1A1A] p-3 text-[11px] text-[#888]">Select a child element inside the hero to edit its text, button, or image. Use the <span className="text-[#FACC15]">+ Add</span> toolbar to add heading, paragraph, button, or image children.</div>
             <SelectControl
               label="Image Position"
               value={String(style.splitImagePosition || layout.imagePosition || "right")}
@@ -144,9 +138,7 @@ export function HeroProperties({ value = defaultHeroWidgetData, onChange, onClos
       case "Centered":
         return (
           <>
-            <div className="rounded-md border border-slate-200 bg-slate-50 p-3 text-[12px] text-slate-600">
-              This is a true centered hero. Content is centered horizontally and vertically over a full-width background image.
-            </div>
+            <div className="rounded-md border border-[#2A2A2A] bg-[#1A1A1A] p-3 text-[11px] text-[#888]">Full-width centered hero. Content is centered over the background image.</div>
             <ImageControl
               label="Background Image"
               value={String(style.backgroundImage || "")}
@@ -200,9 +192,7 @@ export function HeroProperties({ value = defaultHeroWidgetData, onChange, onClos
       case "Video Background":
         return (
           <>
-            <div className="rounded-md border border-slate-200 bg-slate-50 p-3 text-[12px] text-slate-600">
-              This hero uses a real video background. Content stays centered above the video and overlay.
-            </div>
+            <div className="rounded-md border border-[#2A2A2A] bg-[#1A1A1A] p-3 text-[11px] text-[#888]">Video background hero. Content stays centered above the video and overlay.</div>
             <SelectControl
               label="Background Type"
               value={String(style.videoType || "uploaded")}
@@ -275,9 +265,7 @@ export function HeroProperties({ value = defaultHeroWidgetData, onChange, onClos
       case "Gradient":
         return (
           <>
-            <div className="rounded-md border border-slate-200 bg-slate-50 p-3 text-[12px] text-slate-600">
-              This hero uses a real gradient background with a foreground image on the right.
-            </div>
+            <div className="rounded-md border border-[#2A2A2A] bg-[#1A1A1A] p-3 text-[11px] text-[#888]">Gradient background hero with a foreground image on the right side.</div>
             <SelectControl
               label="Gradient Type"
               value={String(style.gradientType || "linear")}
@@ -329,9 +317,7 @@ export function HeroProperties({ value = defaultHeroWidgetData, onChange, onClos
       case "Dark":
         return (
           <>
-            <div className="rounded-md border border-slate-200 bg-slate-50 p-3 text-[12px] text-slate-600">
-              A deliberate dark modern hero. Use glow and accent colors to create visual interest.
-            </div>
+            <div className="rounded-md border border-[#2A2A2A] bg-[#1A1A1A] p-3 text-[11px] text-[#888]">Dark modern hero. Use glow and accent colors to create visual interest.</div>
             <ColorControl label="Background Color" value={String(style.backgroundColor || "#050505")} onChange={(next) => updateStyle({ backgroundColor: next })} />
             <ColorControl label="Accent Color" value={String(style.accentColor || "#2F80ED")} onChange={(next) => updateStyle({ accentColor: next })} />
             <ColorControl label="Glow Color A" value={String(style.glowColorA || "rgba(56,189,248,0.35)")} onChange={(next) => updateStyle({ glowColorA: next })} />
@@ -359,9 +345,7 @@ export function HeroProperties({ value = defaultHeroWidgetData, onChange, onClos
       case "Product/SaaS":
         return (
           <>
-            <div className="rounded-md border border-slate-200 bg-slate-50 p-3 text-[12px] text-slate-600">
-              A modern SaaS hero with a badge, headline, description, CTAs, and a large product image below.
-            </div>
+            <div className="rounded-md border border-[#2A2A2A] bg-[#1A1A1A] p-3 text-[11px] text-[#888]">SaaS hero with badge, headline, CTAs, and a large product image below.</div>
             <ColorControl label="Background Color" value={String(style.backgroundColor || "#ffffff")} onChange={(next) => updateStyle({ backgroundColor: next })} />
             <ColorControl label="Accent Color" value={String(style.accentColor || "#2F80ED")} onChange={(next) => updateStyle({ accentColor: next })} />
             <ImageControl
@@ -392,9 +376,7 @@ export function HeroProperties({ value = defaultHeroWidgetData, onChange, onClos
       case "Personal/Portfolio":
         return (
           <>
-            <div className="rounded-md border border-slate-200 bg-slate-50 p-3 text-[12px] text-slate-600">
-              A modern personal portfolio hero with a profile image on the right.
-            </div>
+            <div className="rounded-md border border-[#2A2A2A] bg-[#1A1A1A] p-3 text-[11px] text-[#888]">Personal portfolio hero with a profile image on the right.</div>
             <ColorControl label="Background Color" value={String(style.backgroundColor || "#f8fafc")} onChange={(next) => updateStyle({ backgroundColor: next })} />
             <ColorControl label="Accent Color" value={String(style.accentColor || "#2F80ED")} onChange={(next) => updateStyle({ accentColor: next })} />
             <ImageControl

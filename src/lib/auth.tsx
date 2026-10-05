@@ -88,14 +88,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           await saveProjectMetadata({
             id: currentProject.id,
             name: currentProject.name,
-            templateId: currentProject.selectedTemplateId,
+            templateId: currentProject.selectedTemplateId ?? null,
             thumbnail: currentProject.thumbnail || "",
             description: currentProject.description || "",
             favorite: false,
             status: "draft",
             createdAt: currentProject.createdAt ?? Date.now(),
             updatedAt: currentProject.updatedAt ?? Date.now(),
-            pages: currentProject.pages.map((p) => ({ id: p.id, slug: p.slug })),
+            pages: currentProject.pages.map((p) => p.slug || p.id),
             isPublic: false,
           });
         } catch (error) {

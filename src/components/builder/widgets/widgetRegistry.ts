@@ -1,6 +1,30 @@
 import type { ComponentType } from "react";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { faMagic, faBars, faHeading, faParagraph, faHandPointer, faImage, faSquare, faColumns, faCopyright, faImages, faTableCells, faCircleQuestion, faBriefcase, faBuilding, faBullhorn, faChartLine } from "@fortawesome/free-solid-svg-icons";
+import { faMagic, faBars, faHeading, faParagraph, faHandPointer, faImage, faSquare, faColumns, faCopyright, faImages, faTableCells, faCircleQuestion, faBriefcase, faBuilding, faBullhorn, faChartLine, faUsers, faDollarSign, faQuoteLeft, faLayerGroup, faHeadset, faLocationPin } from "@fortawesome/free-solid-svg-icons";
+import { Contact } from "./Contact/Contact";
+import { ContactProperties } from "./Contact/ContactProperties";
+import { buildContactBootstrapMarkup } from "./Contact/ContactBootstrapExport";
+import { defaultContactWidgetData } from "./Contact/ContactTypes";
+import { MapWidget } from "./Map/Map";
+import { MapProperties } from "./Map/MapProperties";
+import { buildMapBootstrapMarkup } from "./Map/MapBootstrapExport";
+import { defaultMapWidgetData } from "./Map/MapTypes";
+import { OverlayBanner } from "./OverlayBanner/OverlayBanner";
+import { OverlayBannerProperties } from "./OverlayBanner/OverlayBannerProperties";
+import { buildOverlayBannerBootstrapMarkup } from "./OverlayBanner/OverlayBannerBootstrapExport";
+import { defaultOverlayBannerWidgetData } from "./OverlayBanner/OverlayBannerTypes";
+import { Team } from "./Team/Team";
+import { TeamProperties } from "./Team/TeamProperties";
+import { buildTeamBootstrapMarkup } from "./Team/TeamBootstrapExport";
+import { defaultTeamWidgetData } from "./Team/TeamTypes";
+import { Pricing } from "./Pricing/Pricing";
+import { PricingProperties } from "./Pricing/PricingProperties";
+import { buildPricingBootstrapMarkup } from "./Pricing/PricingBootstrapExport";
+import { defaultPricingWidgetData } from "./Pricing/PricingTypes";
+import { Testimonials } from "./Testimonials/Testimonials";
+import { TestimonialsProperties } from "./Testimonials/TestimonialsProperties";
+import { buildTestimonialsBootstrapMarkup } from "./Testimonials/TestimonialsBootstrapExport";
+import { defaultTestimonialsWidgetData } from "./Testimonials/TestimonialsTypes";
 import { About } from "./About/About";
 import { AboutProperties } from "./About/AboutProperties";
 import { buildAboutBootstrapMarkup } from "./About/AboutBootstrapExport";
@@ -74,7 +98,7 @@ import {
   type WidgetExportResult,
 } from "@/lib/builder/exportContributions";
 
-export type WidgetCategory = "Layout" | "Navigation" | "Content" | "Business" | "Marketing" | "Media" | "Forms" | "Footer" | "Advanced";
+export type WidgetCategory = "Layout" | "Navigation" | "Content" | "Business" | "Marketing" | "Media" | "Forms" | "Footer" | "Advanced" | "Banner";
 
 export interface WidgetData {
   id: string;
@@ -140,8 +164,33 @@ export function getWidgetRegistration(typeOrId: string) {
   return widgetRegistryById.get(typeOrId) ?? widgetRegistryByType.get(typeOrId);
 }
 
+export const WIDGET_SORT_ORDER: string[] = [
+  "navbar",
+  "carousel",
+  "hero",
+  "about",
+  "services",
+  "team",
+  "faq",
+  "cta",
+  "pricing",
+  "overlay-banner",
+  "gallery",
+  "testimonials",
+  "contact",
+  "map",
+  "footer",
+];
+
 export function getAllWidgetRegistrations() {
-  return Array.from(widgetRegistryById.values());
+  const list = Array.from(widgetRegistryById.values());
+  return list.sort((a, b) => {
+    const idxA = WIDGET_SORT_ORDER.indexOf(a.type);
+    const idxB = WIDGET_SORT_ORDER.indexOf(b.type);
+    const orderA = idxA === -1 ? 999 : idxA;
+    const orderB = idxB === -1 ? 999 : idxB;
+    return orderA - orderB;
+  });
 }
 
 function cloneWidgetValue<T>(value: T): T {
@@ -223,6 +272,19 @@ export function createWidgetInstance(typeOrId: string, overrides: Partial<Widget
     return applyCtaVariant(instance as any, String(variant || defaultCtaWidgetData.variant) as CtaVariant) as WidgetInstance<WidgetData>;
   }
 
+  if (registration.type === "map") {
+    const isClean = variant === "Full Width Clean" || variant === "Dark Mode Map";
+    const explicitShowCard = (overrides.content as { showCard?: boolean } | undefined)?.showCard;
+    const showCard = explicitShowCard !== undefined ? explicitShowCard : !isClean;
+    return {
+      ...instance,
+      content: {
+        ...instance.content,
+        showCard,
+      },
+    } as WidgetInstance<WidgetData>;
+  }
+
   return instance;
 }
 
@@ -270,7 +332,23 @@ export function getWidgetExportContribution(
   if (!html) return { html: "" };
 
   // Full-width widgets already render their own outer section.
-  if (!isFullWidthExportHtml(html)) {
+  const isFullWidthWidgetType = [
+    "navbar",
+    "hero",
+    "carousel",
+    "footer",
+    "cta",
+    "faq",
+    "gallery",
+    "overlay-banner",
+    "team",
+    "pricing",
+    "testimonials",
+    "contact",
+    "map",
+  ].includes(type);
+
+  if (!isFullWidthWidgetType && !isFullWidthExportHtml(html)) {
     html = renderSectionWidthBootstrapWrapper(
       data.layout,
       getWidgetBackgroundCss(data.style as Record<string, unknown>),
@@ -312,7 +390,7 @@ registerWidgetEditableElements("hero", [
 registerWidget({
   id: "hero-v2",
   type: "hero",
-  displayName: "Hero Widget V2",
+  displayName: "Banner",
   icon: faMagic,
   category: "Content",
   preview: "Launch a polished hero section",
@@ -429,23 +507,24 @@ registerWidgetEditableElements("container", [
   { key: "content", type: "container", label: "Content" },
 ] satisfies WidgetEditableElementDefinition[]);
 
-registerWidget({
-  id: "container-v1",
-  type: "container",
-  displayName: "Container",
-  icon: faSquare,
-  category: "Layout",
-  preview: "Drop content widgets into a reusable container area.",
-  description: "A flexible content-area widget for grouping heading, text, button, and image items.",
-  component: Container,
-  propertiesComponent: ContainerProperties,
-  bootstrapExporter: buildContainerBootstrapMarkup,
-  defaultData: defaultContainerWidgetData,
-  supportedVariants: ["Simple", "Stacked", "Grid", "Card"],
-  defaultVariant: "Simple",
-  supportsChildren: true,
-  childElementTypes: ["heading", "text", "button", "image"],
-});
+// Container widget removed as every widget provides its own container
+// registerWidget({
+//   id: "container-v1",
+//   type: "container",
+//   displayName: "Container",
+//   icon: faSquare,
+//   category: "Layout",
+//   preview: "Drop content widgets into a reusable container area.",
+//   description: "A flexible content-area widget for grouping heading, text, button, and image items.",
+//   component: Container,
+//   propertiesComponent: ContainerProperties,
+//   bootstrapExporter: buildContainerBootstrapMarkup,
+//   defaultData: defaultContainerWidgetData,
+//   supportedVariants: ["Simple", "Stacked", "Grid", "Card"],
+//   defaultVariant: "Simple",
+//   supportsChildren: true,
+//   childElementTypes: ["heading", "text", "button", "image"],
+// });
 
 registerWidgetEditableElements("grid", [{ key: "content", type: "container", label: "Grid Content" }] satisfies WidgetEditableElementDefinition[]);
 
@@ -654,6 +733,161 @@ registerWidget({
   defaultData: defaultCtaWidgetData,
   supportedVariants: ["Gradient / Color CTA", "Background Image CTA"],
   defaultVariant: "Gradient / Color CTA",
+});
+
+// ── TEAM WIDGET ─────────────────────────────────────────────────────────────
+registerWidgetEditableElements("team", [
+  { key: "eyebrow", type: "text", label: "Eyebrow" },
+  { key: "heading", type: "text", label: "Heading" },
+  { key: "description", type: "text", label: "Description" },
+  { key: "photo", type: "image", label: "Member Photo" },
+  { key: "name", type: "text", label: "Member Name" },
+  { key: "role", type: "text", label: "Member Role" },
+] satisfies WidgetEditableElementDefinition[]);
+
+registerWidget({
+  id: "team-v1",
+  type: "team",
+  displayName: "Team",
+  icon: faUsers,
+  category: "Business",
+  preview: "Responsive team grid or carousel with member cards, roles, bios, and social links.",
+  description: "Showcase your team with photo cards, names, roles, bios, and social icons — in a static grid or animated carousel.",
+  component: Team,
+  propertiesComponent: TeamProperties,
+  bootstrapExporter: buildTeamBootstrapMarkup,
+  defaultData: defaultTeamWidgetData,
+  supportedVariants: ["Static Grid", "Carousel Slider"],
+  defaultVariant: "Static Grid",
+});
+
+// ── PRICING WIDGET ──────────────────────────────────────────────────────────
+registerWidgetEditableElements("pricing", [
+  { key: "eyebrow", type: "text", label: "Eyebrow" },
+  { key: "heading", type: "text", label: "Heading" },
+  { key: "description", type: "text", label: "Description" },
+  { key: "title", type: "text", label: "Plan Title" },
+  { key: "price", type: "text", label: "Plan Price" },
+  { key: "btn", type: "button", label: "Plan Button" },
+] satisfies WidgetEditableElementDefinition[]);
+
+registerWidget({
+  id: "pricing-v1",
+  type: "pricing",
+  displayName: "Pricing Section",
+  icon: faDollarSign,
+  category: "Marketing",
+  preview: "Responsive pricing cards with monthly/annual toggle, features list, and popular badge.",
+  description: "Professional pricing section with configurable tiers, billing toggle, feature lists, popular-plan highlighting, and CTA buttons.",
+  component: Pricing,
+  propertiesComponent: PricingProperties,
+  bootstrapExporter: buildPricingBootstrapMarkup,
+  defaultData: defaultPricingWidgetData,
+  supportedVariants: ["3-Column Cards", "2-Column Cards"],
+  defaultVariant: "3-Column Cards",
+});
+
+// ── TESTIMONIALS WIDGET ─────────────────────────────────────────────────────
+registerWidgetEditableElements("testimonials", [
+  { key: "eyebrow", type: "text", label: "Eyebrow" },
+  { key: "heading", type: "text", label: "Heading" },
+  { key: "description", type: "text", label: "Description" },
+  { key: "quote", type: "text", label: "Quote" },
+  { key: "name", type: "text", label: "Client Name" },
+  { key: "role", type: "text", label: "Client Role" },
+  { key: "avatar", type: "image", label: "Avatar" },
+] satisfies WidgetEditableElementDefinition[]);
+
+registerWidget({
+  id: "testimonials-v1",
+  type: "testimonials",
+  displayName: "Testimonials",
+  icon: faQuoteLeft,
+  category: "Marketing",
+  preview: "Client review cards with star ratings, quotes, and avatars — static or carousel layout.",
+  description: "Premium testimonials section with editable reviews, star ratings, client avatars, and choice of static grid or animated carousel.",
+  component: Testimonials,
+  propertiesComponent: TestimonialsProperties,
+  bootstrapExporter: buildTestimonialsBootstrapMarkup,
+  defaultData: defaultTestimonialsWidgetData,
+  supportedVariants: ["Static Grid", "Carousel Slider"],
+  defaultVariant: "Static Grid",
+});
+
+// ── OVERLAY BANNER WIDGET ──────────────────────────────────────────────
+registerWidgetEditableElements("overlay-banner", [
+  { key: "badge", type: "text", label: "Eyebrow Badge" },
+  { key: "title", type: "text", label: "Title" },
+  { key: "subtitle", type: "text", label: "Subtitle" },
+  { key: "primaryButton", type: "button", label: "Primary Button" },
+  { key: "secondaryButton", type: "button", label: "Secondary Button" },
+] satisfies WidgetEditableElementDefinition[]);
+
+registerWidget({
+  id: "overlay-banner-v1",
+  type: "overlay-banner",
+  displayName: "Background Image overlay text banner",
+  icon: faLayerGroup,
+  category: "Banner",
+  preview: "Full-width background image with dark/gradient overlay, headline, and buttons.",
+  description: "Impactful banner with background image, tint overlay, editable title, subtitle, and CTA buttons.",
+  component: OverlayBanner,
+  propertiesComponent: OverlayBannerProperties,
+  bootstrapExporter: buildOverlayBannerBootstrapMarkup,
+  defaultData: defaultOverlayBannerWidgetData,
+  supportedVariants: ["Centered Hero Banner", "Left-Aligned Editorial", "Minimal Page Header", "Parallax Visual Banner"],
+  defaultVariant: "Centered Hero Banner",
+});
+
+// ── CONTACT WIDGET ──────────────────────────────────────────────────────────
+registerWidgetEditableElements("contact", [
+  { key: "eyebrow", type: "text", label: "Eyebrow" },
+  { key: "heading", type: "text", label: "Heading" },
+  { key: "description", type: "text", label: "Description" },
+  { key: "formTitle", type: "text", label: "Form Title" },
+  { key: "formSubtitle", type: "text", label: "Form Subtitle" },
+  { key: "submitButton", type: "button", label: "Submit Button" },
+] satisfies WidgetEditableElementDefinition[]);
+
+registerWidget({
+  id: "contact-v1",
+  type: "contact",
+  displayName: "Contact Us",
+  icon: faHeadset,
+  category: "Forms",
+  preview: "Contact inquiry form with office details, hours, phone, and customizable input fields.",
+  description: "Modern contact section with split info & form, centered, minimal, and dark variants.",
+  component: Contact,
+  propertiesComponent: ContactProperties,
+  bootstrapExporter: buildContactBootstrapMarkup,
+  defaultData: defaultContactWidgetData,
+  supportedVariants: ["Split Info + Form", "Centered Form", "Dark Side-by-Side", "Minimal Card"],
+  defaultVariant: "Split Info + Form",
+});
+
+// ── GOOGLE MAP WIDGET ───────────────────────────────────────────────────────
+registerWidgetEditableElements("map", [
+  { key: "cardTitle", type: "text", label: "Location Title" },
+  { key: "cardAddress", type: "text", label: "Address" },
+  { key: "cardPhone", type: "text", label: "Phone" },
+  { key: "cardHours", type: "text", label: "Hours" },
+  { key: "cardButton", type: "button", label: "Directions Button" },
+] satisfies WidgetEditableElementDefinition[]);
+
+registerWidget({
+  id: "map-v1",
+  type: "map",
+  displayName: "Google Map",
+  icon: faLocationPin,
+  category: "Content",
+  preview: "Full-width embedded Google Map with custom hover embed editor and floating card.",
+  description: "Full-width or boxed responsive Google Map embed. Easily paste Google Maps iframe embed code with interactive hover button, custom filters, and location details card.",
+  component: MapWidget,
+  propertiesComponent: MapProperties,
+  bootstrapExporter: buildMapBootstrapMarkup,
+  defaultData: defaultMapWidgetData,
+  supportedVariants: ["Full Width Clean", "Split with Card", "Dark Mode Map", "Rounded Boxed"],
+  defaultVariant: "Full Width Clean",
 });
 
 export const widgetRegistryEntries = getAllWidgetRegistrations();

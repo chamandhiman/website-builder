@@ -168,13 +168,13 @@ export function ImageControl({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-2">
-        <label htmlFor={inputId} className="text-[11px] font-medium leading-none text-slate-500">
+        <label htmlFor={inputId} className="text-[11px] font-medium leading-none text-[#A1A1AA]">
           {label}
         </label>
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
-        <div className="flex h-28 w-full items-center justify-center bg-slate-100">
+      <div className="overflow-hidden rounded-lg border border-[#2E2E33] bg-[#141416]">
+        <div className="flex h-28 w-full items-center justify-center bg-[#1A1A1D]">
           {previewSrc ? (
             <img
               src={previewSrc}
@@ -182,8 +182,8 @@ export function ImageControl({
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="flex flex-col items-center gap-1.5 px-3 text-center text-slate-400">
-              <ImageIcon className="h-7 w-7" aria-hidden="true" />
+            <div className="flex flex-col items-center gap-1.5 px-3 text-center text-[#71717A]">
+              <ImageIcon className="h-7 w-7 text-[#52525B]" aria-hidden="true" />
               <span className="text-[11px]">No image selected</span>
             </div>
           )}
@@ -195,9 +195,9 @@ export function ImageControl({
           type="button"
           disabled={disabled || uploading}
           onClick={openFilePicker}
-          className="inline-flex h-8 items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2.5 text-[12px] font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#2E2E33] bg-[#202024] px-2.5 text-[12px] font-medium text-[#F4F4F5] transition hover:bg-[#27272B] hover:border-[#3E3E44] disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {hasImage ? <RefreshCw className="h-3.5 w-3.5" /> : <Upload className="h-3.5 w-3.5" />}
+          {hasImage ? <RefreshCw className="h-3.5 w-3.5 text-amber-400" /> : <Upload className="h-3.5 w-3.5 text-amber-400" />}
           {uploadLabel}
         </button>
 
@@ -206,7 +206,7 @@ export function ImageControl({
             type="button"
             disabled={disabled || uploading}
             onClick={handleRemove}
-            className="inline-flex h-8 items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2.5 text-[12px] font-medium text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex h-8 items-center gap-1.5 rounded-md border border-red-950/60 bg-red-950/20 px-2.5 text-[12px] font-medium text-red-400 transition hover:bg-red-950/40 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Trash2 className="h-3.5 w-3.5" />
             Remove
@@ -231,17 +231,17 @@ export function ImageControl({
               type="button"
               disabled={disabled}
               onClick={() => setShowUrlField(true)}
-              className="text-[11px] font-medium text-violet-600 hover:text-violet-700 disabled:opacity-50"
+              className="text-[11px] font-medium text-amber-400 hover:text-amber-300 disabled:opacity-50 transition"
             >
               Use Image URL instead
             </button>
           ) : (
-            <div className="space-y-1.5 rounded-md border border-slate-200 bg-white p-2">
+            <div className="space-y-1.5 rounded-md border border-[#2E2E33] bg-[#18181B] p-2">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[11px] font-medium text-slate-500">Image URL</span>
+                <span className="text-[11px] font-medium text-[#A1A1AA]">Image URL</span>
                 <button
                   type="button"
-                  className="text-[10px] text-slate-400 hover:text-slate-600"
+                  className="text-[10px] text-[#71717A] hover:text-[#A1A1AA]"
                   onClick={() => setShowUrlField(false)}
                 >
                   Hide
@@ -259,9 +259,9 @@ export function ImageControl({
                     handleApplyUrl();
                   }
                 }}
-                className="h-8 w-full rounded-md border border-slate-200 bg-white px-2.5 text-[13px] text-slate-700 outline-none transition focus:border-slate-300 focus:ring-1 focus:ring-slate-200 disabled:cursor-not-allowed disabled:opacity-50"
+                className="h-8 w-full rounded-md border border-[#363636] bg-[#171717] px-2.5 text-[13px] text-[#F5F5F5] placeholder-[#71717A] outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20 disabled:cursor-not-allowed disabled:opacity-50"
               />
-              <p className="text-[10px] text-slate-400">Optional: paste a remote image URL</p>
+              <p className="text-[10px] text-[#71717A]">Optional: paste a remote image URL</p>
             </div>
           )}
         </div>
@@ -269,34 +269,34 @@ export function ImageControl({
 
       {altEnabled ? (
         <div className="space-y-1.5">
-          <label className="flex items-center justify-between gap-3 rounded-md border border-slate-200 bg-white px-2.5 py-2">
-            <span className="text-[12px] font-medium text-slate-700">Decorative image</span>
+          <label className="flex items-center justify-between gap-3 rounded-md border border-[#2E2E33] bg-[#18181B] px-2.5 py-2 cursor-pointer">
+            <span className="text-[12px] font-medium text-[#D4D4D8]">Decorative image</span>
             <input
               type="checkbox"
               checked={isDecorative}
               disabled={disabled}
               onChange={(event) => handleDecorativeChange(event.target.checked)}
-              className="h-4 w-4 rounded border-slate-300 text-slate-700 focus:ring-slate-300"
+              className="h-4 w-4 rounded border-[#3E3E44] bg-[#202024] text-amber-400 focus:ring-amber-400/20"
             />
           </label>
           {!isDecorative ? (
             <div className="space-y-1">
-              <span className="text-[11px] font-medium text-slate-500">Alt text</span>
+              <span className="text-[11px] font-medium text-[#A1A1AA]">Alt text</span>
               <input
                 value={alt}
                 disabled={disabled}
                 placeholder="Describe this image for accessibility"
                 onChange={(event) => onAltChange?.(event.target.value)}
-                className="h-8 w-full rounded-md border border-slate-200 bg-white px-2.5 text-[13px] text-slate-700 outline-none transition focus:border-slate-300 focus:ring-1 focus:ring-slate-200 disabled:cursor-not-allowed disabled:opacity-50"
+                className="h-8 w-full rounded-md border border-[#363636] bg-[#171717] px-2.5 text-[13px] text-[#F5F5F5] placeholder-[#71717A] outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20 disabled:cursor-not-allowed disabled:opacity-50"
               />
             </div>
           ) : (
-            <p className="text-[10px] text-slate-400">Decorative images use an empty alt attribute.</p>
+            <p className="text-[10px] text-[#71717A]">Decorative images use an empty alt attribute.</p>
           )}
         </div>
       ) : null}
 
-      {hint ? <p className="text-[10px] text-slate-400">{hint}</p> : null}
+      {hint ? <p className="text-[10px] text-[#71717A]">{hint}</p> : null}
     </div>
   );
 }

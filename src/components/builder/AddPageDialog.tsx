@@ -45,48 +45,50 @@ export function AddPageDialog({ open, onOpenChange, onAddPage }: AddPageDialogPr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md border border-[#363636] bg-[#1F1F1F] text-[#F5F5F5]">
         <DialogHeader>
-          <DialogTitle>Add new page</DialogTitle>
-          <DialogDescription>Create a new page for your website. The slug will be auto-generated from the page name.</DialogDescription>
+          <DialogTitle className="text-[#F5F5F5]">Add new page</DialogTitle>
+          <DialogDescription className="text-[#969696]">Create a new page for your website. The slug will be auto-generated from the page name.</DialogDescription>
         </DialogHeader>
 
         <div className="mt-4 space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground" htmlFor="add-page-name">
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-[#969696]" htmlFor="add-page-name">
               Page name
             </label>
             <Input
               id="add-page-name"
               value={name}
               onChange={(e) => handleNameChange(e.target.value)}
+              className="border-[#363636] bg-[#171717] text-[#F5F5F5] focus:border-[#FACC15]"
               autoFocus
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground" htmlFor="add-page-slug">
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-[#969696]" htmlFor="add-page-slug">
               Page slug
             </label>
             <Input
               id="add-page-slug"
               value={slug}
               onChange={(e) => handleSlugChange(e.target.value)}
+              className="border-[#363636] bg-[#171717] text-[#F5F5F5] focus:border-[#FACC15]"
             />
           </div>
         </div>
 
-        <DialogFooter className="mt-6">
+        <DialogFooter className="mt-6 flex justify-end gap-2">
           <button
             type="button"
-            className="inline-flex h-9 items-center justify-center rounded-md border border-border bg-background px-4 text-sm transition hover:bg-muted"
+            className="inline-flex h-9 items-center justify-center rounded-md border border-[#363636] bg-[#242424] px-4 text-sm text-[#D0D0D0] transition hover:bg-[#2A2A2A] hover:text-[#FFFFFF]"
             onClick={() => onOpenChange(false)}
           >
             Cancel
           </button>
           <button
             type="button"
-            className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm text-primary-foreground transition hover:bg-primary/90"
+            className="inline-flex h-9 items-center justify-center rounded-md bg-[#FACC15] px-4 text-sm font-medium text-[#111111] transition hover:bg-[#FDE047]"
             onClick={handleAdd}
           >
             Add Page

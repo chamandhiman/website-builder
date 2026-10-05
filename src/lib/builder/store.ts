@@ -7,7 +7,7 @@
  import type { SectionTemplate } from "./sections";
 import type { WidgetInstance } from "@/components/builder/widgets/widgetRegistry";
 import { createWidgetElementDuplicateEntry } from "@/components/builder/widgets/elementDuplication";
-import { createWidgetInstance, getWidgetBootstrapExport } from "@/components/builder/widgets/widgetRegistry";
+import { createWidgetInstance, getWidgetBootstrapExport, getWidgetRegistration } from "@/components/builder/widgets/widgetRegistry";
  import { getWidgetChildItems, mergeWidgetChildData, setWidgetChildItems, type WidgetChildLocation } from "@/components/builder/widgets/childWidgetUtils";
  import { useCloudProjectsStore } from "./cloudProjectsStore";
 import { normalizeFontSizeToPx } from "@/components/builder/widgets/fontSize";
@@ -27,6 +27,7 @@ import {
   SHARED_HEADER_SECTION_ID,
   syncSharedHeaderNav,
 } from "./sharedChrome";
+import { FREELANCER_SECTIONS } from "@/services/templateSeeds";
 
 export interface PageSection {
   id: string;
@@ -166,6 +167,10 @@ interface SelectedElementInfo {
   elementType?: string | null;
   columnId?: string | null;
   childContainerId?: string | null;
+  textContent?: string;
+  href?: string;
+  src?: string;
+  alt?: string;
 }
 
 interface BuilderState {
@@ -214,13 +219,13 @@ interface BuilderState {
   ) => void;
   setShowProjectDashboard: (show: boolean) => void;
   setSaveStatus: (status: "idle" | "saving" | "saved" | "failed") => void;
-  setSaveErrorMessage: (message: string | null) => void;
+  setSaveErrorMessage: (message: string | null | undefined) => void;
   setBreadcrumb: (v: string[]) => void;
   persistWithStatus: () => boolean;
   saveProjectToCloud: () => Promise<boolean>;
-  setSelectedWidgetId: (id: string | null) => void;
+  setSelectedWidgetId: (id: string | null | undefined) => void;
   setClipboard: (clipboard: { items: WidgetInstance[]; type: "copy" | "cut"; sourceSectionId?: string } | null) => void;
-  setSelectedElementStyle: (style: Record<string, string> | null) => void;
+  setSelectedElementStyle: (style: Record<string, string> | null | undefined) => void;
 
   hydrate: () => void;
   persist: () => boolean;
@@ -255,8 +260,8 @@ interface BuilderState {
   moveSection: (fromIndex: number, toIndex: number) => void;
   toggleCollapsed: (id: string) => void;
   toggleHidden: (id: string) => void;
-  selectSection: (id: string | null) => void;
-  selectElement: (value: SelectedElementInfo | null) => void;
+  selectSection: (id: string | null | undefined) => void;
+  selectElement: (value: SelectedElementInfo | null | undefined) => void;
   duplicateElement: (value: SelectedElementInfo | null) => void;
   moveChildUp: (sectionId: string, parentWidgetId: string, childContainerId: string | null, childWidgetId: string) => void;
   moveChildDown: (sectionId: string, parentWidgetId: string, childContainerId: string | null, childWidgetId: string) => void;
@@ -279,6 +284,7 @@ interface BuilderState {
   ) => void;
   setSectionHtml: (id: string, html: string) => void;
   setPageHtml: (html: string) => void; // replaces all sections with a single custom block
+  replaceColorGlobally: (fromColor: string, toColor: string) => void;
 
   setDevice: (d: "desktop" | "tablet" | "mobile") => void;
   toggleDark: () => void;
@@ -751,8 +757,8 @@ export const useBuilder = create<BuilderState>((set, get) => ({
     return { leftPanelOpen: null };
   }),
   setLeftPanelView: (view) => set({ leftPanelView: view }),
-  setSelectedElementStyle: (style) => set({ selectedElementStyle: style }),
-  setSelectedWidgetId: (id) => set({ selectedWidgetId: id }),
+  setSelectedElementStyle: (style) => set({ selectedElementStyle: style ?? null }),
+  setSelectedWidgetId: (id) => set({ selectedWidgetId: id ?? null }),
   setClipboard: (clipboard) => set({ clipboard }),
 
   currentProject: () => {
@@ -804,6 +810,7 @@ export const useBuilder = create<BuilderState>((set, get) => ({
 createTemplateProject: (name: string) => {
   const p = emptyProject(name);
   const page = p.pages[0];
+  const initialSections = FREELANCER_SECTIONS.map((s) => ({ ...s, id: nanoid(10) }));
 
   const templateProject: Project = {
     ...p,
@@ -813,7 +820,7 @@ createTemplateProject: (name: string) => {
         ...page,
         name: "Template Preview",
         slug: "template-preview",
-        sections: [],
+        sections: initialSections,
         useGlobalHeader: false,
         useGlobalFooter: false,
         hideHeader: true,
@@ -825,7 +832,7 @@ createTemplateProject: (name: string) => {
     sharedFooter: null,
     sharedChromeMigrated: true,
     isTemplate: true,
-    selectedTemplateId: null,
+    selectedTemplateId: "tpl-freelancer-dark-yellow",
   };
 
   set((s) => ({
@@ -838,7 +845,7 @@ createTemplateProject: (name: string) => {
 
     history: [{
       pageId: page.id,
-      sections: [],
+      sections: initialSections,
       sharedHeader: null,
       sharedFooter: null,
       globalCss: templateProject.globalCss,
@@ -1763,6 +1770,12 @@ createTemplateProject: (name: string) => {
     const idx = page.sections.findIndex((s) => s.id === id);
     if (idx < 0) return;
     const copy: PageSection = { ...JSON.parse(JSON.stringify(page.sections[idx])), id: nanoid(8) };
+    if (copy.widgetInstance) {
+      copy.widgetInstance = {
+        ...copy.widgetInstance,
+        id: copy.id,
+      };
+    }
     const sections = [...page.sections];
     sections.splice(idx + 1, 0, copy);
     updatePageSections(set, get, sections);
@@ -1823,11 +1836,11 @@ createTemplateProject: (name: string) => {
       page?.sections.find((s) => s.id === id) ??
       null;
     const widgetInstanceId = section?.widgetInstance?.id ?? null;
-    set({ selectedSectionId: id, selectedWidgetId: widgetInstanceId, selectedElement: null, selectedElementStyle: null, breadcrumb: [] });
+    set({ selectedSectionId: id ?? null, selectedWidgetId: widgetInstanceId, selectedElement: null, selectedElementStyle: null, breadcrumb: [] });
   },
   selectElement: (value) => {
     const nextWidgetId = value ? (value.parentWidgetId ?? value.widgetId ?? get().selectedWidgetId) : null;
-    set({ selectedElement: value, selectedElementStyle: null, selectedWidgetId: nextWidgetId ?? null, breadcrumb: [] });
+    set({ selectedElement: value ?? null, selectedElementStyle: null, selectedWidgetId: nextWidgetId ?? null, breadcrumb: [] });
   },
   duplicateElement: (value) => {
     const project = get().currentProject();
@@ -2108,7 +2121,7 @@ createTemplateProject: (name: string) => {
       const p = get().currentProject();
       if (!p) return "";
       const { ref, blob } = createImageAssetReference(dataUrl, filenameHint);
-      void saveImageBlob(ref.imageId, ref.filename, blob, ref.mimeType);
+      void saveImageBlob(ref.imageId, ref.filename, blob, ref.mimeType ?? "image/png");
       const assets = { ...(p.assets ?? {}) } as Record<string, BuilderAssetEntry>;
       assets[ref.filename] = ref;
       updateCurrent(set, get, { assets });
@@ -2121,6 +2134,42 @@ createTemplateProject: (name: string) => {
 
   setGlobalCss: (v) => {
     updateCurrent(set, get, { globalCss: v });
+  },
+  replaceColorGlobally: (fromColor, toColor) => {
+    const cur = get().currentProject();
+    if (!cur || !fromColor || !toColor || fromColor.toLowerCase() === toColor.toLowerCase()) return;
+
+    const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const hexToRgb = (hex: string) => {
+      const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return m ? `${parseInt(m[1], 16)},\\s*${parseInt(m[2], 16)},\\s*${parseInt(m[3], 16)}` : null;
+    };
+
+    const rgbPattern = hexToRgb(fromColor);
+    const hexRegex = new RegExp(escapeRegex(fromColor), "gi");
+    const rgbRegex = rgbPattern ? new RegExp(`rgb\\(\\s*${rgbPattern}\\s*\\)`, "gi") : null;
+
+    const replaceInStr = (str: string) => {
+      if (!str) return str;
+      let res = str.replace(hexRegex, toColor);
+      if (rgbRegex) res = res.replace(rgbRegex, toColor);
+      return res;
+    };
+
+    const updatedGlobalCss = replaceInStr(cur.globalCss || "");
+    const updatedPages = (cur.pages || []).map((page) => ({
+      ...page,
+      sections: (page.sections || []).map((sec) => ({
+        ...sec,
+        html: replaceInStr(sec.html || ""),
+      })),
+    }));
+
+    updateCurrent(set, get, {
+      globalCss: updatedGlobalCss,
+      pages: updatedPages,
+    });
+    get().pushHistory();
   },
   setGlobalJs: (v) => {
     updateCurrent(set, get, { globalJs: v });

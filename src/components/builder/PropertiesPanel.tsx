@@ -25,8 +25,9 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
 const inputCls =
-  "h-10 w-full rounded-xl border border-[#363636] bg-[#171717] px-3 text-sm text-[#F5F5F5] shadow-sm transition-all outline-none focus:border-[#FACC15] focus:ring-2 focus:ring-[#FACC15]/20";
-const selectCls = inputCls + " max-w-[10rem]";
+  "h-8.5 w-full rounded-lg border border-[#2B2B2B] bg-[#141414] px-2.5 text-xs text-[#F4F4F5] shadow-none transition-colors outline-none focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20";
+const selectCls =
+  "h-8.5 w-full rounded-lg border border-[#2B2B2B] bg-[#141414] px-2.5 text-xs text-[#F4F4F5] outline-none focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20";
  
 type PropertyFieldConfig = {
   label: string;
@@ -545,8 +546,8 @@ export function PropertiesPanel() {
         name: templateName.trim(),
         slug,
         category: templateCategory.trim(),
-        widgetType: currentWidgetInstance.type,
-        config: buildWidgetConfig(currentWidgetInstance),
+        widgets: [currentWidgetInstance],
+        thumbnail: null,
         uid: user.id,
         existingTemplateId: editingTemplateId || undefined,
       });
@@ -631,7 +632,7 @@ export function PropertiesPanel() {
 
   if (selectedChildWidget && SelectedChildPropertiesComponent) {
     return (
-      <div className="h-full overflow-hidden bg-white">
+      <div className="h-full overflow-hidden bg-[#171717]">
         <SelectedChildPropertiesComponent
           value={selectedChildWidget.childWidgetInstance}
           onClose={clearSelection}
@@ -672,7 +673,7 @@ export function PropertiesPanel() {
 
   if (widgetInstance && WidgetPropertiesComponent) {
     return (
-      <div className="h-full overflow-hidden bg-white flex flex-col">
+      <div className="h-full overflow-hidden bg-[#171717] flex flex-col">
         {isSuperAdmin && (
           <div className="shrink-0 border-b border-[#363636] bg-[#171717] px-3 py-2">
             <Button
@@ -710,7 +711,7 @@ export function PropertiesPanel() {
           onTemplateNameChange={setTemplateName}
           onTemplateSlugChange={setTemplateSlug}
           onTemplateCategoryChange={setTemplateCategory}
-          onSave={handleSaveAsTemplate}
+          onSave={() => handleSaveAsTemplate(widgetInstance)}
         />
       </div>
     );
@@ -1026,22 +1027,22 @@ export function PropertiesPanel() {
         <Section title="Section CTAs">
           <div className="space-y-3">
             {sectionLinkItems.map((link, index) => (
-              <div key={`${link.text || "action"}-${index}`} className="rounded-xl border border-[#363636] bg-[#1F1F1F] p-4 transition-all duration-200 hover:border-[#4A4A4A] hover:bg-white hover:shadow-sm">
-                <div className="mb-4 flex items-center justify-between">
-                  <div className="min-w-0">
-                    <h4 className="truncate text-sm font-semibold text-[#F5F5F5]">{link.text || `CTA ${index + 1}`}</h4>
-                    <p className="truncate text-xs text-[#969696]">{link.href || "#"}</p>
+              <div key={`${link.text || "action"}-${index}`} className="rounded-lg border border-[#262626] bg-[#161616] p-2.5 transition hover:border-[#383838]">
+                <div className="mb-2.5 flex items-center justify-between">
+                  <div className="min-w-0 pr-2">
+                    <h4 className="truncate text-xs font-semibold text-[#F4F4F5]">{link.text || `CTA ${index + 1}`}</h4>
+                    <p className="truncate text-[10px] text-[#71717A]">{link.href || "#"}</p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button type="button" className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#363636] bg-white text-[#D0D0D0] transition hover:border-[#4A4A4A] hover:bg-[#252525] hover:text-[#FACC15]" title={link.hidden ? "Show CTA" : "Hide CTA"} onClick={() => { updateHtml(toggleLinkVisibility(section.html, index)); pushHistory(); }}>
-                      {link.hidden ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button type="button" className="flex h-7 w-7 items-center justify-center rounded-md border border-[#2B2B2B] bg-[#1F1F1F] text-[#A1A1AA] transition hover:border-[#3E3E3E] hover:bg-[#282828] hover:text-[#FACC15]" title={link.hidden ? "Show CTA" : "Hide CTA"} onClick={() => { updateHtml(toggleLinkVisibility(section.html, index)); pushHistory(); }}>
+                      {link.hidden ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                     </button>
-                    <button type="button" className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#363636] bg-white text-[#D0D0D0] transition hover:border-[#4A4A4A] hover:bg-[#2A2A2A] hover:text-[#FACC15]" title="Delete CTA" onClick={() => { updateHtml(removeLinkItem(section.html, index)); pushHistory(); }}>
-                      <Trash2 className="h-4 w-4" />
+                    <button type="button" className="flex h-7 w-7 items-center justify-center rounded-md border border-[#2B2B2B] bg-[#1F1F1F] text-[#A1A1AA] transition hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-400" title="Delete CTA" onClick={() => { updateHtml(removeLinkItem(section.html, index)); pushHistory(); }}>
+                      <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   </div>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <Field label="Href">
                     <input className={inputCls} value={link.href} placeholder="# or https://..." onChange={(e) => updateHtml(updateLinkItem(section.html, index, { href: e.target.value }))} onBlur={pushHistory} />
                   </Field>
@@ -1063,15 +1064,15 @@ export function PropertiesPanel() {
                 <div key={`${item.text}-${index}`} className="grid grid-cols-[1fr_74px_28px] gap-1.5">
                   <input className={inputCls} value={item.text} aria-label={`Menu item ${index + 1} label`} onChange={(e) => updateHtml(updateMenuItem(section.html, index, { text: e.target.value }))} onBlur={pushHistory} />
                   <input className={inputCls} value={item.href} aria-label={`Menu item ${index + 1} link`} onChange={(e) => updateHtml(updateMenuItem(section.html, index, { href: e.target.value }))} onBlur={pushHistory} />
-                  <button type="button" className="inline-flex h-8 items-center justify-center rounded-md border border-[#363636] text-[#FACC15] hover:bg-destructive/10" title="Remove menu item" onClick={() => { updateHtml(removeMenuItem(section.html, index)); pushHistory(); }}>
+                  <button type="button" className="inline-flex h-8.5 items-center justify-center rounded-lg border border-[#2B2B2B] bg-[#1A1A1A] text-[#A1A1AA] hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-400 transition" title="Remove menu item" onClick={() => { updateHtml(removeMenuItem(section.html, index)); pushHistory(); }}>
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
                 </div>
               ))
             ) : (
-              <div className="rounded-md border border-[#363636] bg-[#1F1F1F] px-3 py-2 text-sm text-[#969696]">No menu items detected in this header. Add one below to edit it here.</div>
+              <div className="rounded-lg border border-[#262626] bg-[#161616] px-3 py-2 text-xs text-[#71717A]">No menu items detected in this header. Add one below to edit it here.</div>
             )}
-            <button type="button" className="inline-flex h-8 w-full items-center justify-center gap-2 rounded-md border border-[#363636] bg-[#1F1F1F] text-xs font-medium hover:bg-[#252525]" onClick={() => { updateHtml(addMenuItem(section.html)); pushHistory(); }}>
+            <button type="button" className="inline-flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-[#262626] bg-[#181818] text-xs font-medium text-[#D4D4D8] hover:bg-[#222222] hover:text-[#FFFFFF] transition" onClick={() => { updateHtml(addMenuItem(section.html)); pushHistory(); }}>
               <Plus className="h-3.5 w-3.5" /> Add menu item
             </button>
           </div>
@@ -1084,12 +1085,12 @@ export function PropertiesPanel() {
             {linkItems.map((item, index) => (
               <div key={index} className="grid grid-cols-[1fr_1fr_auto_auto] items-center gap-1.5">
                 <input className={inputCls} value={item.text} aria-label={`Link ${index + 1} label`} onChange={(e) => updateHtml(updateLinkItem(section.html, index, { text: e.target.value }))} onBlur={pushHistory} />
-                <input className={inputCls} value={item.href} aria-label={`Link ${index + 1} URL`} placeholder="https://â€¦" onChange={(e) => updateHtml(updateLinkItem(section.html, index, { href: e.target.value }))} onBlur={pushHistory} />
-                <button type="button" className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#363636] bg-[#1F1F1F] text-[#969696] hover:bg-[#252525]" title={item.hidden ? "Show element" : "Hide element"} onClick={() => { updateHtml(toggleLinkVisibility(section.html, index)); pushHistory(); }}>
-                  {item.hidden ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                <input className={inputCls} value={item.href} aria-label={`Link ${index + 1} URL`} placeholder="https://…" onChange={(e) => updateHtml(updateLinkItem(section.html, index, { href: e.target.value }))} onBlur={pushHistory} />
+                <button type="button" className="inline-flex h-8.5 w-8.5 items-center justify-center rounded-lg border border-[#2B2B2B] bg-[#1A1A1A] text-[#A1A1AA] hover:border-[#3D3D3D] hover:bg-[#242424] hover:text-[#FACC15] transition" title={item.hidden ? "Show element" : "Hide element"} onClick={() => { updateHtml(toggleLinkVisibility(section.html, index)); pushHistory(); }}>
+                  {item.hidden ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                 </button>
-                <button type="button" className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#363636] bg-[#1F1F1F] text-[#969696] hover:bg-[#252525]" title="Remove button" onClick={() => { updateHtml(removeLinkItem(section.html, index)); pushHistory(); }}>
-                  <Trash2 className="h-4 w-4" />
+                <button type="button" className="inline-flex h-8.5 w-8.5 items-center justify-center rounded-lg border border-[#2B2B2B] bg-[#1A1A1A] text-[#A1A1AA] hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-400 transition" title="Remove button" onClick={() => { updateHtml(removeLinkItem(section.html, index)); pushHistory(); }}>
+                  <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </div>
             ))}
@@ -1099,7 +1100,7 @@ export function PropertiesPanel() {
 
       {selectedElement?.kind === "text" && selectedTextItem && (
         <Section title="Text">
-          <div className="space-y-2 rounded-md border border-[#363636] bg-[#1F1F1F] p-2">
+          <div className="space-y-2 rounded-lg border border-[#262626] bg-[#161616] p-2.5">
             <Field label={selectedTextItem.label}>
               <input className={inputCls} value={selectedTextItem.text} aria-label={`${selectedTextItem.label} text`} onChange={(e) => updateHtml(updateTextItem(section.html, selectedElement.index ?? 0, e.target.value))} onBlur={pushHistory} />
             </Field>
@@ -1109,7 +1110,7 @@ export function PropertiesPanel() {
 
       {selectedElement?.kind === "image" && selectedImageItem ? (
         <Section title="Image">
-          <div className="space-y-2 rounded-md border border-[#363636] bg-[#1F1F1F] p-2">
+          <div className="space-y-2 rounded-lg border border-[#262626] bg-[#161616] p-2.5">
             <div className="text-xs font-semibold text-[#969696]">{selectedImageItem.label}</div>
             <Field label="ALT">
               <input className={inputCls} value={selectedImageItem.alt} placeholder="ALT" onChange={(e) => updateHtml(updateImageItem(section.html, selectedElement.index ?? 0, { alt: e.target.value }))} onBlur={pushHistory} />
@@ -1119,7 +1120,7 @@ export function PropertiesPanel() {
       ) : !isElementSelected && imageItems.length > 0 && (
         <Section title="Images">
           {imageItems.map((item, index) => (
-            <div key={`${item.label}-${index}`} className="space-y-2 rounded-md border border-[#363636] bg-[#1F1F1F] p-2">
+            <div key={`${item.label}-${index}`} className="space-y-2 rounded-lg border border-[#262626] bg-[#161616] p-2.5 mb-2">
               <div className="text-xs font-semibold text-[#969696]">{item.label}</div>
               <Field label="ALT">
                 <input className={inputCls} value={item.alt} placeholder="ALT" onChange={(e) => updateHtml(updateImageItem(section.html, index, { alt: e.target.value }))} onBlur={pushHistory} />
@@ -1137,7 +1138,7 @@ export function PropertiesPanel() {
           if (idx < 0) return null;
           return (
             <Section title="Link">
-              <div className="space-y-2 rounded-md border border-[#363636] bg-[#1F1F1F] p-2">
+              <div className="space-y-2 rounded-lg border border-[#262626] bg-[#161616] p-2.5">
                 <Field label="Href">
                   <input className={inputCls} value={curHref} placeholder="#" onChange={(e) => updateHtml(updateLinkItem(section.html, idx, { href: e.target.value }))} onBlur={pushHistory} />
                 </Field>
@@ -3443,18 +3444,41 @@ function TemplateSaveDialog({
           <div className="space-y-1.5">
             <Label className="text-xs font-medium text-[#F5F5F5]">Category</Label>
             <Input
+              list="template-categories-datalist"
               value={templateCategory}
               onChange={(e) => onTemplateCategoryChange(e.target.value)}
-              placeholder="Marketing"
+              placeholder="e.g. Business, Driving School, Agency..."
               className="h-9 rounded-lg border-[#363636] bg-[#171717] text-[#F5F5F5] placeholder:text-[#969696]"
             />
+            <datalist id="template-categories-datalist">
+              <option value="Business" />
+              <option value="Agency" />
+              <option value="Freelancer" />
+              <option value="SaaS & Technology" />
+              <option value="Healthcare" />
+              <option value="Fitness & Gym" />
+              <option value="Restaurant & Café" />
+              <option value="Real Estate" />
+              <option value="Education" />
+              <option value="Driving School" />
+              <option value="Beauty & Salon" />
+              <option value="Construction" />
+              <option value="Automotive" />
+              <option value="Photography" />
+              <option value="Portfolio" />
+              <option value="Law Firm" />
+              <option value="Finance" />
+              <option value="Travel & Hotel" />
+              <option value="E-commerce" />
+              <option value="Personal / Resume" />
+            </datalist>
           </div>
         </div>
         <DialogFooter className="border-t border-[#363636] px-5 py-3">
           <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={savingTemplate} className="text-[#969696] hover:text-[#F5F5F5] hover:bg-[#242424] h-8 px-3 rounded-md text-xs">
             Cancel
           </Button>
-          <Button onClick={() => onSave(widgetInstance)} disabled={savingTemplate || !templateName.trim() || !templateSlug.trim() || !templateCategory.trim()} className="bg-[#FACC15] text-[#111111] hover:bg-[#FDE047] h-8 px-4 rounded-md text-xs">
+          <Button onClick={() => onSave()} disabled={savingTemplate || !templateName.trim() || !templateSlug.trim() || !templateCategory.trim()} className="bg-[#FACC15] text-[#111111] hover:bg-[#FDE047] h-8 px-4 rounded-md text-xs">
             {savingTemplate ? "Saving..." : editingTemplateId ? "Update Template" : "Save Template"}
           </Button>
         </DialogFooter>

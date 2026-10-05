@@ -1,4 +1,4 @@
-﻿import { useMemo } from "react";
+import { useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopyright } from "@fortawesome/free-solid-svg-icons";
 import { useBuilder } from "@/lib/builder/store";
@@ -155,9 +155,9 @@ export function FooterProperties({
       }
       content={
         <div className="space-y-2.5">
-          <div className="mb-1 rounded-xl border border-violet-200 bg-violet-50 px-3 py-2 text-xs text-violet-900">
-            <div className="font-semibold tracking-wide">GLOBAL COMPONENT</div>
-            <div className="mt-0.5 text-violet-800/80">Changes made here apply to all pages.</div>
+          <div className="mb-1 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] px-3 py-2 text-xs text-[#888]">
+            <div className="font-semibold tracking-wide text-[#FACC15]">GLOBAL COMPONENT</div>
+            <div className="mt-0.5">Changes made here apply to all pages.</div>
           </div>
           <ToggleControl
             label="Show brand section"

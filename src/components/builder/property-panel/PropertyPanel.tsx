@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { PropertyAccordion } from "./PropertyAccordion";
 
-export type PropertyPanelTab = "content" | "design" | "settings";
+export type PropertyPanelTab = "content" | "design";
 
 export interface PropertyPanelProps {
   title?: string;
@@ -64,7 +64,6 @@ function resolvePanelIcon(title: string, explicit?: ReactNode, badgeIcon?: React
 const tabDefs: Array<{ key: PropertyPanelTab; label: string; icon: ReactNode }> = [
   { key: "content", label: "Content", icon: <ALargeSmall className="h-3.5 w-3.5" /> },
   { key: "design", label: "Design", icon: <Paintbrush className="h-3.5 w-3.5" /> },
-  { key: "settings", label: "Settings", icon: <Settings2 className="h-3.5 w-3.5" /> },
 ];
 
 export function PropertyPanel({
@@ -101,15 +100,12 @@ export function PropertyPanel({
   const hasTypography = Boolean(typography);
   const hasLayout = Boolean(layout);
   const hasStyle = Boolean(style);
-  const hasDesign = hasBackground || hasTypography || hasLayout || hasStyle;
-  const hasResponsive = Boolean(responsive);
-  const hasCode = Boolean(advanced || animation);
-  const hasSettings = hasResponsive || hasCode;
+  const hasDesign = hasBackground || hasTypography || hasLayout || hasStyle || Boolean(responsive) || Boolean(advanced || animation);
 
   const tabs = tabDefs.filter((tab) => {
     if (tab.key === "content") return hasContent;
     if (tab.key === "design") return hasDesign;
-    return hasSettings;
+    return false;
   });
 
   const resolvedTab = tabs.some((tab) => tab.key === activeTab)
@@ -125,35 +121,35 @@ export function PropertyPanel({
   };
 
   return (
-    <div className="flex h-full min-h-0 w-full flex-col overflow-hidden  border border-[#363636] bg-[#1F1F1F]">
-      <div className="shrink-0 border-b border-[#363636] bg-[#1F1F1F] px-3 pt-2.5 pb-2">
+    <div className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-transparent">
+      <div className="shrink-0 border-b border-[#262626] bg-[#161616] px-3 pt-2.5 pb-2">
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-2">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded border border-[#363636] bg-[#242424] text-[#D0D0D0]">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-[#2B2B2B] bg-[#202020] text-[#D0D0D0]">
               {panelIcon}
             </span>
             <div className="min-w-0">
-              <div className="truncate text-[13px] font-semibold text-[#F5F5F5]">{displayTitle}</div>
-              {subtitle ? <div className="truncate text-[11px] text-[#969696]">{subtitle}</div> : null}
+              <div className="truncate text-xs font-semibold text-[#F4F4F5]">{displayTitle}</div>
+              {subtitle ? <div className="truncate text-[10px] text-[#A1A1AA]">{subtitle}</div> : null}
             </div>
           </div>
-          <div className="flex shrink-0 items-center gap-0.5">
+          <div className="flex shrink-0 items-center gap-1">
             <button
               type="button"
               onClick={handlePin}
-              className={`flex h-7 w-7 items-center justify-center rounded-md transition ${
-                isPinned ? "bg-[#242424] text-[#FACC15]" : "text-[#969696] hover:bg-[#242424] hover:text-[#F5F5F5]"
+              className={`flex h-6 w-6 items-center justify-center rounded-md transition ${
+                isPinned ? "bg-[#242424] text-[#FACC15]" : "text-[#71717A] hover:bg-[#202020] hover:text-[#F4F4F5]"
               }`}
               aria-label={isPinned ? "Unpin panel" : "Pin panel"}
               aria-pressed={isPinned}
             >
-              <Pin className={`h-3.5 w-3.5 ${isPinned ? "fill-current" : ""}`} />
+              <Pin className={`h-3 w-3 ${isPinned ? "fill-current" : ""}`} />
             </button>
             <button
               type="button"
               onClick={onClose}
               disabled={!onClose}
-              className="flex h-7 w-7 items-center justify-center rounded-md text-[#969696] transition hover:bg-[#242424] hover:text-[#F5F5F5] disabled:cursor-not-allowed disabled:opacity-40"
+              className="flex h-6 w-6 items-center justify-center rounded-md text-[#71717A] transition hover:bg-[#202020] hover:text-[#F4F4F5] disabled:cursor-not-allowed disabled:opacity-40"
               aria-label="Close panel"
             >
               <X className="h-3.5 w-3.5" />
@@ -161,31 +157,33 @@ export function PropertyPanel({
           </div>
         </div>
 
-        <div className="mt-2 flex items-center gap-1 rounded-xl border border-[#363636] bg-[#1A1A1A] p-1">
-          {tabs.map((tab) => {
-            const active = resolvedTab === tab.key;
-            return (
-              <button
-                key={tab.key}
-                type="button"
-                onClick={() => setActiveTab(tab.key)}
-                className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[12px] font-medium transition-all duration-150 ${
-                  active
-                    ? "bg-[#2A2A2A] text-[#F5F5F5] shadow-sm"
-                    : "text-[#969696] hover:bg-[#242424] hover:text-[#D0D0D0]"
-                }`}
-              >
-                <span className={active ? "text-[#FACC15]" : "text-[#969696]"}>{tab.icon}</span>
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
+        {tabs.length > 1 && (
+          <div className="mt-2 flex items-center gap-1 rounded-lg border border-[#262626] bg-[#181818] p-0.5">
+            {tabs.map((tab) => {
+              const active = resolvedTab === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-all ${
+                    active
+                      ? "bg-[#262626] text-[#FACC15] shadow-xs"
+                      : "text-[#94A3B8] hover:bg-[#202020] hover:text-[#E4E4E7]"
+                  }`}
+                >
+                  <span className={active ? "text-[#FACC15]" : "text-[#71717A]"}>{tab.icon}</span>
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-2.5 py-2.5">
+      <div className="min-h-0 flex-1 overflow-y-auto p-3">
         {resolvedTab === "content" ? (
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             {variantControl}
             {contentBody}
           </div>
@@ -216,7 +214,7 @@ export function PropertyPanel({
 
             {hasStyle ? (
               <PropertyAccordion
-                title={hasTypography || hasBackground ? "Style" : "Style"}
+                title="Style"
                 icon={<Paintbrush className="h-3.5 w-3.5" />}
                 defaultOpen={!hasTypography}
               >
@@ -229,28 +227,24 @@ export function PropertyPanel({
                 {layout}
               </PropertyAccordion>
             ) : null}
-          </div>
-        ) : null}
 
-        {resolvedTab === "settings" ? (
-          <div className="space-y-2">
-            {hasResponsive ? (
+            {Boolean(responsive) ? (
               <PropertyAccordion
-                title="Responsive"
+                title="Responsive Visibility"
                 icon={<Settings2 className="h-3.5 w-3.5" />}
-                defaultOpen
+                defaultOpen={false}
               >
                 {responsive}
               </PropertyAccordion>
             ) : null}
 
-            {hasCode ? (
+            {Boolean(advanced || animation) ? (
               <PropertyAccordion
-                title="Code and visibility"
+                title="Advanced"
                 icon={<Code2 className="h-3.5 w-3.5" />}
                 defaultOpen={false}
               >
-                <div className="space-y-2.5">
+                <div className="space-y-2">
                   {advanced}
                   {animation}
                 </div>

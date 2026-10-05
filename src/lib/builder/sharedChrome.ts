@@ -119,8 +119,10 @@ export function composePageSections(
   if (!project || !page) return page?.sections ?? [];
   const out: PageSection[] = [];
   const includeHidden = opts?.includeHiddenChrome === true;
+  const hasSharedHeader = Boolean(project.sharedHeader && pageUsesGlobalHeader(page) && (includeHidden || !pageHidesHeader(page)));
+  const hasSharedFooter = Boolean(project.sharedFooter && pageUsesGlobalFooter(page) && (includeHidden || !pageHidesFooter(page)));
 
-  if (project.sharedHeader && pageUsesGlobalHeader(page) && (includeHidden || !pageHidesHeader(page))) {
+  if (hasSharedHeader && project.sharedHeader) {
     out.push({
       ...project.sharedHeader,
       id: SHARED_HEADER_SECTION_ID,
@@ -130,11 +132,14 @@ export function composePageSections(
   }
 
   for (const section of page.sections ?? []) {
-    if (!project.isTemplate && (isNavbarSection(section) || isFooterSection(section))) continue;
+    if (!project.isTemplate) {
+      if (hasSharedHeader && isNavbarSection(section)) continue;
+      if (hasSharedFooter && isFooterSection(section)) continue;
+    }
     out.push(section);
   }
 
-  if (project.sharedFooter && pageUsesGlobalFooter(page) && (includeHidden || !pageHidesFooter(page))) {
+  if (hasSharedFooter && project.sharedFooter) {
     out.push({
       ...project.sharedFooter,
       id: SHARED_FOOTER_SECTION_ID,

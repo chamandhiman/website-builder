@@ -36,7 +36,7 @@ export function ContainerProperties({ value = defaultContainerWidgetData, onChan
         <div className="space-y-2.5">
           <TextControl label="Title" value={containerValue.content.title ?? ""} onChange={(next) => updateContent({ title: next })} />
           <TextControl label="Description" value={containerValue.content.description ?? ""} onChange={(next) => updateContent({ description: next })} />
-          <div className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-2 text-[12px] text-slate-600">
+          <div className="rounded-md border border-[#2A2A2A] bg-[#1A1A1A] px-2.5 py-2 text-[12px] text-[#888888]">
             Children: {children.length}. Select a child on the canvas to edit it.
           </div>
         </div>

@@ -12,17 +12,17 @@ export interface PropertySectionProps {
 
 export function PropertySection({ title, children, isExpanded = true, onToggle, icon }: PropertySectionProps) {
   return (
-    <section className="border-b border-slate-200/80">
+    <section className="border-b border-[#2A2A2A]">
       <button
         type="button"
         onClick={onToggle}
         className="flex h-11 w-full items-center justify-between px-0 py-0 text-left"
       >
         <div className="flex items-center gap-2">
-          {icon ? <span className="text-slate-400">{icon}</span> : null}
-          <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600">{title}</span>
+          {icon ? <span className="text-[#707070]">{icon}</span> : null}
+          <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">{title}</span>
         </div>
-        <FontAwesomeIcon icon={isExpanded ? faChevronDown : faChevronRight} className="h-4 w-4 text-slate-400" />
+        <FontAwesomeIcon icon={isExpanded ? faChevronDown : faChevronRight} className="h-4 w-4 text-[#707070]" />
       </button>
 
       {isExpanded ? <div className="space-y-3 pb-4 pt-2">{children}</div> : null}

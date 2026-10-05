@@ -226,7 +226,7 @@ export function ServicesProperties({
   };
 
   const actionBtnClass =
-    "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400";
+    "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[#707070] transition hover:bg-[#2A2A2A] hover:text-[#D0D0D0] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-[#707070]";
 
   const focus = selection.focus;
 
@@ -248,7 +248,7 @@ export function ServicesProperties({
         <div className="space-y-3">
           <div className="min-w-0 w-full">
             <div className="mb-2 flex items-center justify-between gap-2">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                 Services
               </div>
               <button
@@ -260,7 +260,7 @@ export function ServicesProperties({
                   setServices([...services, next], next.id);
                   focusServiceSelection(next.id);
                 }}
-                className="inline-flex shrink-0 items-center gap-1 text-[12px] font-medium text-violet-600 hover:text-violet-700"
+                className="inline-flex shrink-0 items-center gap-1 text-[12px] font-medium text-[#FACC15] hover:text-[#FDE047]"
               >
                 <FontAwesomeIcon icon={faPlus} className="h-3 w-3" />
                 Add Service
@@ -275,8 +275,8 @@ export function ServicesProperties({
                   <div
                     key={item.id}
                     className={[
-                      "min-w-0 overflow-hidden rounded-lg border bg-white transition",
-                      isSelected ? "border-violet-300 bg-violet-50/40" : "border-slate-200",
+                      "min-w-0 overflow-hidden rounded-lg border transition",
+                      isSelected ? "border-[#FACC15]/40 bg-[#FACC15]/5" : "border-[#2A2A2A] bg-[#1C1C1C]",
                     ].join(" ")}
                   >
                     <div className="flex min-w-0 items-center gap-1 px-2 py-1.5">
@@ -285,16 +285,16 @@ export function ServicesProperties({
                         onClick={() => selectService(item.id)}
                         className="flex min-w-0 flex-1 items-center gap-2 px-1 py-1 text-left"
                       >
-                        <span className="h-9 w-12 shrink-0 overflow-hidden rounded-md bg-slate-100">
+                        <span className="h-9 w-12 shrink-0 overflow-hidden rounded-md bg-[#252525]">
                           {thumb ? (
                             <img src={thumb} alt="" className="h-full w-full object-cover" />
                           ) : null}
                         </span>
                         <span className="min-w-0">
-                          <span className="block truncate text-[13px] font-medium text-slate-700">
+                          <span className="block truncate text-[13px] font-medium text-[#D0D0D0]">
                             Service {index + 1}
                           </span>
-                          <span className="block truncate text-[11px] text-slate-400">
+                          <span className="block truncate text-[11px] text-[#707070]">
                             {item.heading || "Untitled service"}
                           </span>
                         </span>
@@ -361,10 +361,10 @@ export function ServicesProperties({
           </div>
 
           {selectedService ? (
-            <div className="space-y-2.5 rounded-lg border border-slate-200 bg-slate-50/60 p-2.5">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="space-y-2.5 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-2.5">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                 Selected service {selectedIndex >= 0 ? selectedIndex + 1 : ""}
-                {focus !== "general" ? ` Â· ${focus}` : ""}
+                {focus !== "general" ? ` · ${focus}` : ""}
               </div>
 
               {(focus === "general" || focus === "image") && (
@@ -449,7 +449,7 @@ export function ServicesProperties({
       }
       style={
         <div className="space-y-2.5">
-          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Section
           </div>
           <ColorControl
@@ -486,7 +486,7 @@ export function ServicesProperties({
             onChange={(next) => updateStyle({ maxWidth: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Layout
           </div>
           <SelectControl
@@ -539,7 +539,7 @@ export function ServicesProperties({
             }
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Card
           </div>
           <ColorControl
@@ -597,7 +597,7 @@ export function ServicesProperties({
             onChange={(next) => updateStyle({ equalCardHeight: next })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Image
           </div>
           <NumberControl
@@ -636,7 +636,7 @@ export function ServicesProperties({
             }
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Heading
           </div>
           <ColorControl
@@ -673,7 +673,7 @@ export function ServicesProperties({
             onChange={(next) => updateStyle({ headingMarginBottom: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Description
           </div>
           <ColorControl
@@ -704,7 +704,7 @@ export function ServicesProperties({
             onChange={(next) => updateStyle({ descriptionMarginBottom: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Button
           </div>
           <SelectControl
@@ -776,7 +776,7 @@ export function ServicesProperties({
             onChange={(next) => updateStyle({ buttonPaddingY: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Hover
           </div>
           <ToggleControl
@@ -839,7 +839,7 @@ export function ServicesProperties({
             checked={servicesValue.advanced.visibility !== false}
             onChange={(next) => updateAdvanced({ visibility: next })}
           />
-          <div className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-2 text-[12px] leading-5 text-slate-500">
+          <div className="rounded-md border border-[#2A2A2A] bg-[#1A1A1A] px-2.5 py-2 text-[12px] leading-5 text-[#888888]">
             Images use editable alt text and buttons keep accessible labels. Prefer high-contrast
             colors for headings and CTAs.
           </div>

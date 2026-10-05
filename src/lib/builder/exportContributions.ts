@@ -73,6 +73,9 @@ export const BOOTSTRAP_BUNDLE_JS_CDN =
   "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js";
 export const FONT_AWESOME_CDN =
   "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css";
+export const GOOGLE_FONTS_CDN =
+  "https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap";
+
 
 /**
  * Widgets that already render a full-width outer section and must not be
@@ -86,6 +89,12 @@ export const FULL_WIDTH_EXPORT_MARKERS = [
   "data-wto-carousel",
   "data-wto-faq",
   "data-wto-gallery",
+  "builder-overlay-banner",
+  "data-wto-overlay-banner",
+  "wto-overlay-banner",
+  "wto-team",
+  "wto-pricing",
+  "wto-testimonials",
 ] as const;
 
 export function isFullWidthExportHtml(html: string): boolean {

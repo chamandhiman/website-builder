@@ -467,6 +467,44 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
           advanced: widget.advanced ?? null,
         };
       }),
+      maps: sections.map((s: any) => {
+        const widget = s.widgetInstance;
+        if (!widget || widget.type !== "map") return null;
+        return {
+          id: widget.id,
+          variant: widget.variant,
+          content: widget.content ?? null,
+          style: widget.style ?? null,
+          layout: widget.layout ?? null,
+          responsive: widget.responsive ?? null,
+          advanced: widget.advanced ?? null,
+        };
+      }),
+      contacts: sections.map((s: any) => {
+        const widget = s.widgetInstance;
+        if (!widget || widget.type !== "contact") return null;
+        return {
+          id: widget.id,
+          variant: widget.variant,
+          content: widget.content ?? null,
+          style: widget.style ?? null,
+          layout: widget.layout ?? null,
+          responsive: widget.responsive ?? null,
+          advanced: widget.advanced ?? null,
+        };
+      }),
+      widgetFingerprints: sections.map((s: any) => {
+        const widget = s.widgetInstance;
+        if (!widget) return null;
+        return {
+          id: widget.id,
+          type: widget.type,
+          variant: widget.variant,
+          content: widget.content,
+          style: widget.style,
+          layout: widget.layout,
+        };
+      }),
       css: project.globalCss,
       js: project.globalJs,
       editable,
@@ -606,10 +644,14 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
         const elementKey = data.payload?.elementKey ? String(data.payload.elementKey) : null;
         const elementType = data.payload?.elementType ? String(data.payload.elementType) : null;
         const columnId = data.payload?.columnId ? String(data.payload.columnId) : null;
+        const textContent = data.payload?.textContent ? String(data.payload.textContent) : undefined;
+        const href = data.payload?.href ? String(data.payload.href) : undefined;
+        const src = data.payload?.src ? String(data.payload.src) : undefined;
+        const alt = data.payload?.alt ? String(data.payload.alt) : undefined;
         const nextSelection = elementKind === "section"
           ? null
           : elementKind === "dom"
-            ? { kind: "dom" as any, index: Number.isFinite(index) ? index : null, tag, sectionId: sectionId || null }
+            ? { kind: "dom" as any, index: Number.isFinite(index) ? index : null, tag, sectionId: sectionId || null, textContent, href, src, alt }
             : {
                 kind: elementKind as any,
                 index: Number.isFinite(index) ? index : null,
@@ -621,6 +663,10 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
                 elementKey,
                 elementType,
                 columnId,
+                textContent,
+                href,
+                src,
+                alt,
               };
         selectElement(nextSelection);
         setSelectedElementStyle(style);
@@ -641,19 +687,88 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
         try { window.open(url, '_blank', 'noopener,noreferrer'); } catch (_) {}
       }
       if (data.type === "navigate-page") {
-        const slug = String(data.payload?.slug ?? "");
-        if (!slug || !project) return;
-        const page = project.pages.find((p) => p.slug === slug);
+        const rawSlug = String(data.payload?.slug ?? "");
+        if (!rawSlug || !project) return;
+        const normalized = rawSlug.replace(/^[./]+/, "").replace(/\.html$/i, "");
+        const page = project.pages.find((p) =>
+          p.slug === normalized ||
+          p.slug === rawSlug ||
+          p.id === rawSlug ||
+          p.id === normalized ||
+          (normalized === "index" && (p.slug === "home" || p.slug === "index" || p.slug === "")) ||
+          (normalized === "home" && (p.slug === "home" || p.slug === "index" || p.slug === ""))
+        );
         if (page) {
-  selectPage(page.id);
-  setLeftPanelView("pages");
-}
+          selectPage(page.id);
+        }
       }
       if (data.type === "section-html") {
         skipRebuildRef.current = true;
         setSectionHtml(String(data.payload?.sectionId ?? ""), String(data.payload?.html ?? ""));
         setPreviewCycle((value) => value + 1);
         useBuilder.getState().persist();
+      }
+      if (data.type === "map-embed-update") {
+        const widgetId = String(data.payload?.widgetId ?? "");
+        const embedCode = data.payload?.embedCode !== undefined ? String(data.payload.embedCode) : undefined;
+        const mapUrl = data.payload?.mapUrl !== undefined ? String(data.payload.mapUrl) : undefined;
+        const showCard = data.payload?.showCard !== undefined ? Boolean(data.payload.showCard) : undefined;
+        const showAddress = data.payload?.showAddress !== undefined ? Boolean(data.payload.showAddress) : undefined;
+        if (widgetId) {
+          const state = useBuilder.getState();
+          const cur = state.currentProject();
+          const page = cur ? pageOf(cur) : null;
+          const targetSection = page?.sections.find((s) => s.widgetInstance?.id === widgetId);
+          if (targetSection?.widgetInstance) {
+            const nextContent = {
+              ...targetSection.widgetInstance.content,
+              ...(embedCode !== undefined ? { embedCode } : {}),
+              ...(mapUrl !== undefined ? { mapUrl } : {}),
+              ...(showCard !== undefined ? { showCard } : {}),
+              ...(showAddress !== undefined ? { showAddress } : {}),
+            };
+            const updated = {
+              ...targetSection.widgetInstance,
+              content: nextContent,
+            };
+            state.updateWidgetInstance(widgetId, updated as any);
+            const nextHtml = getWidgetBootstrapExport("map", updated as any, { editorMode: true });
+            state.setSectionHtml(targetSection.id, nextHtml);
+            setPreviewCycle((value) => value + 1);
+            state.pushHistory();
+            state.persist();
+          }
+        }
+      }
+      if (data.type === "contact-embed-update") {
+        const widgetId = String(data.payload?.widgetId ?? "");
+        const formType = data.payload?.formType !== undefined ? String(data.payload.formType) : undefined;
+        const customEmbedCode = data.payload?.customEmbedCode !== undefined ? String(data.payload.customEmbedCode) : undefined;
+        const customEmbedHeight = data.payload?.customEmbedHeight !== undefined ? String(data.payload.customEmbedHeight) : undefined;
+        if (widgetId) {
+          const state = useBuilder.getState();
+          const cur = state.currentProject();
+          const page = cur ? pageOf(cur) : null;
+          const targetSection = page?.sections.find((s) => s.widgetInstance?.id === widgetId);
+          if (targetSection?.widgetInstance) {
+            const nextContent = {
+              ...targetSection.widgetInstance.content,
+              ...(formType !== undefined ? { formType } : {}),
+              ...(customEmbedCode !== undefined ? { customEmbedCode } : {}),
+              ...(customEmbedHeight !== undefined ? { customEmbedHeight } : {}),
+            };
+            const updated = {
+              ...targetSection.widgetInstance,
+              content: nextContent,
+            };
+            state.updateWidgetInstance(widgetId, updated as any);
+            const nextHtml = getWidgetBootstrapExport("contact", updated as any, { editorMode: true });
+            state.setSectionHtml(targetSection.id, nextHtml);
+            setPreviewCycle((value) => value + 1);
+            state.pushHistory();
+            state.persist();
+          }
+        }
       }
       if (data.type === "element-duplicate") {
         const nextSelection = {
@@ -858,6 +973,14 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
         const patch = data.payload?.contentPatch && typeof data.payload.contentPatch === "object" ? (data.payload.contentPatch as Record<string, unknown>) : null;
         if (!sectionId || !parentWidgetId || !childId || !patch) return;
         useBuilder.getState().updateWidgetElementContent(sectionId, parentWidgetId, childId, elementKey, patch, columnId ? { columnId } : undefined);
+      }
+      if (data.type === "global-color-replace") {
+        const fromColor = String(data.payload?.fromColor || "").trim();
+        const toColor = String(data.payload?.toColor || "").trim();
+        if (fromColor && toColor && fromColor.toLowerCase() !== toColor.toLowerCase()) {
+          skipRebuildRef.current = true;
+          useBuilder.getState().replaceColorGlobally(fromColor, toColor);
+        }
       }
       if (data.type === "section-move") {
         const fromId = String(data.payload?.fromId ?? "");

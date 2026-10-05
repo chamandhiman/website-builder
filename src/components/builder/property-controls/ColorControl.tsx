@@ -105,7 +105,7 @@ export function ColorControl({
         ? createPortal(
             <div
               ref={popoverRef}
-              className="fixed z-[9999] w-[220px] rounded-lg border border-border bg-popover p-3 shadow-xl"
+              className="fixed z-[9999] w-[220px] rounded-lg border border-[#2E2E2E] bg-[#161616] p-3 shadow-2xl"
               style={{ top: pickerPosition.top, left: pickerPosition.left }}
               onMouseDown={(event) => event.stopPropagation()}
             >
@@ -115,15 +115,15 @@ export function ColorControl({
                   type="color"
                   value={normalizedValue}
                   onChange={(e) => onChange(e.target.value)}
-                  className="h-9 w-9 cursor-pointer rounded border border-input bg-background p-0"
+                  className="h-9 w-9 cursor-pointer rounded-md border border-[#363636] bg-transparent p-0"
                 />
                 <input
-                  className="h-9 w-full rounded border border-input bg-background px-2 text-sm"
+                  className="h-9 w-full rounded-md border border-[#363636] bg-[#171717] px-2.5 text-[13px] text-[#F5F5F5] outline-none focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
                   value={normalizedValue}
                   onChange={(e) => onChange(e.target.value || "#2563eb")}
                 />
               </div>
-              <div className="mt-2 text-[11px] text-muted-foreground">Choose a color without losing the picker.</div>
+              <div className="mt-2 text-[10px] text-[#606060]">Click the swatch to open the system color picker.</div>
             </div>,
             document.body,
           )

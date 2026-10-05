@@ -35,19 +35,19 @@ export function PropertyColorControl({ value = "#ffffff", onChange, onBlur }: Pr
         type="button"
         ref={triggerRef}
         onClick={() => setOpen((prev) => !prev)}
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-slate-200 bg-white text-slate-500 transition hover:border-violet-300 hover:text-violet-600"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-[#363636] bg-[#1F1F1F] text-[#969696] transition hover:border-[#FACC15] hover:text-[#FACC15]"
         aria-label="Open color picker"
       >
-        <span className="block h-5 w-5 rounded-md border border-slate-200" style={{ backgroundColor: swatchValue }} />
+        <span className="block h-5 w-5 rounded-md border border-[#363636]" style={{ backgroundColor: swatchValue }} />
       </button>
       <div className="flex-1">
         <PropertyTextInput value={value} placeholder="#ffffff" onChange={onChange} onBlur={onBlur} />
       </div>
       {open ? (
-        <div ref={popoverRef} className="fixed z-[1000] rounded-xl border border-slate-200 bg-white p-3 shadow-xl" style={{ top: 12, left: 12 }}>
+        <div ref={popoverRef} className="fixed z-[1000] rounded-xl border border-[#363636] bg-[#1A1A1A] p-3 shadow-xl" style={{ top: 12, left: 12 }}>
           <div className="flex items-center gap-2">
-              <input type="color" value={swatchValue} onChange={(event) => onChange?.(event.target.value)} onBlur={onBlur} className="h-9 w-9 rounded border border-slate-200 p-0" />
-              <div className="flex items-center gap-2 rounded border border-slate-200 bg-slate-50 px-2 py-2 text-xs text-slate-500">
+              <input type="color" value={swatchValue} onChange={(event) => onChange?.(event.target.value)} onBlur={onBlur} className="h-9 w-9 cursor-pointer rounded border border-[#363636] bg-transparent p-0" />
+              <div className="flex items-center gap-2 rounded border border-[#363636] bg-[#222222] px-2 py-2 text-xs text-[#969696]">
               <FontAwesomeIcon icon={faPalette} className="h-3.5 w-3.5" />
               <span>Pick a color</span>
             </div>

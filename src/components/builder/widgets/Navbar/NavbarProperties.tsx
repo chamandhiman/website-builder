@@ -106,9 +106,9 @@ export function NavbarProperties({ value = defaultNavbarWidgetData, onChange, on
       }
       content={
         <div className="space-y-2">
-          <div className="mb-1 rounded-xl border border-violet-200 bg-violet-50 px-3 py-2 text-xs text-violet-900">
-            <div className="font-semibold tracking-wide">GLOBAL COMPONENT</div>
-            <div className="mt-0.5 text-violet-800/80">Changes made here apply to all pages.</div>
+          <div className="mb-1 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] px-3 py-2 text-xs text-[#888]">
+            <div className="font-semibold tracking-wide text-[#FACC15]">GLOBAL COMPONENT</div>
+            <div className="mt-0.5">Changes made here apply to all pages.</div>
           </div>
           <TextControl label="Logo Text" value={navbarValue.content.logoText ?? ""} placeholder="Brand" onChange={(next) => updateContent({ logoText: next })} />
           <TextControl label="Logo Link" value={navbarValue.content.logoHref ?? ""} placeholder="#" onChange={(next) => updateContent({ logoHref: next })} />

@@ -218,7 +218,7 @@ export function AboutProperties({
   };
 
   const actionBtnClass =
-    "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400";
+    "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[#707070] transition hover:bg-[#2A2A2A] hover:text-[#D0D0D0] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-[#707070]";
 
   const focus = focusInfo.focus;
   const showEyebrow = focus === "general" || focus === "eyebrow";
@@ -245,8 +245,8 @@ export function AboutProperties({
       content={
         <div className="space-y-3">
           {showEyebrow ? (
-            <div className="space-y-2.5 rounded-lg border border-slate-200 p-2.5">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="space-y-2.5 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-2.5">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                 Eyebrow
               </div>
               <ToggleControl
@@ -263,8 +263,8 @@ export function AboutProperties({
           ) : null}
 
           {showHeading ? (
-            <div className="space-y-2.5 rounded-lg border border-slate-200 p-2.5">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="space-y-2.5 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-2.5">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                 Heading
               </div>
               <ToggleControl
@@ -281,8 +281,8 @@ export function AboutProperties({
           ) : null}
 
           {showDescription ? (
-            <div className="space-y-2.5 rounded-lg border border-slate-200 p-2.5">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="space-y-2.5 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-2.5">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                 Description
               </div>
               <ToggleControl
@@ -299,9 +299,9 @@ export function AboutProperties({
           ) : null}
 
           {showFeatures ? (
-            <div className="space-y-2.5 rounded-lg border border-slate-200 p-2.5">
+            <div className="space-y-2.5 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-2.5">
               <div className="mb-1 flex items-center justify-between gap-2">
-                <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                   Feature list
                 </div>
                 <button
@@ -311,7 +311,7 @@ export function AboutProperties({
                     setFeatures([...features, next], next.id);
                     selectChild(`feature-${next.id}`, "text");
                   }}
-                  className="inline-flex items-center gap-1 text-[12px] font-medium text-violet-600 hover:text-violet-700"
+                  className="inline-flex items-center gap-1 text-[12px] font-medium text-[#FACC15] hover:text-[#FDE047]"
                 >
                   <FontAwesomeIcon icon={faPlus} className="h-3 w-3" />
                   Add feature
@@ -329,8 +329,8 @@ export function AboutProperties({
                     <div
                       key={item.id}
                       className={[
-                        "min-w-0 overflow-hidden rounded-lg border bg-white",
-                        isSelected ? "border-violet-300 bg-violet-50/40" : "border-slate-200",
+                        "min-w-0 overflow-hidden rounded-lg border bg-[#161616]",
+                        isSelected ? "border-[#FACC15]/40 bg-[#FACC15]/5" : "border-[#2A2A2A]",
                       ].join(" ")}
                     >
                       <div className="flex min-w-0 items-center gap-1 px-2 py-1.5">
@@ -340,7 +340,7 @@ export function AboutProperties({
                             updateContent({ selectedFeatureId: item.id });
                             selectChild(`feature-${item.id}`, "text");
                           }}
-                          className="min-w-0 flex-1 truncate px-1 py-1 text-left text-[13px] font-medium text-slate-700"
+                          className="min-w-0 flex-1 truncate px-1 py-1 text-left text-[13px] font-medium text-[#D0D0D0]"
                         >
                           {index + 1}. {item.text || "Untitled feature"}
                         </button>
@@ -398,8 +398,8 @@ export function AboutProperties({
                 })}
               </div>
               {selectedFeature ? (
-                <div className="space-y-2.5 rounded-md border border-slate-200 bg-slate-50/70 p-2">
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                <div className="space-y-2.5 rounded-md border border-[#2A2A2A] bg-[#161616] p-2">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                     Selected feature {selectedFeatureIndex >= 0 ? selectedFeatureIndex + 1 : ""}
                   </div>
                   <TextControl
@@ -427,8 +427,8 @@ export function AboutProperties({
           ) : null}
 
           {showButton ? (
-            <div className="space-y-2.5 rounded-lg border border-slate-200 p-2.5">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="space-y-2.5 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-2.5">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                 Button
               </div>
               <ToggleControl
@@ -455,8 +455,8 @@ export function AboutProperties({
           ) : null}
 
           {showImage ? (
-            <div className="space-y-2.5 rounded-lg border border-slate-200 p-2.5">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="space-y-2.5 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-2.5">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                 Image
               </div>
               <ToggleControl
@@ -485,7 +485,7 @@ export function AboutProperties({
       }
       style={
         <div className="space-y-2.5">
-          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Section
           </div>
           <ColorControl
@@ -522,7 +522,7 @@ export function AboutProperties({
             onChange={(next) => updateStyle({ maxWidth: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Column layout
           </div>
           <SelectControl
@@ -586,7 +586,7 @@ export function AboutProperties({
             onChange={(next) => updateStyle({ imageSide: next as "left" | "right" })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Image
           </div>
           <NumberControl
@@ -664,7 +664,7 @@ export function AboutProperties({
             onChange={(next) => updateStyle({ imageZoomOnHover: next })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Eyebrow typography
           </div>
           <ColorControl
@@ -693,7 +693,7 @@ export function AboutProperties({
             onChange={(next) => updateStyle({ eyebrowLetterSpacing: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Heading typography
           </div>
           <ColorControl
@@ -730,7 +730,7 @@ export function AboutProperties({
             onChange={(next) => updateStyle({ headingMarginBottom: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Description typography
           </div>
           <ColorControl
@@ -761,7 +761,7 @@ export function AboutProperties({
             onChange={(next) => updateStyle({ descriptionMarginBottom: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Feature list
           </div>
           <ColorControl
@@ -789,7 +789,7 @@ export function AboutProperties({
             onChange={(next) => updateStyle({ featureItemGap: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Button
           </div>
           <SelectControl
@@ -951,7 +951,7 @@ export function AboutProperties({
             checked={aboutValue.advanced.visibility !== false}
             onChange={(next) => updateAdvanced({ visibility: next })}
           />
-          <div className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-2 text-[12px] leading-5 text-slate-500">
+          <div className="rounded-md border border-[#2A2A2A] bg-[#1A1A1A] px-2.5 py-2 text-[12px] leading-5 text-[#888888]">
             Image uses editable alt text and the Learn More link keeps an accessible label. Prefer
             high-contrast colors for heading and button.
           </div>

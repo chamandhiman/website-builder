@@ -727,7 +727,7 @@ const renderTemplateSections = (sections: TemplateSectionData[]) =>
   sections.map((section) => ({
     name: section.name,
     type: section.type,
-    html: renderSection(section),
+    html: section.html || renderSection(section),
     content: section.content,
     widgetType: section.widgetType,
     style: section.style,

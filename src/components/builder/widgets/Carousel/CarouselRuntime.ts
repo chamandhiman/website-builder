@@ -4,15 +4,15 @@ export const WTO_CAROUSEL_RUNTIME = `
   function initWtoCarousels(root){
     try {
       var scope = root && root.querySelectorAll ? root : document;
-      scope.querySelectorAll('[data-wto-carousel="1"]').forEach(function(carousel){
+      scope.querySelectorAll('[data-wto-carousel="1"], [data-carousel], .wl-testimonial-carousel, .wl-testimonial-box[data-carousel]').forEach(function(carousel){
         if (carousel.getAttribute('data-wto-carousel-ready') === '1') return;
         carousel.setAttribute('data-wto-carousel-ready', '1');
 
-        var track = carousel.querySelector('[data-carousel-track]');
-        var slides = Array.prototype.slice.call(carousel.querySelectorAll('[data-carousel-slide]'));
-        var dots = Array.prototype.slice.call(carousel.querySelectorAll('[data-carousel-dot]'));
-        var prevBtn = carousel.querySelector('[data-carousel-prev]');
-        var nextBtn = carousel.querySelector('[data-carousel-next]');
+        var track = carousel.querySelector('[data-carousel-track], .wl-carousel-track');
+        var slides = Array.prototype.slice.call(carousel.querySelectorAll('[data-carousel-slide], .wl-carousel-slide'));
+        var dots = Array.prototype.slice.call(carousel.querySelectorAll('[data-carousel-dot], .wl-carousel-dot'));
+        var prevBtn = carousel.querySelector('[data-carousel-prev], .wl-carousel-prev, [data-act="prev"]');
+        var nextBtn = carousel.querySelector('[data-carousel-next], .wl-carousel-next, [data-act="next"]');
         if (!track || !slides.length) return;
 
         var autoplay = carousel.getAttribute('data-autoplay') === '1';

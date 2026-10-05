@@ -1,7 +1,8 @@
 export const WIDGET_SELECTION_LABELS: Record<string, string> = {
   navbar: "Header",
   header: "Header",
-  hero: "Hero",
+  hero: "Banner",
+  banner: "Banner",
   grid: "Grid",
   heading: "Heading",
   text: "Paragraph",
@@ -16,6 +17,10 @@ export const WIDGET_SELECTION_LABELS: Record<string, string> = {
   services: "Services",
   about: "About Us",
   cta: "Call To Action",
+  team: "Team",
+  pricing: "Pricing Section",
+  testimonials: "Testimonials",
+  "overlay-banner": "Background Image overlay text banner",
 };
 
 export function getWidgetSelectionLabel(type?: string | null, fallback = "Widget"): string {

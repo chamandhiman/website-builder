@@ -158,13 +158,13 @@ export function CarouselProperties({
   };
 
   const actionBtnClass =
-    "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400";
+    "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[#71717A] transition hover:bg-[#27272A] hover:text-[#F4F4F5] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-[#71717A]";
 
   return (
     <PropertyPanel
       title="Carousel"
       badgeLabel="Carousel"
-      badgeIcon={<FontAwesomeIcon icon={faImages} className="h-3.5 w-3.5" />}
+      badgeIcon={<FontAwesomeIcon icon={faImages} className="h-3.5 w-3.5 text-amber-400" />}
       onClose={onClose}
       variantControl={
         <SelectControl
@@ -178,8 +178,8 @@ export function CarouselProperties({
         <div className="space-y-3">
           <div className="min-w-0 w-full">
             <div className="mb-2 flex items-center justify-between gap-2">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                Slides
+              <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A1A1AA]">
+                Slides ({slides.length})
               </div>
               <button
                 type="button"
@@ -191,7 +191,7 @@ export function CarouselProperties({
                   setSlides([...slides, next], next.id);
                   focusSlideSelection(next.id);
                 }}
-                className="inline-flex shrink-0 items-center gap-1 text-[12px] font-medium text-violet-600 hover:text-violet-700"
+                className="inline-flex shrink-0 items-center gap-1 text-[12px] font-medium text-amber-400 hover:text-amber-300 transition"
               >
                 <FontAwesomeIcon icon={faPlus} className="h-3 w-3" />
                 Add Slide
@@ -207,8 +207,8 @@ export function CarouselProperties({
                   <div
                     key={slide.id}
                     className={[
-                      "min-w-0 overflow-hidden rounded-lg border bg-white transition",
-                      isSelected ? "border-violet-300 bg-violet-50/40" : "border-slate-200",
+                      "min-w-0 overflow-hidden rounded-lg border bg-[#18181B] transition",
+                      isSelected ? "border-amber-400/70 bg-[#222226]" : "border-[#27272A] hover:border-[#38383D]",
                     ].join(" ")}
                   >
                     <div className="flex min-w-0 items-center gap-1 px-2 py-1.5">
@@ -217,16 +217,16 @@ export function CarouselProperties({
                         onClick={() => selectSlide(slide.id)}
                         className="flex min-w-0 flex-1 items-center gap-2 px-1 py-1 text-left"
                       >
-                        <span className="h-9 w-12 shrink-0 overflow-hidden rounded-md bg-slate-100">
+                        <span className="h-9 w-12 shrink-0 overflow-hidden rounded-md bg-[#242428] border border-[#2E2E33]">
                           {thumb ? (
                             <img src={thumb} alt="" className="h-full w-full object-cover" />
                           ) : null}
                         </span>
                         <span className="min-w-0">
-                          <span className="block truncate text-[13px] font-medium text-slate-700">
+                          <span className="block truncate text-[13px] font-medium text-[#F4F4F5]">
                             Slide {index + 1}
                           </span>
-                          <span className="block truncate text-[11px] text-slate-400">{name}</span>
+                          <span className="block truncate text-[11px] text-[#71717A]">{name}</span>
                         </span>
                       </button>
                       <div className="flex shrink-0 items-center gap-0.5">
@@ -274,7 +274,7 @@ export function CarouselProperties({
                           title="Remove"
                           aria-label="Remove"
                           disabled={slides.length <= 1}
-                          className={`${actionBtnClass} hover:text-red-500`}
+                          className={`${actionBtnClass} hover:text-red-400`}
                           onClick={() => {
                             const next = slides.filter((item) => item.id !== slide.id);
                             setSlides(next, next[Math.max(0, index - 1)]?.id);
@@ -291,8 +291,8 @@ export function CarouselProperties({
           </div>
 
           {selectedSlide ? (
-            <div className="space-y-2.5 rounded-lg border border-slate-200 bg-slate-50/60 p-2.5">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="space-y-2.5 rounded-lg border border-[#2E2E33] bg-[#18181B] p-2.5">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A1A1AA]">
                 Selected slide {selectedIndex >= 0 ? selectedIndex + 1 : ""}
               </div>
               <ImageControl
@@ -311,32 +311,14 @@ export function CarouselProperties({
                 }
               />
               <TextControl
-                label="Image name"
+                label="Slide Title / Caption"
+                placeholder="Optional caption text"
                 value={selectedSlide.name || imageNameFromSrc(selectedSlide.src)}
                 onChange={(next) => updateSlide(selectedSlide.id, { name: next })}
               />
               <TextControl
-                label="Quote"
-                value={String(selectedSlide.quote ?? "")}
-                onChange={(next) => updateSlide(selectedSlide.id, { quote: next })}
-              />
-              <TextControl
-                label="Author"
-                value={String(selectedSlide.author ?? "")}
-                onChange={(next) => updateSlide(selectedSlide.id, { author: next })}
-              />
-              <TextControl
-                label="Role"
-                value={String(selectedSlide.role ?? "")}
-                onChange={(next) => updateSlide(selectedSlide.id, { role: next })}
-              />
-              <TextControl
-                label="Company"
-                value={String(selectedSlide.company ?? "")}
-                onChange={(next) => updateSlide(selectedSlide.id, { company: next })}
-              />
-              <TextControl
-                label="Image link"
+                label="Link URL (optional)"
+                placeholder="https://..."
                 value={String(selectedSlide.link ?? "")}
                 onChange={(next) => updateSlide(selectedSlide.id, { link: next })}
               />
@@ -351,7 +333,7 @@ export function CarouselProperties({
       }
       style={
         <div className="space-y-2.5">
-          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A1A1AA]">
             Carousel
           </div>
           <NumberControl
@@ -402,7 +384,7 @@ export function CarouselProperties({
             onChange={(next) => updateStyle({ overflowHidden: next })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Arrows
           </div>
           <ToggleControl
@@ -453,7 +435,7 @@ export function CarouselProperties({
             onChange={(next) => updateStyle({ arrowPosition: next as "inside" | "outside" })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A1A1AA]">
             Dots
           </div>
           <ToggleControl
@@ -493,7 +475,7 @@ export function CarouselProperties({
       }
       animation={
         <div className="space-y-2.5">
-          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A1A1AA]">
             Autoplay
           </div>
           <ToggleControl
@@ -509,7 +491,7 @@ export function CarouselProperties({
             step={100}
             onChange={(next) => updateContent({ autoplayDelay: next || 5000 })}
           />
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A1A1AA]">
             Behavior
           </div>
           <ToggleControl

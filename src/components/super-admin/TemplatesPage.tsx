@@ -1,22 +1,16 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
-import { Plus, Search, MoreVertical, Pencil, Trash2, CheckCircle2, XCircle, Layers, Copy, RefreshCcw } from "lucide-react";
+import { Plus, Search, MoreVertical, Pencil, Trash2, CheckCircle2, XCircle, Layers, Copy, RefreshCcw, Sparkles, Eye, X, ExternalLink } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useNavigate } from "@tanstack/react-router";
 import { useBuilder } from "@/lib/builder/store";
+import { getWidgetRegistration, getWidgetBootstrapExport } from "@/components/builder/widgets/widgetRegistry";
 import { Button } from "@/components/ui/button";
+import type { PageSection } from "@/lib/builder/store";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -49,6 +43,7 @@ import {
   deleteTemplate,
   setTemplateStatus,
   duplicateTemplate,
+  seedPrebuiltTemplatesToFirestore,
   type Template,
   type TemplateStatus,
   type CreateTemplateInput,
@@ -62,17 +57,14 @@ export function TemplatesPage() {
   const navigate = useNavigate();
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<FilterStatus>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
-  const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
   const [deletingTemplate, setDeletingTemplate] = useState<Template | null>(null);
-  const [saving, setSaving] = useState(false);
-
-  const [formName, setFormName] = useState("");
-  const [formCategory, setFormCategory] = useState("");
+  const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
   const requestIdRef = useRef(0);
 
   const categories = useMemo(() => {
@@ -128,34 +120,73 @@ export function TemplatesPage() {
   }, [templates, searchQuery, statusFilter, categoryFilter]);
 
   const openCreate = () => {
-    setEditingTemplate(null);
-    setFormName("");
-    setFormCategory("");
-    setCreateDialogOpen(true);
-  };
-
-  const handleCreateFromBuilder = async () => {
-    if (!user || !formName.trim() || !formCategory.trim()) return;
-    setSaving(true);
-    try {
-      setCreateDialogOpen(false);
-      navigate({
-        to: "/super-admin/templates/create",
-        search: { templateName: formName.trim(), templateCategory: formCategory.trim() },
-      });
-    } catch (err) {
-      console.error("[Templates] Failed to open builder:", err);
-      toast.error("Failed to open builder");
-    } finally {
-      setSaving(false);
-    }
+    navigate({ to: "/super-admin/templates/create" });
   };
 
   const openEdit = async (template: Template) => {
     try {
+      // Create a fresh template project
+      const projectId = useBuilder.getState().createTemplateProject(template.name);
+
+      // Load the template's pages or widgets into the project
+      const state = useBuilder.getState();
+      const project = state.currentProject();
+
+      if (project) {
+        if (template.pages && template.pages.length > 0) {
+          useBuilder.setState((s) => ({
+            projects: {
+              ...s.projects,
+              [project.id]: {
+                ...project,
+                pages: template.pages!,
+                currentPageId: template.pages![0].id,
+              },
+            },
+          }));
+        } else if (template.widgets && template.widgets.length > 0) {
+          const page = project.pages?.[0];
+          if (page) {
+            const sections: PageSection[] = template.widgets.map((widget) => {
+              const reg = getWidgetRegistration(widget.type);
+              let html = "";
+              try {
+                html = getWidgetBootstrapExport(widget.type, widget);
+              } catch {
+                html = `<section class="py-5"><div class="container text-center">${reg?.displayName ?? widget.type}</div></section>`;
+              }
+              return {
+                id: widget.id,
+                templateId: "",
+                name: reg?.displayName || widget.type,
+                html,
+                widgetInstance: widget as any,
+                animation: { type: "fade-up" as const, duration: 700, delay: 0 },
+              };
+            });
+            const updatedPages = project.pages.map((p) =>
+              p.id === page.id ? { ...p, sections } : p
+            );
+            useBuilder.setState((s) => ({
+              projects: {
+                ...s.projects,
+                [project.id]: { ...project, pages: updatedPages },
+              },
+            }));
+          }
+        }
+        useBuilder.getState().persist();
+      }
+
       navigate({
-        to: "/super-admin/templates/$templateId/edit",
-        params: { templateId: template.id },
+        to: "/editor/$projectId",
+        params: { projectId },
+        search: {
+          templateMode: "true",
+          templateId: template.id,
+          templateName: template.name,
+          templateCategory: template.category,
+        } as any,
       });
     } catch (err) {
       console.error("[Templates] Failed to open template in editor:", err);
@@ -199,6 +230,26 @@ export function TemplatesPage() {
     }
   };
 
+  const handleSyncSeeds = async () => {
+    setSyncing(true);
+    try {
+      const added = await seedPrebuiltTemplatesToFirestore();
+      if (added > 0) {
+        toast.success(`Successfully saved ${added} starter templates to Firestore!`);
+      } else {
+        toast.info("All starter templates are already in Firestore.");
+      }
+      await loadTemplates();
+    } catch (err: any) {
+      console.error("[Templates] Sync error:", err);
+      toast.error("Failed to sync starter templates to Firestore", {
+        description: err?.message,
+      });
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   const formatDate = (value: Date) => {
     return value.toLocaleDateString();
   };
@@ -208,12 +259,23 @@ export function TemplatesPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-[#F5F5F5]">Templates</h1>
-          <p className="mt-1 text-sm text-[#969696]">Manage global widget templates for the builder.</p>
+          <p className="mt-1 text-sm text-[#969696]">Manage global website templates for the builder.</p>
         </div>
-        <Button onClick={openCreate} className="bg-[#FACC15] text-[#111111] hover:bg-[#FDE047] h-9 px-4 rounded-lg">
-          <Plus className="mr-2 h-4 w-4" />
-          Create Template
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={handleSyncSeeds}
+            variant="outline"
+            disabled={syncing}
+            className="border-[#363636] bg-[#1F1F1F] text-[#D0D0D0] hover:bg-[#242424] hover:text-[#F5F5F5] h-9 px-3 rounded-lg"
+          >
+            <Sparkles className="mr-2 h-4 w-4 text-[#FACC15]" />
+            {syncing ? "Syncing..." : "Sync Starter Templates"}
+          </Button>
+          <Button onClick={openCreate} className="bg-[#FACC15] text-[#111111] hover:bg-[#FDE047] h-9 px-4 rounded-lg">
+            <Plus className="mr-2 h-4 w-4" />
+            Create Template
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -275,20 +337,37 @@ export function TemplatesPage() {
             <p className="mt-1 text-xs text-[#969696]">
               {searchQuery || categoryFilter !== "all"
                 ? "Try adjusting your search or filters."
-                : "Create your first global widget template."}
+                : "Get started by loading pre-built templates or creating a new one."}
             </p>
           </div>
           {!searchQuery && categoryFilter === "all" && (
-            <Button onClick={openCreate} className="mt-2 bg-[#FACC15] text-[#111111] hover:bg-[#FDE047] h-9 px-4 rounded-lg">
-              <Plus className="mr-2 h-4 w-4" />
-              Create Template
-            </Button>
+            <div className="flex items-center gap-2 mt-2">
+              <Button onClick={handleSyncSeeds} variant="outline" className="h-9 px-4 rounded-lg border-[#363636] text-[#F5F5F5] hover:bg-[#242424]">
+                <Sparkles className="mr-2 h-4 w-4 text-[#FACC15]" />
+                Load Starter Templates
+              </Button>
+              <Button onClick={openCreate} className="bg-[#FACC15] text-[#111111] hover:bg-[#FDE047] h-9 px-4 rounded-lg">
+                <Plus className="mr-2 h-4 w-4" />
+                Create Template
+              </Button>
+            </div>
           )}
         </Card>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filteredTemplates.map((template) => (
-            <Card key={template.id} className="flex flex-col border-[#363636] bg-[#1F1F1F] p-0 overflow-hidden">
+            <Card key={template.id} className="group flex flex-col border-[#363636] bg-[#1F1F1F] p-0 overflow-hidden hover:border-[#4b4b4b] transition-all">
+              {template.thumbnail ? (
+                <div className="relative h-36 w-full overflow-hidden bg-[#111111]">
+                  <img
+                    src={template.thumbnail}
+                    alt={template.name}
+                    className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1F1F1F] via-transparent to-transparent" />
+                </div>
+              ) : null}
               <div className="flex items-start justify-between p-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
@@ -305,7 +384,11 @@ export function TemplatesPage() {
                     </Badge>
                   </div>
                   <p className="mt-1 text-xs text-[#969696] capitalize">{template.category}</p>
-                  <p className="mt-0.5 text-[10px] text-[#646464]">{template.widgets?.length ?? 0} widgets</p>
+                  <p className="mt-0.5 text-[10px] text-[#646464]">
+                    {template.pages && template.pages.length > 0
+                      ? `${template.pages.length} page${template.pages.length !== 1 ? "s" : ""} · ${template.pages.reduce((acc, p) => acc + (p.sections?.length ?? 0), 0)} sections`
+                      : `${template.widgets?.length ?? 0} widgets`}
+                  </p>
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -314,6 +397,10 @@ export function TemplatesPage() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-40 bg-[#1F1F1F] border-[#363636] text-[#F5F5F5]">
+                    <DropdownMenuItem onSelect={() => setPreviewTemplate(template)} className="cursor-pointer">
+                      <Eye className="mr-2 h-4 w-4" />
+                      Preview
+                    </DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => openEdit(template)} className="cursor-pointer">
                       <Pencil className="mr-2 h-4 w-4" />
                       Edit
@@ -354,44 +441,52 @@ export function TemplatesPage() {
         </div>
       )}
 
-      <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-        <DialogContent className="w-[calc(100vw-32px)] max-w-[480px] overflow-hidden rounded-[20px] border border-[#363636] bg-[#1F1F1F] p-0 shadow-2xl">
-          <DialogHeader className="border-b border-[#363636] px-5 pb-4 pt-5">
-            <DialogTitle className="text-base font-semibold text-[#F5F5F5]">Create Template</DialogTitle>
-            <DialogDescription className="text-xs text-[#969696]">
-              Open the template builder to assemble a reusable collection of widgets.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-3 px-5 py-4">
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-[#F5F5F5]">Template Name</label>
-              <Input
-                value={formName}
-                onChange={(e) => setFormName(e.target.value)}
-                placeholder="SaaS Page Template"
-                className="h-9 rounded-lg border-[#363636] bg-[#171717] text-[#F5F5F5] placeholder:text-[#969696]"
-              />
+      {/* ── Template Preview Modal ── */}
+      {previewTemplate && (
+        <div
+          className="fixed inset-0 z-[200] flex flex-col bg-black/90"
+          style={{ fontFamily: "sans-serif" }}
+        >
+          {/* Modal header bar */}
+          <div className="flex items-center justify-between px-4 py-2 bg-[#111111] border-b border-[#2a2a2a] shrink-0">
+            <div className="flex items-center gap-3">
+              <Eye className="h-4 w-4 text-[#FACC15]" />
+              <span className="text-sm font-semibold text-[#F5F5F5]">{previewTemplate.name}</span>
+              <span className="text-xs text-[#969696] bg-[#1F1F1F] border border-[#363636] px-2 py-0.5 rounded capitalize">{previewTemplate.category}</span>
             </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-[#F5F5F5]">Category</label>
-              <Input
-                value={formCategory}
-                onChange={(e) => setFormCategory(e.target.value)}
-                placeholder="Marketing"
-                className="h-9 rounded-lg border-[#363636] bg-[#171717] text-[#F5F5F5] placeholder:text-[#969696]"
-              />
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => openEdit(previewTemplate)}
+                className="flex items-center gap-1.5 text-xs font-medium text-[#FACC15] bg-[#FACC15]/10 hover:bg-[#FACC15]/20 border border-[#FACC15]/30 px-3 py-1.5 rounded-lg transition-colors"
+              >
+                <Pencil className="h-3 w-3" />
+                Edit Template
+              </button>
+              <button
+                onClick={() => setPreviewTemplate(null)}
+                className="flex items-center justify-center h-8 w-8 rounded-lg text-[#969696] hover:text-[#F5F5F5] hover:bg-[#242424] transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
           </div>
-          <DialogFooter className="border-t border-[#363636] px-5 py-3">
-            <Button variant="ghost" onClick={() => setCreateDialogOpen(false)} disabled={saving} className="text-[#969696] hover:text-[#F5F5F5] hover:bg-[#242424] h-8 px-3 rounded-md text-xs">
-              Cancel
-            </Button>
-            <Button onClick={handleCreateFromBuilder} disabled={saving || !formName.trim() || !formCategory.trim()} className="bg-[#FACC15] text-[#111111] hover:bg-[#FDE047] h-8 px-4 rounded-md text-xs">
-              {saving ? "Opening Builder..." : "Open Builder"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+
+          {/* Preview iframe */}
+          <div className="flex-1 overflow-hidden">
+            <iframe
+              key={previewTemplate.id}
+              title={`Preview: ${previewTemplate.name}`}
+              className="w-full h-full border-0"
+              srcDoc={(() => {
+                const allSections = previewTemplate.pages?.flatMap((p) => p.sections ?? []) ?? [];
+                const combinedHtml = allSections.map((s) => s.html).join("\n");
+                return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${previewTemplate.name}</title><style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#0B0C10;}</style></head><body>${combinedHtml}</body></html>`;
+              })()}
+              sandbox="allow-same-origin"
+            />
+          </div>
+        </div>
+      )}
 
       <AlertDialog open={!!deletingTemplate} onOpenChange={(open) => !open && setDeletingTemplate(null)}>
         <AlertDialogContent className="border-[#363636] bg-[#1F1F1F]">

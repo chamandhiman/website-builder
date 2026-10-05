@@ -188,8 +188,8 @@ export function CTAProperties({
       content={
         <div className="space-y-3">
           {showEyebrow ? (
-            <div className="space-y-2.5 rounded-lg border border-slate-200 p-2.5">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="space-y-2.5 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-2.5">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                 Eyebrow
               </div>
               <ToggleControl
@@ -209,8 +209,8 @@ export function CTAProperties({
           ) : null}
 
           {showHeading ? (
-            <div className="space-y-2.5 rounded-lg border border-slate-200 p-2.5">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="space-y-2.5 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-2.5">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                 Heading
               </div>
               <ToggleControl
@@ -230,8 +230,8 @@ export function CTAProperties({
           ) : null}
 
           {showParagraph ? (
-            <div className="space-y-2.5 rounded-lg border border-slate-200 p-2.5">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="space-y-2.5 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-2.5">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                 Paragraph
               </div>
               <ToggleControl
@@ -251,8 +251,8 @@ export function CTAProperties({
           ) : null}
 
           {showPrimary ? (
-            <div className="space-y-2.5 rounded-lg border border-slate-200 p-2.5">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="space-y-2.5 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-2.5">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                 Primary button
               </div>
               <ToggleControl
@@ -282,8 +282,8 @@ export function CTAProperties({
           ) : null}
 
           {showSecondary ? (
-            <div className="space-y-2.5 rounded-lg border border-slate-200 p-2.5">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="space-y-2.5 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-2.5">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                 Secondary button
               </div>
               <ToggleControl
@@ -313,8 +313,8 @@ export function CTAProperties({
           ) : null}
 
           {showBackgroundImage && backgroundMode === "image" ? (
-            <div className="space-y-2.5 rounded-lg border border-slate-200 p-2.5">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="space-y-2.5 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-2.5">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                 Background image
               </div>
               <ImageControl
@@ -454,7 +454,7 @@ export function CTAProperties({
             </>
           ) : null}
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Overlay
           </div>
           <ToggleControl
@@ -574,7 +574,7 @@ export function CTAProperties({
       }
       typography={
         <div className="space-y-2.5">
-          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Eyebrow
           </div>
           <ColorControl
@@ -629,7 +629,7 @@ export function CTAProperties({
             onChange={(next) => updateStyle({ eyebrowPaddingY: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Heading
           </div>
           <ColorControl
@@ -675,7 +675,7 @@ export function CTAProperties({
             onChange={(next) => updateStyle({ headingTextShadow: next })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Paragraph
           </div>
           <ColorControl
@@ -713,7 +713,7 @@ export function CTAProperties({
       }
       style={
         <div className="space-y-2.5">
-          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Buttons
           </div>
           <SelectControl
@@ -738,7 +738,7 @@ export function CTAProperties({
             onChange={(next) => updateStyle({ buttonGap: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Primary button
           </div>
           <ColorControl
@@ -813,7 +813,7 @@ export function CTAProperties({
             onChange={(next) => updateStyle({ primaryHoverBorderColor: next })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Secondary button
           </div>
           <ColorControl
@@ -891,7 +891,7 @@ export function CTAProperties({
       }
       responsive={
         <div className="space-y-2.5">
-          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Desktop
           </div>
           <NumberControl
@@ -909,7 +909,7 @@ export function CTAProperties({
             onChange={(next) => updateResponsive({ desktopHeadingFontSize: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Tablet
           </div>
           <NumberControl
@@ -927,7 +927,7 @@ export function CTAProperties({
             onChange={(next) => updateResponsive({ tabletHeadingFontSize: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Mobile
           </div>
           <NumberControl
@@ -950,7 +950,7 @@ export function CTAProperties({
             onChange={(next) => updateResponsive({ stackButtonsOnMobile: next })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Visibility
           </div>
           <ToggleControl

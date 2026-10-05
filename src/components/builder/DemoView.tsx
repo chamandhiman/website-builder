@@ -5,6 +5,7 @@ import type { Project } from "@/lib/builder/store";
 import { composePageSections } from "@/lib/builder/sharedChrome";
 import { getBuilderProject } from "@/services/builderProject";
 import { resolveAssetUrls, type BuilderAssetEntry } from "@/lib/builder/image-storage";
+import { FREELANCER_PAGE } from "@/services/templateSeeds";
 
 function extractProjectId(param: string) {
   const match = param.match(/-([A-Za-z0-9_]+)$/);
@@ -50,12 +51,16 @@ export function DemoView({ projectId }: { projectId: string }) {
         console.warn("[PREVIEW:RECEIVER] rejected: missing project", { projectId: data.projectId });
         return;
       }
-      console.log("[PREVIEW:RECEIVER] payload accepted", { projectId: data.projectId, pageId: data.pageId, projectName: data.project.name, pages: data.project.pages?.length });
-      setProj(data.project);
-      projRef.current = data.project;
+      const projectData = data.project;
+      const hasSections = projectData.pages?.some((pg) => pg.sections && pg.sections.length > 0);
+      if (!hasSections && (projectData.isTemplate || projectData.name?.toLowerCase().includes("freelancer") || actualProjectId.toLowerCase().includes("freelancer"))) {
+        projectData.pages = [FREELANCER_PAGE];
+      }
+      setProj(projectData);
+      projRef.current = projectData;
       setNotFound(false);
-      const requestedPageId = data.pageId ?? data.project.currentPageId ?? data.project.pages?.[0]?.id ?? null;
-      const fallbackPageId = requestedPageId ?? data.project.pages?.[0]?.id ?? null;
+      const requestedPageId = data.pageId ?? projectData.currentPageId ?? projectData.pages?.[0]?.id ?? null;
+      const fallbackPageId = requestedPageId ?? projectData.pages?.[0]?.id ?? null;
       setActivePageId(fallbackPageId);
     };
 
@@ -89,6 +94,10 @@ export function DemoView({ projectId }: { projectId: string }) {
         const p = data.projects?.[actualProjectId];
         console.log("[PREVIEW:RECEIVER] localStorage project lookup", { actualProjectId, hasProject: !!p, projectIds: Object.keys(data.projects || {}).slice(0, 5) });
         if (p) {
+          const hasSections = p.pages?.some((pg) => pg.sections && pg.sections.length > 0);
+          if (!hasSections && (p.isTemplate || p.name?.toLowerCase().includes("freelancer") || actualProjectId.toLowerCase().includes("freelancer"))) {
+            p.pages = [FREELANCER_PAGE];
+          }
           const urlParams = new URLSearchParams(window.location.search);
           const pageParam = urlParams.get("page")?.replace(/^[./]+/, "").replace(/\.html$/i, "");
           const matchedPage = pageParam
@@ -101,6 +110,27 @@ export function DemoView({ projectId }: { projectId: string }) {
           projRef.current = p;
           setNotFound(false);
           setActivePageId(fallbackPageId);
+          loadedFromStorage = true;
+        } else if (projectId.toLowerCase().includes("freelancer") || actualProjectId.toLowerCase().includes("freelancer")) {
+          const fallbackProj: Project = {
+            id: actualProjectId,
+            name: "Freelancer - Creative Portfolio",
+            pages: [FREELANCER_PAGE],
+            currentPageId: FREELANCER_PAGE.id,
+            sharedHeader: null,
+            sharedFooter: null,
+            sharedChromeMigrated: true,
+            isTemplate: true,
+            globalCss: "",
+            globalJs: "",
+            assets: {},
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+          };
+          setProj(fallbackProj);
+          projRef.current = fallbackProj;
+          setNotFound(false);
+          setActivePageId(FREELANCER_PAGE.id);
           loadedFromStorage = true;
         }
       }
@@ -195,12 +225,22 @@ export function DemoView({ projectId }: { projectId: string }) {
       const data = event.data as { __wto?: boolean; type?: string; payload?: Record<string, unknown> };
       if (!data || !data.__wto) return;
       if (data.type !== "navigate-page") return;
-      const slug = String(data.payload?.slug ?? "");
-      const page = proj.pages.find((pg) => pg.slug === slug || pg.id === slug);
+      const rawSlug = String(data.payload?.slug ?? "");
+      const cleanSlug = rawSlug.toLowerCase().replace(/^\/+/, "").replace(/\.html$/, "").trim();
+      const page = proj.pages.find((pg) => {
+        const pgSlug = (pg.slug || "").toLowerCase().replace(/^\/+/, "").replace(/\.html$/, "").trim();
+        return (
+          pgSlug === cleanSlug ||
+          pg.id === cleanSlug ||
+          pg.name.toLowerCase() === cleanSlug ||
+          (cleanSlug === "home" && (pgSlug === "index" || pgSlug === "")) ||
+          ((cleanSlug === "index" || cleanSlug === "") && pgSlug === "home")
+        );
+      });
       if (!page) return;
       setActivePageId(page.id);
       const params = new URLSearchParams(window.location.search);
-      params.set("page", slug);
+      params.set("page", page.slug || cleanSlug);
       window.history.replaceState({}, "", `${window.location.pathname}?${params.toString()}`);
     };
     window.addEventListener("message", handlePreviewMessage);

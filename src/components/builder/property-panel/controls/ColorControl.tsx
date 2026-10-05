@@ -8,11 +8,11 @@ export interface ColorControlProps {
 
 export function ColorControl({ label = "Color", value = "#2563eb", onChange }: ColorControlProps) {
   return (
-    <label className="flex flex-col gap-1.5 text-sm text-slate-600">
-      <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{label}</span>
+    <label className="flex flex-col gap-1.5 text-sm text-[#D0D0D0]">
+      <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#707070]">{label}</span>
       <div className="flex items-center gap-2">
-        <input type="color" value={value} onChange={(event) => onChange?.(event.target.value)} className="h-9 w-14 rounded border border-slate-200 bg-white p-1" />
-        <span className="text-[13px] text-slate-500">{value}</span>
+        <input type="color" value={value} onChange={(event) => onChange?.(event.target.value)} className="h-9 w-14 cursor-pointer rounded border border-[#363636] bg-[#1F1F1F] p-1" />
+        <span className="text-[13px] text-[#A0A0A0]">{value}</span>
       </div>
     </label>
   );

@@ -185,7 +185,7 @@ export function GalleryProperties({
   };
 
   const actionBtnClass =
-    "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400";
+    "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[#707070] transition hover:bg-[#2A2A2A] hover:text-[#D0D0D0] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-[#707070]";
 
   return (
     <PropertyPanel
@@ -205,7 +205,7 @@ export function GalleryProperties({
         <div className="space-y-3">
           <div className="min-w-0 w-full">
             <div className="mb-2 flex items-center justify-between gap-2">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                 Images
               </div>
               <button
@@ -218,7 +218,7 @@ export function GalleryProperties({
                   setImages([...images, next], next.id);
                   focusImageSelection(next.id);
                 }}
-                className="inline-flex shrink-0 items-center gap-1 text-[12px] font-medium text-violet-600 hover:text-violet-700"
+                className="inline-flex shrink-0 items-center gap-1 text-[12px] font-medium text-[#FACC15] hover:text-[#FDE047]"
               >
                 <FontAwesomeIcon icon={faPlus} className="h-3 w-3" />
                 Add image
@@ -234,8 +234,8 @@ export function GalleryProperties({
                   <div
                     key={item.id}
                     className={[
-                      "min-w-0 overflow-hidden rounded-lg border bg-white transition",
-                      isSelected ? "border-violet-300 bg-violet-50/40" : "border-slate-200",
+                      "min-w-0 overflow-hidden rounded-lg border transition",
+                      isSelected ? "border-[#FACC15]/40 bg-[#FACC15]/5" : "border-[#2A2A2A] bg-[#1C1C1C]",
                     ].join(" ")}
                   >
                     <div className="flex min-w-0 items-center gap-1 px-2 py-1.5">
@@ -244,16 +244,16 @@ export function GalleryProperties({
                         onClick={() => selectImage(item.id)}
                         className="flex min-w-0 flex-1 items-center gap-2 px-1 py-1 text-left"
                       >
-                        <span className="h-9 w-12 shrink-0 overflow-hidden rounded-md bg-slate-100">
+                        <span className="h-9 w-12 shrink-0 overflow-hidden rounded-md bg-[#252525]">
                           {thumb ? (
                             <img src={thumb} alt="" className="h-full w-full object-cover" />
                           ) : null}
                         </span>
                         <span className="min-w-0">
-                          <span className="block truncate text-[13px] font-medium text-slate-700">
+                          <span className="block truncate text-[13px] font-medium text-[#D0D0D0]">
                             Image {index + 1}
                           </span>
-                          <span className="block truncate text-[11px] text-slate-400">{name}</span>
+                          <span className="block truncate text-[11px] text-[#707070]">{name}</span>
                         </span>
                       </button>
                       <div className="flex shrink-0 items-center gap-0.5">
@@ -318,8 +318,8 @@ export function GalleryProperties({
           </div>
 
           {selectedImage ? (
-            <div className="space-y-2.5 rounded-lg border border-slate-200 bg-slate-50/60 p-2.5">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="space-y-2.5 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-2.5">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
                 Selected image {selectedIndex >= 0 ? selectedIndex + 1 : ""}
               </div>
               <ImageControl
@@ -358,7 +358,7 @@ export function GalleryProperties({
       }
       style={
         <div className="space-y-2.5">
-          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Layout
           </div>
           <SelectControl
@@ -380,7 +380,7 @@ export function GalleryProperties({
             onChange={(next) => updateStyle({ mobileColumns: Number(next) || 1 })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Image
           </div>
           <NumberControl
@@ -431,7 +431,7 @@ export function GalleryProperties({
             onChange={(next) => updateStyle({ borderWidth: `${next}px` })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Hover
           </div>
           <ToggleControl
@@ -454,7 +454,7 @@ export function GalleryProperties({
             onChange={(next) => updateStyle({ hoverShadow: next })}
           />
 
-          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#707070]">
             Section
           </div>
           <ColorControl
