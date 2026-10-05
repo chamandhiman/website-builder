@@ -14,17 +14,25 @@ import { auth } from "@/firebase/firebase";
 import { db } from "@/firebase/firebase";
 import { sanitizeForFirestore } from "./firestore";
 import { createWidgetInstance, type WidgetInstance } from "@/components/builder/widgets/widgetRegistry";
-import type { Page } from "@/lib/builder/store";
+import type { Page, PageSection } from "@/lib/builder/store";
+import { useBuilder } from "@/lib/builder/store";
+import { nanoid } from "nanoid";
+import { getWidgetRegistration, getWidgetBootstrapExport } from "@/components/builder/widgets/widgetRegistry";
 
-export type TemplateStatus = "draft" | "published";
+export type TemplateStatus = "draft" | "upcoming" | "published" | "archived";
 
 export interface Template {
   id: string;
   name: string;
   slug: string;
   category: string;
+  description?: string;
   status: TemplateStatus;
   thumbnail: string | null;
+  previewImage?: string | null;
+  featured?: boolean;
+  isNew?: boolean;
+  sortOrder?: number;
   widgets: WidgetInstance[];
   pages?: Page[];
   createdBy: string;
@@ -36,7 +44,13 @@ export interface CreateTemplateInput {
   name: string;
   slug: string;
   category: string;
+  description?: string;
+  status?: TemplateStatus;
   thumbnail?: string | null | undefined;
+  previewImage?: string | null | undefined;
+  featured?: boolean;
+  isNew?: boolean;
+  sortOrder?: number;
   widgets: WidgetInstance[];
   pages?: Page[];
 }
@@ -45,8 +59,13 @@ export interface UpdateTemplateInput {
   name?: string;
   slug?: string;
   category?: string;
+  description?: string;
   status?: TemplateStatus;
   thumbnail?: string | null | undefined;
+  previewImage?: string | null | undefined;
+  featured?: boolean;
+  isNew?: boolean;
+  sortOrder?: number;
   widgets?: WidgetInstance[];
   pages?: Page[];
 }
@@ -63,18 +82,37 @@ function mapTemplate(snapshot: { id: string; data(): Record<string, unknown> }):
   const data = snapshot.data();
   const widgets = (data.widgets ?? []) as WidgetInstance[];
   const pages = Array.isArray(data.pages) ? (data.pages as Page[]) : undefined;
+  const rawStatus = String(data.status ?? "draft");
+  const status: TemplateStatus =
+    rawStatus === "published"
+      ? "published"
+      : rawStatus === "upcoming"
+        ? "upcoming"
+        : rawStatus === "archived"
+          ? "archived"
+          : "draft";
+
   return {
     id: snapshot.id,
     name: String(data.name ?? ""),
     slug: String(data.slug ?? ""),
     category: String(data.category ?? ""),
-    status: data.status === "published" ? "published" : "draft",
-    thumbnail: data.thumbnail ?? null,
+    description: data.description ? String(data.description) : undefined,
+    status,
+    thumbnail: data.thumbnail ? String(data.thumbnail) : null,
+    previewImage: data.previewImage ? String(data.previewImage) : null,
+    featured: Boolean(data.featured),
+    isNew: Boolean(data.isNew),
+    sortOrder: typeof data.sortOrder === "number" ? data.sortOrder : undefined,
     widgets,
     pages,
     createdBy: String(data.createdBy ?? ""),
-    createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : new Date((data.createdAt as string | number) ?? Date.now()),
-    updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate() : new Date((data.updatedAt as string | number) ?? Date.now()),
+    createdAt: data.createdAt && typeof (data.createdAt as any).toDate === "function"
+      ? (data.createdAt as any).toDate()
+      : new Date((data.createdAt as string | number) ?? Date.now()),
+    updatedAt: data.updatedAt && typeof (data.updatedAt as any).toDate === "function"
+      ? (data.updatedAt as any).toDate()
+      : new Date((data.updatedAt as string | number) ?? Date.now()),
   };
 }
 
@@ -82,19 +120,6 @@ import { PREBUILT_TEMPLATES } from "./templateSeeds";
 
 export async function seedPrebuiltTemplatesToFirestore(): Promise<number> {
   try {
-    const col = templatesCollectionRef();
-    const snapshot = await getDocs(col);
-    const validIds = new Set(PREBUILT_TEMPLATES.map((p) => p.id));
-
-    // Delete any template in Firestore that is not in PREBUILT_TEMPLATES
-    for (const docSnap of snapshot.docs) {
-      if (!validIds.has(docSnap.id)) {
-        try {
-          await deleteDoc(docSnap.ref);
-        } catch {}
-      }
-    }
-
     let count = 0;
     for (const template of PREBUILT_TEMPLATES) {
       const cleaned = sanitizeForFirestore(template);
@@ -103,7 +128,7 @@ export async function seedPrebuiltTemplatesToFirestore(): Promise<number> {
           ...(cleaned as Record<string, unknown>),
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
-        });
+        }, { merge: true });
         count++;
       }
     }
@@ -120,11 +145,16 @@ export async function getTemplate(templateId: string): Promise<Template | null> 
     if (snapshot.exists()) {
       return mapTemplate(snapshot);
     }
+    const col = templatesCollectionRef();
+    const qSnap = await getDocs(query(col, where("slug", "==", templateId)));
+    if (!qSnap.empty) {
+      return mapTemplate(qSnap.docs[0]);
+    }
     const seed = PREBUILT_TEMPLATES.find((p) => p.id === templateId || p.slug === templateId);
-    return seed ?? PREBUILT_TEMPLATES[0] ?? null;
+    return seed ?? null;
   } catch (err: any) {
     const seed = PREBUILT_TEMPLATES.find((p) => p.id === templateId || p.slug === templateId);
-    return seed ?? PREBUILT_TEMPLATES[0] ?? null;
+    return seed ?? null;
   }
 }
 
@@ -132,17 +162,43 @@ export async function getPublishedTemplates(): Promise<Template[]> {
   try {
     const col = templatesCollectionRef();
     const snapshot = await getDocs(col);
-    const validIds = new Set(PREBUILT_TEMPLATES.map((p) => p.id));
-    for (const docSnap of snapshot.docs) {
-      if (!validIds.has(docSnap.id)) {
-        try {
-          await deleteDoc(docSnap.ref);
-        } catch {}
+    const firestoreTemplates: Template[] = snapshot.docs.map(mapTemplate);
+
+    const firestoreIds = new Set(firestoreTemplates.map((t) => t.id));
+    const merged = [...firestoreTemplates];
+
+    for (const prebuilt of PREBUILT_TEMPLATES) {
+      if (!firestoreIds.has(prebuilt.id)) {
+        merged.push(prebuilt);
       }
     }
-    return PREBUILT_TEMPLATES;
+
+    return merged
+      .filter((t) => t.status === "published")
+      .sort((a, b) => (a.sortOrder ?? 999) - (b.sortOrder ?? 999));
   } catch (err: any) {
-    return PREBUILT_TEMPLATES;
+    return PREBUILT_TEMPLATES.filter((t) => t.status === "published");
+  }
+}
+
+export async function getUpcomingTemplates(): Promise<Template[]> {
+  try {
+    const col = templatesCollectionRef();
+    const snapshot = await getDocs(col);
+    const firestoreTemplates: Template[] = snapshot.docs.map(mapTemplate);
+
+    const firestoreIds = new Set(firestoreTemplates.map((t) => t.id));
+    const merged = [...firestoreTemplates];
+
+    for (const prebuilt of PREBUILT_TEMPLATES) {
+      if (!firestoreIds.has(prebuilt.id)) {
+        merged.push(prebuilt);
+      }
+    }
+
+    return merged.filter((t) => t.status === "upcoming");
+  } catch {
+    return PREBUILT_TEMPLATES.filter((t) => t.status === "upcoming");
   }
 }
 
@@ -150,37 +206,139 @@ export async function getTemplatesForSuperAdmin(): Promise<Template[]> {
   try {
     const col = templatesCollectionRef();
     const snapshot = await getDocs(col);
+    const firestoreTemplates: Template[] = snapshot.docs.map(mapTemplate);
 
-    // Delete all other templates from Firestore
-    for (const docSnap of snapshot.docs) {
-      if (docSnap.id !== "tpl-freelancer-dark-yellow") {
-        try {
-          await deleteDoc(docSnap.ref);
-        } catch {}
+    const firestoreIds = new Set(firestoreTemplates.map((t) => t.id));
+    const merged = [...firestoreTemplates];
+
+    for (const prebuilt of PREBUILT_TEMPLATES) {
+      if (!firestoreIds.has(prebuilt.id)) {
+        merged.push(prebuilt);
       }
     }
 
-    const freelancerTemplate = PREBUILT_TEMPLATES[0];
-    const exists = snapshot.docs.some((d) => d.id === freelancerTemplate.id);
-    if (!exists) {
-      const cleaned = sanitizeForFirestore(freelancerTemplate);
-      if (cleaned && typeof cleaned === "object") {
-        await setDoc(templateDocRef(freelancerTemplate.id), {
-          ...(cleaned as Record<string, unknown>),
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
-      }
-    }
-
-    return [freelancerTemplate];
+    return merged;
   } catch (err: any) {
     return [...PREBUILT_TEMPLATES];
   }
 }
 
 export async function listTemplates(status?: TemplateStatus): Promise<Template[]> {
-  return getTemplatesForSuperAdmin();
+  const all = await getTemplatesForSuperAdmin();
+  if (!status) return all;
+  return all.filter((t) => t.status === status);
+}
+
+/**
+ * Creates an independent user project from a template.
+ * Clones all pages and widgets with brand new unique IDs so the master template
+ * is NEVER modified.
+ */
+export function createProjectFromTemplate(tpl: Template, customName?: string): string {
+  const store = useBuilder.getState();
+  const projectName = customName || tpl.name;
+
+  // 1. Create a fresh project in the builder store
+  const projectId = store.newProject(projectName);
+  const current = store.currentProject();
+  if (!current) throw new Error("Failed to initialize user project");
+
+  const page = current.pages[0];
+
+  // 2. Clone pages or widgets with fresh IDs
+  if (tpl.pages && tpl.pages.length > 0) {
+    const clonedPages = tpl.pages.map((p) => {
+      const sections: PageSection[] = (p.sections || []).map((sec) => {
+        const widget = sec.widgetInstance;
+        const clonedWidget = widget
+          ? {
+              ...widget,
+              id: `${widget.type}-${Math.random().toString(36).slice(2, 8)}`,
+            }
+          : undefined;
+        const reg = clonedWidget ? getWidgetRegistration(clonedWidget.type) : null;
+        let html = sec.html;
+        if (clonedWidget) {
+          try {
+            html = getWidgetBootstrapExport(clonedWidget.type, clonedWidget);
+          } catch {
+            html = sec.html;
+          }
+        }
+        return {
+          ...sec,
+          id: nanoid(10),
+          name: reg?.displayName || sec.name,
+          html,
+          widgetInstance: clonedWidget,
+          animation: { type: "fade-up" as const, duration: 700, delay: 0 },
+        };
+      });
+      return {
+        ...p,
+        id: nanoid(8),
+        sections,
+      };
+    });
+
+    useBuilder.setState((s) => ({
+      projects: {
+        ...s.projects,
+        [current.id]: {
+          ...current,
+          pages: clonedPages,
+          currentPageId: clonedPages[0]?.id || current.currentPageId,
+          selectedTemplateId: tpl.id,
+          updatedAt: Date.now(),
+        },
+      },
+    }));
+  } else if (tpl.widgets && tpl.widgets.length > 0) {
+    const sections: PageSection[] = (tpl.widgets || []).map((widget) => {
+      const reg = getWidgetRegistration(widget.type);
+      const clonedWidget = {
+        ...widget,
+        id: `${widget.type}-${Math.random().toString(36).slice(2, 8)}`,
+      };
+      let html = "";
+      try {
+        html = getWidgetBootstrapExport(clonedWidget.type, clonedWidget);
+      } catch {
+        html = `<section class="py-5"><div class="container text-center">${reg?.displayName ?? widget.type}</div></section>`;
+      }
+      return {
+        id: nanoid(10),
+        templateId: "",
+        name: reg?.displayName || widget.type,
+        html,
+        widgetInstance: clonedWidget as any,
+        animation: { type: "fade-up" as const, duration: 700, delay: 0 },
+      };
+    });
+
+    const updatedPages = current.pages.map((p) =>
+      p.id === page.id ? { ...p, sections } : p
+    );
+
+    useBuilder.setState((s) => ({
+      projects: {
+        ...s.projects,
+        [current.id]: {
+          ...current,
+          pages: updatedPages,
+          selectedTemplateId: tpl.id,
+          updatedAt: Date.now(),
+        },
+      },
+    }));
+  }
+
+  store.persist();
+  const saved = useBuilder.getState().currentProject();
+  if (saved) {
+    void useBuilder.getState().saveProjectToCloud().catch(() => {});
+  }
+  return current.id;
 }
 
 export async function createTemplate(input: CreateTemplateInput, uid: string): Promise<Template> {

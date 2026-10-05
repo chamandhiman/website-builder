@@ -9,11 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TemplatesRouteImport } from './routes/templates'
 import { Route as SuperAdminRouteImport } from './routes/super-admin'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TemplatesIndexRouteImport } from './routes/templates.index'
 import { Route as SuperAdminIndexRouteImport } from './routes/super-admin.index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as TemplatesTemplateIdRouteImport } from './routes/templates.$templateId'
 import { Route as SuperAdminWidgetsRouteImport } from './routes/super-admin.widgets'
 import { Route as SuperAdminTemplatesRouteImport } from './routes/super-admin.templates'
 import { Route as SuperAdminSettingsRouteImport } from './routes/super-admin.settings'
@@ -28,9 +33,24 @@ import { Route as SuperAdminTemplatesIndexRouteImport } from './routes/super-adm
 import { Route as SuperAdminTemplatesCreateRouteImport } from './routes/super-admin.templates.create'
 import { Route as SuperAdminTemplatesTemplateIdEditRouteImport } from './routes/super-admin.templates.$templateId.edit'
 
+const TemplatesRoute = TemplatesRouteImport.update({
+  id: '/templates',
+  path: '/templates',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SuperAdminRoute = SuperAdminRouteImport.update({
   id: '/super-admin',
   path: '/super-admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -43,6 +63,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TemplatesIndexRoute = TemplatesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TemplatesRoute,
+} as any)
 const SuperAdminIndexRoute = SuperAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -52,6 +77,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DashboardRoute,
+} as any)
+const TemplatesTemplateIdRoute = TemplatesTemplateIdRouteImport.update({
+  id: '/$templateId',
+  path: '/$templateId',
+  getParentRoute: () => TemplatesRoute,
 } as any)
 const SuperAdminWidgetsRoute = SuperAdminWidgetsRouteImport.update({
   id: '/widgets',
@@ -125,7 +155,10 @@ const SuperAdminTemplatesTemplateIdEditRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/super-admin': typeof SuperAdminRouteWithChildren
+  '/templates': typeof TemplatesRouteWithChildren
   '/dashboard/favorites': typeof DashboardFavoritesRoute
   '/dashboard/projects': typeof DashboardProjectsRoute
   '/dashboard/shared': typeof DashboardSharedRoute
@@ -136,14 +169,18 @@ export interface FileRoutesByFullPath {
   '/super-admin/settings': typeof SuperAdminSettingsRoute
   '/super-admin/templates': typeof SuperAdminTemplatesRouteWithChildren
   '/super-admin/widgets': typeof SuperAdminWidgetsRoute
+  '/templates/$templateId': typeof TemplatesTemplateIdRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/super-admin/': typeof SuperAdminIndexRoute
+  '/templates/': typeof TemplatesIndexRoute
   '/super-admin/templates/create': typeof SuperAdminTemplatesCreateRoute
   '/super-admin/templates/': typeof SuperAdminTemplatesIndexRoute
   '/super-admin/templates/$templateId/edit': typeof SuperAdminTemplatesTemplateIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/dashboard/favorites': typeof DashboardFavoritesRoute
   '/dashboard/projects': typeof DashboardProjectsRoute
   '/dashboard/shared': typeof DashboardSharedRoute
@@ -153,8 +190,10 @@ export interface FileRoutesByTo {
   '/editor/$projectId': typeof EditorProjectIdRoute
   '/super-admin/settings': typeof SuperAdminSettingsRoute
   '/super-admin/widgets': typeof SuperAdminWidgetsRoute
+  '/templates/$templateId': typeof TemplatesTemplateIdRoute
   '/dashboard': typeof DashboardIndexRoute
   '/super-admin': typeof SuperAdminIndexRoute
+  '/templates': typeof TemplatesIndexRoute
   '/super-admin/templates/create': typeof SuperAdminTemplatesCreateRoute
   '/super-admin/templates': typeof SuperAdminTemplatesIndexRoute
   '/super-admin/templates/$templateId/edit': typeof SuperAdminTemplatesTemplateIdEditRoute
@@ -163,7 +202,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/super-admin': typeof SuperAdminRouteWithChildren
+  '/templates': typeof TemplatesRouteWithChildren
   '/dashboard/favorites': typeof DashboardFavoritesRoute
   '/dashboard/projects': typeof DashboardProjectsRoute
   '/dashboard/shared': typeof DashboardSharedRoute
@@ -174,8 +216,10 @@ export interface FileRoutesById {
   '/super-admin/settings': typeof SuperAdminSettingsRoute
   '/super-admin/templates': typeof SuperAdminTemplatesRouteWithChildren
   '/super-admin/widgets': typeof SuperAdminWidgetsRoute
+  '/templates/$templateId': typeof TemplatesTemplateIdRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/super-admin/': typeof SuperAdminIndexRoute
+  '/templates/': typeof TemplatesIndexRoute
   '/super-admin/templates/create': typeof SuperAdminTemplatesCreateRoute
   '/super-admin/templates/': typeof SuperAdminTemplatesIndexRoute
   '/super-admin/templates/$templateId/edit': typeof SuperAdminTemplatesTemplateIdEditRoute
@@ -185,7 +229,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/login'
+    | '/register'
     | '/super-admin'
+    | '/templates'
     | '/dashboard/favorites'
     | '/dashboard/projects'
     | '/dashboard/shared'
@@ -196,14 +243,18 @@ export interface FileRouteTypes {
     | '/super-admin/settings'
     | '/super-admin/templates'
     | '/super-admin/widgets'
+    | '/templates/$templateId'
     | '/dashboard/'
     | '/super-admin/'
+    | '/templates/'
     | '/super-admin/templates/create'
     | '/super-admin/templates/'
     | '/super-admin/templates/$templateId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/login'
+    | '/register'
     | '/dashboard/favorites'
     | '/dashboard/projects'
     | '/dashboard/shared'
@@ -213,8 +264,10 @@ export interface FileRouteTypes {
     | '/editor/$projectId'
     | '/super-admin/settings'
     | '/super-admin/widgets'
+    | '/templates/$templateId'
     | '/dashboard'
     | '/super-admin'
+    | '/templates'
     | '/super-admin/templates/create'
     | '/super-admin/templates'
     | '/super-admin/templates/$templateId/edit'
@@ -222,7 +275,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/dashboard'
+    | '/login'
+    | '/register'
     | '/super-admin'
+    | '/templates'
     | '/dashboard/favorites'
     | '/dashboard/projects'
     | '/dashboard/shared'
@@ -233,8 +289,10 @@ export interface FileRouteTypes {
     | '/super-admin/settings'
     | '/super-admin/templates'
     | '/super-admin/widgets'
+    | '/templates/$templateId'
     | '/dashboard/'
     | '/super-admin/'
+    | '/templates/'
     | '/super-admin/templates/create'
     | '/super-admin/templates/'
     | '/super-admin/templates/$templateId/edit'
@@ -243,18 +301,42 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
   SuperAdminRoute: typeof SuperAdminRouteWithChildren
+  TemplatesRoute: typeof TemplatesRouteWithChildren
   DemoProjectIdRoute: typeof DemoProjectIdRoute
   EditorProjectIdRoute: typeof EditorProjectIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/templates': {
+      id: '/templates'
+      path: '/templates'
+      fullPath: '/templates'
+      preLoaderRoute: typeof TemplatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/super-admin': {
       id: '/super-admin'
       path: '/super-admin'
       fullPath: '/super-admin'
       preLoaderRoute: typeof SuperAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -271,6 +353,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/templates/': {
+      id: '/templates/'
+      path: '/'
+      fullPath: '/templates/'
+      preLoaderRoute: typeof TemplatesIndexRouteImport
+      parentRoute: typeof TemplatesRoute
+    }
     '/super-admin/': {
       id: '/super-admin/'
       path: '/'
@@ -284,6 +373,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
+    }
+    '/templates/$templateId': {
+      id: '/templates/$templateId'
+      path: '/$templateId'
+      fullPath: '/templates/$templateId'
+      preLoaderRoute: typeof TemplatesTemplateIdRouteImport
+      parentRoute: typeof TemplatesRoute
     }
     '/super-admin/widgets': {
       id: '/super-admin/widgets'
@@ -435,10 +531,27 @@ const SuperAdminRouteWithChildren = SuperAdminRoute._addFileChildren(
   SuperAdminRouteChildren,
 )
 
+interface TemplatesRouteChildren {
+  TemplatesTemplateIdRoute: typeof TemplatesTemplateIdRoute
+  TemplatesIndexRoute: typeof TemplatesIndexRoute
+}
+
+const TemplatesRouteChildren: TemplatesRouteChildren = {
+  TemplatesTemplateIdRoute: TemplatesTemplateIdRoute,
+  TemplatesIndexRoute: TemplatesIndexRoute,
+}
+
+const TemplatesRouteWithChildren = TemplatesRoute._addFileChildren(
+  TemplatesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
   SuperAdminRoute: SuperAdminRouteWithChildren,
+  TemplatesRoute: TemplatesRouteWithChildren,
   DemoProjectIdRoute: DemoProjectIdRoute,
   EditorProjectIdRoute: EditorProjectIdRoute,
 }

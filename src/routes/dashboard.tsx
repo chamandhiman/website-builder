@@ -19,10 +19,17 @@ function DashboardLayout() {
 
   useEffect(() => {
     if (!authReady) return;
-    if (user?.role === "super_admin") {
+    if (!user) {
+      navigate({
+        to: "/login",
+        search: { redirect: "/dashboard" },
+      });
+      return;
+    }
+    if (user.role === "super_admin") {
       navigate({ to: "/super-admin" as never });
     }
-  }, [authReady, user?.role, navigate]);
+  }, [authReady, user, navigate]);
 
   useEffect(() => {
     if (!hydrated) {
@@ -35,7 +42,7 @@ function DashboardLayout() {
     setShowProjectDashboard(true);
   }, [authReady, setShowProjectDashboard]);
 
-  if (!authReady) {
+  if (!authReady || !user) {
     return (
       <MainLayout hideHeader hasSidebar>
         <CenteredLoader message="Preparing your website builder…" details="This will only take a moment." />

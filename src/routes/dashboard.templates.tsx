@@ -7,7 +7,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { nanoid } from "nanoid";
 import { toast } from "sonner";
-import { getPublishedTemplates, type Template } from "@/services/templates";
+import { getPublishedTemplates, createProjectFromTemplate, type Template } from "@/services/templates";
 import { getWidgetRegistration, getWidgetBootstrapExport } from "@/components/builder/widgets/widgetRegistry";
 
 export const Route = createFileRoute("/dashboard/templates")({
@@ -168,102 +168,12 @@ export function TemplatesPage() {
   const handleUsePublishedTemplate = async (tpl: Template) => {
     setLoading(tpl.id);
     try {
-      // 1. Create a fresh user-owned project
-      newProject(tpl.name);
-      const store = useBuilder.getState();
-      const current = store.currentProject();
-      if (!current) throw new Error("Failed to initialize user project");
-
-      const page = current.pages[0];
-
-      // 2. Clone pages or widgets with fresh IDs so the user has an isolated copy
-      if (tpl.pages && tpl.pages.length > 0) {
-        const clonedPages = tpl.pages.map((p) => {
-          const sections: PageSection[] = (p.sections || []).map((sec) => {
-            const widget = sec.widgetInstance;
-            const clonedWidget = widget
-              ? {
-                  ...widget,
-                  id: `${widget.type}-${Math.random().toString(36).slice(2, 8)}`,
-                }
-              : undefined;
-            const reg = clonedWidget ? getWidgetRegistration(clonedWidget.type) : null;
-            let html = sec.html;
-            if (clonedWidget) {
-              try {
-                html = getWidgetBootstrapExport(clonedWidget.type, clonedWidget);
-              } catch {
-                html = sec.html;
-              }
-            }
-            return {
-              ...sec,
-              id: nanoid(10),
-              name: reg?.displayName || sec.name,
-              html,
-              widgetInstance: clonedWidget,
-              animation: { type: "fade-up" as const, duration: 700, delay: 0 },
-            };
-          });
-          return {
-            ...p,
-            id: nanoid(8),
-            sections,
-          };
-        });
-
-        useBuilder.setState((s) => ({
-          projects: {
-            ...s.projects,
-            [current.id]: {
-              ...current,
-              pages: clonedPages,
-              currentPageId: clonedPages[0].id,
-            },
-          },
-        }));
-      } else {
-        const sections: PageSection[] = (tpl.widgets || []).map((widget) => {
-          const reg = getWidgetRegistration(widget.type);
-          const clonedWidget = {
-            ...widget,
-            id: `${widget.type}-${Math.random().toString(36).slice(2, 8)}`,
-          };
-          let html = "";
-          try {
-            html = getWidgetBootstrapExport(clonedWidget.type, clonedWidget);
-          } catch {
-            html = `<section class="py-5"><div class="container text-center">${reg?.displayName ?? widget.type}</div></section>`;
-          }
-          return {
-            id: nanoid(10),
-            templateId: "",
-            name: reg?.displayName || widget.type,
-            html,
-            widgetInstance: clonedWidget as any,
-            animation: { type: "fade-up" as const, duration: 700, delay: 0 },
-          };
-        });
-
-        const updatedPages = current.pages.map((p) =>
-          p.id === page.id ? { ...p, sections } : p
-        );
-
-        useBuilder.setState((s) => ({
-          projects: {
-            ...s.projects,
-            [current.id]: { ...current, pages: updatedPages },
-          },
-        }));
-      }
-      store.persist();
-
+      const projectId = createProjectFromTemplate(tpl);
       toast.success(`Copy of ${tpl.name} created! Opening editor...`);
-      // User opens in normal editor (not templateMode)
-      navigate({ to: "/editor/$projectId", params: { projectId: current.id } });
+      navigate({ to: "/editor/$projectId", params: { projectId } });
     } catch (err) {
       console.error("Published template copy error:", err);
-      toast.error("Failed to load template copy.");
+      toast.error("Failed to load template. Please try again.");
     } finally {
       setLoading(null);
     }
