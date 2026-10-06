@@ -120,7 +120,7 @@ export function createRealEstateNavbar(activeSlug = "home"): PageSection {
     templateId: "",
     name: "Header Navigation",
     html: `
-<header style="background: rgba(10, 15, 29, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.08); position: sticky; top: 0; z-index: 100; width: 100%; font-family: 'Plus Jakarta Sans', sans-serif;">
+<header style="background: rgba(10, 15, 29, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.08); position: sticky; top: 0; z-index: 1000; width: 100%; font-family: 'Plus Jakarta Sans', sans-serif;">
   <div style="max-width: 1240px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; box-sizing: border-box;">
     
     <!-- Brand Logo -->

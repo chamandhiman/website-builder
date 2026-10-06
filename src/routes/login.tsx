@@ -28,7 +28,7 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
-export function LoginPage() {
+function LoginPage() {
   const { redirect, templateId, action } = Route.useSearch();
   const navigate = useNavigate();
   const { user, authReady, login, loginWithGoogle, signingIn } = useAuth();

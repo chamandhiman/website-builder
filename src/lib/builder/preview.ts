@@ -203,7 +203,7 @@ const SITE_TRACKING_SNIPPET = `
 </script>`;
 
 function normalizeAssetRef(ref: string) {
-  return ref.replace(/^\.\//, "").replace(/^\//, "");
+  return ref.replace(/^\.\//, "").replace(/^\//, "").replace(/^images\//, "");
 }
 
 function escapeRegExp(value: string) {
@@ -3469,6 +3469,14 @@ export function buildPreviewHTML(opts: {
   const publicStyleSheet = `<link rel="stylesheet" href="/style.css" />`;
   const bootstrapScript = `<script src="${BOOTSTRAP_JS_HREF}"></script>`;
 
+  const rawGlobal = globalCss || "";
+  const importRules: string[] = [];
+  const bodyRules = rawGlobal.replace(/@import\s+(?:url\([^)]+\)|["'][^"']+["'])\s*;?/gi, (match) => {
+    importRules.push(match.trim());
+    return "";
+  });
+  const importStyles = importRules.length ? `<style>${importRules.join("\n")}</style>` : "";
+
   return `<!DOCTYPE html>
 <html lang="${escapeHtml(htmlLang)}">
 <head>
@@ -3476,6 +3484,7 @@ export function buildPreviewHTML(opts: {
 <meta name="viewport" content="${escapeHtml(projectSeo?.viewport ?? "width=device-width, initial-scale=1")}" />
 <title>${escapeHtml(pageTitle)}</title>
 ${metaTags}
+${importStyles}
 ${googleFontsStyles}
 ${fontAwesomeStyles}
 ${bootstrapStyles}
@@ -3485,9 +3494,23 @@ ${publicStyleSheet}
   html, body { margin: 0; min-height: 100%; overflow-x: hidden; }
   body { margin: 0; min-height: 100%; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: #fff; color: #111827; }
   body > .wto-page-shell { min-height: 100%; }
+  /* Universal sticky header on scroll for all themes */
+  header,
+  .site-header,
+  .wl-header,
+  .wto-shared-header,
+  [data-wto-shared="header"],
+  [data-role="header"],
+  [data-section-role="header"],
+  #wto-shared-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    width: 100% !important;
+  }
   ${RUNTIME_CSS}
   ${editableStyles}
-  ${globalCss || ""}
+  ${resolveAssetPaths(bodyRules, assets)}
 </style>
  ${customHead || ""}
  </head>
@@ -3604,6 +3627,7 @@ ${vendorJs}
     `@import url("${FONT_AWESOME_HREF}");`,
     `@import url("${GOOGLE_FONTS_HREF}");`,
     RUNTIME_CSS,
+    `header, .site-header, .wl-header, .wto-shared-header, [data-wto-shared="header"] { position: sticky !important; top: 0 !important; z-index: 1000 !important; width: 100% !important; }`,
     ...widgetCssBlocks,
     globalCss || "",
   ]);
@@ -3736,6 +3760,7 @@ export async function buildSiteExport(project: Project) {
     `@import url("${FONT_AWESOME_HREF}");`,
     `@import url("${GOOGLE_FONTS_HREF}");`,
     RUNTIME_CSS,
+    `header, .site-header, .wl-header, .wto-shared-header, [data-wto-shared="header"], [data-role="header"], [data-section-role="header"] { position: sticky !important; top: 0 !important; z-index: 1000 !important; width: 100% !important; }`,
     project.globalCss || "",
   ];
   const jsBlocks: string[] = [EXPORT_SITE_RUNTIME, WTO_CAROUSEL_RUNTIME, WTO_FAQ_RUNTIME, project.globalJs || ""];
@@ -3785,13 +3810,14 @@ export async function buildSiteExport(project: Project) {
     });
   }
 
+  const exportedCss = rewriteExportAssetPaths(dedupeCssBlocks(cssBlocks), project.assets);
   files.push({
     path: "css/styles.css",
-    content: dedupeCssBlocks(cssBlocks),
+    content: exportedCss,
   });
   files.push({
     path: "style.css",
-    content: dedupeCssBlocks(cssBlocks),
+    content: exportedCss,
   });
   files.push({
     path: "js/carousel.js",
@@ -3827,19 +3853,60 @@ export async function buildSiteExport(project: Project) {
       ? asset
       : (entry?.url || entry?.previewSrc || entry?.src || "");
 
-    if (/^https?:\/\//i.test(remoteUrl)) {
+    if (/^https?:\/\//i.test(remoteUrl) || /^\/?(?:images|templates)\//i.test(remoteUrl)) {
       try {
-        const response = await fetch(remoteUrl, { mode: "cors" });
-        if (response.ok) {
-          const arrayBuffer = await response.arrayBuffer();
-          const bytes = Array.from(new Uint8Array(arrayBuffer), (byte) => String.fromCharCode(byte)).join("");
-          files.push({ path: `images/${filename}`, content: "", base64: btoa(bytes) });
+        const fetchUrl = /^https?:\/\//i.test(remoteUrl)
+          ? remoteUrl
+          : typeof window !== "undefined"
+          ? new URL(remoteUrl.replace(/^\/?/, "/"), window.location.origin).href
+          : null;
+        if (fetchUrl) {
+          const response = await fetch(fetchUrl);
+          if (response.ok) {
+            const arrayBuffer = await response.arrayBuffer();
+            const bytes = Array.from(new Uint8Array(arrayBuffer), (byte) => String.fromCharCode(byte)).join("");
+            files.push({ path: `images/${filename}`, content: "", base64: btoa(bytes) });
+          }
         }
       } catch {
         // leave remote image as external URL in HTML and skip adding an empty file
       }
       continue;
     }
+  }
+
+  // Auto-extract any remaining inline base64 image data URLs from HTML & CSS into the images/ folder
+  const dataUrlRegex = /data:image\/(png|jpeg|jpg|webp|gif|svg\+xml);base64,([A-Za-z0-9+/=]+)/g;
+  let inlineImgIndex = 1;
+  const processedDataUrls = new Map<string, string>();
+
+  for (const f of files) {
+    if (!f.content || typeof f.content !== "string") continue;
+    f.content = f.content.replace(dataUrlRegex, (fullMatch, rawType, payload) => {
+      if (processedDataUrls.has(fullMatch)) {
+        const existingRel = processedDataUrls.get(fullMatch)!;
+        return f.path.startsWith("css/") ? `.${existingRel}` : existingRel;
+      }
+      const ext = rawType === "jpeg" ? "jpg" : rawType === "svg+xml" ? "svg" : rawType;
+      let assignedName = "";
+      for (const [aName, aVal] of Object.entries(project.assets ?? {})) {
+        const aData = getAssetValue(aVal);
+        if (aData === fullMatch) {
+          assignedName = normalizeAssetRef(aName);
+          break;
+        }
+      }
+      if (!assignedName) {
+        assignedName = `image-${inlineImgIndex++}.${ext}`;
+      }
+      const diskPath = `images/${assignedName}`;
+      if (!files.some((existing) => existing.path === diskPath)) {
+        files.push({ path: diskPath, content: "", base64: payload });
+      }
+      const relRef = `./images/${assignedName}`;
+      processedDataUrls.set(fullMatch, relRef);
+      return f.path.startsWith("css/") ? `../images/${assignedName}` : relRef;
+    });
   }
 
   return { files };

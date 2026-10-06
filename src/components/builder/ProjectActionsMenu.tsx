@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Copy, Edit2, MoreVertical, Download, Trash2, Upload } from "lucide-react";
+import { Copy, Edit2, MoreVertical, Download, Trash2, Upload, ExternalLink, Globe } from "lucide-react";
+import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -106,7 +107,36 @@ export function ProjectActionsMenu({ project, onRename, onDuplicate, onDelete, o
             </DropdownMenuItem>
           ) : null}
 
-          {(onPublish || onExport) ? <DropdownMenuSeparator /> : null}
+          {(onPublish || onExport || (published && project.publishedSlug)) ? <DropdownMenuSeparator /> : null}
+
+          {published && project.publishedSlug ? (
+            <>
+              <DropdownMenuItem
+                onSelect={() => {
+                  const url = project.publishedUrl || `https://${project.publishedSlug}.webtoolocean.com`;
+                  window.open(url, "_blank", "noopener,noreferrer");
+                }}
+              >
+                <ExternalLink className="h-4 w-4" />
+                Visit Live Site
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onSelect={async () => {
+                  const url = project.publishedUrl || `https://${project.publishedSlug}.webtoolocean.com`;
+                  try {
+                    await navigator.clipboard.writeText(url);
+                    toast.success("Live URL copied to clipboard!");
+                  } catch {
+                    toast.error("Failed to copy URL");
+                  }
+                }}
+              >
+                <Globe className="h-4 w-4" />
+                Copy Live Link
+              </DropdownMenuItem>
+            </>
+          ) : null}
 
           {onPublish ? (
             <DropdownMenuItem onSelect={() => onPublish(project.id)}>

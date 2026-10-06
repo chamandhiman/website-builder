@@ -4,6 +4,8 @@
 //     componentTagger (dev-only), VITE_* env injection, @ path alias, React/TanStack dedupe,
 //     error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
+import path from "node:path";
+import fs from "node:fs";
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
@@ -18,45 +20,71 @@ export default defineConfig({
       {
         name: 'wto-preview-endpoint',
         configureServer(server) {
-          const { fs } = server;
+          const fsp = fs.promises;
           server.middlewares.use(async (req, res, next) => {
             const url = req.url || '';
             const method = req.method || 'GET';
-            const path = (await import('path')) as typeof import('path');
-            const fsp = (await import('fs')).promises;
+            const host = (req.headers.host || '').split(':')[0].toLowerCase();
 
-            if (method === 'GET' && url.startsWith('/preview/')) {
-              const parsed = new URL(url, 'http://localhost');
-              const requestPath = parsed.pathname.replace(/^\/preview\//, '');
-              const filePath = requestPath === '' || requestPath.endsWith('/')
-                ? path.join(process.cwd(), 'public', 'preview', requestPath, 'index.html')
-                : path.join(process.cwd(), 'public', 'preview', requestPath);
-
-              try {
-                const stat = await fsp.stat(filePath);
-                if (stat.isFile()) {
-                  const ext = path.extname(filePath).toLowerCase();
-                  const contentType =
-                    ext === '.html'
-                      ? 'text/html'
-                      : ext === '.css'
-                      ? 'text/css'
-                      : ext === '.js'
-                      ? 'application/javascript'
-                      : ext === '.json'
-                      ? 'application/json'
-                      : ext === '.svg'
-                      ? 'image/svg+xml'
-                      : 'application/octet-stream';
-                  res.statusCode = 200;
-                  res.setHeader('content-type', contentType);
-                  res.setHeader('cache-control', 'no-store');
-                  const contents = await fsp.readFile(filePath);
-                  res.end(contents);
-                  return;
+            if (host.endsWith('.localhost')) {
+              const sub = host.slice(0, -'.localhost'.length);
+              const reserved = ['builder', 'www', 'app', 'api', 'admin', 'super-admin', 'dashboard', 'preview', 'static', 'assets'];
+              if (sub && !reserved.includes(sub)) {
+                if (url === '/' || (!url.startsWith('/@') && !url.startsWith('/src') && !url.startsWith('/node_modules') && !url.startsWith('/site') && !url.startsWith('/assets'))) {
+                  const targetPage = url.replace(/^\/+|\/+$/g, '').replace(/\.html$/i, '');
+                  req.url = '/site/' + sub + (targetPage && targetPage !== 'index' ? '?page=' + targetPage : '');
                 }
-              } catch {
-                // continue to POST preview handler or next middleware
+              }
+            }
+
+            if (method === 'GET') {
+              const parsed = new URL(url, 'http://localhost');
+              let filePath = '';
+
+              if (url.startsWith('/preview/')) {
+                const requestPath = parsed.pathname.replace(/^\/preview\//, '');
+                filePath = requestPath === '' || requestPath.endsWith('/')
+                  ? path.join(process.cwd(), 'public', 'preview', requestPath, 'index.html')
+                  : path.join(process.cwd(), 'public', 'preview', requestPath);
+              } else if (/\.(jpg|jpeg|png|webp|svg|gif|ico)$/i.test(parsed.pathname)) {
+                filePath = path.join(process.cwd(), 'public', parsed.pathname.replace(/^\//, ''));
+              }
+
+              if (filePath) {
+                try {
+                  const stat = await fsp.stat(filePath);
+                  if (stat.isFile()) {
+                    const ext = path.extname(filePath).toLowerCase();
+                    const contentType =
+                      ext === '.html'
+                        ? 'text/html'
+                        : ext === '.css'
+                        ? 'text/css'
+                        : ext === '.js'
+                        ? 'application/javascript'
+                        : ext === '.json'
+                        ? 'application/json'
+                        : ext === '.svg'
+                        ? 'image/svg+xml'
+                        : ext === '.jpg' || ext === '.jpeg'
+                        ? 'image/jpeg'
+                        : ext === '.png'
+                        ? 'image/png'
+                        : ext === '.webp'
+                        ? 'image/webp'
+                        : ext === '.gif'
+                        ? 'image/gif'
+                        : 'application/octet-stream';
+                    res.statusCode = 200;
+                    res.setHeader('content-type', contentType);
+                    res.setHeader('cache-control', 'public, max-age=3600');
+                    const contents = await fsp.readFile(filePath);
+                    res.end(contents);
+                    return;
+                  }
+                } catch {
+                  // file does not exist, continue
+                }
               }
             }
 

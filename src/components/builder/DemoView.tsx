@@ -5,7 +5,7 @@ import type { Project } from "@/lib/builder/store";
 import { composePageSections } from "@/lib/builder/sharedChrome";
 import { getBuilderProject } from "@/services/builderProject";
 import { resolveAssetUrls, type BuilderAssetEntry } from "@/lib/builder/image-storage";
-import { FREELANCER_PAGE } from "@/services/templateSeeds";
+import { FREELANCER_PAGE, SAFFRON_HOME_PAGE, SAFFRON_GLOBAL_CSS, SAFFRON_SHARED_HEADER, SAFFRON_SHARED_FOOTER } from "@/services/templateSeeds";
 
 function extractProjectId(param: string) {
   const match = param.match(/-([A-Za-z0-9_]+)$/);
@@ -131,6 +131,27 @@ export function DemoView({ projectId }: { projectId: string }) {
           projRef.current = fallbackProj;
           setNotFound(false);
           setActivePageId(FREELANCER_PAGE.id);
+          loadedFromStorage = true;
+        } else if (projectId.toLowerCase().includes("saffron") || actualProjectId.toLowerCase().includes("saffron") || projectId.toLowerCase().includes("restaurant")) {
+          const fallbackProj: Project = {
+            id: actualProjectId,
+            name: "Saffron & Ember - Modern Indian Kitchen",
+            pages: [SAFFRON_HOME_PAGE],
+            currentPageId: SAFFRON_HOME_PAGE.id,
+            sharedHeader: SAFFRON_SHARED_HEADER,
+            sharedFooter: SAFFRON_SHARED_FOOTER,
+            sharedChromeMigrated: true,
+            isTemplate: true,
+            globalCss: SAFFRON_GLOBAL_CSS,
+            globalJs: "",
+            assets: {},
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+          };
+          setProj(fallbackProj);
+          projRef.current = fallbackProj;
+          setNotFound(false);
+          setActivePageId(SAFFRON_HOME_PAGE.id);
           loadedFromStorage = true;
         }
       }

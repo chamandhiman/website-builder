@@ -1,5 +1,8 @@
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { LandingPage } from "@/components/landing/LandingPage";
+import { getSubdomainSlug } from "@/services/publishing";
+import { PublicSiteRenderer } from "@/components/builder/PublicSiteRenderer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -21,5 +24,24 @@ export const Route = createFileRoute("/")({
       },
     ],
   }),
-  component: LandingPage,
+  component: RootOrSubdomainIndex,
 });
+
+function RootOrSubdomainIndex() {
+  const [subdomainSlug, setSubdomainSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const slug = getSubdomainSlug(window.location.hostname);
+      if (slug) {
+        setSubdomainSlug(slug);
+      }
+    }
+  }, []);
+
+  if (subdomainSlug) {
+    return <PublicSiteRenderer slug={subdomainSlug} />;
+  }
+
+  return <LandingPage />;
+}

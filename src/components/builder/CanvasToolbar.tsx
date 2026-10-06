@@ -19,6 +19,7 @@ import {
   X,
   Plus,
   FileText,
+  Loader2,
 } from "lucide-react";
 import { SaveStatus } from "@/components/builder/SaveStatus";
 import { toast } from "sonner";
@@ -27,6 +28,8 @@ import { useRequireAuth } from "@/lib/builder/useRequireAuth";
 import { saveAsTemplate } from "@/services/templates";
 import { PageActionsMenu } from "@/components/builder/PageActionsMenu";
 import type { Page } from "@/lib/builder/store";
+import { PublishSuccessModal } from "@/components/builder/PublishSuccessModal";
+import { publishWebsite, type PublishResult } from "@/services/publishing";
 
 // CanvasToolbar - builder top bar
 
@@ -88,6 +91,9 @@ export function CanvasToolbar({
   const templateName = searchParams.get("templateName") || project?.name || "Template";
   const templateCategory = searchParams.get("templateCategory") || "General";
   const [savingTemplate, setSavingTemplate] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [publishModalOpen, setPublishModalOpen] = useState(false);
+  const [publishResult, setPublishResult] = useState<PublishResult | null>(null);
 
   const handleSaveAsTemplate = async () => {
     if (!project || !user) return;
@@ -240,10 +246,24 @@ export function CanvasToolbar({
   }
 
   async function handlePublish() {
-    if (!project || !currentPageId || !mounted) return;
+    if (!project || !mounted || isPublishing) return;
     await requirePublishAuth(async () => {
-      const publishProject = useBuilder.getState().publishProject;
-      await publishProject(currentPageId);
+      try {
+        setIsPublishing(true);
+        // 1. Ensure latest local changes are saved
+        await persistWithStatus();
+        // 2. Read latest project state
+        const currentProj = useBuilder.getState().projects[project.id] || project;
+        // 3. Publish to cloud
+        const result = await publishWebsite(currentProj);
+        setPublishResult(result);
+        setPublishModalOpen(true);
+      } catch (error: any) {
+        console.error("Failed to publish website:", error);
+        toast.error(error?.message || "Failed to publish website. Please try again.");
+      } finally {
+        setIsPublishing(false);
+      }
     });
   }
 
@@ -449,12 +469,24 @@ export function CanvasToolbar({
           <>
             <button
               type="button"
-              className="inline-flex h-8 items-center gap-1.5 rounded-md bg-[#FACC15] px-3 text-sm font-medium text-[#111111] transition hover:bg-[#FDE047]"
+              disabled={isPublishing}
+              className="inline-flex h-8 items-center gap-1.5 rounded-md bg-[#FACC15] px-3 text-sm font-medium text-[#111111] transition hover:bg-[#FDE047] disabled:opacity-60"
               onClick={handlePublish}
-              title="Publish"
+              title={project.published ? "Update published website" : "Publish website"}
             >
-              <Upload className="w-4 h-4" />
-              <span className="hidden md:inline">Publish</span>
+              {isPublishing ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="hidden md:inline">Publishing...</span>
+                </>
+              ) : (
+                <>
+                  <Upload className="w-4 h-4" />
+                  <span className="hidden md:inline">
+                    {project.published ? "Update Live" : "Publish"}
+                  </span>
+                </>
+              )}
             </button>
 
             <button
@@ -469,6 +501,17 @@ export function CanvasToolbar({
           </>
         )}
       </div>
+
+      {publishResult && (
+        <PublishSuccessModal
+          open={publishModalOpen}
+          onOpenChange={setPublishModalOpen}
+          url={publishResult.url}
+          slug={publishResult.slug}
+          isFirstPublish={publishResult.isFirstPublish}
+          publishedAt={publishResult.publishedAt}
+        />
+      )}
     </div>
   );
 }

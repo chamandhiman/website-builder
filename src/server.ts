@@ -71,6 +71,54 @@ function getContentType(filePath: string): string {
   return 'application/octet-stream';
 }
 
+const RESERVED_SUBDOMAINS = new Set([
+  'builder',
+  'www',
+  'app',
+  'api',
+  'admin',
+  'super-admin',
+  'dashboard',
+  'preview',
+  'static',
+  'assets',
+  'cdn',
+  'mail',
+  'smtp',
+  'ftp',
+  'staging',
+  'test',
+  'dev',
+  'demo',
+  'site',
+  'sites',
+]);
+
+function extractSubdomainSlug(hostname: string): string | null {
+  const host = hostname.toLowerCase().split(':')[0];
+  if (host === 'localhost' || host === '127.0.0.1' || host === '0.0.0.0') return null;
+
+  if (host.endsWith('.webtoolocean.com')) {
+    const slug = host.slice(0, -'.webtoolocean.com'.length);
+    if (slug && !RESERVED_SUBDOMAINS.has(slug)) return slug;
+    return null;
+  }
+
+  if (host.endsWith('.localhost')) {
+    const slug = host.slice(0, -'.localhost'.length);
+    if (slug && !RESERVED_SUBDOMAINS.has(slug)) return slug;
+    return null;
+  }
+
+  const parts = host.split('.');
+  if (parts.length >= 3) {
+    const first = parts[0];
+    if (first && !RESERVED_SUBDOMAINS.has(first)) return first;
+  }
+
+  return null;
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     const url = new URL(request.url);
@@ -96,8 +144,27 @@ export default {
         return new Response('Not found', { status: 404 });
       }
 
+      const subdomainSlug = extractSubdomainSlug(url.hostname);
+      let effectiveRequest = request;
+
+      if (
+        subdomainSlug &&
+        !pathname.startsWith('/assets/') &&
+        !pathname.startsWith('/_') &&
+        !pathname.startsWith('/site/') &&
+        !pathname.startsWith('/favicon')
+      ) {
+        const rewrittenUrl = new URL(request.url);
+        rewrittenUrl.pathname = `/site/${subdomainSlug}`;
+        const targetPage = pathname.replace(/^\/+|\/+$/g, '').replace(/\.html$/i, '');
+        if (targetPage && targetPage !== 'index' && targetPage !== 'site') {
+          rewrittenUrl.searchParams.set('page', targetPage);
+        }
+        effectiveRequest = new Request(rewrittenUrl.toString(), request);
+      }
+
       const handler = await getServerEntry();
-      const response = await handler.fetch(request, env, ctx);
+      const response = await handler.fetch(effectiveRequest, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
     } catch (error) {
       console.error(error);

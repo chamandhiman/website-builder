@@ -135,6 +135,9 @@ export interface Project {
   seo?: ProjectSeo;
   createdAt: number;
   updatedAt: number;
+  published?: boolean;
+  publishedSlug?: string;
+  publishedUrl?: string;
   publishedAt?: number;
   thumbnail?: string;
   assets?: Record<string, BuilderAssetEntry>;
@@ -241,7 +244,7 @@ interface BuilderState {
   updateProjectStatus: (id: string, status: string, updatedAt: number) => void;
   duplicateProject: (id: string) => string;
   deleteProject: (id: string) => void;
-  publishProject: (id: string) => void;
+  publishProject: (id: string, publishedSlug?: string, publishedUrl?: string) => void;
 
   addPage: (name?: string, slug?: string) => string;
   renamePage: (id: string, name: string) => void;
@@ -948,6 +951,9 @@ createTemplateProject: (name: string) => {
       name: src.name + " (copy)",
       createdAt: Date.now(),
       updatedAt: Date.now(),
+      published: false,
+      publishedSlug: undefined,
+      publishedUrl: undefined,
       publishedAt: undefined,
     };
     set((s) => ({ projects: { ...s.projects, [nid]: copy } }));
@@ -969,11 +975,21 @@ createTemplateProject: (name: string) => {
     if (!get().currentProjectId) get().newProject();
   },
 
-  publishProject: (id) => {
+  publishProject: (id, publishedSlug, publishedUrl) => {
+    const timestamp = Date.now();
     set((s) => {
       const project = s.projects[id];
       if (!project) return s;
-      const next: Project = { ...project, publishedAt: Date.now(), updatedAt: Date.now() };
+      const slug = publishedSlug ?? project.publishedSlug;
+      const url = publishedUrl ?? project.publishedUrl ?? (slug ? `https://${slug}.webtoolocean.com` : undefined);
+      const next: Project = {
+        ...project,
+        published: true,
+        publishedSlug: slug,
+        publishedUrl: url,
+        publishedAt: timestamp,
+        updatedAt: timestamp,
+      };
       return { projects: { ...s.projects, [id]: next } };
     });
     get().persist();
@@ -1534,17 +1550,33 @@ createTemplateProject: (name: string) => {
       globalJs: tpl.globalJs ?? current.globalJs ?? "// Global JS\n",
       customHead: tpl.customHead ?? current.customHead ?? "",
       seo: templateProjectSeo ? { ...templateProjectSeo } : current.seo,
-      assets: current.assets ?? {},
+      assets: { ...((tpl as any).assets ?? {}), ...(current.assets ?? {}) },
       description: current.description,
       keywords: current.keywords,
       updatedAt: Date.now(),
     };
 
+    const isSectionHeader = (sec: any) =>
+      sec &&
+      (sec.type === "header" ||
+        isNavbarSection(sec) ||
+        String(sec.name || "").toLowerCase().includes("header") ||
+        String(sec.name || "").toLowerCase().includes("nav") ||
+        /<header\b/i.test(sec.html || "") ||
+        /<nav\b/i.test(sec.html || ""));
+
+    const isSectionFooter = (sec: any) =>
+      sec &&
+      (sec.type === "footer" ||
+        isFooterSection(sec) ||
+        String(sec.name || "").toLowerCase().includes("footer") ||
+        /<footer\b/i.test(sec.html || ""));
+
     const buildTemplatePage = (pageDef: any) => {
       const pageSections: PageSection[] = [];
       pageDef.sections.forEach((section: any, index: number) => {
         // Skip inline header/footer — they become project shared chrome.
-        if (section.type === "header" || section.type === "footer") return;
+        if (isSectionHeader(section) || isSectionFooter(section)) return;
         pageSections.push(createSection(section, undefined, index * 80));
       });
 
@@ -1569,8 +1601,8 @@ createTemplateProject: (name: string) => {
       ...((tpl.pages ?? []).flatMap((page) => page.sections ?? [])),
     ];
     const customLayout = true;
-    const templateSharedHeaderDefs = customLayout ? templateSections.filter((section) => section.type === "header") : [];
-    const templateSharedFooterDefs = customLayout ? templateSections.filter((section) => section.type === "footer") : [];
+    const templateSharedHeaderDefs = customLayout ? templateSections.filter(isSectionHeader) : [];
+    const templateSharedFooterDefs = customLayout ? templateSections.filter(isSectionFooter) : [];
     const sharedHeader = templateSharedHeaderDefs[0]
       ? {
           ...createSection(templateSharedHeaderDefs[0], `${tpl.id}-shared-header`, 0),

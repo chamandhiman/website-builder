@@ -32,7 +32,7 @@ export const Route = createFileRoute("/register")({
   component: RegisterPage,
 });
 
-export function RegisterPage() {
+function RegisterPage() {
   const { redirect, templateId, action } = Route.useSearch();
   const navigate = useNavigate();
   const { user, authReady, register, loginWithGoogle, signingIn } = useAuth();

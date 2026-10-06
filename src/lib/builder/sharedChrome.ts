@@ -132,10 +132,8 @@ export function composePageSections(
   }
 
   for (const section of page.sections ?? []) {
-    if (!project.isTemplate) {
-      if (hasSharedHeader && isNavbarSection(section)) continue;
-      if (hasSharedFooter && isFooterSection(section)) continue;
-    }
+    if (hasSharedHeader && isNavbarSection(section)) continue;
+    if (hasSharedFooter && isFooterSection(section)) continue;
     out.push(section);
   }
 
@@ -289,11 +287,20 @@ export function migrateSharedChrome(project: Project): Project {
     (page.sections ?? []).some((section) => isNavbarSection(section) || isFooterSection(section)),
   );
 
-  if (!sharedHeader) {
-    sharedHeader = extractFirstChrome(project.pages, isNavbarSection, "header");
+  // If sharedHeader is missing OR is just the default placeholder "shared-navbar",
+  // and the project pages have a custom inline navbar, extract the custom inline navbar!
+  if (!sharedHeader || sharedHeader.templateId === "shared-navbar") {
+    const extractedHeader = extractFirstChrome(project.pages, isNavbarSection, "header");
+    if (extractedHeader) {
+      sharedHeader = extractedHeader;
+    }
   }
-  if (!sharedFooter) {
-    sharedFooter = extractFirstChrome(project.pages, isFooterSection, "footer");
+  // Same for footer:
+  if (!sharedFooter || sharedFooter.templateId === "shared-footer") {
+    const extractedFooter = extractFirstChrome(project.pages, isFooterSection, "footer");
+    if (extractedFooter) {
+      sharedFooter = extractedFooter;
+    }
   }
 
   const useCustomLayout = project.source === "template" || project.layout?.type === "custom";
@@ -311,8 +318,26 @@ export function migrateSharedChrome(project: Project): Project {
     sharedFooter = createDefaultSharedFooter();
   }
 
+  // Only strip inline header/footer if shared chrome actually exists to render it,
+  // AND the page doesn't explicitly turn off global header/footer!
   const pages = hadInlineChrome || !alreadyMigrated
-    ? stripChromeFromPages(project.pages)
+    ? project.pages.map((page) => {
+        const stripHeader = Boolean(sharedHeader && pageUsesGlobalHeader(page));
+        const stripFooter = Boolean(sharedFooter && pageUsesGlobalFooter(page));
+        const sections = (page.sections ?? []).filter((section) => {
+          if (stripHeader && isNavbarSection(section)) return false;
+          if (stripFooter && isFooterSection(section)) return false;
+          return true;
+        });
+        return {
+          ...page,
+          sections,
+          useGlobalHeader: page.useGlobalHeader ?? true,
+          useGlobalFooter: page.useGlobalFooter ?? true,
+          hideHeader: page.hideHeader ?? false,
+          hideFooter: page.hideFooter ?? false,
+        };
+      })
     : project.pages.map((page) => ({
         ...page,
         useGlobalHeader: page.useGlobalHeader ?? true,

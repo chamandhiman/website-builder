@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo, useEffect } from "react";
-import { Search, Sparkles, Globe, Tag, X, Filter } from "lucide-react";
+import { Search, Sparkles, Globe, Tag, X, Filter, Eye } from "lucide-react";
 import { TEMPLATE_LIBRARY, type TemplateDefinition } from "@/lib/builder/templates";
 import { useBuilder, type PageSection } from "@/lib/builder/store";
 import { useNavigate } from "@tanstack/react-router";
@@ -9,12 +9,13 @@ import { nanoid } from "nanoid";
 import { toast } from "sonner";
 import { getPublishedTemplates, createProjectFromTemplate, type Template } from "@/services/templates";
 import { getWidgetRegistration, getWidgetBootstrapExport } from "@/components/builder/widgets/widgetRegistry";
+import { TemplatePreviewModal } from "@/components/builder/TemplatePreviewModal";
 
 export const Route = createFileRoute("/dashboard/templates")({
   component: TemplatesPage,
 });
 
-export const CATEGORY_FILTERS = [
+const CATEGORY_FILTERS = [
   "All",
   "Business",
   "Agency",
@@ -38,7 +39,7 @@ export const CATEGORY_FILTERS = [
   "Personal / Resume",
 ] as const;
 
-export type CategoryFilter = (typeof CATEGORY_FILTERS)[number];
+type CategoryFilter = (typeof CATEGORY_FILTERS)[number];
 
 const GALLERY_FILTERS = ["All", "Single page", "Multi page", "Free templates", "Premium templates"] as const;
 type GalleryFilter = (typeof GALLERY_FILTERS)[number];
@@ -73,12 +74,13 @@ function matchesCategory(templateCategory: string | undefined | null, selectedCa
   return t.includes(s) || s.includes(t);
 }
 
-export function TemplatesPage() {
+function TemplatesPage() {
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>("All");
   const [filter, setFilter] = useState<GalleryFilter>("All");
   const [loading, setLoading] = useState<string | null>(null);
   const [publishedTemplates, setPublishedTemplates] = useState<Template[]>([]);
+  const [previewTemplate, setPreviewTemplate] = useState<any | null>(null);
   const navigate = useNavigate();
   const newProject = useBuilder((s) => s.newProject);
   const applyTemplateToCurrent = useBuilder((s) => s.applyTemplate);
@@ -327,13 +329,21 @@ export function TemplatesPage() {
                         Complete AI-crafted responsive layout ready for customization.
                       </p>
 
-                      <div className="mt-4">
+                      <div className="mt-4 flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          onClick={() => setPreviewTemplate(tpl)}
+                          className="flex-1 border-[#363636] bg-[#222226] text-[#E0E0E0] hover:bg-[#2E2E34] hover:text-[#FFFFFF] h-9 text-xs font-medium"
+                        >
+                          <Eye className="mr-1.5 h-3.5 w-3.5 text-[#FACC15]" />
+                          Preview
+                        </Button>
                         <Button
                           onClick={() => handleUsePublishedTemplate(tpl)}
                           disabled={loading === tpl.id}
-                          className="w-full bg-[#FACC15] text-[#111111] hover:bg-[#FDE047] h-9 text-xs font-semibold"
+                          className="flex-1 bg-[#FACC15] text-[#111111] hover:bg-[#FDE047] h-9 text-xs font-semibold"
                         >
-                          {loading === tpl.id ? "Creating Copy..." : "Use Template"}
+                          {loading === tpl.id ? "Creating..." : "Use Template"}
                         </Button>
                       </div>
                     </div>
@@ -418,11 +428,19 @@ export function TemplatesPage() {
                         </p>
                       )}
 
-                      <div className="mt-4">
+                      <div className="mt-4 flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          onClick={() => setPreviewTemplate(tpl)}
+                          className="flex-1 border-[#363636] bg-[#222226] text-[#E0E0E0] hover:bg-[#2E2E34] hover:text-[#FFFFFF] h-9 text-xs font-medium"
+                        >
+                          <Eye className="mr-1.5 h-3.5 w-3.5 text-[#FACC15]" />
+                          Preview
+                        </Button>
                         <Button
                           onClick={() => handleUseLibraryTemplate(tpl)}
                           disabled={loading === tpl.id}
-                          className="w-full bg-[#FACC15] text-[#111111] hover:bg-[#FDE047]"
+                          className="flex-1 bg-[#FACC15] text-[#111111] hover:bg-[#FDE047] h-9 text-xs font-semibold"
                         >
                           {loading === tpl.id ? "Loading..." : "Use Template"}
                         </Button>
@@ -435,6 +453,21 @@ export function TemplatesPage() {
           </div>
         </div>
       </div>
+
+      {/* Full-Screen Template Preview Modal */}
+      <TemplatePreviewModal
+        isOpen={Boolean(previewTemplate)}
+        onClose={() => setPreviewTemplate(null)}
+        template={previewTemplate}
+        onUseTemplate={(tpl) => {
+          setPreviewTemplate(null);
+          if (publishedTemplates.some((p) => p.id === tpl.id)) {
+            void handleUsePublishedTemplate(tpl);
+          } else {
+            void handleUseLibraryTemplate(tpl);
+          }
+        }}
+      />
     </div>
   );
 }

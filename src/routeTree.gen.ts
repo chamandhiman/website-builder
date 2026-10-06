@@ -22,6 +22,8 @@ import { Route as TemplatesTemplateIdRouteImport } from './routes/templates.$tem
 import { Route as SuperAdminWidgetsRouteImport } from './routes/super-admin.widgets'
 import { Route as SuperAdminTemplatesRouteImport } from './routes/super-admin.templates'
 import { Route as SuperAdminSettingsRouteImport } from './routes/super-admin.settings'
+import { Route as SiteSlugRouteImport } from './routes/site.$slug'
+import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as EditorProjectIdRouteImport } from './routes/editor.$projectId'
 import { Route as DemoProjectIdRouteImport } from './routes/demo.$projectId'
 import { Route as DashboardTrashRouteImport } from './routes/dashboard.trash'
@@ -98,6 +100,16 @@ const SuperAdminSettingsRoute = SuperAdminSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => SuperAdminRoute,
 } as any)
+const SiteSlugRoute = SiteSlugRouteImport.update({
+  id: '/site/$slug',
+  path: '/site/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PSlugRoute = PSlugRouteImport.update({
+  id: '/p/$slug',
+  path: '/p/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EditorProjectIdRoute = EditorProjectIdRouteImport.update({
   id: '/editor/$projectId',
   path: '/editor/$projectId',
@@ -166,6 +178,8 @@ export interface FileRoutesByFullPath {
   '/dashboard/trash': typeof DashboardTrashRoute
   '/demo/$projectId': typeof DemoProjectIdRoute
   '/editor/$projectId': typeof EditorProjectIdRoute
+  '/p/$slug': typeof PSlugRoute
+  '/site/$slug': typeof SiteSlugRoute
   '/super-admin/settings': typeof SuperAdminSettingsRoute
   '/super-admin/templates': typeof SuperAdminTemplatesRouteWithChildren
   '/super-admin/widgets': typeof SuperAdminWidgetsRoute
@@ -188,6 +202,8 @@ export interface FileRoutesByTo {
   '/dashboard/trash': typeof DashboardTrashRoute
   '/demo/$projectId': typeof DemoProjectIdRoute
   '/editor/$projectId': typeof EditorProjectIdRoute
+  '/p/$slug': typeof PSlugRoute
+  '/site/$slug': typeof SiteSlugRoute
   '/super-admin/settings': typeof SuperAdminSettingsRoute
   '/super-admin/widgets': typeof SuperAdminWidgetsRoute
   '/templates/$templateId': typeof TemplatesTemplateIdRoute
@@ -213,6 +229,8 @@ export interface FileRoutesById {
   '/dashboard/trash': typeof DashboardTrashRoute
   '/demo/$projectId': typeof DemoProjectIdRoute
   '/editor/$projectId': typeof EditorProjectIdRoute
+  '/p/$slug': typeof PSlugRoute
+  '/site/$slug': typeof SiteSlugRoute
   '/super-admin/settings': typeof SuperAdminSettingsRoute
   '/super-admin/templates': typeof SuperAdminTemplatesRouteWithChildren
   '/super-admin/widgets': typeof SuperAdminWidgetsRoute
@@ -240,6 +258,8 @@ export interface FileRouteTypes {
     | '/dashboard/trash'
     | '/demo/$projectId'
     | '/editor/$projectId'
+    | '/p/$slug'
+    | '/site/$slug'
     | '/super-admin/settings'
     | '/super-admin/templates'
     | '/super-admin/widgets'
@@ -262,6 +282,8 @@ export interface FileRouteTypes {
     | '/dashboard/trash'
     | '/demo/$projectId'
     | '/editor/$projectId'
+    | '/p/$slug'
+    | '/site/$slug'
     | '/super-admin/settings'
     | '/super-admin/widgets'
     | '/templates/$templateId'
@@ -286,6 +308,8 @@ export interface FileRouteTypes {
     | '/dashboard/trash'
     | '/demo/$projectId'
     | '/editor/$projectId'
+    | '/p/$slug'
+    | '/site/$slug'
     | '/super-admin/settings'
     | '/super-admin/templates'
     | '/super-admin/widgets'
@@ -307,6 +331,8 @@ export interface RootRouteChildren {
   TemplatesRoute: typeof TemplatesRouteWithChildren
   DemoProjectIdRoute: typeof DemoProjectIdRoute
   EditorProjectIdRoute: typeof EditorProjectIdRoute
+  PSlugRoute: typeof PSlugRoute
+  SiteSlugRoute: typeof SiteSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -401,6 +427,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/super-admin/settings'
       preLoaderRoute: typeof SuperAdminSettingsRouteImport
       parentRoute: typeof SuperAdminRoute
+    }
+    '/site/$slug': {
+      id: '/site/$slug'
+      path: '/site/$slug'
+      fullPath: '/site/$slug'
+      preLoaderRoute: typeof SiteSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/p/$slug': {
+      id: '/p/$slug'
+      path: '/p/$slug'
+      fullPath: '/p/$slug'
+      preLoaderRoute: typeof PSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/editor/$projectId': {
       id: '/editor/$projectId'
@@ -554,6 +594,8 @@ const rootRouteChildren: RootRouteChildren = {
   TemplatesRoute: TemplatesRouteWithChildren,
   DemoProjectIdRoute: DemoProjectIdRoute,
   EditorProjectIdRoute: EditorProjectIdRoute,
+  PSlugRoute: PSlugRoute,
+  SiteSlugRoute: SiteSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

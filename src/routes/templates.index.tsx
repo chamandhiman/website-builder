@@ -11,6 +11,7 @@ import {
 import { toast } from "sonner";
 import { PublicNav } from "@/components/layout/PublicNav";
 import { PublicFooter } from "@/components/layout/PublicFooter";
+import { TemplatePreviewModal } from "@/components/builder/TemplatePreviewModal";
 
 export const Route = createFileRoute("/templates/")({
   head: () => ({
@@ -33,6 +34,7 @@ const CATEGORIES = [
   "Healthcare",
   "Fitness & Gym",
   "Restaurant & Café",
+  "Beauty & Salon",
   "SaaS & Technology",
   "Photography",
   "Law Firm",
@@ -42,7 +44,7 @@ const CATEGORIES = [
 
 type FilterTab = "all" | "featured" | "new" | "upcoming";
 
-export function PublicTemplatesPage() {
+function PublicTemplatesPage() {
   const navigate = useNavigate();
   const { user, authReady } = useAuth();
   const [published, setPublished] = useState<Template[]>([]);
@@ -52,6 +54,7 @@ export function PublicTemplatesPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [filterTab, setFilterTab] = useState<FilterTab>("all");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -321,14 +324,24 @@ export function PublicTemplatesPage() {
                     </div>
 
                     {/* Quick Preview Hover Overlay */}
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 backdrop-blur-[2px]">
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2.5 backdrop-blur-[2px] p-4">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPreviewTemplate(tpl);
+                        }}
+                        className="rounded-full bg-[#facc15] text-[#151515] px-4 py-2 text-xs font-bold hover:bg-yellow-400 transition flex items-center gap-1.5 shadow-lg"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        <span>Live Preview</span>
+                      </button>
                       <Link
                         to="/templates/$templateId"
                         params={{ templateId: tpl.id }}
-                        className="rounded-full bg-white text-[#151515] px-4 py-2 text-xs font-bold hover:bg-yellow-400 transition flex items-center gap-1.5 shadow-lg"
+                        className="rounded-full bg-white/90 text-[#151515] px-3.5 py-2 text-xs font-semibold hover:bg-white transition flex items-center gap-1 shadow-lg"
                       >
-                        <Eye className="h-3.5 w-3.5" />
-                        <span>Preview Details</span>
+                        <span>Details</span>
                       </Link>
                     </div>
                   </div>
@@ -351,13 +364,14 @@ export function PublicTemplatesPage() {
 
                     {/* Card Actions */}
                     <div className="pt-2 border-t border-[#2a2a2f] flex items-center justify-between gap-2">
-                      <Link
-                        to="/templates/$templateId"
-                        params={{ templateId: tpl.id }}
-                        className="text-xs font-medium text-[#9a9aa3] hover:text-[#f4f4f5] transition"
+                      <button
+                        type="button"
+                        onClick={() => setPreviewTemplate(tpl)}
+                        className="text-xs font-medium text-[#facc15] hover:underline flex items-center gap-1"
                       >
-                        View Details →
-                      </Link>
+                        <Eye className="h-3 w-3" />
+                        <span>Live Preview</span>
+                      </button>
 
                       {isUpcoming ? (
                         <span className="text-xs font-semibold text-[#facc15]">
@@ -384,6 +398,17 @@ export function PublicTemplatesPage() {
       </main>
 
       <PublicFooter />
+
+      {/* Full-Screen Template Preview Modal */}
+      <TemplatePreviewModal
+        isOpen={Boolean(previewTemplate)}
+        onClose={() => setPreviewTemplate(null)}
+        template={previewTemplate}
+        onUseTemplate={(tpl) => {
+          setPreviewTemplate(null);
+          void handleUseTemplate(tpl);
+        }}
+      />
     </div>
   );
 }

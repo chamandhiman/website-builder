@@ -23,6 +23,8 @@ import { LandingHud } from "./LandingHud";
 import { LandingMarquee } from "./LandingMarquee";
 import { LandingFooter } from "./LandingFooter";
 import { InteractiveCursor } from "./InteractiveCursor";
+import { LandingAuthModal } from "./LandingAuthModal";
+import { TemplatePreviewModal } from "@/components/builder/TemplatePreviewModal";
 
 import "./landing.css";
 
@@ -42,6 +44,11 @@ export function LandingPage() {
   const [activePanel, setActivePanel] = useState(0);
   const [progressPercent, setProgressPercent] = useState(0);
   const [templates, setTemplates] = useState<Template[]>([]);
+
+  // Auth modal state for template selection without losing context
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [pendingTemplate, setPendingTemplate] = useState<Template | null>(null);
+  const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
@@ -375,7 +382,8 @@ export function LandingPage() {
     if (authReady && user) {
       navigate({ to: "/dashboard" as never });
     } else {
-      handleNavigatePanel(4);
+      setPendingTemplate(null);
+      setAuthModalOpen(true);
     }
   };
 
@@ -405,11 +413,14 @@ export function LandingPage() {
         });
       }
     } else {
-      navigate({
-        to: "/templates/$templateId",
-        params: { templateId: template.id },
-      });
+      setPendingTemplate(template);
+      setAuthModalOpen(true);
     }
+  };
+
+  const handleRequestLoginForTemplate = (template: Template) => {
+    setPendingTemplate(template);
+    setAuthModalOpen(true);
   };
 
   return (
@@ -419,6 +430,10 @@ export function LandingPage() {
       <LandingHeader
         activePanel={activePanel}
         onNavigatePanel={handleNavigatePanel}
+        onOpenAuthModal={() => {
+          setPendingTemplate(null);
+          setAuthModalOpen(true);
+        }}
       />
 
       <main className="world" id="world">
@@ -436,6 +451,8 @@ export function LandingPage() {
           <TemplatesPanel
             templates={templates}
             onSelectTemplate={handleSelectTemplate}
+            onRequestLoginForTemplate={handleRequestLoginForTemplate}
+            onPreviewTemplate={(t) => setPreviewTemplate(t)}
           />
 
           <CtaPanel onSuccessRedirect="/dashboard" />
@@ -452,6 +469,22 @@ export function LandingPage() {
       <LandingMarquee />
 
       <LandingFooter />
+
+      <LandingAuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        pendingTemplate={pendingTemplate}
+      />
+
+      <TemplatePreviewModal
+        isOpen={Boolean(previewTemplate)}
+        onClose={() => setPreviewTemplate(null)}
+        template={previewTemplate}
+        onUseTemplate={(t) => {
+          setPreviewTemplate(null);
+          handleSelectTemplate(t);
+        }}
+      />
     </div>
   );
 }

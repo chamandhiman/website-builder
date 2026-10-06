@@ -18,6 +18,7 @@ import type { Page, PageSection } from "@/lib/builder/store";
 import { useBuilder } from "@/lib/builder/store";
 import { nanoid } from "nanoid";
 import { getWidgetRegistration, getWidgetBootstrapExport } from "@/components/builder/widgets/widgetRegistry";
+import { SHARED_HEADER_SECTION_ID, SHARED_FOOTER_SECTION_ID, isNavbarSection, isFooterSection } from "@/lib/builder/sharedChrome";
 
 export type TemplateStatus = "draft" | "upcoming" | "published" | "archived";
 
@@ -35,6 +36,11 @@ export interface Template {
   sortOrder?: number;
   widgets: WidgetInstance[];
   pages?: Page[];
+  sharedHeader?: PageSection | null;
+  sharedFooter?: PageSection | null;
+  globalCss?: string;
+  customHead?: string;
+  assets?: Record<string, any>;
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
@@ -106,6 +112,8 @@ function mapTemplate(snapshot: { id: string; data(): Record<string, unknown> }):
     sortOrder: typeof data.sortOrder === "number" ? data.sortOrder : undefined,
     widgets,
     pages,
+    globalCss: data.globalCss ? String(data.globalCss) : undefined,
+    customHead: data.customHead ? String(data.customHead) : undefined,
     createdBy: String(data.createdBy ?? ""),
     createdAt: data.createdAt && typeof (data.createdAt as any).toDate === "function"
       ? (data.createdAt as any).toDate()
@@ -281,6 +289,28 @@ export function createProjectFromTemplate(tpl: Template, customName?: string): s
       };
     });
 
+    const initialSharedHeader = tpl.sharedHeader
+      ? { ...tpl.sharedHeader, id: SHARED_HEADER_SECTION_ID, shared: "header" as const }
+      : (clonedPages.flatMap((p) => p.sections).find(isNavbarSection)
+          ? {
+              ...clonedPages.flatMap((p) => p.sections).find(isNavbarSection)!,
+              id: SHARED_HEADER_SECTION_ID,
+              shared: "header" as const,
+              sharedKey: "global-header",
+            }
+          : current.sharedHeader);
+
+    const initialSharedFooter = tpl.sharedFooter
+      ? { ...tpl.sharedFooter, id: SHARED_FOOTER_SECTION_ID, shared: "footer" as const }
+      : (clonedPages.flatMap((p) => p.sections).find(isFooterSection)
+          ? {
+              ...clonedPages.flatMap((p) => p.sections).find(isFooterSection)!,
+              id: SHARED_FOOTER_SECTION_ID,
+              shared: "footer" as const,
+              sharedKey: "global-footer",
+            }
+          : current.sharedFooter);
+
     useBuilder.setState((s) => ({
       projects: {
         ...s.projects,
@@ -289,6 +319,12 @@ export function createProjectFromTemplate(tpl: Template, customName?: string): s
           pages: clonedPages,
           currentPageId: clonedPages[0]?.id || current.currentPageId,
           selectedTemplateId: tpl.id,
+          sharedHeader: initialSharedHeader,
+          sharedFooter: initialSharedFooter,
+          sharedChromeMigrated: true,
+          globalCss: tpl.globalCss ? (current.globalCss ? `${current.globalCss}\n${tpl.globalCss}` : tpl.globalCss) : current.globalCss,
+          customHead: tpl.customHead || current.customHead,
+          assets: { ...(tpl.assets || {}), ...(current.assets || {}) },
           updatedAt: Date.now(),
         },
       },

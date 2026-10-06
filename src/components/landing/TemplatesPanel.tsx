@@ -1,140 +1,80 @@
 import { useState, useMemo } from "react";
 import gsap from "gsap";
+import { Eye } from "lucide-react";
+import { useAuth } from "@/lib/auth";
+import { PREBUILT_TEMPLATES } from "@/services/templateSeeds";
 import type { Template } from "@/services/templates";
+import { toast } from "sonner";
 
 interface TemplatesPanelProps {
   templates: Template[];
   onSelectTemplate: (template: Template) => void;
+  onRequestLoginForTemplate: (template: Template) => void;
+  onPreviewTemplate?: (template: Template) => void;
 }
-
-interface TemplateCardData {
-  n: string;
-  c: string;
-  s: string;
-  bg: string;
-  fg: string;
-  big: string;
-  h: string;
-  id: string;
-  original: Template;
-}
-
-const DEFAULT_TEMPLATES: Array<Omit<TemplateCardData, "original">> = [
-  {
-    n: "DreamHome",
-    c: "Luxury Real Estate",
-    s: "new",
-    bg: "#f3efe7",
-    fg: "#1b1b1b",
-    big: "linear-gradient(160deg,#c9b38a,#4b3b2a)",
-    h: "Live where<br>light lives.",
-    id: "tpl-dreamhome",
-  },
-  {
-    n: "WellnessLife",
-    c: "Health & Fitness",
-    s: "new",
-    bg: "#0f2a22",
-    fg: "#d9ffe9",
-    big: "linear-gradient(120deg,#7CF5C8,#1a6b54)",
-    h: "Stronger<br>every day.",
-    id: "tpl-wellness",
-  },
-  {
-    n: "Portfolio X",
-    c: "Personal / Creative",
-    s: "",
-    bg: "#111",
-    fg: "#fff",
-    big: "linear-gradient(120deg,#ff4d6d,#ffd21f)",
-    h: "I design<br>loud things.",
-    id: "tpl-folio",
-  },
-  {
-    n: "Brewline",
-    c: "Café & Restaurant",
-    s: "",
-    bg: "#2b1a12",
-    fg: "#ffe6c7",
-    big: "linear-gradient(140deg,#b5651d,#3a2214)",
-    h: "Slow coffee,<br>fast mornings.",
-    id: "tpl-brewline",
-  },
-  {
-    n: "LaunchKit",
-    c: "SaaS Landing",
-    s: "soon",
-    bg: "#0d0b1f",
-    fg: "#e8e4ff",
-    big: "linear-gradient(120deg,#9b8cff,#2b1f6b)",
-    h: "Ship your<br>startup.",
-    id: "tpl-launchpad",
-  },
-  {
-    n: "Shopwave",
-    c: "E-commerce Store",
-    s: "soon",
-    bg: "#fff4d6",
-    fg: "#1b1b1b",
-    big: "linear-gradient(120deg,#ffd21f,#ff8a00)",
-    h: "Drop 04 is<br>here.",
-    id: "tpl-shopwave",
-  },
-  {
-    n: "EventPulse",
-    c: "Events & Conferences",
-    s: "soon",
-    bg: "#1a0f14",
-    fg: "#ffd6e0",
-    big: "linear-gradient(120deg,#ff6b8b,#5a1a2e)",
-    h: "Oct 24.<br>Be there.",
-    id: "tpl-snapshot",
-  },
-];
 
 export function TemplatesPanel({
   templates,
   onSelectTemplate,
+  onRequestLoginForTemplate,
+  onPreviewTemplate,
 }: TemplatesPanelProps) {
-  const [activeTab, setActiveTab] = useState(0);
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState<string>("All");
 
-  const displayList = useMemo(() => {
-    return DEFAULT_TEMPLATES.map((item, idx) => {
-      const match = templates.find(
-        (t) =>
-          t.id === item.id ||
-          t.name.toLowerCase() === item.n.toLowerCase() ||
-          t.slug === item.n.toLowerCase()
-      );
-
-      const original: Template = match || {
-        id: item.id,
-        name: item.n,
-        slug: item.n.toLowerCase(),
-        category: item.c,
-        status: item.s === "soon" ? "upcoming" : "published",
-        description: `${item.n} template`,
-        featured: idx === 0,
-        isNew: item.s === "new",
-      };
+  // Merge runtime templates with built-in seeds to ensure rich real data
+  const realTemplates = useMemo(() => {
+    const list = templates && templates.length > 0 ? templates : PREBUILT_TEMPLATES;
+    // Map with curated fallback graphics if thumbnail is missing
+    return list.map((t, idx) => {
+      let fallbackBg = "#141416";
+      let fallbackBig = "linear-gradient(120deg, #ffd21f, #ff8a00)";
+      if (idx % 4 === 1) {
+        fallbackBg = "#0f2a22";
+        fallbackBig = "linear-gradient(120deg, #7CF5C8, #1a6b54)";
+      } else if (idx % 4 === 2) {
+        fallbackBg = "#2b1a12";
+        fallbackBig = "linear-gradient(140deg, #b5651d, #3a2214)";
+      } else if (idx % 4 === 3) {
+        fallbackBg = "#0d0b1f";
+        fallbackBig = "linear-gradient(120deg, #9b8cff, #2b1f6b)";
+      }
 
       return {
-        ...item,
-        original,
+        ...t,
+        fallbackBg,
+        fallbackBig,
       };
     });
   }, [templates]);
 
-  const handleTabClick = (tabIdx: number) => {
-    setActiveTab(tabIdx);
-  };
+  // Extract unique categories for tabs
+  const tabs = useMemo(() => {
+    return ["All", "New", "Beauty & Salon", "Restaurant & Café", "Real Estate", "SaaS & Technology", "Freelancer"];
+  }, []);
 
-  const isVisibleForTab = (item: TemplateCardData) => {
-    if (activeTab === 0) return true;
-    if (activeTab === 1) return item.s === "new";
-    if (activeTab === 2) return item.s === "soon";
-    if (activeTab === 3) return !item.s || item.s !== "soon";
-    return true;
+  const filteredTemplates = useMemo(() => {
+    if (activeTab === "All") return realTemplates;
+    if (activeTab === "New") return realTemplates.filter((t) => t.isNew || t.featured);
+    if (activeTab === "Coming soon") return realTemplates.filter((t) => t.status === "upcoming");
+    return realTemplates.filter(
+      (t) =>
+        t.category.toLowerCase().includes(activeTab.toLowerCase()) ||
+        t.name.toLowerCase().includes(activeTab.toLowerCase())
+    );
+  }, [realTemplates, activeTab]);
+
+  const handleCardClick = (t: Template) => {
+    if (t.status === "upcoming") {
+      toast.info(`"${t.name}" is coming soon! Stay tuned.`);
+      return;
+    }
+
+    if (user) {
+      onSelectTemplate(t);
+    } else {
+      onRequestLoginForTemplate(t);
+    }
   };
 
   const handleCardMouseMove = (e: React.MouseEvent<HTMLElement>) => {
@@ -174,103 +114,108 @@ export function TemplatesPanel({
         </div>
 
         <div className="tabs" role="tablist">
-          <button
-            type="button"
-            className={activeTab === 0 ? "on" : ""}
-            onClick={() => handleTabClick(0)}
-          >
-            All
-          </button>
-          <button
-            type="button"
-            className={activeTab === 1 ? "on" : ""}
-            onClick={() => handleTabClick(1)}
-          >
-            New
-          </button>
-          <button
-            type="button"
-            className={activeTab === 2 ? "on" : ""}
-            onClick={() => handleTabClick(2)}
-          >
-            Coming soon
-          </button>
-          <button
-            type="button"
-            className={activeTab === 3 ? "on" : ""}
-            onClick={() => handleTabClick(3)}
-          >
-            Business
-          </button>
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              className={activeTab === tab ? "on" : ""}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
       </div>
 
       <div className="tpl-row" id="tplRow">
-        {displayList.map((t) => {
-          const visible = isVisibleForTab(t);
-          const isSoon = t.s === "soon";
+        {filteredTemplates.map((t) => {
+          const isSoon = t.status === "upcoming";
 
           return (
             <article
               key={t.id}
               className={`tpl ${isSoon ? "soon-card" : ""}`}
-              style={{
-                opacity: visible ? 1 : 0.15,
-                transform: visible ? "scale(1)" : "scale(0.94)",
-                transition: "opacity 0.4s, transform 0.4s, border-color 0.3s",
-              }}
               onMouseMove={handleCardMouseMove}
               onMouseLeave={handleCardMouseLeave}
-              onClick={() => onSelectTemplate(t.original)}
+              onClick={() => handleCardClick(t)}
             >
               <div className="shot" style={{ background: "#18181b" }}>
-                {t.s ? (
-                  <span className={`tag ${t.s}`}>
-                    {t.s === "new" ? "New" : "Coming soon"}
-                  </span>
+                {isSoon ? (
+                  <span className="tag soon">Coming soon</span>
+                ) : t.isNew ? (
+                  <span className="tag new">New</span>
+                ) : t.featured ? (
+                  <span className="tag new">Featured</span>
                 ) : null}
 
-                <div className="mini" style={{ background: t.bg, color: t.fg }}>
-                  <div className="m-nav">
-                    <b />
-                    <span>
+                {/* Real thumbnail image if available, else mini site art */}
+                {t.thumbnail ? (
+                  <div className="mini" style={{ background: "#18181b", padding: 0 }}>
+                    <img
+                      src={t.thumbnail}
+                      alt={t.name}
+                      className="h-full w-full object-cover rounded-lg"
+                      loading="lazy"
+                    />
+                  </div>
+                ) : (
+                  <div className="mini" style={{ background: t.fallbackBg, color: "#f2f0ea" }}>
+                    <div className="m-nav">
+                      <b />
+                      <span>
+                        <i />
+                        <i />
+                        <i />
+                      </span>
+                    </div>
+                    <div className="m-h">{t.name}</div>
+                    <div className="m-p">
+                      <i />
+                      <i style={{ width: "50%" }} />
+                    </div>
+                    <div className="m-big" style={{ background: t.fallbackBig }} />
+                    <div className="m-blocks">
                       <i />
                       <i />
                       <i />
-                    </span>
+                    </div>
+                    <div className="m-blocks">
+                      <i />
+                      <i />
+                      <i />
+                    </div>
                   </div>
-                  <div
-                    className="m-h"
-                    dangerouslySetInnerHTML={{ __html: t.h }}
-                  />
-                  <div className="m-p">
-                    <i />
-                    <i style={{ width: "50%" }} />
-                  </div>
-                  <div className="m-big" style={{ background: t.big }} />
-                  <div className="m-blocks">
-                    <i />
-                    <i />
-                    <i />
-                  </div>
-                  <div className="m-blocks">
-                    <i />
-                    <i />
-                    <i />
-                  </div>
-                </div>
+                )}
               </div>
 
               <div className="meta">
-                <div>
-                  <h4>{t.n}</h4>
-                  <p>{t.c}</p>
+                <div style={{ maxWidth: "200px" }}>
+                  <h4 className="truncate">{t.name}</h4>
+                  <p className="truncate">{t.category}</p>
                 </div>
-                {isSoon ? (
-                  <span className="notify">Notify me</span>
-                ) : (
-                  <span className="use">→</span>
-                )}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  {!isSoon && onPreviewTemplate && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onPreviewTemplate(t);
+                      }}
+                      className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#27272a] text-[#f4f4f5] hover:bg-[#3f3f46] hover:text-[#facc15] transition border border-[#3f3f46]"
+                      title="Preview Template"
+                    >
+                      <Eye className="h-3 w-3 text-[#facc15]" />
+                      <span>Preview</span>
+                    </button>
+                  )}
+                  {isSoon ? (
+                    <span className="notify">Notify me</span>
+                  ) : (
+                    <span className="use" title="Use Template">
+                      →
+                    </span>
+                  )}
+                </div>
               </div>
             </article>
           );

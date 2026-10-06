@@ -44,6 +44,8 @@ const CURATED_SWATCHES = [
 ];
 
 const FONT_FAMILIES = [
+  { label: "Fraunces (Display)", value: "'Fraunces', Georgia, serif" },
+  { label: "Outfit (Sans)", value: "'Outfit', ui-sans-serif, system-ui, sans-serif" },
   { label: "Inter", value: "Inter, ui-sans-serif, system-ui, sans-serif" },
   { label: "Poppins", value: "Poppins, ui-sans-serif, system-ui, sans-serif" },
   { label: "Arial", value: "Arial, sans-serif" },

@@ -8,6 +8,16 @@ import {
   REALESTATE_GLOBAL_CSS,
   RE_HOME_PAGE,
   RE_PAGES,
+  SAFFRON_RESTAURANT_ASSETS,
+  SAFFRON_GLOBAL_CSS,
+  SAFFRON_SECTIONS,
+  SAFFRON_HOME_PAGE,
+  BEAUTY_SALON_ASSETS,
+  BEAUTY_PROJECT_ASSETS,
+  ROSE_BEAUTY_GLOBAL_CSS,
+  ROSE_BEAUTY_SECTIONS,
+  ROSE_BEAUTY_SHARED_HEADER,
+  ROSE_BEAUTY_SHARED_FOOTER,
 } from "@/services/templateSeeds";
 
 export const TEMPLATE_CATEGORIES = [
@@ -69,6 +79,9 @@ export interface TemplateDataDefinition {
   globalCss?: string;
   globalJs?: string;
   customHead?: string;
+  sharedHeader?: any;
+  sharedFooter?: any;
+  assets?: Record<string, any>;
   sections?: TemplateSectionData[];
   pages?: Array<{
     name: string;
@@ -196,5 +209,85 @@ export const TEMPLATE_DATA_LIBRARY: TemplateDataDefinition[] = [
         html: sec.html,
       })),
     })),
+  },
+  {
+    id: "tpl-saffron-ember-restaurant",
+    slug: "saffron-ember-modern-indian-kitchen",
+    name: "Saffron & Ember - Modern Indian Kitchen",
+    category: "Restaurant & Café",
+    pageType: "single-page",
+    layout: { type: "custom" },
+    description: "A sensory, high-converting restaurant website with a live tandoor hero, interactive menu tabs, chef signatures, bento photo gallery, and online reservations.",
+    accent: grad("#e0a43a", "#c8562f"),
+    thumbnail: SAFFRON_RESTAURANT_ASSETS.preview,
+    isPremium: false,
+    tags: ["Restaurant", "Café", "Indian Kitchen", "Food", "Menu", "Reservations", "Dark Theme"],
+    author: "Super Admin",
+    version: "1.0",
+    createdDate: "2026-03-01",
+    updatedDate: "2026-03-01",
+    globalCss: SAFFRON_GLOBAL_CSS,
+    sections: SAFFRON_SECTIONS.map((sec) => ({
+      name: sec.name,
+      type: sec.id === "sec-saffron-header" ? "header" : sec.id === "sec-saffron-footer" ? "footer" : "raw",
+      content: { html: sec.html },
+      html: sec.html,
+    })),
+    pages: [
+      {
+        name: "Home",
+        slug: "home",
+        sections: SAFFRON_SECTIONS.map((sec) => ({
+          name: sec.name,
+          type: sec.id === "sec-saffron-header" ? "header" : sec.id === "sec-saffron-footer" ? "footer" : "raw",
+          content: { html: sec.html },
+          html: sec.html,
+        })),
+      },
+    ],
+  },
+  {
+    id: "tpl-rose-atelier-beauty-salon",
+    slug: "rose-atelier-beauty-studio",
+    name: "Rosé Atelier — Hair, Skin & Beauty Studio",
+    category: "Beauty & Salon",
+    pageType: "single-page",
+    layout: { type: "custom" },
+    description: "An intimate luxury hair artistry, skin rituals, nails, and bridal glam studio template with interactive service menus, before/after compare slider, and online appointment booking.",
+    accent: grad("#b5695a", "#d9a28f"),
+    thumbnail: BEAUTY_SALON_ASSETS.preview,
+    isPremium: false,
+    tags: ["Beauty", "Salon", "Hair", "Skin", "Nails", "Spa", "Bridal", "Luxury"],
+    author: "Super Admin",
+    version: "1.0",
+    createdDate: "2026-03-05",
+    updatedDate: "2026-03-05",
+    globalCss: ROSE_BEAUTY_GLOBAL_CSS,
+    sharedHeader: ROSE_BEAUTY_SHARED_HEADER,
+    sharedFooter: ROSE_BEAUTY_SHARED_FOOTER,
+    assets: BEAUTY_PROJECT_ASSETS,
+    customHead: `
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300..700;1,300..700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+    `.trim(),
+    sections: ROSE_BEAUTY_SECTIONS.map((sec) => ({
+      name: sec.name,
+      type: sec.id === "sec-rose-header" ? "header" : sec.id === "sec-rose-footer" ? "footer" : "raw",
+      content: { html: sec.html },
+      html: sec.html,
+    })),
+    pages: [
+      {
+        name: "Home",
+        slug: "home",
+        sections: ROSE_BEAUTY_SECTIONS.map((sec) => ({
+          name: sec.name,
+          type: sec.id === "sec-rose-header" ? "header" : sec.id === "sec-rose-footer" ? "footer" : "raw",
+          content: { html: sec.html },
+          html: sec.html,
+        })),
+      },
+    ],
   },
 ];

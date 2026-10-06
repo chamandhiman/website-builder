@@ -8,6 +8,7 @@ import {
 } from "@/services/templates";
 import { PublicNav } from "@/components/layout/PublicNav";
 import { PublicFooter } from "@/components/layout/PublicFooter";
+import { TemplatePreviewModal } from "@/components/builder/TemplatePreviewModal";
 import { toast } from "sonner";
 import {
   Sparkles,
@@ -26,7 +27,7 @@ export const Route = createFileRoute("/templates/$templateId")({
   component: TemplateDetailPage,
 });
 
-export function TemplateDetailPage() {
+function TemplateDetailPage() {
   const { templateId } = Route.useParams();
   const navigate = useNavigate();
   const { user, authReady } = useAuth();
@@ -34,6 +35,7 @@ export function TemplateDetailPage() {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [previewDevice, setPreviewDevice] = useState<"desktop" | "mobile">("desktop");
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -214,6 +216,15 @@ export function TemplateDetailPage() {
                 <>
                   <button
                     type="button"
+                    onClick={() => setShowPreviewModal(true)}
+                    className="w-full flex items-center justify-center gap-2 rounded-full border-2 border-[#facc15] bg-[#facc15]/10 py-3.5 px-6 text-sm font-bold text-[#facc15] hover:bg-[#facc15] hover:text-[#111111] transition shadow-lg"
+                  >
+                    <Eye className="h-4 w-4" />
+                    <span>Open Live Interactive Preview</span>
+                  </button>
+
+                  <button
+                    type="button"
                     onClick={handleUseTemplate}
                     disabled={actionLoading}
                     className="w-full flex items-center justify-center gap-2 rounded-full bg-[#facc15] py-3.5 px-6 text-sm font-bold text-[#151515] hover:bg-yellow-400 transition shadow-lg"
@@ -254,33 +265,44 @@ export function TemplateDetailPage() {
           <div className="lg:col-span-7 space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-[#9a9aa3]">Interactive Preview</span>
-              <div className="flex items-center gap-1 rounded-lg border border-[#2a2a2f] bg-[#17171a] p-1 text-xs">
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => setPreviewDevice("desktop")}
-                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded transition ${
-                    previewDevice === "desktop" ? "bg-[#202024] text-[#facc15]" : "text-[#9a9aa3]"
-                  }`}
+                  onClick={() => setShowPreviewModal(true)}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-[#facc15]/40 bg-[#facc15]/10 px-2.5 py-1 text-xs font-semibold text-[#facc15] hover:bg-[#facc15]/20 transition"
                 >
-                  <Monitor className="h-3.5 w-3.5" />
-                  <span>Desktop</span>
+                  <Eye className="h-3.5 w-3.5" />
+                  <span>Full Screen</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setPreviewDevice("mobile")}
-                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded transition ${
-                    previewDevice === "mobile" ? "bg-[#202024] text-[#facc15]" : "text-[#9a9aa3]"
-                  }`}
-                >
-                  <Smartphone className="h-3.5 w-3.5" />
-                  <span>Mobile</span>
-                </button>
+                <div className="flex items-center gap-1 rounded-lg border border-[#2a2a2f] bg-[#17171a] p-1 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setPreviewDevice("desktop")}
+                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded transition ${
+                      previewDevice === "desktop" ? "bg-[#202024] text-[#facc15]" : "text-[#9a9aa3]"
+                    }`}
+                  >
+                    <Monitor className="h-3.5 w-3.5" />
+                    <span>Desktop</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewDevice("mobile")}
+                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded transition ${
+                      previewDevice === "mobile" ? "bg-[#202024] text-[#facc15]" : "text-[#9a9aa3]"
+                    }`}
+                  >
+                    <Smartphone className="h-3.5 w-3.5" />
+                    <span>Mobile</span>
+                  </button>
+                </div>
               </div>
             </div>
 
             {/* Frame Mockup */}
             <div
-              className={`mx-auto rounded-2xl border border-[#2a2a2f] bg-[#17171a] shadow-2xl overflow-hidden transition-all duration-300 ${
+              onClick={() => setShowPreviewModal(true)}
+              className={`group/frame relative mx-auto rounded-2xl border border-[#2a2a2f] bg-[#17171a] shadow-2xl overflow-hidden transition-all duration-300 cursor-pointer hover:border-[#facc15]/60 ${
                 previewDevice === "mobile" ? "max-w-[340px]" : "w-full"
               }`}
             >
@@ -303,13 +325,19 @@ export function TemplateDetailPage() {
                   <img
                     src={template.previewImage || template.thumbnail || ""}
                     alt={template.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover/frame:scale-105 transition duration-500"
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center p-8 text-center text-[#9a9aa3]">
                     <span className="text-xl font-bold">{template.name}</span>
                   </div>
                 )}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/frame:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                  <span className="rounded-full bg-[#facc15] text-[#111111] px-4 py-2 text-xs font-bold shadow-xl flex items-center gap-1.5">
+                    <Eye className="h-3.5 w-3.5" />
+                    Click to Open Full Interactive Preview
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -317,6 +345,17 @@ export function TemplateDetailPage() {
       </main>
 
       <PublicFooter />
+
+      {/* Full-Screen Template Preview Modal */}
+      <TemplatePreviewModal
+        isOpen={showPreviewModal}
+        onClose={() => setShowPreviewModal(false)}
+        template={template}
+        onUseTemplate={(tpl) => {
+          setShowPreviewModal(false);
+          void handleUseTemplate();
+        }}
+      />
     </div>
   );
 }

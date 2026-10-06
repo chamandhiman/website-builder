@@ -32,7 +32,7 @@ export const FREELANCER_SECTIONS: PageSection[] = [
     templateId: "",
     name: "Header Navigation",
     html: `
-<header style="background-color: #0B0C10; border-bottom: 1px solid #1E222D; position: sticky; top: 0; z-index: 100; width: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+<header style="background-color: rgba(11, 12, 16, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid #1E222D; position: sticky; top: 0; z-index: 1000; width: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
   <div style="max-width: 1240px; margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between;">
     <a href="#home" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: #FFFFFF; font-size: 20px; font-weight: 800; letter-spacing: -0.02em;">
       <span style="color: #FACC15; font-size: 22px; line-height: 1;">⚡</span>
@@ -1013,10 +1013,57 @@ export {
   RE_CONTACT_PAGE,
 };
 
+import {
+  SAFFRON_RESTAURANT_ASSETS,
+  SAFFRON_GLOBAL_CSS,
+  SAFFRON_RESTAURANT_TEMPLATE,
+  SAFFRON_SECTIONS,
+  SAFFRON_HOME_PAGE,
+  SAFFRON_SHARED_HEADER,
+  SAFFRON_SHARED_FOOTER,
+} from "./templateSeedsRestaurant";
+
+import {
+  BEAUTY_SALON_ASSETS,
+  BEAUTY_PROJECT_ASSETS,
+  ROSE_BEAUTY_GLOBAL_CSS,
+  ROSE_BEAUTY_TEMPLATE,
+  ROSE_BEAUTY_SECTIONS,
+  ROSE_BEAUTY_HOME_PAGE,
+  ROSE_BEAUTY_SHARED_HEADER,
+  ROSE_BEAUTY_SHARED_FOOTER,
+} from "./templateSeedsBeauty";
+
+export {
+  SAFFRON_RESTAURANT_ASSETS,
+  SAFFRON_GLOBAL_CSS,
+  SAFFRON_RESTAURANT_TEMPLATE,
+  SAFFRON_SECTIONS,
+  SAFFRON_HOME_PAGE,
+  SAFFRON_SHARED_HEADER,
+  SAFFRON_SHARED_FOOTER,
+  BEAUTY_SALON_ASSETS,
+  BEAUTY_PROJECT_ASSETS,
+  ROSE_BEAUTY_GLOBAL_CSS,
+  ROSE_BEAUTY_TEMPLATE,
+  ROSE_BEAUTY_SECTIONS,
+  ROSE_BEAUTY_HOME_PAGE,
+  ROSE_BEAUTY_SHARED_HEADER,
+  ROSE_BEAUTY_SHARED_FOOTER,
+};
+
 // =============================================================
-// PREBUILT TEMPLATES (FREELANCER + WELLNESSLIFE + REAL ESTATE)
+// PREBUILT TEMPLATES (BEAUTY + RESTAURANT + REAL ESTATE + FREELANCER + WELLNESS)
 // =============================================================
 export const PREBUILT_TEMPLATES: Template[] = [
+  {
+    ...ROSE_BEAUTY_TEMPLATE,
+    sortOrder: 1,
+  },
+  {
+    ...SAFFRON_RESTAURANT_TEMPLATE,
+    sortOrder: 2,
+  },
   {
     id: "tpl-dream-home-real-estate",
     name: "DreamHome - Luxury Real Estate",
@@ -1026,7 +1073,7 @@ export const PREBUILT_TEMPLATES: Template[] = [
     status: "published",
     featured: true,
     isNew: true,
-    sortOrder: 1,
+    sortOrder: 2,
     thumbnail: REALESTATE_ASSETS.heroVilla,
     previewImage: REALESTATE_ASSETS.home1ModernFamily,
     widgets: [],
@@ -1043,8 +1090,8 @@ export const PREBUILT_TEMPLATES: Template[] = [
     description: "Bold dark theme portfolio designed for developers, designers, and creative professionals looking to land high-ticket clients.",
     status: "published",
     featured: true,
-    isNew: true,
-    sortOrder: 2,
+    isNew: false,
+    sortOrder: 3,
     thumbnail: ASSETS.heroDeveloper,
     previewImage: ASSETS.workDashboard,
     widgets: [],
@@ -1058,24 +1105,7 @@ export const PREBUILT_TEMPLATES: Template[] = [
     description: "Serene, clean wellness and medical practice template with treatment plans, doctor credentials, and consultation booking.",
     featured: true,
     isNew: false,
-    sortOrder: 3,
-  },
-  // Upcoming templates showcased as "Coming Soon" on the SaaS Landing Page & Templates Library
-  {
-    id: "tpl-cafebloom-restaurant",
-    name: "CafeBloom - Artisan Café & Bistro",
-    slug: "cafebloom-artisan-cafe",
-    category: "Restaurant & Café",
-    description: "Warm, aesthetic restaurant and coffee house experience with menu highlights, online reservations, and chef specials.",
-    status: "upcoming",
-    featured: false,
-    isNew: true,
     sortOrder: 4,
-    thumbnail: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800&q=80",
-    widgets: [],
-    createdBy: "super-admin",
-    createdAt: new Date("2026-03-01T00:00:00Z"),
-    updatedAt: new Date("2026-03-01T00:00:00Z"),
   },
   {
     id: "tpl-launchpad-saas",
