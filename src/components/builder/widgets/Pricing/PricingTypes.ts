@@ -162,6 +162,12 @@ export const defaultPricingWidgetData: PricingWidgetData = {
     hideOnTablet: false,
     hideOnDesktop: false,
   },
+  animation: {
+    type: "none",
+  },
+  advanced: {
+    visibility: true,
+  },
 };
 
 export function isPricingWidgetData(data: unknown): data is PricingWidgetData {

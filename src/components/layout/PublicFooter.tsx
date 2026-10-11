@@ -79,7 +79,7 @@ export function PublicFooter() {
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <Link to="/login" className="hover:text-[#facc15] transition">
+                <Link to={"/login" as any} className="hover:text-[#facc15] transition">
                   Sign In
                 </Link>
               </li>

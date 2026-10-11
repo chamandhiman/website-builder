@@ -20,15 +20,15 @@ function resolveDefaultStyle(variant: string): Record<string, unknown> {
 export function HeroProperties({ value = defaultHeroWidgetData, onChange, onClose }: HeroPropertiesProps) {
   const heroValue = isHeroWidgetData(value) ? value : defaultHeroWidgetData;
   const variant = heroValue.variant ?? "Image Background";
-  const style = heroValue.style as Record<string, unknown>;
-  const layout = heroValue.layout as Record<string, unknown>;
+  const style = heroValue.style as Record<string, any>;
+  const layout = heroValue.layout as Record<string, any>;
   const defaults = resolveDefaultStyle(variant);
 
-  const updateStyle = (patch: Partial<typeof heroValue.style>) => onChange({ ...heroValue, style: { ...heroValue.style, ...patch } });
-  const updateLayout = (patch: Partial<typeof heroValue.layout>) => onChange({ ...heroValue, layout: { ...heroValue.layout, ...patch } });
-  const updateResponsive = (patch: Partial<typeof heroValue.responsive>) => onChange({ ...heroValue, responsive: { ...heroValue.responsive, ...patch } });
-  const updateAnimation = (patch: Partial<typeof heroValue.animation>) => onChange({ ...heroValue, animation: { ...heroValue.animation, ...patch } });
-  const updateAdvanced = (patch: Partial<typeof heroValue.advanced>) => onChange({ ...heroValue, advanced: { ...heroValue.advanced, ...patch } });
+  const updateStyle = (patch: Record<string, any>) => onChange({ ...heroValue, style: { ...heroValue.style, ...patch } });
+  const updateLayout = (patch: Record<string, any>) => onChange({ ...heroValue, layout: { ...heroValue.layout, ...patch } });
+  const updateResponsive = (patch: Record<string, any>) => onChange({ ...heroValue, responsive: { ...heroValue.responsive, ...patch } });
+  const updateAnimation = (patch: Record<string, any>) => onChange({ ...heroValue, animation: { ...heroValue.animation, ...patch } });
+  const updateAdvanced = (patch: Record<string, any>) => onChange({ ...heroValue, advanced: { ...heroValue.advanced, ...patch } });
 
   const renderVariantSpecific = () => {
     switch (variant) {

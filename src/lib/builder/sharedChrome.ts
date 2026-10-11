@@ -303,9 +303,18 @@ export function migrateSharedChrome(project: Project): Project {
     }
   }
 
-  const useCustomLayout = project.source === "template" || project.layout?.type === "custom";
+  const isYoga = project.selectedTemplateId === "tpl-flow-yoga" || /flow\s*yoga/i.test(project.name || "");
+  const isNexora = project.selectedTemplateId === "tpl-nexora-agency" || /nexora/i.test(project.name || "");
+  const isCustomTemplate = Boolean(
+    project.selectedTemplateId?.startsWith("tpl-") ||
+    project.source === "template" ||
+    project.layout?.type === "custom" ||
+    isYoga ||
+    isNexora
+  );
+  const useCustomLayout = isCustomTemplate;
 
-  if (project.source === "template") {
+  if (isCustomTemplate) {
     if (sharedHeader?.templateId === "shared-navbar") sharedHeader = null;
     if (sharedFooter?.templateId === "shared-footer") sharedFooter = null;
   }
@@ -345,6 +354,15 @@ export function migrateSharedChrome(project: Project): Project {
         hideHeader: page.hideHeader ?? false,
         hideFooter: page.hideFooter ?? false,
       }));
+
+  if (isCustomTemplate) {
+    if (sharedHeader && sharedHeader.widgetInstance?.type === "navbar") {
+      sharedHeader = { ...sharedHeader, widgetInstance: undefined };
+    }
+    if (sharedFooter && sharedFooter.widgetInstance?.type === "footer") {
+      sharedFooter = { ...sharedFooter, widgetInstance: undefined };
+    }
+  }
 
   sharedHeader = syncSharedHeaderNav(sharedHeader, pages) || sharedHeader;
 

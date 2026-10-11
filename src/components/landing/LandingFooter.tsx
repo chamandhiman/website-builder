@@ -1,56 +1,81 @@
-import { Link } from "@tanstack/react-router";
+import { Youtube, Instagram, Linkedin } from "lucide-react";
 
 export function LandingFooter() {
   return (
-    <footer>
-      <div>
-        <Link
-          to="/"
-          className="brand"
-          style={{ padding: 0, marginBottom: "14px", display: "inline-flex" }}
-        >
-          <svg viewBox="0 0 32 32" width="30" height="30" fill="none">
-            <rect width="32" height="32" rx="9" fill="#FFD21F" />
-            <path
-              d="M6 12.5l4 9.5 4-7.5 4 7.5 4-9.5"
-              stroke="#111"
-              strokeWidth="2.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span style={{ color: "var(--text)" }}>WebToolOcean</span>
-        </Link>
-        <p style={{ maxWidth: "34ch" }}>
-          The website builder for people who&apos;d rather ship than configure.
-        </p>
+    <footer className="ft">
+      <div className="ft-top">
+        <div className="ft-brand">
+          <a className="brand" href="#">
+            WebTool<b>Ocean</b>
+          </a>
+          <p>
+            Build beautiful websites in minutes. Pick a template, edit it live, and
+            download clean HTML or React code.
+          </p>
+
+          <div className="ft-soc">
+            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+              <Youtube className="ic" />
+            </a>
+            <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X">
+              <svg className="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <Instagram className="ic" />
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <Linkedin className="ic" />
+            </a>
+          </div>
+        </div>
+
+        <div className="ft-col">
+          <h6>Product</h6>
+          <a href="#templates">Templates</a>
+          <a href="#features">Features</a>
+          <a href="#widgets">Premium widgets</a>
+          <a href="#launch">Pricing</a>
+          <a href="/changelog">Changelog</a>
+        </div>
+
+        <div className="ft-col">
+          <h6>Company</h6>
+          <a href="/about">About us</a>
+          <a href="/contact">Contact</a>
+          <a href="/blog">Blog</a>
+          <a href="https://webtoolocean.com" target="_blank" rel="noopener noreferrer">
+            WebToolOcean.com ↗
+          </a>
+        </div>
+
+        <div className="ft-col">
+          <h6>Support</h6>
+          <a href="/help">Help center</a>
+          <a href="/docs">Documentation</a>
+          <a href="/tutorials">Video tutorials</a>
+          <a href="/bug-report">Report a bug</a>
+        </div>
+
+        <div className="ft-col">
+          <h6>Legal</h6>
+          <a href="/privacy">Privacy policy</a>
+          <a href="/terms">Terms of service</a>
+          <a href="/refund">Refund policy</a>
+          <a href="/cookies">Cookie policy</a>
+        </div>
       </div>
 
-      <div>
-        <h6>Product</h6>
-        <Link to="/#panel-1">Editor</Link>
-        <Link to="/templates">Templates</Link>
-        <Link to="/#panel-2">Export</Link>
-        <Link to="/#panel-4">Pricing</Link>
-      </div>
+      <div className="ft-big">WebToolOcean</div>
 
-      <div>
-        <h6>Resources</h6>
-        <a href="#docs" onClick={(e) => e.preventDefault()}>Docs</a>
-        <a href="#changelog" onClick={(e) => e.preventDefault()}>Changelog</a>
-        <a href="#roadmap" onClick={(e) => e.preventDefault()}>Roadmap</a>
-      </div>
-
-      <div>
-        <h6>Company</h6>
-        <a href="#about" onClick={(e) => e.preventDefault()}>About</a>
-        <a href="#contact" onClick={(e) => e.preventDefault()}>Contact</a>
-        <a href="#privacy" onClick={(e) => e.preventDefault()}>Privacy</a>
-      </div>
-
-      <div className="copy">
-        <span>© 2026 WebToolOcean</span>
-        <span>Made in Greater Noida</span>
+      <div className="ft-bot">
+        <span>© 2026 WebToolOcean. All rights reserved.</span>
+        <span className="ft-leg">
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
+          <a href="/cookies">Cookies</a>
+        </span>
       </div>
     </footer>
   );

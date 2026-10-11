@@ -1,15 +1,15 @@
- import { auth } from "@/firebase/firebase";
- import { saveBuilderProject as saveBuilderProjectState, getBuilderProject } from "@/services/builderProject";
- import { saveProjectMetadata } from "@/services/project";
- import type { ProjectMetadata } from "@/services/project";
- import { create } from "zustand";
- import { nanoid } from "nanoid"; 
- import type { SectionTemplate } from "./sections";
+import { auth } from "@/firebase/firebase";
+import { saveBuilderProject as saveBuilderProjectState, getBuilderProject } from "@/services/builderProject";
+import { saveProjectMetadata } from "@/services/project";
+import type { ProjectMetadata } from "@/services/project";
+import { create } from "zustand";
+import { nanoid } from "nanoid";
+import type { SectionTemplate } from "./sections";
 import type { WidgetInstance } from "@/components/builder/widgets/widgetRegistry";
 import { createWidgetElementDuplicateEntry } from "@/components/builder/widgets/elementDuplication";
 import { createWidgetInstance, getWidgetBootstrapExport, getWidgetRegistration } from "@/components/builder/widgets/widgetRegistry";
- import { getWidgetChildItems, mergeWidgetChildData, setWidgetChildItems, type WidgetChildLocation } from "@/components/builder/widgets/childWidgetUtils";
- import { useCloudProjectsStore } from "./cloudProjectsStore";
+import { getWidgetChildItems, mergeWidgetChildData, setWidgetChildItems, type WidgetChildLocation } from "@/components/builder/widgets/childWidgetUtils";
+import { useCloudProjectsStore } from "./cloudProjectsStore";
 import { normalizeFontSizeToPx } from "@/components/builder/widgets/fontSize";
 import type { TemplateDefinition } from "./templates";
 import { createImageAssetReference, normalizeAssetMap, saveImageBlob, type BuilderAssetEntry } from "./image-storage";
@@ -28,6 +28,10 @@ import {
   syncSharedHeaderNav,
 } from "./sharedChrome";
 import { FREELANCER_SECTIONS } from "@/services/templateSeeds";
+import { FLOW_YOGA_SHARED_HEADER, FLOW_YOGA_SHARED_FOOTER } from "@/services/templateSeedsYoga";
+import { NEXORA_SHARED_HEADER, NEXORA_SHARED_FOOTER } from "@/services/templateSeedsAgency";
+import { DRIVE_PRO_SHARED_HEADER, DRIVE_PRO_SHARED_FOOTER } from "@/services/templateSeedsDrivingSchool";
+import { CUSTOM_WEBSITE_CHROME_MAP } from "@/services/templateSeedsWebsites";
 
 export interface PageSection {
   id: string;
@@ -139,6 +143,10 @@ export interface Project {
   publishedSlug?: string;
   publishedUrl?: string;
   publishedAt?: number;
+  status?: "draft" | "published" | "archived" | "trashed" | "private" | string;
+  favorite?: boolean;
+  domain?: string;
+  templateId?: string | null;
   thumbnail?: string;
   assets?: Record<string, BuilderAssetEntry>;
   selectedTemplateId?: string | null;
@@ -192,7 +200,7 @@ interface BuilderState {
   hydrated: boolean;
   leftPanelOpen: "widgets" | "pages" | "layers" | null;
   leftPanelView:
-   | "dashboard"
+  | "dashboard"
   | "projects"
   | "pages"
   | "templates"
@@ -200,7 +208,7 @@ interface BuilderState {
   | "favorites"
   | "shared"
   | "trash"
-  
+
   showProjectDashboard: boolean;
   saveStatus: "idle" | "saving" | "saved" | "failed";
   saveErrorMessage: string | null;
@@ -210,15 +218,15 @@ interface BuilderState {
   toggleLeftPanel: () => void;
   setLeftPanelView: (
     view:
-    | "dashboard"
-    | "projects"
-    | "pages"
-    | "templates"
-    | "widgets"
-    | "favorites"
-    | "shared"
-    | "trash"
-   
+      | "dashboard"
+      | "projects"
+      | "pages"
+      | "templates"
+      | "widgets"
+      | "favorites"
+      | "shared"
+      | "trash"
+
   ) => void;
   setShowProjectDashboard: (show: boolean) => void;
   setSaveStatus: (status: "idle" | "saving" | "saved" | "failed") => void;
@@ -388,7 +396,47 @@ function migrateProject(raw: unknown): Project {
       createdAt: p.createdAt ?? Date.now(),
       updatedAt: p.updatedAt ?? Date.now(),
       assets: p.assets,
+      selectedTemplateId: p.selectedTemplateId,
     };
+  }
+  const isYoga = base.selectedTemplateId === "tpl-flow-yoga" || /flow\s*yoga/i.test(base.name || "");
+  if (isYoga) {
+    if (!base.sharedHeader || base.sharedHeader.widgetInstance?.type === "navbar" || base.sharedHeader.templateId === "shared-navbar" || !base.sharedHeader.html) {
+      base.sharedHeader = { ...FLOW_YOGA_SHARED_HEADER, widgetInstance: undefined };
+    }
+    if (!base.sharedFooter || base.sharedFooter.widgetInstance?.type === "footer" || base.sharedFooter.templateId === "shared-footer" || !base.sharedFooter.html) {
+      base.sharedFooter = { ...FLOW_YOGA_SHARED_FOOTER, widgetInstance: undefined };
+    }
+    base.layout = { type: "custom" };
+  }
+  const isNexora = base.selectedTemplateId === "tpl-nexora-agency" || /nexora/i.test(base.name || "");
+  if (isNexora) {
+    if (!base.sharedHeader || base.sharedHeader.widgetInstance?.type === "navbar" || base.sharedHeader.templateId === "shared-navbar" || !base.sharedHeader.html) {
+      base.sharedHeader = { ...NEXORA_SHARED_HEADER, widgetInstance: undefined };
+    }
+    if (!base.sharedFooter || base.sharedFooter.widgetInstance?.type === "footer" || base.sharedFooter.templateId === "shared-footer" || !base.sharedFooter.html) {
+      base.sharedFooter = { ...NEXORA_SHARED_FOOTER, widgetInstance: undefined };
+    }
+  }
+  const isDrivePro = base.selectedTemplateId === "tpl-drivepro-driving-school" || /drivepro|drive-pro/i.test(base.name || "");
+  if (isDrivePro) {
+    if (!base.sharedHeader || base.sharedHeader.widgetInstance?.type === "navbar" || base.sharedHeader.templateId === "shared-navbar" || !base.sharedHeader.html) {
+      base.sharedHeader = { ...DRIVE_PRO_SHARED_HEADER, widgetInstance: undefined };
+    }
+    if (!base.sharedFooter || base.sharedFooter.widgetInstance?.type === "footer" || base.sharedFooter.templateId === "shared-footer" || !base.sharedFooter.html) {
+      base.sharedFooter = { ...DRIVE_PRO_SHARED_FOOTER, widgetInstance: undefined };
+    }
+    base.layout = { type: "custom" };
+  }
+  const customChrome = base.selectedTemplateId ? CUSTOM_WEBSITE_CHROME_MAP[base.selectedTemplateId] : undefined;
+  if (customChrome) {
+    if (!base.sharedHeader || base.sharedHeader.widgetInstance?.type === "navbar" || base.sharedHeader.templateId === "shared-navbar" || !base.sharedHeader.html) {
+      base.sharedHeader = { ...customChrome.sharedHeader, widgetInstance: undefined };
+    }
+    if (!base.sharedFooter || base.sharedFooter.widgetInstance?.type === "footer" || base.sharedFooter.templateId === "shared-footer" || !base.sharedFooter.html) {
+      base.sharedFooter = { ...customChrome.sharedFooter, widgetInstance: undefined };
+    }
+    base.layout = { type: "custom" };
   }
   return migrateSharedChrome(base);
 }
@@ -778,97 +826,97 @@ export const useBuilder = create<BuilderState>((set, get) => ({
     const p = emptyProject(name);
     const page = p.pages[0];
 
-  set((s) => ({
-    projects: { ...s.projects, [p.id]: p },
-    currentProjectId: p.id,
-    selectedSectionId: null,
-    showProjectDashboard: false,
-    leftPanelOpen: null,
-    leftPanelView: "widgets",
+    set((s) => ({
+      projects: { ...s.projects, [p.id]: p },
+      currentProjectId: p.id,
+      selectedSectionId: null,
+      showProjectDashboard: false,
+      leftPanelOpen: null,
+      leftPanelView: "widgets",
 
-    history: [{
-      pageId: page.id,
-      sections: [],
-      sharedHeader: p.sharedHeader ? JSON.parse(JSON.stringify(p.sharedHeader)) : null,
-      sharedFooter: p.sharedFooter ? JSON.parse(JSON.stringify(p.sharedFooter)) : null,
-      globalCss: p.globalCss,
-      globalJs: p.globalJs,
-    }],
-    historyIndex: 0,
-  }));
+      history: [{
+        pageId: page.id,
+        sections: [],
+        sharedHeader: p.sharedHeader ? JSON.parse(JSON.stringify(p.sharedHeader)) : null,
+        sharedFooter: p.sharedFooter ? JSON.parse(JSON.stringify(p.sharedFooter)) : null,
+        globalCss: p.globalCss,
+        globalJs: p.globalJs,
+      }],
+      historyIndex: 0,
+    }));
 
-  get().persist();
-  void get().saveProjectToCloud().catch((error) => {
-    console.error("Failed to save new project to Firestore", error);
-  }).then(() => {
-    try {
-      useCloudProjectsStore.getState().refreshProjects();
-    } catch {
-      // ignore
-    }
-  });
-  return p.id;
-},
+    get().persist();
+    void get().saveProjectToCloud().catch((error) => {
+      console.error("Failed to save new project to Firestore", error);
+    }).then(() => {
+      try {
+        useCloudProjectsStore.getState().refreshProjects();
+      } catch {
+        // ignore
+      }
+    });
+    return p.id;
+  },
 
-createTemplateProject: (name: string) => {
-  const p = emptyProject(name);
-  const page = p.pages[0];
-  const initialSections = FREELANCER_SECTIONS.map((s) => ({ ...s, id: nanoid(10) }));
+  createTemplateProject: (name: string) => {
+    const p = emptyProject(name);
+    const page = p.pages[0];
+    const initialSections = FREELANCER_SECTIONS.map((s) => ({ ...s, id: nanoid(10) }));
 
-  const templateProject: Project = {
-    ...p,
-    name,
-    pages: [
-      {
-        ...page,
-        name: "Template Preview",
-        slug: "template-preview",
-        sections: initialSections,
-        useGlobalHeader: false,
-        useGlobalFooter: false,
-        hideHeader: true,
-        hideFooter: true,
-      },
-    ],
-    currentPageId: page.id,
-    sharedHeader: null,
-    sharedFooter: null,
-    sharedChromeMigrated: true,
-    isTemplate: true,
-    selectedTemplateId: "tpl-freelancer-dark-yellow",
-  };
-
-  set((s) => ({
-    projects: { ...s.projects, [templateProject.id]: templateProject },
-    currentProjectId: templateProject.id,
-    selectedSectionId: null,
-    showProjectDashboard: false,
-    leftPanelOpen: null,
-    leftPanelView: "widgets",
-
-    history: [{
-      pageId: page.id,
-      sections: initialSections,
+    const templateProject: Project = {
+      ...p,
+      name,
+      pages: [
+        {
+          ...page,
+          name: "Template Preview",
+          slug: "template-preview",
+          sections: initialSections,
+          useGlobalHeader: false,
+          useGlobalFooter: false,
+          hideHeader: true,
+          hideFooter: true,
+        },
+      ],
+      currentPageId: page.id,
       sharedHeader: null,
       sharedFooter: null,
-      globalCss: templateProject.globalCss,
-      globalJs: templateProject.globalJs,
-    }],
-    historyIndex: 0,
-  }));
+      sharedChromeMigrated: true,
+      isTemplate: true,
+      selectedTemplateId: "tpl-freelancer-dark-yellow",
+    };
 
-  get().persist();
-  void get().saveProjectToCloud().catch((error) => {
-    console.error("Failed to save template project to Firestore", error);
-  }).then(() => {
-    try {
-      useCloudProjectsStore.getState().refreshProjects();
-    } catch {
-      // ignore
-    }
-  });
-  return templateProject.id;
-},
+    set((s) => ({
+      projects: { ...s.projects, [templateProject.id]: templateProject },
+      currentProjectId: templateProject.id,
+      selectedSectionId: null,
+      showProjectDashboard: false,
+      leftPanelOpen: null,
+      leftPanelView: "widgets",
+
+      history: [{
+        pageId: page.id,
+        sections: initialSections,
+        sharedHeader: null,
+        sharedFooter: null,
+        globalCss: templateProject.globalCss,
+        globalJs: templateProject.globalJs,
+      }],
+      historyIndex: 0,
+    }));
+
+    get().persist();
+    void get().saveProjectToCloud().catch((error) => {
+      console.error("Failed to save template project to Firestore", error);
+    }).then(() => {
+      try {
+        useCloudProjectsStore.getState().refreshProjects();
+      } catch {
+        // ignore
+      }
+    });
+    return templateProject.id;
+  },
 
   selectProject: (id) => {
     get().loadProject(id);
@@ -886,37 +934,37 @@ createTemplateProject: (name: string) => {
     });
     get().persist();
   },
-  
- loadCloudProject: async (id: string) => {
-  const projectRaw = await getBuilderProject(id);
 
-  if (!projectRaw) return;
+  loadCloudProject: async (id: string) => {
+    const projectRaw = await getBuilderProject(id);
 
-  const project = migrateSharedChrome(migrateProject(projectRaw));
-  const page = getCurrentPage(project)!;
+    if (!projectRaw) return;
 
-  set((s) => ({
-    projects: {
-      ...s.projects,
-      [project.id]: project,
-    },
-    currentProjectId: project.id,
-    selectedSectionId: null,
-    history: [
-      {
-        pageId: page.id,
-        sections: page.sections,
-        sharedHeader: project.sharedHeader ?? null,
-        sharedFooter: project.sharedFooter ?? null,
-        globalCss: project.globalCss,
-        globalJs: project.globalJs,
+    const project = migrateSharedChrome(migrateProject(projectRaw));
+    const page = getCurrentPage(project)!;
+
+    set((s) => ({
+      projects: {
+        ...s.projects,
+        [project.id]: project,
       },
-    ],
-    historyIndex: 0,
-  }));
+      currentProjectId: project.id,
+      selectedSectionId: null,
+      history: [
+        {
+          pageId: page.id,
+          sections: page.sections,
+          sharedHeader: project.sharedHeader ?? null,
+          sharedFooter: project.sharedFooter ?? null,
+          globalCss: project.globalCss,
+          globalJs: project.globalJs,
+        },
+      ],
+      historyIndex: 0,
+    }));
 
-  get().persist();
-},
+    get().persist();
+  },
   renameProject: (id, name) => {
     set((s) => {
       const p = s.projects[id];
@@ -1160,7 +1208,7 @@ createTemplateProject: (name: string) => {
         sharedKey: "global-header",
         widgetInstance: widgetInstance
           ? { ...widgetInstance, id: widgetInstance.id || `navbar-${nanoid(6)}` }
-          : createDefaultSharedHeader(project.pages).widgetInstance,
+          : (section.html ? undefined : createDefaultSharedHeader(project.pages).widgetInstance),
       };
       updateCurrent(set, get, { sharedHeader });
       get().pushHistory();
@@ -1175,7 +1223,7 @@ createTemplateProject: (name: string) => {
         sharedKey: "global-footer",
         widgetInstance: widgetInstance
           ? { ...widgetInstance, id: widgetInstance.id || `footer-${nanoid(6)}` }
-          : createDefaultSharedFooter().widgetInstance,
+          : (section.html ? undefined : createDefaultSharedFooter().widgetInstance),
       };
       updateCurrent(set, get, { sharedFooter });
       get().pushHistory();
@@ -1267,11 +1315,11 @@ createTemplateProject: (name: string) => {
         case "navbar": {
           const links = Array.isArray(templateContent.links)
             ? templateContent.links.map((link: any) => ({
-                label: link.label,
-                href: link.href,
-                linkedPageId: link.href?.replace?.("/", "") || link.href,
-                autoLabel: false,
-              }))
+              label: link.label,
+              href: link.href,
+              linkedPageId: link.href?.replace?.("/", "") || link.href,
+              autoLabel: false,
+            }))
             : [];
           return {
             logoText: templateContent.logoText || templateContent.brand || "Brand",
@@ -1352,28 +1400,28 @@ createTemplateProject: (name: string) => {
         case "services": {
           const services = Array.isArray(templateContent.items)
             ? templateContent.items.map((item: any, idx: number) => ({
-                id: `service-${idx}`,
-                src: item.image || "",
-                alt: item.title || `Service ${idx + 1}`,
-                name: item.title || "",
-                showHeading: true,
-                heading: item.title || "",
-                showDescription: true,
-                description: item.body || "",
-                showButton: !!item.cta,
-                buttonLabel: item.cta?.label || "",
-                buttonUrl: item.cta?.href || "#",
-              }))
+              id: `service-${idx}`,
+              src: item.image || "",
+              alt: item.title || `Service ${idx + 1}`,
+              name: item.title || "",
+              showHeading: true,
+              heading: item.title || "",
+              showDescription: true,
+              description: item.body || "",
+              showButton: !!item.cta,
+              buttonLabel: item.cta?.label || "",
+              buttonUrl: item.cta?.href || "#",
+            }))
             : [];
           return { services };
         }
         case "about": {
           const features = Array.isArray(templateContent.bullets)
             ? templateContent.bullets.map((text: string, idx: number) => ({
-                id: `feature-${idx}`,
-                text,
-                icon: "check",
-              }))
+              id: `feature-${idx}`,
+              text,
+              icon: "check",
+            }))
             : [];
           return {
             eyebrow: templateContent.eyebrow || "",
@@ -1407,19 +1455,19 @@ createTemplateProject: (name: string) => {
         case "footer": {
           const links = Array.isArray(templateContent.links)
             ? templateContent.links.map((link: any) => ({
-                id: `footer-link-${Math.random().toString(36).slice(2, 8)}`,
-                label: link.label,
-                href: link.href,
-                openInNewTab: false,
-              }))
+              id: `footer-link-${Math.random().toString(36).slice(2, 8)}`,
+              label: link.label,
+              href: link.href,
+              openInNewTab: false,
+            }))
             : [];
           const social = Array.isArray(templateContent.social)
             ? templateContent.social.map((item: any) => ({
-                id: `footer-social-${Math.random().toString(36).slice(2, 8)}`,
-                platform: item.provider || item.platform || "custom",
-                href: item.href || "#",
-                label: item.label || item.provider || item.platform || "Social",
-              }))
+              id: `footer-social-${Math.random().toString(36).slice(2, 8)}`,
+              platform: item.provider || item.platform || "custom",
+              href: item.href || "#",
+              label: item.label || item.provider || item.platform || "Social",
+            }))
             : [];
           return {
             showBrand: true,
@@ -1480,16 +1528,16 @@ createTemplateProject: (name: string) => {
             ...templateContent,
             slides: Array.isArray(templateContent.slides)
               ? templateContent.slides.map((slide: any, index: number) => ({
-                  id: slide.id || `slide-${index + 1}`,
-                  src: slide.src || slide.image || "",
-                  alt: slide.alt || slide.name || `Slide ${index + 1}`,
-                  name: slide.name || slide.author || `Slide ${index + 1}`,
-                  link: slide.link || "",
-                  quote: slide.quote || slide.text || "",
-                  author: slide.author || slide.name || "",
-                  role: slide.role || "",
-                  company: slide.company || "",
-                }))
+                id: slide.id || `slide-${index + 1}`,
+                src: slide.src || slide.image || "",
+                alt: slide.alt || slide.name || `Slide ${index + 1}`,
+                name: slide.name || slide.author || `Slide ${index + 1}`,
+                link: slide.link || "",
+                quote: slide.quote || slide.text || "",
+                author: slide.author || slide.name || "",
+                role: slide.role || "",
+                company: slide.company || "",
+              }))
               : [],
           };
         }
@@ -1500,7 +1548,8 @@ createTemplateProject: (name: string) => {
 
     const createSection = (section: any, key?: string, delayOffset = 0): PageSection => {
       const shared: "header" | "footer" | undefined = section.type === "header" ? "header" : section.type === "footer" ? "footer" : undefined;
-      const widgetType = section.widgetType || WIDGET_TYPE_MAP[section.type];
+      // Only infer widgetType if explicitly given or if section has no custom HTML provided
+      const widgetType = section.widgetType || (!section.html ? WIDGET_TYPE_MAP[section.type] : undefined);
       let widgetInstance: WidgetInstance | undefined;
 
       if (widgetType) {
@@ -1520,9 +1569,10 @@ createTemplateProject: (name: string) => {
         }
       }
 
-      const html = widgetInstance
-        ? getWidgetBootstrapExport(widgetInstance.type, widgetInstance, { editorMode: true }) || section.html
-        : section.html;
+      // Preserve template custom HTML; only generate widget export if section.html is absent
+      const html = section.html || (widgetInstance
+        ? getWidgetBootstrapExport(widgetInstance.type, widgetInstance, { editorMode: true }) || ""
+        : "");
 
       return {
         id: nanoid(8),
@@ -1603,21 +1653,25 @@ createTemplateProject: (name: string) => {
     const customLayout = true;
     const templateSharedHeaderDefs = customLayout ? templateSections.filter(isSectionHeader) : [];
     const templateSharedFooterDefs = customLayout ? templateSections.filter(isSectionFooter) : [];
-    const sharedHeader = templateSharedHeaderDefs[0]
+    const candidateHeaderDef = (tpl as any).sharedHeader || templateSharedHeaderDefs[0];
+    const candidateFooterDef = (tpl as any).sharedFooter || templateSharedFooterDefs[0];
+    const sharedHeader = candidateHeaderDef
       ? {
-          ...createSection(templateSharedHeaderDefs[0], `${tpl.id}-shared-header`, 0),
-          id: SHARED_HEADER_SECTION_ID,
-          shared: "header" as const,
-          sharedKey: "global-header",
-        }
+        ...createSection(candidateHeaderDef, `${tpl.id}-shared-header`, 0),
+        id: SHARED_HEADER_SECTION_ID,
+        shared: "header" as const,
+        sharedKey: "global-header",
+        widgetInstance: candidateHeaderDef.widgetInstance ?? undefined,
+      }
       : customLayout ? null : createDefaultSharedHeader();
-    const sharedFooter = templateSharedFooterDefs[0]
+    const sharedFooter = candidateFooterDef
       ? {
-          ...createSection(templateSharedFooterDefs[0], `${tpl.id}-shared-footer`, 0),
-          id: SHARED_FOOTER_SECTION_ID,
-          shared: "footer" as const,
-          sharedKey: "global-footer",
-        }
+        ...createSection(candidateFooterDef, `${tpl.id}-shared-footer`, 0),
+        id: SHARED_FOOTER_SECTION_ID,
+        shared: "footer" as const,
+        sharedKey: "global-footer",
+        widgetInstance: candidateFooterDef.widgetInstance ?? undefined,
+      }
       : customLayout ? null : createDefaultSharedFooter();
 
     if (tpl.pages && tpl.pages.length > 0) {
@@ -1626,6 +1680,8 @@ createTemplateProject: (name: string) => {
       const firstPageId = pages[0].id;
       updateCurrent(set, get, {
         ...resetProjectBase,
+        layout: { type: "custom" },
+        selectedTemplateId: tpl.id,
         pages,
         currentPageId: firstPageId,
         sharedHeader: syncedHeader,
@@ -1727,15 +1783,12 @@ createTemplateProject: (name: string) => {
   },
 
   removeSection: (id) => {
-    console.log("[DEBUG] removeSection called", { id, currentProjectId: get().currentProjectId, selectedSectionId: get().selectedSectionId });
     const cur = get().currentProject();
     if (!cur) {
-      console.log("[DEBUG] removeSection abort: no current project");
       return;
     }
     const page = getCurrentPage(cur);
     if (!page) {
-      console.log("[DEBUG] removeSection abort: no current page");
       return;
     }
 
@@ -1783,12 +1836,9 @@ createTemplateProject: (name: string) => {
     get().pushHistory();
 
     const currentlySelected = get().selectedSectionId;
-    const nextPage = getCurrentPage(get().currentProject());
-    console.log("[DEBUG] removeSection after update", { currentlySelected, nextPageSectionCount: nextPage?.sections?.length });
     if (currentlySelected === id) {
       const nextPage = getCurrentPage(get().currentProject());
       const nextId = nextPage?.sections?.[Math.min(Math.max(0, removedIndex), (nextPage.sections.length || 1) - 1)]?.id ?? null;
-      console.log("[DEBUG] removeSection selecting new section", { nextId, nextPageSections: nextPage?.sections?.map((s: any) => s.id) });
       set({ selectedSectionId: nextId });
     }
   },
@@ -2017,13 +2067,13 @@ createTemplateProject: (name: string) => {
       set({
         selectedElement: nextChild
           ? {
-              ...currentSelected,
-              childId: nextChild.id,
-              elementKey: nextChild.id,
-              elementType: nextChild.type ?? null,
-              columnId: childContainerId ?? currentSelected.columnId ?? null,
-              childContainerId: childContainerId ?? currentSelected.childContainerId ?? null,
-            }
+            ...currentSelected,
+            childId: nextChild.id,
+            elementKey: nextChild.id,
+            elementType: nextChild.type ?? null,
+            columnId: childContainerId ?? currentSelected.columnId ?? null,
+            childContainerId: childContainerId ?? currentSelected.childContainerId ?? null,
+          }
           : null,
         selectedElementStyle: null,
       });
@@ -2153,7 +2203,7 @@ createTemplateProject: (name: string) => {
       const p = get().currentProject();
       if (!p) return "";
       const { ref, blob } = createImageAssetReference(dataUrl, filenameHint);
-      void saveImageBlob(ref.imageId, ref.filename, blob, ref.mimeType ?? "image/png");
+      void saveImageBlob(ref.imageId || `img-${nanoid(8)}`, ref.filename, blob, ref.mimeType ?? "image/png");
       const assets = { ...(p.assets ?? {}) } as Record<string, BuilderAssetEntry>;
       assets[ref.filename] = ref;
       updateCurrent(set, get, { assets });
@@ -2361,7 +2411,6 @@ function updateCurrent(
   patch: Partial<Project>,
   persist = true,
 ) {
-  console.log("[DEBUG] updateCurrent", { patchKeys: Object.keys(patch), currentProjectId: get().currentProjectId });
   set((s) => {
     if (!s.currentProjectId) return s;
     const cur = s.projects[s.currentProjectId];
@@ -2426,10 +2475,10 @@ function applyHistoryEntry(
       const nextPage =
         pg.id === entry.pageId
           ? {
-              ...pg,
-              sections: entry.sections,
-              widgetInstances: entry.widgetInstances ?? entry.sections.map((section) => section.widgetInstance).filter((item): item is WidgetInstance => !!item),
-            }
+            ...pg,
+            sections: entry.sections,
+            widgetInstances: entry.widgetInstances ?? entry.sections.map((section) => section.widgetInstance).filter((item): item is WidgetInstance => !!item),
+          }
           : pg;
       if (!chrome) return nextPage;
       return {

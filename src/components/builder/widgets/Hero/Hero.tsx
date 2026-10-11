@@ -2,6 +2,7 @@ import { BaseWidget } from "../BaseWidget";
 import { defaultHeroWidgetData, getHeroChildItems, getVariantBackground, getVariantButtonStyle, getVariantHeadingStyle, getVariantImageStyle, getVariantTextStyle, isHeroWidgetData, normalizeHeroChildItem } from "./HeroTypes";
 import type { WidgetData, ContainerChildItem } from "../widgetRegistry";
 import { createWidgetInstance, getWidgetBootstrapExport, getWidgetRegistration } from "../widgetRegistry";
+import { getContainerChildWidgetData } from "../Container/ContainerTypes";
 import { getResponsiveSpacingCss, resolveHeroLayoutMargin, resolveHeroLayoutPadding } from "../spacing";
 
 function resolveVideoBackground(style: Record<string, unknown>) {
@@ -62,10 +63,10 @@ function resolveVideoBackground(style: Record<string, unknown>) {
   if (videoSrc) {
     return (
       <video
-        autoPlay={autoplay}
-        muted={muted}
-        loop={loop}
-        controls={showControls}
+        autoPlay={Boolean(autoplay)}
+        muted={Boolean(muted)}
+        loop={Boolean(loop)}
+        controls={Boolean(showControls)}
         poster={poster || undefined}
         style={{
           position: "absolute",
@@ -120,16 +121,16 @@ function resolveOverlay(overlayEnabled: boolean, overlayColor: string, overlayOp
   );
 }
 
-function renderChild(child: ContainerChildItem) {
-  const normalized = normalizeHeroChildItem(heroData, child);
-  const childData = getContainerChildWidgetData(normalized);
-  const Component = (getWidgetRegistration(child.type) as any)?.component;
-  if (!Component) return null;
-  return <Component key={child.id} data={childData as WidgetData} />;
-}
-
 export function Hero({ data }: { data: WidgetData }) {
   const heroData = isHeroWidgetData(data) ? data : defaultHeroWidgetData;
+
+  function renderChild(child: ContainerChildItem) {
+    const normalized = normalizeHeroChildItem(heroData, child);
+    const childData = getContainerChildWidgetData(normalized);
+    const Component = (getWidgetRegistration(child.type) as any)?.component;
+    if (!Component) return null;
+    return <Component key={child.id} data={childData as WidgetData} />;
+  }
   const variant = heroData.variant ?? "Image Background";
   const style = heroData.style as Record<string, unknown>;
   const layout = heroData.layout as Record<string, unknown>;
@@ -378,7 +379,7 @@ export function Hero({ data }: { data: WidgetData }) {
     return (
       <div className="container" style={{ position: "relative", zIndex: 2 }}>
         <div className={`row g-0 align-items-stretch overflow-hidden border shadow-lg ${reverseClass}`} style={{ borderRadius: "16px" }}>
-          <div className="col-lg-6 d-flex align-items-center" style={{ background: style.backgroundColor || "#ffffff" }}>
+          <div className="col-lg-6 d-flex align-items-center" style={{ background: String(style.backgroundColor || "#ffffff") }}>
             <div className="w-100 p-4 p-md-5">
               <div className={contentAlignment}>
                 {bodyChildren.map((child) => renderChild(child))}
@@ -423,7 +424,7 @@ export function Hero({ data }: { data: WidgetData }) {
         data-hero-id={heroData.advanced.id ?? "hero-widget-v2"}
         style={sectionStyle}
       >
-        {(isImageBgVariant || isVideoVariant || isCenteredVariant) && overlayEnabled && resolveOverlay(overlayEnabled, overlayColor, overlayOpacity)}
+        {(isImageBgVariant || isVideoVariant || isCenteredVariant) && overlayEnabled && resolveOverlay(Boolean(overlayEnabled), overlayColor, overlayOpacity)}
         {isVideoVariant && resolveVideoBackground(style)}
 
         {isCenteredVariant && renderCenteredVariant()}

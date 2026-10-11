@@ -150,6 +150,12 @@ export const defaultTeamWidgetData: TeamWidgetData = {
     hideOnTablet: false,
     hideOnDesktop: false,
   },
+  animation: {
+    type: "none",
+  },
+  advanced: {
+    visibility: true,
+  },
 };
 
 export function isTeamWidgetData(data: unknown): data is TeamWidgetData {

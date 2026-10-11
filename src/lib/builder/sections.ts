@@ -42,6 +42,7 @@ export const CATEGORIES = [
   "Blog",
   "Login",
   "Signup",
+  "Advanced",
 ] as const;
 
 export const SECTION_LIBRARY: SectionTemplate[] = [
@@ -1115,6 +1116,17 @@ export const SECTION_LIBRARY: SectionTemplate[] = [
       thumbBg: grad("#047857", "#10b981"),
       widgetInstance: inst,
       html: getWidgetBootstrapExport("map", inst),
+    };
+  })(),
+  (() => {
+    const inst = createWidgetInstance("custom-html", { variant: "Default Embed" });
+    return {
+      id: "sec-custom-html",
+      name: "Custom HTML / Embed",
+      category: "Advanced",
+      thumbBg: grad("#1e1b4b", "#4338ca"),
+      widgetInstance: inst,
+      html: getWidgetBootstrapExport("custom-html", inst),
     };
   })(),
 ];

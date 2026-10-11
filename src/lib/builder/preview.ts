@@ -4,16 +4,25 @@ import { getWidgetBootstrapExport, getWidgetExportContribution } from "@/compone
 import { getWidgetSelectionLabel } from "@/components/builder/widgets/widgetSelectionLabels";
 import { WTO_CAROUSEL_RUNTIME } from "@/components/builder/widgets/Carousel/CarouselRuntime";
 import { WTO_FAQ_RUNTIME } from "@/components/builder/widgets/FAQ/FAQRuntime";
+import { WTO_STANDALONE_WIDGET_JS } from "@/lib/widget-runtime/wtoWidgetRuntime";
 import {
   BOOTSTRAP_BUNDLE_JS_CDN,
   BOOTSTRAP_CSS_CDN,
   FONT_AWESOME_CDN,
   GOOGLE_FONTS_CDN,
   WIDGET_TYPE_EXPORT_JS,
+  DEFAULT_FAVICON_BASE64,
   dedupeCssBlocks,
   dedupeJsBlocks,
   extractStyleTags,
 } from "./exportContributions";
+import {
+  getJQueryScript,
+  getBootstrapBundleScript,
+  getBootstrapStyles,
+  getFontAwesomeStyles,
+  getFontAwesomeWebfonts,
+} from "./vendorAssets";
 import { composePageSections, sectionLabelForCanvas } from "./sharedChrome";
 import appCssUrl from "@/styles.css?url";
 import appCssRaw from "@/styles.css?raw";
@@ -194,15 +203,20 @@ export async function fetchAppCss() {
 }
 
 const SITE_TRACKING_SNIPPET = `
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-W14JC88EV7"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);} 
-  gtag('js', new Date());
-  gtag('config', 'G-W14JC88EV7');
+  if (typeof window !== 'undefined' && window.location && window.location.protocol.indexOf('http') === 0) {
+    var gtagScript = document.createElement('script');
+    gtagScript.async = true;
+    gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-W14JC88EV7';
+    document.head.appendChild(gtagScript);
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);} 
+    gtag('js', new Date());
+    gtag('config', 'G-W14JC88EV7');
+  }
 </script>`;
 
-function normalizeAssetRef(ref: string) {
+export function normalizeAssetRef(ref: string) {
   return ref.replace(/^\.\//, "").replace(/^\//, "").replace(/^images\//, "");
 }
 
@@ -1385,7 +1399,7 @@ export const RUNTIME_SCRIPT = `
 
   function isCarouselArea(el) {
     if (!el || typeof el.closest !== 'function') return false;
-    return !!el.closest('[data-carousel], [data-carousel-prev], [data-carousel-next], [data-carousel-dot], [data-carousel-items-prev], [data-carousel-items-next], [data-carousel-indicator], [data-carousel-track], .embla, .carousel');
+    return !!el.closest('[data-carousel], [data-carousel-prev], [data-carousel-next], [data-carousel-dot], [data-carousel-items-prev], [data-carousel-items-next], [data-carousel-indicator], [data-carousel-track], .embla, .carousel, .wto-carousel-wrap, .wto-nav-btn, .wto-dot-btn, [data-wto-carousel-btn]');
   }
 
 
@@ -2058,6 +2072,18 @@ export const RUNTIME_SCRIPT = `
     return !!selection && selection.widgetType === 'grid' && !selection.childId && !selection.elementKey && !selection.columnId && ['widget', 'container'].includes(selection.elementKind || '');
   }
 
+  function isEmbeddedAdminWidget(el) {
+    if (!el || !(el instanceof Element)) return false;
+    if (el.closest && (el.closest('[data-wto-widget]') || el.closest('.wto-embedded-widget-container') || el.closest('.wto-custom-html-wrapper') || el.closest('.wto-custom-html-pending') || el.closest('.wto-custom-html-empty'))) return true;
+    if (el.querySelector && (el.querySelector('[data-wto-widget]') || el.querySelector('.wto-embedded-widget-container') || el.querySelector('.wto-custom-html-wrapper'))) return true;
+    if (el.closest && el.closest('[data-widget="custom-html"], [data-widget="countdown"], [data-widget="google_reviews"], [data-widget="faq_accordion"], [data-widget="announcement_popup"]')) return true;
+    if (el.getAttribute && ['custom-html', 'countdown', 'google_reviews', 'faq_accordion', 'announcement_popup'].includes(el.getAttribute('data-widget'))) return true;
+    if (el.closest && el.closest('.wto-countdown-root, .wto-faq-container, .wto-announcement-root, .wto-google-reviews-root, .wto-reviews-container, .wto-dynamic-widget-root')) return true;
+    if (el.querySelector && el.querySelector('.wto-countdown-root, .wto-faq-container, .wto-announcement-root, .wto-google-reviews-root, .wto-reviews-container, .wto-dynamic-widget-root')) return true;
+    if (currentSelection && ['custom-html', 'countdown', 'google_reviews', 'faq_accordion', 'announcement_popup'].includes(currentSelection.widgetType)) return true;
+    return false;
+  }
+
   function updateToolbarForSelection(selection) {
     currentSelection = selection;
     const isSharedSection = currentSection && !!currentSection.querySelector('[data-wto-shared]');
@@ -2079,7 +2105,8 @@ export const RUNTIME_SCRIPT = `
     const hasTextContent = !!(activeEl && activeEl.textContent && activeEl.textContent.trim().length > 0 && !activeEl.querySelector('section, header, footer, table'));
     const isWidgetText = !!(selection && selection.elementKind === 'widget' && selection.elementType && ['text','button','heading'].includes(selection.elementType));
     const isTextKind = !!(selection && (selection.elementKind === 'text' || selection.elementKind === 'link'));
-    const enabledStyleSelection = isWidgetText || isTextKind || (selection && selection.elementKind !== 'section' && (isTextTag || hasTextContent));
+    const isEmbedded = isEmbeddedAdminWidget(activeEl) || (selection && ['custom-html', 'countdown', 'google_reviews', 'faq_accordion', 'announcement_popup'].includes(selection.widgetType));
+    const enabledStyleSelection = !isEmbedded && (isWidgetText || isTextKind || (selection && selection.elementKind !== 'section' && (isTextTag || hasTextContent)));
     if (enabledStyleSelection) {
       styleControlWrapper.style.display = 'inline-flex';
       const computedStyle = (activeEl ? getTypographyStyle(activeEl) : null) || selection?.style || {};
@@ -2298,16 +2325,54 @@ export const RUNTIME_SCRIPT = `
   
   function hideTextToolbar() { textToolbar.style.display = 'none'; colorPopover.style.display = 'none'; }
   function showTextToolbar(el) {
-    if (!el) { hideTextToolbar(); return; }
+    if (!el || isEmbeddedAdminWidget(el)) { hideTextToolbar(); return; }
     const r = el.getBoundingClientRect();
     textToolbar.style.display = 'flex';
-    const tbw = textToolbar.offsetWidth || 300;
-    const tbh = textToolbar.offsetHeight || 36;
+    const tbw = textToolbar.offsetWidth || 340;
+    const tbh = textToolbar.offsetHeight || 38;
     const vw = window.innerWidth;
-    const left = Math.max(8, Math.min(vw - tbw - 8, r.left + (r.width - tbw) / 2));
-    let top = r.top - tbh - 6;
-    if (top < 8) top = Math.min(window.innerHeight - tbh - 8, r.bottom + 6);
+    const vh = window.innerHeight;
+    const pad = 8;
+
+    // Horizontal centering within viewport
+    const left = Math.max(pad, Math.min(vw - tbw - pad, r.left + (r.width - tbw) / 2));
     textToolbar.style.left = left + 'px';
+
+    const isTbVisible = tb && tb.parentNode && tb.style.display !== 'none';
+    const tbRect = isTbVisible ? tb.getBoundingClientRect() : null;
+
+    let top;
+    if (!isTbVisible || !tbRect) {
+      top = r.top - tbh - pad;
+      if (top < pad) top = Math.min(vh - tbh - pad, r.bottom + pad);
+    } else {
+      // Both action toolbar (tb) and text format toolbar are visible - NEVER OVERLAP!
+      const tbIsAbove = tbRect.bottom <= r.top + 6;
+      if (tbIsAbove) {
+        // tb is positioned ABOVE the element:
+        // Try placing textToolbar BELOW the element
+        if (r.bottom + tbh + pad <= vh) {
+          top = r.bottom + pad;
+        } else {
+          // If no space below, stack textToolbar above tb
+          const stackedTop = tbRect.top - tbh - 6;
+          if (stackedTop >= pad) {
+            top = stackedTop;
+          } else {
+            top = Math.min(vh - tbh - pad, r.bottom + pad);
+          }
+        }
+      } else {
+        // tb is positioned BELOW the element:
+        // Try placing textToolbar ABOVE the element
+        if (r.top - tbh - pad >= pad) {
+          top = r.top - tbh - pad;
+        } else {
+          // Both must be below: stack textToolbar directly below tb
+          top = Math.min(vh - tbh - pad, tbRect.bottom + 6);
+        }
+      }
+    }
     textToolbar.style.top = top + 'px';
   }
   
@@ -2473,12 +2538,28 @@ export const RUNTIME_SCRIPT = `
   
   function updateFloatingToolbars() {
     const textSel = document.querySelector('.wto-sel-selected, .wto-sel-parent');
-    const isText = textSel && (textSel.closest('h1,h2,h3,h4,h5,h6,p,li,span,strong,em,b,i,small,blockquote,cite,label,div') || textSel.tagName === 'DIV' || textSel.tagName === 'P' || textSel.tagName === 'SPAN' || textSel.tagName === 'H1' || textSel.tagName === 'H2' || textSel.tagName === 'H3' || textSel.tagName === 'H4' || textSel.tagName === 'H5' || textSel.tagName === 'H6');
+    if (!textSel || isEmbeddedAdminWidget(textSel)) {
+      hideTextToolbar();
+      hideImageToolbar();
+      return;
+    }
+
     const imgSel = document.querySelector('.wto-sel-selected img, .wto-element-selected img');
-    if (imgSel) {
+    if (imgSel && !isEmbeddedAdminWidget(imgSel)) {
       showImageToolbar(imgSel);
       hideTextToolbar();
-    } else if (isText) {
+      return;
+    }
+
+    const tag = (textSel.tagName || '').toUpperCase();
+    const isTextTag = ['H1','H2','H3','H4','H5','H6','P','SPAN','A','BUTTON','LI','LABEL','STRONG','EM','B','I','SMALL','BLOCKQUOTE','CITE'].includes(tag);
+    const isTextWidgetElement = !!(textSel.closest && textSel.closest('[data-wto-widget-element-type="text"], [data-wto-widget-element-type="heading"], [data-wto-widget-element-type="button"]'));
+    const isContentEditable = textSel.isContentEditable || textSel.getAttribute('contenteditable') === 'true';
+    const isLeafTextDiv = tag === 'DIV' && textSel.children.length === 0 && (textSel.textContent || '').trim().length > 0;
+
+    const isText = !isEmbeddedAdminWidget(textSel) && (isTextTag || isTextWidgetElement || isContentEditable || isLeafTextDiv);
+
+    if (isText) {
       showTextToolbar(textSel);
       hideImageToolbar();
     } else {
@@ -2720,7 +2801,7 @@ export const RUNTIME_SCRIPT = `
             }
           }
         }
-      if (target.closest("[data-carousel-prev], [data-carousel-next], [data-carousel-dot], [data-carousel-items-prev], [data-carousel-items-next], [data-carousel-indicator]")) return;
+      if (target.closest("[data-carousel-prev], [data-carousel-next], [data-carousel-dot], [data-carousel-items-prev], [data-carousel-items-next], [data-carousel-indicator], .wto-nav-btn, .wto-dot-btn, [data-wto-carousel-btn], .wto-readmore-btn")) return;
       if (target.closest('[data-grid-add-child="1"]')) return;
       const section = target.closest("[data-wto-section]");
       if (!section) return;
@@ -3017,6 +3098,7 @@ send('navigate-page', { slug });
 
     ${WTO_CAROUSEL_RUNTIME}
   ${WTO_FAQ_RUNTIME}
+  ${WTO_STANDALONE_WIDGET_JS}
 })();
 `;
 
@@ -3027,7 +3109,13 @@ const EXPORT_RUNTIME_BASE = `
     if(e.isIntersecting){ e.target.classList.add('wto-in'); }
     else if(e.target.getAttribute('data-anim-repeat')==='1'){ e.target.classList.remove('wto-in'); }
   });},{threshold:.15});
-  document.querySelectorAll('[data-anim]').forEach(function(el){io.observe(el);});
+  document.querySelectorAll('[data-anim]').forEach(function(el){
+    var r = el.getBoundingClientRect();
+    if (r.top < (window.innerHeight || document.documentElement.clientHeight)) {
+      el.classList.add('wto-in');
+    }
+    io.observe(el);
+  });
   
   var getPageSlug=function(){
     var path=window.location.pathname;
@@ -3127,7 +3215,7 @@ const EXPORT_RUNTIME_BASE = `
 export const EXPORT_SITE_RUNTIME = EXPORT_RUNTIME_BASE;
 
 /** Full export JS: site runtime + interactive widget runtimes. */
-export const EXPORT_RUNTIME = EXPORT_RUNTIME_BASE + WTO_CAROUSEL_RUNTIME + WTO_FAQ_RUNTIME;
+export const EXPORT_RUNTIME = EXPORT_RUNTIME_BASE + WTO_CAROUSEL_RUNTIME + WTO_FAQ_RUNTIME + WTO_STANDALONE_WIDGET_JS;
 
 function renderSeoTags(opts: { title?: string; description?: string; keywords?: string; seo?: PageSeo; projectSeo?: ProjectSeo }) {
   const title = opts.seo?.title || opts.title || "";
@@ -3219,9 +3307,6 @@ function withExportTracking(customHead?: string, projectSeo?: ProjectSeo) {
   const baseHead = (customHead ?? "").trim();
   const pieces: string[] = [];
   if (baseHead) pieces.push(baseHead);
-  if (!baseHead.includes("cdn.tailwindcss.com")) {
-    pieces.push(`<script src="https://cdn.tailwindcss.com"></script>`);
-  }
   if (projectSeo?.googleTagManagerId && !baseHead.includes("googletagmanager.com/gtm.js")) {
     pieces.push(gtmSnippet(projectSeo.googleTagManagerId));
   }
@@ -3233,12 +3318,12 @@ function withExportTracking(customHead?: string, projectSeo?: ProjectSeo) {
     pieces.push(pixelSnippet(pixelId));
   }
   if (!baseHead && !projectSeo?.googleAnalyticsId && !projectSeo?.googleTagManagerId && !pixelId) {
-    return [SITE_TRACKING_SNIPPET.trim(), `<script src="https://cdn.tailwindcss.com"></script>`].join("\n");
+    return SITE_TRACKING_SNIPPET.trim();
   }
   return pieces.join("\n").trim();
 }
 
-function sectionAttrs(s: PageSection) {
+export function sectionAttrs(s: PageSection) {
   const parts: string[] = [];
   const styleParts: string[] = [];
   const isNavSection = /data-wto-nav/.test(s.html);
@@ -3259,40 +3344,114 @@ function sectionAttrs(s: PageSection) {
 }
 
 function previewNavScript(pages?: { id: string; slug: string }[], currentPageSlug?: string) {
-  if (!pages || pages.length <= 1) return "";
-  const slugs = pages.map((p) => p.slug);
-  const current = currentPageSlug ?? "index";
+  const pageList = pages || [];
+  const slugs = pageList.map((p) => p.slug);
+  const current = currentPageSlug ?? "home";
+
   return `<script>
 (function(){
   var knownSlugs = ${JSON.stringify(slugs)};
   var currentSlug = ${JSON.stringify(current)};
+
   function sendNav(slug) {
-    try { window.parent.postMessage({ __wto: true, type: 'navigate-page', payload: { slug: slug } }, '*'); } catch(e) {}
+    try {
+      window.parent.postMessage({ __wto: true, type: 'navigate-page', payload: { slug: slug } }, '*');
+    } catch(e) {}
   }
-  function resolveSlug(href) {
-    var path = href.split('?')[0].split('#')[0];
-    try { path = path.replace(new RegExp('^/+', 'g'), ''); } catch (_) {}
-    try { path = path.replace(new RegExp('\\.html$', 'i'), ''); } catch (_) {}
-    path = path || 'index';
-    var idx = knownSlugs.indexOf(path);
-    if (idx !== -1) return knownSlugs[idx];
-    var clean = path;
-    try { clean = clean.replace(new RegExp('^[./]+', 'g'), ''); } catch (_) {}
-    try { clean = clean.replace(new RegExp('\\.html$', 'i'), ''); } catch (_) {}
-    for (var i = 0; i < knownSlugs.length; i++) { if (knownSlugs[i] === clean) return knownSlugs[i]; }
+
+  function resolveSlug(rawHref) {
+    if (!rawHref) return null;
+    var clean = rawHref.split('?')[0].split('#')[0].trim();
+    clean = clean.replace(/^[./]+/, '').replace(/\\.html$/i, '').trim();
+    if (!clean || clean === 'index' || clean === 'home') {
+      if (knownSlugs.indexOf('home') !== -1) return 'home';
+      if (knownSlugs.indexOf('index') !== -1) return 'index';
+      return knownSlugs[0] || 'home';
+    }
+    for (var i = 0; i < knownSlugs.length; i++) {
+      if (knownSlugs[i].toLowerCase() === clean.toLowerCase()) {
+        return knownSlugs[i];
+      }
+    }
     return null;
   }
+
   document.addEventListener('click', function(e) {
-    var link = e.target.closest && e.target.closest('a[href]');
+    var link = e.target && e.target.closest ? e.target.closest('a[href]') : null;
     if (!link) return;
     var href = link.getAttribute('href');
-    if (!href || href === '#' || href.indexOf('javascript:') === 0) return;
-    if (href.indexOf('http') === 0 || href.indexOf('//') === 0) return;
-    var slug = resolveSlug(href);
-    if (!slug || slug === currentSlug) return;
+    if (!href) return;
+
+    if (/^(javascript:|mailto:|tel:)/i.test(href)) return;
+
+    // External links -> open in new tab, never navigate preview iframe away
+    if (/^(https?:)?\\/\\//i.test(href)) {
+      e.preventDefault();
+      e.stopPropagation();
+      window.open(href, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    // Always intercept local links so they never navigate to parent app /
     e.preventDefault();
     e.stopPropagation();
-    sendNav(slug);
+
+    // Pure hash links (#home, #features, #about, #pricing, etc.)
+    if (href.charAt(0) === '#') {
+      var hash = href.slice(1).trim();
+      var target = null;
+      if (!hash || hash === 'home' || hash === 'top') {
+        target = document.getElementById(hash) || document.querySelector('.hero') || document.querySelector('section') || document.body;
+      } else {
+        try {
+          target = document.getElementById(hash) || document.querySelector(href) || document.querySelector('[data-wto-section="' + hash + '"]');
+        } catch(_) {}
+      }
+
+      if (target && target.scrollIntoView) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      try {
+        var openNav = document.querySelector('.navbar-collapse.show');
+        if (openNav && window.bootstrap) {
+          window.bootstrap.Collapse?.getOrCreateInstance(openNav)?.hide();
+        }
+      } catch(_) {}
+      return;
+    }
+
+    // Links with path like "services.html#teen" or "about.html" or "index.html"
+    var hashIndex = href.indexOf('#');
+    var hashPart = hashIndex !== -1 ? href.slice(hashIndex + 1).trim() : '';
+    var pathPart = hashIndex !== -1 ? href.slice(0, hashIndex) : href;
+
+    var matchedSlug = resolveSlug(pathPart);
+
+    // If matches the current page or single-page preview:
+    if (!matchedSlug || matchedSlug === currentSlug || (knownSlugs.length <= 1)) {
+      if (hashPart) {
+        var el = null;
+        try { el = document.getElementById(hashPart) || document.querySelector('#' + hashPart); } catch(_) {}
+        if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth' });
+        else window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      try {
+        var openNav = document.querySelector('.navbar-collapse.show');
+        if (openNav && window.bootstrap) {
+          window.bootstrap.Collapse?.getOrCreateInstance(openNav)?.hide();
+        }
+      } catch(_) {}
+      return;
+    }
+
+    // Navigate to another page in multi-page preview
+    sendNav(matchedSlug);
   }, true);
 })();
 </script>`;
@@ -3351,12 +3510,13 @@ export function buildPreviewHTML(opts: {
       const styleStr = styleToString(s.style);
       const selectedClass = editable && selectedId === s.id ? " wto-selected" : "";
       const rawHtml = s.widgetInstance ? getWidgetBootstrapExport(s.widgetInstance.type, s.widgetInstance, { editorMode: !!editable }) || s.html : s.html;
+      const cleanRawHtml = rawHtml.replace(/<script[^>]*src=["']https:\/\/widgets\.webtoolocean\.com\/widget\.js["'][^>]*>\s*<\/script>/gi, "");
       const gridColumnCount = s.widgetInstance?.type === "grid" ? getGridColumnCount(s.widgetInstance as any) : null;
       const canvasLabel = editable ? sectionLabelForCanvas(s) : null;
       const widgetLabel = canvasLabel || (s.widgetInstance ? getWidgetSelectionLabel(s.widgetInstance.type) : "");
       const widgetRootHtml = s.widgetInstance
-        ? `<div data-wto-widget-root="1" data-widget-id="${escapeAttribute(s.widgetInstance.id)}" data-widget="${escapeAttribute(s.widgetInstance.type)}" data-wto-widget-label="${escapeAttribute(widgetLabel)}" data-widget-variant="${escapeAttribute(String(s.widgetInstance.variant ?? ""))}"${gridColumnCount != null ? ` data-grid-columns-count="${escapeAttribute(String(gridColumnCount))}"` : ""}${s.shared ? ` data-wto-shared="${escapeAttribute(s.shared)}"` : ""}>${rawHtml}</div>`
-        : rawHtml;
+        ? `<div data-wto-widget-root="1" data-widget-id="${escapeAttribute(s.widgetInstance.id)}" data-widget="${escapeAttribute(s.widgetInstance.type)}" data-wto-widget-label="${escapeAttribute(widgetLabel)}" data-widget-variant="${escapeAttribute(String(s.widgetInstance.variant ?? ""))}"${gridColumnCount != null ? ` data-grid-columns-count="${escapeAttribute(String(gridColumnCount))}"` : ""}${s.shared ? ` data-wto-shared="${escapeAttribute(s.shared)}"` : ""}>${cleanRawHtml}</div>`
+        : cleanRawHtml;
       const visibleHtml = applyRootAttributes(widgetRootHtml, {
         className: s.className,
         domId: s.domId,
@@ -3460,13 +3620,14 @@ export function buildPreviewHTML(opts: {
 
   const previewStyles = previewCss
     ? `<style>${previewCss}</style>`
-    : `<link rel="stylesheet" href="${previewCssHref ?? APP_CSS_HREF}" />`;
+    : previewCssHref
+    ? `<link rel="stylesheet" href="${previewCssHref}" />`
+    : "";
   const googleFontsStyles = `<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="${GOOGLE_FONTS_HREF}">`;
   const fontAwesomeStyles = `<link rel="stylesheet" href="${FONT_AWESOME_HREF}" crossorigin="anonymous" referrerpolicy="no-referrer" />`;
   const bootstrapStyles = `<link rel="stylesheet" href="${BOOTSTRAP_CSS_HREF}" />`;
-  const publicStyleSheet = `<link rel="stylesheet" href="/style.css" />`;
   const bootstrapScript = `<script src="${BOOTSTRAP_JS_HREF}"></script>`;
 
   const rawGlobal = globalCss || "";
@@ -3489,7 +3650,6 @@ ${googleFontsStyles}
 ${fontAwesomeStyles}
 ${bootstrapStyles}
 ${previewStyles}
-${publicStyleSheet}
 <style>
   html, body { margin: 0; min-height: 100%; overflow-x: hidden; }
   body { margin: 0; min-height: 100%; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: #fff; color: #111827; }
@@ -3598,10 +3758,18 @@ export function buildExportBundle(opts: {
 <link rel="stylesheet" href="${GOOGLE_FONTS_HREF}">`;
   const fontAwesomeLink = `<link rel="stylesheet" href="${FONT_AWESOME_HREF}" crossorigin="anonymous" referrerpolicy="no-referrer" />`;
   const bootstrapCssLink = `<link rel="stylesheet" href="${BOOTSTRAP_CSS_HREF}" />`;
-  const vendorCss = `${googleFontsLink}
+  const vendorCss = standalone
+    ? `<link rel="stylesheet" href="./css/bootstrap.min.css" />\n<link rel="stylesheet" href="./css/all.min.css" />`
+    : `${googleFontsLink}
 ${fontAwesomeLink}
 ${bootstrapCssLink}`;
-  const vendorJs = `<script src="${BOOTSTRAP_JS_HREF}"></script>`;
+
+  const headVendorJs = standalone
+    ? `<script src="./js/jquery.min.js"></script>\n<script src="./js/bootstrap.bundle.min.js"></script>`
+    : "";
+  const vendorJs = standalone
+    ? `<script src="./js/widget.js" defer></script>`
+    : `<script src="${BOOTSTRAP_JS_HREF}"></script>`;
 
   const html = `<!DOCTYPE html>
 <html lang="${escapeHtml(projectSeo?.language ?? seo?.language ?? "en")}">
@@ -3611,8 +3779,10 @@ ${bootstrapCssLink}`;
 ${metaTags}
 <title>${escapeHtml(pageTitle)}</title>
 ${vendorCss}
+<link rel="icon" type="image/png" href="./favicon.png" />
 <link rel="stylesheet" href="./css/styles.css" />
 <link rel="stylesheet" href="./style.css" />
+${headVendorJs}
 ${exportHead}
 </head>
 <body>
@@ -3624,8 +3794,7 @@ ${vendorJs}
 </html>`;
 
   const cssContent = dedupeCssBlocks([
-    `@import url("${FONT_AWESOME_HREF}");`,
-    `@import url("${GOOGLE_FONTS_HREF}");`,
+    ...(standalone ? [] : [`@import url("${FONT_AWESOME_HREF}");`, `@import url("${GOOGLE_FONTS_HREF}");`]),
     RUNTIME_CSS,
     `header, .site-header, .wl-header, .wto-shared-header, [data-wto-shared="header"] { position: sticky !important; top: 0 !important; z-index: 1000 !important; width: 100% !important; }`,
     ...widgetCssBlocks,
@@ -3640,6 +3809,7 @@ ${vendorJs}
     EXPORT_SITE_RUNTIME,
     WTO_CAROUSEL_RUNTIME,
     WTO_FAQ_RUNTIME,
+    WTO_STANDALONE_WIDGET_JS,
     ...typedRuntimeJs,
     ...widgetJsBlocks,
     globalJs || "",
@@ -3716,7 +3886,7 @@ function rewriteExportAssetPaths(html: string, assets?: Record<string, BuilderAs
   return out;
 }
 
-function stripEditorOnlyMarkup(html: string) {
+export function stripEditorOnlyMarkup(html: string) {
   let out = html;
   // Remove editor-only nodes entirely (placeholders, badges, overlays).
   out = out.replace(/<[^>]*\b(?:builder-editor-only|data-builder-editor-only\s*=\s*["']1["']|wto-sel-badge|wto-sel-overlay|wto-grid-drop-placeholder|wto-duplicate-control)[^>]*>[\s\S]*?<\/[^>]+>/gi, "");
@@ -3751,19 +3921,77 @@ function stripEditorOnlyMarkup(html: string) {
   return out;
 }
 
+export function rewriteCdnUrlsToLocal(html: string): string {
+  if (!html) return html;
+  let out = html;
+
+  // 1. Remove cdn.tailwindcss.com script tags completely
+  out = out.replace(/<script[^>]*src=["']https?:\/\/cdn\.tailwindcss\.com[^"']*["'][^>]*><\/script>\s*/gi, "");
+
+  // 2. Replace jQuery CDNs with ./js/jquery.min.js
+  out = out.replace(/https?:\/\/(?:code\.jquery\.com\/jquery-[^"'\s>]+\.js|cdnjs\.cloudflare\.com\/ajax\/libs\/jquery\/[^"'\s>]+\/jquery(?:\.min)?\.js|cdn\.jsdelivr\.net\/(?:npm|gh)\/jquery[^"'\s>]*\/jquery(?:\.min)?\.js)/gi, "./js/jquery.min.js");
+
+  // 3. Replace Bootstrap JS CDNs with ./js/bootstrap.bundle.min.js
+  out = out.replace(/https?:\/\/(?:cdn\.jsdelivr\.net\/npm\/bootstrap@[^"'\s>]+\/dist\/js\/bootstrap\.bundle(?:\.min)?\.js|stackpath\.bootstrapcdn\.com\/bootstrap\/[^"'\s>]+\/js\/bootstrap\.bundle(?:\.min)?\.js|cdnjs\.cloudflare\.com\/ajax\/libs\/twitter-bootstrap\/[^"'\s>]+\/js\/bootstrap\.bundle(?:\.min)?\.js)/gi, "./js/bootstrap.bundle.min.js");
+
+  // 4. Replace Bootstrap CSS CDNs with ./css/bootstrap.min.css
+  out = out.replace(/https?:\/\/(?:cdn\.jsdelivr\.net\/npm\/bootstrap@[^"'\s>]+\/dist\/css\/bootstrap(?:\.min)?\.css|stackpath\.bootstrapcdn\.com\/bootstrap\/[^"'\s>]+\/css\/bootstrap(?:\.min)?\.css|cdnjs\.cloudflare\.com\/ajax\/libs\/twitter-bootstrap\/[^"'\s>]+\/css\/bootstrap(?:\.min)?\.css)/gi, "./css/bootstrap.min.css");
+
+  // 5. Replace Font Awesome CSS CDNs with ./css/all.min.css
+  out = out.replace(/https?:\/\/(?:cdnjs\.cloudflare\.com\/ajax\/libs\/font-awesome\/[^"'\s>]+\/css\/all(?:\.min)?\.css|use\.fontawesome\.com\/releases\/[^"'\s>]+\/css\/all(?:\.min)?\.css)/gi, "./css/all.min.css");
+
+  // 6. Replace WebToolOcean widget runtime CDN with ./js/widget.js
+  out = out.replace(/https?:\/\/widgets\.webtoolocean\.com\/widget\.js/gi, "./js/widget.js");
+
+  // Deduplicate redundant duplicate vendor scripts/links
+  const seenScripts = new Set<string>();
+  out = out.replace(/<script\s+[^>]*src=["'](\.\/js\/(?:jquery\.min\.js|bootstrap\.bundle\.min\.js|widget\.js))["'][^>]*><\/script>/gi, (match, src) => {
+    if (seenScripts.has(src)) return "";
+    seenScripts.add(src);
+    return match;
+  });
+
+  const seenLinks = new Set<string>();
+  out = out.replace(/<link\s+[^>]*href=["'](\.\/css\/(?:bootstrap\.min\.css|all\.min\.css))["'][^>]*\/?>/gi, (match, href) => {
+    if (seenLinks.has(href)) return "";
+    seenLinks.add(href);
+    return match;
+  });
+
+  return out;
+}
+
 export async function buildSiteExport(project: Project) {
   const files: { path: string; content: string; base64?: string }[] = [];
   const pages = (project.pages ?? []).filter((page) => !page.hidden);
   const pageMeta = pages.map((page) => ({ id: page.id, slug: page.slug }));
   const written = new Set<string>();
   const cssBlocks: string[] = [
-    `@import url("${FONT_AWESOME_HREF}");`,
-    `@import url("${GOOGLE_FONTS_HREF}");`,
     RUNTIME_CSS,
     `header, .site-header, .wl-header, .wto-shared-header, [data-wto-shared="header"], [data-role="header"], [data-section-role="header"] { position: sticky !important; top: 0 !important; z-index: 1000 !important; width: 100% !important; }`,
     project.globalCss || "",
   ];
-  const jsBlocks: string[] = [EXPORT_SITE_RUNTIME, WTO_CAROUSEL_RUNTIME, WTO_FAQ_RUNTIME, project.globalJs || ""];
+  const jsBlocks: string[] = [
+    EXPORT_SITE_RUNTIME,
+    WTO_CAROUSEL_RUNTIME,
+    WTO_FAQ_RUNTIME,
+    WTO_STANDALONE_WIDGET_JS,
+    project.globalJs || "",
+  ];
+
+  const [
+    jqueryScript,
+    bootstrapScript,
+    bootstrapStyles,
+    fontAwesomeStyles,
+    fontAwesomeWebfonts,
+  ] = await Promise.all([
+    getJQueryScript(),
+    getBootstrapBundleScript(),
+    getBootstrapStyles(),
+    getFontAwesomeStyles(),
+    getFontAwesomeWebfonts(),
+  ]);
 
   const writePage = (page: (typeof pages)[number], filename: string) => {
     if (written.has(filename)) return;
@@ -3783,8 +4011,10 @@ export async function buildSiteExport(project: Project) {
       standalone: true,
     });
     if (bundle.widgetCss) cssBlocks.push(bundle.widgetCss);
+    if (bundle.js) jsBlocks.push(bundle.js);
     let html = rewriteExportAssetPaths(bundle.html, project.assets);
     html = stripEditorOnlyMarkup(html);
+    html = rewriteCdnUrlsToLocal(html);
     if (/Bootstrap Export Ready|Phase 1 bootstrap export foundation is active/i.test(html)) {
       throw new Error("Export refused to write placeholder Bootstrap Export Ready content");
     }
@@ -3806,18 +4036,36 @@ export async function buildSiteExport(project: Project) {
   if (written.size === 0) {
     files.push({
       path: "index.html",
-      content: `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>${escapeHtml(project.name || "Website")}</title><link rel="stylesheet" href="${BOOTSTRAP_CSS_HREF}" /><link rel="stylesheet" href="./css/styles.css" /></head><body><main style="padding:48px;font-family:system-ui,sans-serif"><h1>${escapeHtml(project.name || "Website")}</h1><p>This project has no visible pages yet.</p></main><script src="${BOOTSTRAP_JS_HREF}"></script><script src="./js/main.js" defer></script></body></html>`,
+      content: `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>${escapeHtml(project.name || "Website")}</title><link rel="stylesheet" href="./css/bootstrap.min.css" /><link rel="stylesheet" href="./css/all.min.css" /><link rel="stylesheet" href="./css/styles.css" /><script src="./js/jquery.min.js"></script><script src="./js/bootstrap.bundle.min.js"></script></head><body><main style="padding:48px;font-family:system-ui,sans-serif"><h1>${escapeHtml(project.name || "Website")}</h1><p>This project has no visible pages yet.</p></main><script src="./js/main.js" defer></script></body></html>`,
     });
   }
 
   const exportedCss = rewriteExportAssetPaths(dedupeCssBlocks(cssBlocks), project.assets);
+
+  // Vendor JavaScript files
   files.push({
-    path: "css/styles.css",
-    content: exportedCss,
+    path: "js/jquery.min.js",
+    content: jqueryScript,
   });
   files.push({
-    path: "style.css",
-    content: exportedCss,
+    path: "jquery.min.js",
+    content: jqueryScript,
+  });
+  files.push({
+    path: "js/bootstrap.bundle.min.js",
+    content: bootstrapScript,
+  });
+  files.push({
+    path: "bootstrap.bundle.min.js",
+    content: bootstrapScript,
+  });
+  files.push({
+    path: "js/widget.js",
+    content: WTO_STANDALONE_WIDGET_JS,
+  });
+  files.push({
+    path: "widget.js",
+    content: WTO_STANDALONE_WIDGET_JS,
   });
   files.push({
     path: "js/carousel.js",
@@ -3826,6 +4074,47 @@ export async function buildSiteExport(project: Project) {
   files.push({
     path: "js/main.js",
     content: dedupeJsBlocks(jsBlocks),
+  });
+
+  // Vendor CSS files
+  files.push({
+    path: "css/bootstrap.min.css",
+    content: bootstrapStyles,
+  });
+  files.push({
+    path: "bootstrap.min.css",
+    content: bootstrapStyles,
+  });
+  files.push({
+    path: "css/all.min.css",
+    content: fontAwesomeStyles,
+  });
+  files.push({
+    path: "all.min.css",
+    content: fontAwesomeStyles,
+  });
+  files.push({
+    path: "css/styles.css",
+    content: exportedCss,
+  });
+  files.push({
+    path: "style.css",
+    content: exportedCss,
+  });
+
+  // Font Awesome webfonts
+  for (const font of fontAwesomeWebfonts) {
+    files.push({
+      path: font.path,
+      content: "",
+      base64: font.base64,
+    });
+  }
+
+  files.push({
+    path: "favicon.png",
+    content: "",
+    base64: DEFAULT_FAVICON_BASE64,
   });
 
   for (const [name, asset] of Object.entries(project.assets ?? {})) {
@@ -3912,11 +4201,11 @@ export async function buildSiteExport(project: Project) {
   return { files };
 }
 
-function escapeHtml(s: string) {
+export function escapeHtml(s: string) {
   return s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c] as string);
 }
 
-function styleToString(style?: Record<string, string>) {
+export function styleToString(style?: Record<string, string>) {
   if (!style) return "";
   return Object.entries(style)
     .filter(([, v]) => {
@@ -3927,7 +4216,7 @@ function styleToString(style?: Record<string, string>) {
     .join(";");
 }
 
-function applyRootAttributes(
+export function applyRootAttributes(
   html: string,
   opts: { className?: string; domId?: string; style?: string; fallbackTag?: "div" | "section" },
 ) {

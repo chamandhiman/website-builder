@@ -1,4 +1,6 @@
 import type { ContactWidgetData, ContactInfoItem, ContactVariant } from "./ContactTypes";
+import { defaultContactWidgetData } from "./ContactTypes";
+import type { WidgetData } from "../widgetRegistry";
 
 type ExportContext = { editorMode?: boolean };
 
@@ -394,14 +396,15 @@ function buildMinimalCardLayout(data: ContactWidgetData, context?: ExportContext
     </section>`;
 }
 
-export function buildContactBootstrapMarkup(data: ContactWidgetData, context?: ExportContext): string {
-  if (data.advanced?.visibility === false) return "";
+export function buildContactBootstrapMarkup(data: WidgetData, context?: ExportContext): string {
+  const contactData = (data?.type === "contact" ? data : defaultContactWidgetData) as ContactWidgetData;
+  if (contactData.advanced?.visibility === false) return "";
 
   const isEditor = !!context?.editorMode;
   const hoverStyle = isEditor
     ? `
       <style>
-        .wto-contact-section-${data.id} .wto-contact-form-container:hover .wto-contact-hover-bar {
+        .wto-contact-section-${contactData.id} .wto-contact-form-container:hover .wto-contact-hover-bar {
           opacity: 1 !important;
           pointer-events: auto !important;
         }
@@ -410,18 +413,18 @@ export function buildContactBootstrapMarkup(data: ContactWidgetData, context?: E
     : "";
 
   let html = "";
-  switch (data.variant as ContactVariant) {
+  switch (contactData.variant as ContactVariant) {
     case "Centered Form":
-      html = buildCenteredFormLayout(data, context);
+      html = buildCenteredFormLayout(contactData, context);
       break;
     case "Dark Side-by-Side":
-      html = buildDarkLayout(data, context);
+      html = buildDarkLayout(contactData, context);
       break;
     case "Minimal Card":
-      html = buildMinimalCardLayout(data, context);
+      html = buildMinimalCardLayout(contactData, context);
       break;
     default:
-      html = buildSplitLayout(data, context);
+      html = buildSplitLayout(contactData, context);
       break;
   }
 

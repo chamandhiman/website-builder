@@ -36,14 +36,14 @@ export function OverlayBannerProperties({
   const [activeTab, setActiveTab] = useState<"content" | "style" | "overlay">("content");
 
   const updateContent = (patch: Partial<typeof content>) => {
-    onChange({
+    onChange?.({
       ...bannerData,
       content: { ...content, ...patch },
     });
   };
 
   const updateStyle = (patch: Partial<typeof style>) => {
-    onChange({
+    onChange?.({
       ...bannerData,
       style: { ...style, ...patch },
     });
@@ -68,7 +68,7 @@ export function OverlayBannerProperties({
       patchStyle.fixedBackground = false;
     }
 
-    onChange({
+    onChange?.({
       ...bannerData,
       variant,
       style: { ...style, ...patchStyle },

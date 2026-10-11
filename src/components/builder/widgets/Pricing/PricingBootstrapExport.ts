@@ -63,9 +63,9 @@ export function buildPricingBootstrapMarkup(
   const popularButtonBg = style.popularButtonBg || "#facc15";
   const popularButtonColor = style.popularButtonColor || "#0f172a";
 
-  const padTop = layout.paddingTop || "64px";
-  const padBottom = layout.paddingBottom || "64px";
-  const padX = layout.paddingX || "24px";
+  const padTop = String((layout as any).paddingTop || "64px");
+  const padBottom = String((layout as any).paddingBottom || "64px");
+  const padX = String((layout as any).paddingX || "24px");
 
   const isAnnual = content.billingCycle === "annual";
 

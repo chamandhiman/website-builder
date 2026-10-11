@@ -20,6 +20,7 @@ export const WIDGET_SELECTION_LABELS: Record<string, string> = {
   team: "Team",
   pricing: "Pricing Section",
   testimonials: "Testimonials",
+  "google-reviews": "Google Reviews",
   "overlay-banner": "Background Image overlay text banner",
 };
 

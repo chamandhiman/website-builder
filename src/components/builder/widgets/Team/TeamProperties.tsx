@@ -18,7 +18,7 @@ export function TeamProperties({ widgetId }: WidgetPropertyComponentProps) {
   const [expandedMemberId, setExpandedMemberId] = useState<string | null>(teamData.content.members[0]?.id ?? null);
 
   const updateContent = (partialContent: Partial<TeamWidgetData["content"]>) => {
-    if (!widget) return;
+    if (!widget || !widgetId) return;
     updateWidgetInstance(widgetId, {
       ...teamData,
       content: {
@@ -29,7 +29,7 @@ export function TeamProperties({ widgetId }: WidgetPropertyComponentProps) {
   };
 
   const updateStyle = (partialStyle: Partial<TeamWidgetData["style"]>) => {
-    if (!widget) return;
+    if (!widget || !widgetId) return;
     updateWidgetInstance(widgetId, {
       ...teamData,
       style: {
@@ -40,7 +40,7 @@ export function TeamProperties({ widgetId }: WidgetPropertyComponentProps) {
   };
 
   const handleModeChange = (mode: "static" | "carousel") => {
-    if (!widget) return;
+    if (!widget || !widgetId) return;
     updateWidgetInstance(widgetId, {
       ...teamData,
       variant: mode === "carousel" ? "Carousel Slider" : "Static Grid",

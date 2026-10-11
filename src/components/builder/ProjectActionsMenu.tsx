@@ -43,7 +43,7 @@ export function ProjectActionsMenu({ project, onRename, onDuplicate, onDelete, o
   const handleSave = async () => {
     const trimmed = name.trim();
     if (trimmed && trimmed !== project.name) {
-      await onRename(project.id, trimmed);
+      await onRename?.(project.id, trimmed);
     }
     setRenameOpen(false);
   };
@@ -207,7 +207,7 @@ export function ProjectActionsMenu({ project, onRename, onDuplicate, onDelete, o
             <AlertDialogAction
               className="inline-flex h-9 items-center justify-center rounded-md bg-destructive px-4 text-sm text-destructive-foreground transition hover:bg-destructive/90"
               onClick={async () => {
-                await onDelete(project.id);
+                await onDelete?.(project.id);
                 setDeleteOpen(false);
               }}
             >

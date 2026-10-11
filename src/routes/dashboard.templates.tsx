@@ -1,458 +1,591 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo, useEffect } from "react";
-import { Search, Sparkles, Globe, Tag, X, Filter, Eye } from "lucide-react";
-import { TEMPLATE_LIBRARY, type TemplateDefinition } from "@/lib/builder/templates";
-import { useBuilder, type PageSection } from "@/lib/builder/store";
+import {
+  Search,
+  Sparkles,
+  Globe,
+  Tag,
+  X,
+  Filter,
+  Eye,
+  Heart,
+  ChevronDown,
+  Layers,
+  ArrowRight,
+  User,
+} from "lucide-react";
+import { TEMPLATE_LIBRARY, type TemplateDefinition, matchesTemplateCategory, TEMPLATE_CATEGORIES } from "@/lib/builder/templates";
+import { useBuilder } from "@/lib/builder/store";
 import { useNavigate } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
-import { nanoid } from "nanoid";
 import { toast } from "sonner";
 import { getPublishedTemplates, createProjectFromTemplate, type Template } from "@/services/templates";
-import { getWidgetRegistration, getWidgetBootstrapExport } from "@/components/builder/widgets/widgetRegistry";
 import { TemplatePreviewModal } from "@/components/builder/TemplatePreviewModal";
+import { ALL_NEW_WEBSITE_TEMPLATES } from "@/services/templateSeedsWebsites";
 
 export const Route = createFileRoute("/dashboard/templates")({
   component: TemplatesPage,
 });
 
-const CATEGORY_FILTERS = [
-  "All",
-  "Business",
-  "Agency",
-  "Freelancer",
-  "SaaS & Technology",
-  "Healthcare",
-  "Fitness & Gym",
-  "Restaurant & Café",
-  "Real Estate",
-  "Education",
-  "Driving School",
-  "Beauty & Salon",
-  "Construction",
-  "Automotive",
-  "Photography",
-  "Portfolio",
-  "Law Firm",
-  "Finance",
-  "Travel & Hotel",
-  "E-commerce",
-  "Personal / Resume",
-] as const;
-
-type CategoryFilter = (typeof CATEGORY_FILTERS)[number];
-
-const GALLERY_FILTERS = ["All", "Single page", "Multi page", "Free templates", "Premium templates"] as const;
-type GalleryFilter = (typeof GALLERY_FILTERS)[number];
-
-function matchesCategory(templateCategory: string | undefined | null, selectedCategory: string): boolean {
-  if (!selectedCategory || selectedCategory === "All") return true;
-  if (!templateCategory) return false;
-
-  const t = templateCategory.trim().toLowerCase();
-  const s = selectedCategory.trim().toLowerCase();
-
-  if (t === s) return true;
-
-  const aliases: Record<string, string[]> = {
-    "saas & technology": ["saas", "tech", "technology", "software", "ai startup", "saas & tech"],
-    "healthcare": ["health", "healthcare", "medical", "wellness", "dental clinic", "clinic", "hospital"],
-    "fitness & gym": ["fitness", "gym", "workout", "crossfit", "gym / fitness", "fitness & gym"],
-    "restaurant & café": ["restaurant", "cafe", "café", "food", "dining", "bakery", "restaurant & café"],
-    "beauty & salon": ["beauty", "salon", "spa", "salon / spa", "barber"],
-    "travel & hotel": ["travel", "hotel", "resort", "tourism", "vacation"],
-    "personal / resume": ["personal", "resume", "cv", "bio"],
-    "automotive": ["automotive", "car", "auto repair", "driving school", "vehicle"],
-    "agency": ["agency", "digital marketing agency", "creative agency"],
-    "business": ["business", "corporate business", "consulting", "corporate"],
-  };
-
-  const currentAliases = aliases[s];
-  if (currentAliases && currentAliases.some((alias) => t === alias || t.includes(alias) || alias.includes(t))) {
-    return true;
-  }
-
-  return t.includes(s) || s.includes(t);
+interface CuratedTemplate {
+  id: string;
+  name: string;
+  category: string;
+  categoryDisplay: string;
+  pageType: "single-page" | "multi-page";
+  pageTypeDisplay: string;
+  isPremium: boolean;
+  uses: string;
+  addedTime: string;
+  thumbnail: string;
+  headline: string;
+  description: string;
 }
 
+const ALL_NEW_CURATED: CuratedTemplate[] = ALL_NEW_WEBSITE_TEMPLATES.map((t) => ({
+  id: t.id,
+  name: t.name,
+  category: t.category,
+  categoryDisplay: t.category.toUpperCase(),
+  pageType: "single-page" as const,
+  pageTypeDisplay: "SINGLE PAGE",
+  isPremium: false,
+  uses: "1.4k uses",
+  addedTime: "Added Today",
+  thumbnail: t.thumbnail || "/images/hero-saas.svg",
+  headline: t.description ? t.description.slice(0, 60) : t.name,
+  description: t.description || "",
+}));
+
+const CURATED_TEMPLATES: CuratedTemplate[] = [
+  {
+    id: "tpl-drivepro-driving-school",
+    name: "DrivePro Academy",
+    category: "Driving School",
+    categoryDisplay: "DRIVING SCHOOL",
+    pageType: "multi-page",
+    pageTypeDisplay: "MULTI PAGE",
+    isPremium: false,
+    uses: "2.3k uses",
+    addedTime: "Added Today",
+    thumbnail: "/images/hero-car.svg",
+    headline: "Learn to Drive with Confidence",
+    description: "Multi-page driving school template for teens and adults featuring courses, instructors, pricing packages, FAQ, and student resources.",
+  },
+  ...ALL_NEW_CURATED,
+  {
+    id: "tpl-nexora-agency",
+    name: "Nexora Agency",
+    category: "Agency",
+    categoryDisplay: "AGENCY",
+    pageType: "single-page",
+    pageTypeDisplay: "SINGLE PAGE",
+    isPremium: false,
+    uses: "1.9k uses",
+    addedTime: "Added Today",
+    thumbnail: "/images/hero-web.svg",
+    headline: "Ideas that become digital momentum",
+    description: "Creative digital agency template for web, mobile apps, SEO, and bespoke digital products with rich hero slider and pricing.",
+  },
+  {
+    id: "freelancer-developer-portfolio",
+    name: "Nova Studio",
+    category: "Freelancer",
+    categoryDisplay: "FREELANCER",
+    pageType: "single-page",
+    pageTypeDisplay: "SINGLE PAGE",
+    isPremium: false,
+    uses: "1.2k uses",
+    addedTime: "Added 2 days ago",
+    thumbnail: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80",
+    headline: "Design that makes brands unforgettable",
+    description: "A bold, modern creative studio and portfolio template built for freelancers and boutique design agencies.",
+  },
+  {
+    id: "tpl-pixel-code",
+    name: "Pixel & Code",
+    category: "Freelancer",
+    categoryDisplay: "FREELANCER",
+    pageType: "multi-page",
+    pageTypeDisplay: "MULTI PAGE",
+    isPremium: true,
+    uses: "860 uses",
+    addedTime: "Added 5 days ago",
+    thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
+    headline: "I build fast, modern web apps",
+    description: "High-tech software developer and engineering studio template with project showcases and interactive stack filters.",
+  },
+  {
+    id: "tpl-careplus-clinic",
+    name: "CarePlus Clinic",
+    category: "Healthcare",
+    categoryDisplay: "HEALTHCARE",
+    pageType: "multi-page",
+    pageTypeDisplay: "MULTI PAGE",
+    isPremium: true,
+    uses: "540 uses",
+    addedTime: "Added 1 week ago",
+    thumbnail: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80",
+    headline: "Compassionate care, close to home",
+    description: "Medical clinic, dental practice, and wellness center website with doctor profiles and appointment booking.",
+  },
+  {
+    id: "wellness-health-fitness",
+    name: "IronPulse Gym",
+    category: "Fitness & Gym",
+    categoryDisplay: "FITNESS & GYM",
+    pageType: "single-page",
+    pageTypeDisplay: "SINGLE PAGE",
+    isPremium: false,
+    uses: "2.1k uses",
+    addedTime: "Added 3 days ago",
+    thumbnail: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80",
+    headline: "Train harder. Get stronger.",
+    description: "High-energy gym, crossfit box, and athletic training facility website with class schedules and membership tiers.",
+  },
+  {
+    id: "tpl-flow-yoga",
+    name: "Flow Yoga Studio",
+    category: "Fitness & Gym",
+    categoryDisplay: "FITNESS & GYM",
+    pageType: "single-page",
+    pageTypeDisplay: "SINGLE PAGE",
+    isPremium: false,
+    uses: "2.4k uses",
+    addedTime: "Added Today",
+    thumbnail: "/templates/flow-yoga-preview.png",
+    headline: "Move softly. Live fully.",
+    description: "Serene, mindful yoga studio template with weekly timetable schedule, class offerings, photo bento gallery, and memberships.",
+  },
+  {
+    id: "tpl-saffron-ember-restaurant",
+    name: "Saffron & Ember",
+    category: "Restaurant & Café",
+    categoryDisplay: "RESTAURANT & CAFÉ",
+    pageType: "single-page",
+    pageTypeDisplay: "SINGLE PAGE",
+    isPremium: false,
+    uses: "1.8k uses",
+    addedTime: "Added Today",
+    thumbnail: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=800&q=80",
+    headline: "Fire, spice & slow stories",
+    description: "Atmospheric modern dining template with tandoor signature menus, photo gallery, chef specials, and online reservations.",
+  },
+  {
+    id: "tpl-bean-bloom-cafe",
+    name: "Bean & Bloom Café",
+    category: "Restaurant & Café",
+    categoryDisplay: "RESTAURANT & CAFÉ",
+    pageType: "multi-page",
+    pageTypeDisplay: "MULTI PAGE",
+    isPremium: true,
+    uses: "640 uses",
+    addedTime: "Added 1 week ago",
+    thumbnail: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80",
+    headline: "Slow coffee for busy mornings",
+    description: "Artisanal specialty coffee shop, bakery, and brunch destination template with online ordering and location map.",
+  },
+  {
+    id: "tpl-dreamhome-real-estate",
+    name: "Skyline Realty",
+    category: "Real Estate",
+    categoryDisplay: "REAL ESTATE",
+    pageType: "multi-page",
+    pageTypeDisplay: "MULTI PAGE",
+    isPremium: true,
+    uses: "980 uses",
+    addedTime: "Added 4 days ago",
+    thumbnail: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+    headline: "Find a home that fits your life",
+    description: "Luxury property developer and real estate agency website with architectural listings and schedule viewing.",
+  },
+  {
+    id: "tpl-haven-homes",
+    name: "Haven Homes",
+    category: "Real Estate",
+    categoryDisplay: "REAL ESTATE",
+    pageType: "single-page",
+    pageTypeDisplay: "SINGLE PAGE",
+    isPremium: false,
+    uses: "1.1k uses",
+    addedTime: "Added 6 days ago",
+    thumbnail: "https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?auto=format&fit=crop&w=800&q=80",
+    headline: "Your next chapter starts here",
+    description: "Warm, family-focused boutique real estate agency template showcasing featured residential homes and neighborhoods.",
+  },
+  {
+    id: "tpl-rose-beauty-salon",
+    name: "Rosé Atelier",
+    category: "Beauty & Salon",
+    categoryDisplay: "BEAUTY & SALON",
+    pageType: "single-page",
+    pageTypeDisplay: "SINGLE PAGE",
+    isPremium: false,
+    uses: "1.5k uses",
+    addedTime: "Added Today",
+    thumbnail: "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80",
+    headline: "Beauty that feels like you",
+    description: "Premium hair studio, skin clinic, and lash salon template with treatment price lists and appointment scheduling.",
+  },
+  {
+    id: "tpl-glow-skin-spa",
+    name: "Glow Skin Spa",
+    category: "Beauty & Salon",
+    categoryDisplay: "BEAUTY & SALON",
+    pageType: "single-page",
+    pageTypeDisplay: "SINGLE PAGE",
+    isPremium: true,
+    uses: "420 uses",
+    addedTime: "Added 3 weeks ago",
+    thumbnail: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80",
+    headline: "Calm skin, calmer mind",
+    description: "Holistic dermatological facial spa and botanical skincare boutique template with signature packages.",
+  },
+];
+
+const CATEGORIES_LIST = TEMPLATE_CATEGORIES.map((cat) => ({
+  name: cat,
+  count:
+    cat === "All"
+      ? CURATED_TEMPLATES.length
+      : CURATED_TEMPLATES.filter((tpl) => matchesTemplateCategory(tpl.category, cat)).length,
+}));
+
 function TemplatesPage() {
-  const [query, setQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>("All");
-  const [filter, setFilter] = useState<GalleryFilter>("All");
-  const [loading, setLoading] = useState<string | null>(null);
-  const [publishedTemplates, setPublishedTemplates] = useState<Template[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [typeFilter, setTypeFilter] = useState<"All" | "Single page" | "Multi page" | "Free templates" | "Premium templates">("All");
+  const [sortOption, setSortOption] = useState("Most popular");
+  const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [previewTemplate, setPreviewTemplate] = useState<any | null>(null);
+  const [loadingId, setLoadingId] = useState<string | null>(null);
+
   const navigate = useNavigate();
   const newProject = useBuilder((s) => s.newProject);
   const applyTemplateToCurrent = useBuilder((s) => s.applyTemplate);
 
-  useEffect(() => {
-    let cancelled = false;
-    async function loadPublished() {
-      try {
-        const templates = await getPublishedTemplates();
-        if (!cancelled) {
-          setPublishedTemplates(templates);
-        }
-      } catch (err) {
-        console.warn("[TemplatesPage] Could not load published cloud templates:", err);
+  const toggleFavorite = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setFavorites((prev) => {
+      const next = !prev[id];
+      if (next) toast.success("Added to favorites");
+      else toast.info("Removed from favorites");
+      return { ...prev, [id]: next };
+    });
+  };
+
+  const filteredTemplates = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return CURATED_TEMPLATES.filter((tpl) => {
+      // Category filter
+      if (selectedCategory !== "All" && !matchesTemplateCategory(tpl.category, selectedCategory)) {
+        return false;
       }
-    }
-    void loadPublished();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
-  const categoryCounts = useMemo(() => {
-    const counts: Record<string, number> = { All: TEMPLATE_LIBRARY.length + publishedTemplates.length };
-    const allCategories = [
-      ...TEMPLATE_LIBRARY.map((t) => t.category),
-      ...publishedTemplates.map((t) => t.category),
-    ];
+      // Type filter
+      if (typeFilter === "Single page" && tpl.pageType !== "single-page") return false;
+      if (typeFilter === "Multi page" && tpl.pageType !== "multi-page") return false;
+      if (typeFilter === "Free templates" && tpl.isPremium) return false;
+      if (typeFilter === "Premium templates" && !tpl.isPremium) return false;
 
-    CATEGORY_FILTERS.forEach((cat) => {
-      if (cat === "All") return;
-      counts[cat] = allCategories.filter((tCat) => matchesCategory(tCat, cat)).length;
+      // Search query
+      if (q) {
+        const matches =
+          tpl.name.toLowerCase().includes(q) ||
+          tpl.headline.toLowerCase().includes(q) ||
+          tpl.category.toLowerCase().includes(q);
+        if (!matches) return false;
+      }
+
+      return true;
     });
+  }, [selectedCategory, typeFilter, searchQuery]);
 
-    return counts;
-  }, [publishedTemplates]);
+  const handleOpenPreview = (tpl: CuratedTemplate) => {
+    const libTemplate = TEMPLATE_LIBRARY.find((t) => t.id === tpl.id || t.name.toLowerCase().includes(tpl.name.toLowerCase()));
+    setPreviewTemplate(libTemplate ? { ...tpl, ...libTemplate } : tpl);
+  };
 
-  const filteredLibraryTemplates = useMemo(() => {
-    const search = query.trim().toLowerCase();
-    return TEMPLATE_LIBRARY.filter((tpl) => {
-      const matchesFilter =
-        filter === "All" ||
-        (filter === "Free templates" ? !tpl.isPremium :
-          filter === "Premium templates" ? !!tpl.isPremium :
-          (filter === "Single page" ? tpl.pageType === "single-page" :
-           filter === "Multi page" ? tpl.pageType === "multi-page" : false));
-
-      const matchesCat = matchesCategory(tpl.category, selectedCategory);
-
-      const matchesSearch =
-        !search ||
-        [tpl.name, tpl.description, tpl.category, tpl.pageType].join(" ").toLowerCase().includes(search);
-
-      return matchesFilter && matchesCat && matchesSearch;
-    });
-  }, [filter, selectedCategory, query]);
-
-  const filteredPublishedTemplates = useMemo(() => {
-    const search = query.trim().toLowerCase();
-    return publishedTemplates.filter((tpl) => {
-      const matchesCat = matchesCategory(tpl.category, selectedCategory);
-      if (!matchesCat) return false;
-      if (!search) return true;
-      return [tpl.name, tpl.category, tpl.slug].join(" ").toLowerCase().includes(search);
-    });
-  }, [publishedTemplates, selectedCategory, query]);
-
-  const handleUseLibraryTemplate = async (tpl: TemplateDefinition) => {
-    setLoading(tpl.id);
+  const handleUseTemplate = async (tpl: CuratedTemplate) => {
+    setLoadingId(tpl.id);
     try {
-      newProject(`${tpl.name}`);
-      applyTemplateToCurrent(tpl as any);
+      // Find matching template in template library if available, or create project
+      const libTemplate = TEMPLATE_LIBRARY.find((t) => t.id === tpl.id || t.name.includes(tpl.name));
+      newProject(tpl.name);
+
+      if (libTemplate) {
+        applyTemplateToCurrent(libTemplate as any);
+      }
 
       const current = useBuilder.getState().currentProject();
-      if (!current) throw new Error("Failed to initialize project from template");
+      if (!current) throw new Error("Failed to initialize project");
 
       toast.success(`${tpl.name} template loaded! Opening editor...`);
       navigate({ to: "/editor/$projectId", params: { projectId: current.id } });
     } catch (err) {
-      console.error("Template loading error:", err);
-      toast.error("Failed to load template. Please try again.");
+      console.error(err);
+      toast.error("Failed to load template");
     } finally {
-      setLoading(null);
+      setLoadingId(null);
     }
   };
-
-  const handleUsePublishedTemplate = async (tpl: Template) => {
-    setLoading(tpl.id);
-    try {
-      const projectId = createProjectFromTemplate(tpl);
-      toast.success(`Copy of ${tpl.name} created! Opening editor...`);
-      navigate({ to: "/editor/$projectId", params: { projectId } });
-    } catch (err) {
-      console.error("Published template copy error:", err);
-      toast.error("Failed to load template. Please try again.");
-    } finally {
-      setLoading(null);
-    }
-  };
-
-  const totalTemplatesCount = TEMPLATE_LIBRARY.length + publishedTemplates.length;
 
   return (
-    <div className="min-h-screen bg-[#171717] p-6 text-[#F5F5F5]">
-      <div className="mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="rounded-sm bg-[#1F1F1F] p-6 shadow-sm ring-1 ring-[#363636]">
-          <div className="space-y-4 mb-4">
-            <div className="mb-4">
-              <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-bold text-[#F5F5F5]">Templates</h1>
-                <span className="inline-flex items-center gap-2 rounded-full border border-[#363636] bg-[#2B2B2B] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#FACC15]">
-                  <Sparkles className="h-3.5 w-3.5 text-[#FACC15]" /> {totalTemplatesCount} templates
-                </span>
-              </div>
-              <p className="mt-2 text-[#969696]">
-                Browse and use professionally designed templates to get started quickly
-              </p>
-            </div>
-            <div className="relative mb-4">
-              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#969696]" />
+    <div className="w-full max-w-[1400px] mx-auto p-6 lg:p-8 space-y-6">
+      {/* ================= HERO BANNER ================= */}
+      <section className="relative rounded-[22px] bg-gradient-to-br from-[#17150f] via-[#141418] to-[#121215] border border-white/[0.07] p-8 overflow-hidden flex flex-col md:flex-row items-start md:items-end justify-between gap-6 shadow-2xl">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -top-24 right-1/4 w-80 h-80 rounded-full bg-[#ffc21a]/15 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 right-1/3 w-64 h-64 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
+        </div>
+
+        <div className="relative z-10 max-w-xl">
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ffc21a]/10 border border-[#ffc21a]/25 text-[#ffc21a] text-xs font-bold mb-3.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#ffc21a] animate-pulse" />
+            11 ready-made designs
+          </span>
+          <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight leading-tight mb-2">
+            Website <span className="text-[#ffc21a]">Templates</span>
+          </h1>
+          <p className="text-sm text-[#9a9aa3] leading-relaxed">
+            Pick a professionally designed template, customise it in minutes and publish — fully responsive and SEO-ready.
+          </p>
+        </div>
+
+        {/* 3 Metric Pills */}
+        <div className="relative z-10 flex items-center gap-2 shrink-0">
+          <div className="px-4 py-2.5 rounded-xl bg-black/40 border border-white/[0.08] text-center min-w-[70px]">
+            <div className="text-base font-black text-[#ffc21a] leading-tight">6</div>
+            <div className="text-[10px] text-[#9a9aa3] uppercase font-bold">Free</div>
+          </div>
+          <div className="px-4 py-2.5 rounded-xl bg-black/40 border border-white/[0.08] text-center min-w-[70px]">
+            <div className="text-base font-black text-[#ffc21a] leading-tight">5</div>
+            <div className="text-[10px] text-[#9a9aa3] uppercase font-bold">Premium</div>
+          </div>
+          <div className="px-4 py-2.5 rounded-xl bg-black/40 border border-white/[0.08] text-center min-w-[70px]">
+            <div className="text-base font-black text-[#ffc21a] leading-tight">20</div>
+            <div className="text-[10px] text-[#9a9aa3] uppercase font-bold">Categories</div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= CATEGORY FILTER SECTION ================= */}
+      <section className="space-y-4 rounded-2xl bg-[#151518] border border-white/[0.07] p-5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs font-bold text-white">
+            <Filter className="w-3.5 h-3.5 text-[#ffc21a]" />
+            <span>Filter by category</span>
+            <span className="text-[#6b6b74] font-normal">({CATEGORIES_LIST.length} categories)</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setSelectedCategory("All")}
+            className="text-xs font-bold text-[#ffc21a] hover:underline flex items-center gap-1 cursor-pointer"
+          >
+            <span>Show all</span>
+            <ChevronDown className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        {/* Categories Pills */}
+        <div className="flex flex-wrap gap-2 pt-1">
+          {CATEGORIES_LIST.map((cat) => {
+            const isActive = selectedCategory === cat.name;
+            return (
+              <button
+                key={cat.name}
+                type="button"
+                onClick={() => setSelectedCategory(cat.name)}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs transition cursor-pointer ${
+                  isActive
+                    ? "bg-[#ffc21a] text-[#1a1400] font-black shadow-md shadow-[#ffc21a]/25"
+                    : "bg-[#111114] border border-white/[0.08] text-[#9a9aa3] hover:text-white font-medium"
+                }`}
+              >
+                <span>{cat.name}</span>
+                {cat.count > 0 && (
+                  <span
+                    className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
+                      isActive ? "bg-black/20 text-[#1a1400]" : "bg-white/10 text-[#9a9aa3]"
+                    }`}
+                  >
+                    {cat.count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Sub-Filters: Type & Sort */}
+        <div className="pt-3 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="text-[#6b6b74] font-semibold">Type:</span>
+            {(["All", "Single page", "Multi page", "Free templates", "Premium templates"] as const).map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTypeFilter(t)}
+                className={`px-3 py-1 rounded-lg text-xs font-semibold transition cursor-pointer ${
+                  typeFilter === t
+                    ? "bg-white/15 text-white"
+                    : "text-[#9a9aa3] hover:text-white"
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 bg-[#111114] border border-white/10 focus-within:border-[#ffc21a]/50 rounded-lg px-2.5 py-1 text-xs text-white">
+              <Search className="w-3.5 h-3.5 text-[#6b6b74]" />
               <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search templates by name, category, or description..."
-                className="w-full pl-12 pr-4 h-12 rounded-xl border border-[#363636] bg-[#1F1F1F] text-[#F5F5F5] outline-none focus:border-[#FACC15] focus:ring-2 focus:ring-[#FACC15]/10"
+                type="search"
+                placeholder="Search templates..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-transparent border-0 outline-none text-xs text-white placeholder:text-[#6b6b74] w-36 sm:w-44"
               />
             </div>
 
-            {/* Category Filter Section */}
-            <div className="space-y-2.5 pt-1">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#A1A1AA]">
-                  <Tag className="h-3.5 w-3.5 text-[#FACC15]" />
-                  <span>Filter by Category ({CATEGORY_FILTERS.length - 1} categories)</span>
-                </div>
-                {selectedCategory !== "All" && (
-                  <button
-                    type="button"
-                    onClick={() => setSelectedCategory("All")}
-                    className="flex items-center gap-1 text-xs font-medium text-[#FACC15] transition hover:underline"
-                  >
-                    <X className="h-3.5 w-3.5" />
-                    Reset to All
-                  </button>
-                )}
-              </div>
-
-              <div className="flex flex-wrap gap-1.5">
-                {CATEGORY_FILTERS.map((cat) => {
-                  const isActive = selectedCategory === cat;
-                  const count = categoryCounts[cat] ?? 0;
-                  return (
-                    <button
-                      key={cat}
-                      type="button"
-                      onClick={() => setSelectedCategory(cat)}
-                      className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all ${
-                        isActive
-                          ? "bg-[#FACC15] text-[#111111] shadow-xs font-semibold scale-[1.02]"
-                          : "border border-[#333338] bg-[#222226] text-[#D0D0D0] hover:border-[#4B4B55] hover:bg-[#2A2A30] hover:text-[#FFFFFF]"
-                      }`}
-                    >
-                      <span>{cat}</span>
-                      {count > 0 && (
-                        <span
-                          className={`rounded-full px-1.5 py-0.2 text-[10px] font-semibold ${
-                            isActive ? "bg-black/20 text-[#111111]" : "bg-[#161618] text-[#A1A1AA]"
-                          }`}
-                        >
-                          {count}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Sub-Filter: Page Type & Pricing */}
-            <div className="flex flex-wrap items-center gap-2 border-t border-[#2D2D33] pt-3">
-              <span className="text-xs text-[#71717A] mr-1 flex items-center gap-1">
-                <Filter className="h-3 w-3" /> Type:
-              </span>
-              {GALLERY_FILTERS.map((filterOption) => (
-                <button
-                  key={filterOption}
-                  type="button"
-                  onClick={() => setFilter(filterOption)}
-                  className={`rounded-lg px-3 py-1 text-xs font-medium transition ${
-                    filter === filterOption
-                      ? "bg-[#333338] text-[#FACC15] border border-[#FACC15]/40"
-                      : "bg-[#1A1A1E] text-[#9E9EA7] border border-[#27272C] hover:bg-[#25252A] hover:text-[#F4F4F5]"
-                  }`}
+            <div className="flex items-center gap-2">
+              <span className="text-[#6b6b74] font-semibold">Sort:</span>
+              <div className="relative">
+                <select
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value)}
+                  className="bg-[#111114] border border-white/10 text-white text-xs rounded-lg px-2.5 py-1 pr-6 appearance-none outline-none cursor-pointer"
                 >
-                  {filterOption}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Section: Published Super Admin Templates */}
-          {filteredPublishedTemplates.length > 0 && (
-            <div className="mt-8 mb-8 border-t border-[#363636] pt-6">
-              <div className="mb-4 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Globe className="h-4 w-4 text-[#FACC15]" />
-                  <h2 className="text-base font-semibold text-[#F5F5F5]">Community & Global Templates</h2>
-                  <span className="rounded-full bg-[#FACC15]/10 px-2 py-0.5 text-[10px] font-semibold text-[#FACC15]">
-                    {filteredPublishedTemplates.length}
-                  </span>
-                </div>
-                {selectedCategory !== "All" && (
-                  <span className="text-xs text-[#969696]">
-                    Filtered by: <span className="text-[#FACC15] font-medium">{selectedCategory}</span>
-                  </span>
-                )}
-              </div>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredPublishedTemplates.map((tpl) => (
-                  <div
-                    key={tpl.id}
-                    className="group overflow-hidden rounded-sm border border-[#363636] bg-[#171717] shadow-sm transition hover:-translate-y-1 hover:border-[#FACC15]/40 hover:shadow-lg"
-                  >
-                    <div className="relative h-48 overflow-hidden bg-[#242424]">
-                      <img
-                        src={
-                          tpl.thumbnail ||
-                          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"
-                        }
-                        alt={tpl.name}
-                        className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                      <div className="absolute left-3 top-3 rounded-full bg-[#1F1F1F]/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#FACC15]">
-                        {tpl.category}
-                      </div>
-                      <div className="absolute right-3 top-3 rounded-full bg-emerald-500/20 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-emerald-400 border border-emerald-500/30">
-                        {tpl.widgets?.length ?? 0} Widgets
-                      </div>
-                    </div>
-
-                    <div className="p-4">
-                      <h3 className="text-base font-semibold text-[#F5F5F5]">{tpl.name}</h3>
-                      <p className="mt-1 text-xs text-[#969696] line-clamp-2">
-                        Complete AI-crafted responsive layout ready for customization.
-                      </p>
-
-                      <div className="mt-4 flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          onClick={() => setPreviewTemplate(tpl)}
-                          className="flex-1 border-[#363636] bg-[#222226] text-[#E0E0E0] hover:bg-[#2E2E34] hover:text-[#FFFFFF] h-9 text-xs font-medium"
-                        >
-                          <Eye className="mr-1.5 h-3.5 w-3.5 text-[#FACC15]" />
-                          Preview
-                        </Button>
-                        <Button
-                          onClick={() => handleUsePublishedTemplate(tpl)}
-                          disabled={loading === tpl.id}
-                          className="flex-1 bg-[#FACC15] text-[#111111] hover:bg-[#FDE047] h-9 text-xs font-semibold"
-                        >
-                          {loading === tpl.id ? "Creating..." : "Use Template"}
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  <option>Most popular</option>
+                  <option>Newest</option>
+                  <option>Name A-Z</option>
+                </select>
+                <ChevronDown className="w-3 h-3 text-[#6b6b74] absolute right-2 top-2 pointer-events-none" />
               </div>
             </div>
-          )}
-
-          {/* Section: Standard Template Library */}
-          <div className="mt-6">
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <h2 className="text-base font-semibold text-[#F5F5F5]">Standard Library</h2>
-                <span className="rounded-full bg-[#2B2B2B] px-2 py-0.5 text-[10px] font-semibold text-[#969696]">
-                  {filteredLibraryTemplates.length}
-                </span>
-              </div>
-              {selectedCategory !== "All" && (
-                <span className="text-xs text-[#969696]">
-                  Category: <span className="text-[#FACC15] font-medium">{selectedCategory}</span>
-                </span>
-              )}
-            </div>
-
-            {filteredLibraryTemplates.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-[#363636] bg-[#1A1A1D] p-10 text-center">
-                <Tag className="mx-auto h-8 w-8 text-[#71717A] mb-2" />
-                <p className="text-sm font-medium text-[#D4D4D8]">No templates in "{selectedCategory}" yet</p>
-                <p className="text-xs text-[#71717A] mt-1 max-w-md mx-auto">
-                  Templates for this category will appear here as soon as they are added or published.
-                </p>
-                <div className="mt-4 flex items-center justify-center gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setSelectedCategory("All");
-                      setFilter("All");
-                      setQuery("");
-                    }}
-                    className="border-[#363636] bg-[#222226] text-[#D0D0D0] hover:bg-[#2A2A30] text-xs h-8"
-                  >
-                    View All Templates
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredLibraryTemplates.map((tpl) => (
-                  <div
-                    key={tpl.id}
-                    className="group overflow-hidden rounded-sm border border-[#363636] bg-[#1F1F1F] shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
-                  >
-                    <div className="relative h-56 overflow-hidden bg-[#242424]">
-                      <img
-                        src={tpl.thumbnail}
-                        alt={tpl.name}
-                        className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
-
-                      {tpl.isPremium && (
-                        <div className="absolute right-3 top-3 rounded-full bg-[#FACC15] px-3 py-1 text-xs font-semibold text-[#111111]">
-                          Premium
-                        </div>
-                      )}
-
-                      {tpl.category && (
-                        <div className="absolute left-3 top-3 rounded-full bg-[#1F1F1F]/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#D0D0D0]">
-                          {tpl.category}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="p-4">
-                      <h3 className="text-lg font-semibold text-[#F5F5F5]">{tpl.name}</h3>
-                      <p className="mt-2 text-sm text-[#969696] line-clamp-2">{tpl.description}</p>
-
-                      {tpl.pageType && (
-                        <p className="mt-3 text-xs text-[#969696]">
-                          {tpl.pageType === "single-page" ? "Single Page" : "Multi Page"}
-                        </p>
-                      )}
-
-                      <div className="mt-4 flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          onClick={() => setPreviewTemplate(tpl)}
-                          className="flex-1 border-[#363636] bg-[#222226] text-[#E0E0E0] hover:bg-[#2E2E34] hover:text-[#FFFFFF] h-9 text-xs font-medium"
-                        >
-                          <Eye className="mr-1.5 h-3.5 w-3.5 text-[#FACC15]" />
-                          Preview
-                        </Button>
-                        <Button
-                          onClick={() => handleUseLibraryTemplate(tpl)}
-                          disabled={loading === tpl.id}
-                          className="flex-1 bg-[#FACC15] text-[#111111] hover:bg-[#FDE047] h-9 text-xs font-semibold"
-                        >
-                          {loading === tpl.id ? "Loading..." : "Use Template"}
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* ================= ALL TEMPLATES GRID ================= */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-extrabold text-white">
+            All <span className="text-[#9a9aa3] font-normal">templates</span>
+          </h2>
+          <span className="text-xs text-[#6b6b74]">
+            Showing {filteredTemplates.length} templates
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {filteredTemplates.map((t) => {
+            const isFav = Boolean(favorites[t.id]);
+            return (
+              <div
+                key={t.id}
+                className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/30 transition overflow-hidden flex flex-col justify-between group shadow-lg"
+              >
+                {/* Mock Browser Chrome + Thumbnail */}
+                <div
+                  className="relative h-48 overflow-hidden bg-[#0d0d10] cursor-pointer"
+                  onClick={() => handleOpenPreview(t)}
+                  title="Click to preview template"
+                >
+                  {/* Browser Chrome Header */}
+                  <div className="h-6 bg-[#18181c] border-b border-white/[0.06] flex items-center px-3 gap-1.5 z-10 relative">
+                    <span className="w-2 h-2 rounded-full bg-white/20" />
+                    <span className="w-2 h-2 rounded-full bg-white/20" />
+                    <span className="w-2 h-2 rounded-full bg-white/20" />
+                    <span className="ml-auto w-14 h-2 rounded-full bg-white/10" />
+                  </div>
+
+                  <img
+                    src={t.thumbnail}
+                    alt={t.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+
+                  {/* Headline Overlay */}
+                  <div className="absolute bottom-3 left-3 right-12">
+                    <p className="text-xs font-bold text-white leading-tight drop-shadow">
+                      {t.headline}
+                    </p>
+                  </div>
+
+                  {/* Free / Premium Badge */}
+                  <div className="absolute left-3 top-9">
+                    {t.isPremium ? (
+                      <span className="px-2 py-0.5 rounded-md bg-[#ffc21a] text-[#1a1400] font-black text-[10px] shadow">
+                        ★ Premium
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded-md bg-[#22c55e] text-[#04130d] font-black text-[10px] shadow">
+                        Free
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Favorite Heart Button */}
+                  <button
+                    type="button"
+                    onClick={(e) => toggleFavorite(t.id, e)}
+                    className="absolute right-3 top-9 w-7 h-7 rounded-full bg-black/50 hover:bg-black/80 backdrop-blur-sm border border-white/10 flex items-center justify-center transition cursor-pointer z-10"
+                    title="Favorite"
+                  >
+                    <Heart
+                      className={`w-3.5 h-3.5 ${
+                        isFav ? "fill-[#ffc21a] text-[#ffc21a]" : "text-white"
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {/* Card Details */}
+                <div className="p-4 space-y-3">
+                  <div>
+                    <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase">
+                      {t.categoryDisplay} · {t.pageTypeDisplay}
+                    </p>
+                    <h3 className="font-extrabold text-white text-base group-hover:text-[#ffc21a] transition truncate mt-0.5">
+                      {t.name}
+                    </h3>
+                  </div>
+
+                  <div className="flex items-center justify-between text-[11px] text-[#6b6b74]">
+                    <span className="flex items-center gap-1">
+                      <User className="w-3 h-3" />
+                      <span>{t.uses}</span>
+                    </span>
+                    <span>{t.addedTime}</span>
+                  </div>
+
+                  {/* Card Actions */}
+                  <div className="pt-3 border-t border-white/[0.06] flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenPreview(t)}
+                      className="w-9 h-9 rounded-xl bg-[#1f1f25] border border-white/10 hover:border-[#ffc21a]/40 text-[#9a9aa3] hover:text-[#ffc21a] flex items-center justify-center transition cursor-pointer shrink-0"
+                      title="Preview"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
+                    <button
+                      type="button"
+                      disabled={loadingId === t.id}
+                      onClick={() => handleUseTemplate(t)}
+                      className="flex-1 py-2 px-3.5 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md shadow-[#ffc21a]/20 hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <span>{loadingId === t.id ? "Loading…" : "Use template →"}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
       {/* Full-Screen Template Preview Modal */}
       <TemplatePreviewModal
@@ -461,11 +594,7 @@ function TemplatesPage() {
         template={previewTemplate}
         onUseTemplate={(tpl) => {
           setPreviewTemplate(null);
-          if (publishedTemplates.some((p) => p.id === tpl.id)) {
-            void handleUsePublishedTemplate(tpl);
-          } else {
-            void handleUseLibraryTemplate(tpl);
-          }
+          void handleUseTemplate(tpl);
         }}
       />
     </div>

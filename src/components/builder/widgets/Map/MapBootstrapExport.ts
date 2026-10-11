@@ -1,11 +1,12 @@
+import type { WidgetData, WidgetExportContext } from "../widgetRegistry";
 import {
   type MapWidgetData,
   type MapVariant,
   extractMapSrc,
   DEFAULT_MAP_URL,
+  isMapWidgetData,
+  defaultMapWidgetData,
 } from "./MapTypes";
-
-type ExportContext = { editorMode?: boolean };
 
 function escapeAttr(val: string): string {
   return val.replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -195,19 +196,20 @@ function renderEditorOverlay(
   `;
 }
 
-export function buildMapBootstrapMarkup(data: MapWidgetData, context?: ExportContext): string {
-  if (data.advanced?.visibility === false) return "";
+export function buildMapBootstrapMarkup(data: WidgetData, context?: WidgetExportContext): string {
+  const d: MapWidgetData = isMapWidgetData(data) ? data : defaultMapWidgetData;
+  if (d.advanced?.visibility === false) return "";
 
   const isEditor = !!context?.editorMode;
-  const c = data.content;
-  const s = data.style;
-  const l = data.layout;
-  const variant = (data.variant as MapVariant) || "Full Width Clean";
+  const c = d.content;
+  const s = d.style;
+  const l = d.layout;
+  const variant = (d.variant as MapVariant) || "Full Width Clean";
 
   const mapSrc = extractMapSrc(c.embedCode || c.mapUrl);
   const height = c.height || "480px";
   const filterStyle = getFilterStyle(s.filter);
-  const iframeId = `wto-map-iframe-${data.id}`;
+  const iframeId = `wto-map-iframe-${d.id}`;
 
   const isFluid = l.containerMode === "fluid" || variant === "Full Width Clean" || variant === "Dark Mode Map";
   const maxWidth = isFluid ? "100%" : (l.maxWidth || "1200px");
@@ -218,14 +220,14 @@ export function buildMapBootstrapMarkup(data: MapWidgetData, context?: ExportCon
   const isAddressVisible = c.showAddress !== false;
 
   const editorOverlay = isEditor
-    ? renderEditorOverlay(data.id, c.embedCode || "", mapSrc, isCardVisible, isAddressVisible)
+    ? renderEditorOverlay(d.id, c.embedCode || "", mapSrc, isCardVisible, isAddressVisible)
     : "";
-  const infoCard = renderInfoCard(data);
+  const infoCard = renderInfoCard(d);
 
   const hoverStyle = isEditor
     ? `
       <style>
-        .wto-map-container-${data.id}:hover .wto-map-hover-bar {
+        .wto-map-container-${d.id}:hover .wto-map-hover-bar {
           opacity: 1 !important;
           pointer-events: auto !important;
           transform: translateX(-50%) translateY(4px) !important;
@@ -236,7 +238,7 @@ export function buildMapBootstrapMarkup(data: MapWidgetData, context?: ExportCon
 
   return `
     ${hoverStyle}
-    <section class="wto-map-section wto-map-container-${data.id}" style="position: relative; width: 100%; background: ${s.backgroundColor || "#ffffff"}; padding-top: ${l.paddingTop || "0px"}; padding-bottom: ${l.paddingBottom || "0px"}; overflow: hidden;">
+    <section class="wto-map-section wto-map-container-${d.id}" style="position: relative; width: 100%; background: ${s.backgroundColor || "#ffffff"}; padding-top: ${l.paddingTop || "0px"}; padding-bottom: ${l.paddingBottom || "0px"}; overflow: hidden;">
       <div style="max-width: ${maxWidth}; margin: 0 auto; padding-left: ${containerPadding}; padding-right: ${containerPadding}; position: relative;">
         <div style="position: relative; width: 100%; height: ${height}; border-radius: ${sectionBorderRadius}; overflow: hidden; background: #e5e7eb;">
           <iframe

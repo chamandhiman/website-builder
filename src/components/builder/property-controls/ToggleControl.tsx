@@ -2,7 +2,8 @@ import { useId } from "react";
 
 export interface ToggleControlProps {
   label: string;
-  checked: boolean;
+  checked?: boolean;
+  value?: boolean;
   onChange: (checked: boolean) => void;
   disabled?: boolean;
   hint?: string;
@@ -12,11 +13,13 @@ export interface ToggleControlProps {
 export function ToggleControl({
   label,
   checked,
+  value,
   onChange,
   disabled = false,
   hint,
   tooltip,
 }: ToggleControlProps) {
+  const effectiveChecked = Boolean(checked ?? value ?? false);
   const id = useId();
 
   return (
@@ -29,16 +32,16 @@ export function ToggleControl({
           id={id}
           type="button"
           role="switch"
-          aria-checked={checked}
+          aria-checked={effectiveChecked}
           disabled={disabled}
-          onClick={() => onChange(!checked)}
+          onClick={() => onChange(!effectiveChecked)}
           className={`relative inline-flex h-[18px] w-[34px] shrink-0 items-center rounded-full border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#FACC15]/30 ${
-            checked ? "border-[#FACC15] bg-[#FACC15]/15" : "border-[#3A3A3A] bg-[#2A2A2A]"
+            effectiveChecked ? "border-[#FACC15] bg-[#FACC15]/15" : "border-[#3A3A3A] bg-[#2A2A2A]"
           } ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
         >
           <span
             className={`inline-block h-3 w-3 rounded-full transition-all duration-200 ${
-              checked ? "translate-x-[17px] bg-[#FACC15] shadow-sm" : "translate-x-[3px] bg-[#6A6A6A]"
+              effectiveChecked ? "translate-x-[17px] bg-[#FACC15] shadow-sm" : "translate-x-[3px] bg-[#6A6A6A]"
             }`}
           />
         </button>

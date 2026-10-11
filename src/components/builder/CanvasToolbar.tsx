@@ -5,6 +5,8 @@ import { useNavigate } from "@tanstack/react-router";
 import { useBuilder } from "@/lib/builder/store";
 import { useAuth } from "@/lib/auth";
 import { buildSiteExport } from "@/lib/builder/preview";
+import { exportProjectAsReactZip } from "@/lib/builder/export/reactExporter";
+import { DownloadDropdown } from "./DownloadDropdown";
 import JSZip from "jszip";
 import {
   ChevronDown,
@@ -192,6 +194,11 @@ export function CanvasToolbar({
         return;
       }
 
+      // Persist state so preview tab has immediate access via localStorage
+      try {
+        useBuilder.getState().persist();
+      } catch (err) {}
+
       const previewSlug = `${slugifyName(project.name)}-${project.id}`;
       const previewUrl = `${window.location.origin}/demo/${encodeURIComponent(previewSlug)}?page=${encodeURIComponent(currentPage.slug)}`;
 
@@ -202,43 +209,61 @@ export function CanvasToolbar({
         pageId: currentPage.id,
       };
 
+      // Save directly to dedicated preview storage keys
+      try {
+        const previewStr = JSON.stringify({
+          project,
+          pageId: currentPage.id,
+          timestamp: Date.now(),
+        });
+        localStorage.setItem(`wto-preview-${project.id}`, previewStr);
+        localStorage.setItem("wto-preview-latest", previewStr);
+        sessionStorage.setItem(`wto-preview-${project.id}`, previewStr);
+        sessionStorage.setItem("wto-preview-latest", previewStr);
+      } catch (err) {}
+
+      // Broadcast via BroadcastChannel
+      try {
+        const bc = new BroadcastChannel("wto-builder-preview");
+        bc.postMessage(payload);
+        bc.close();
+      } catch (err) {}
+
       const previewWindow = window.open(previewUrl, '_blank');
       if (!previewWindow) {
-        console.error("[PREVIEW:SENDER] window.open returned null: popup blocked?");
         toast.error('Preview failed: Unable to open preview window');
         return;
       }
 
-      let payloadSent = false;
       const sendPayload = () => {
-        if (payloadSent) return;
-        payloadSent = true;
         try {
           previewWindow.postMessage(payload, "*");
-        } catch (err) {
-          console.error("Preview postMessage failed", err);
-        }
+        } catch (err) {}
       };
+
+      sendPayload();
 
       const handlePreviewReady = (event: MessageEvent) => {
         if (event.data && event.data.__previewReady) {
-          console.log("[PREVIEW:SENDER] received __previewReady, sending payload");
           sendPayload();
-          window.removeEventListener("message", handlePreviewReady);
         }
       };
 
       window.addEventListener("message", handlePreviewReady);
 
-      console.log("[PREVIEW:SENDER] opening preview", { previewUrl, projectId: project.id, pageId: currentPage.id, pageSlug: currentPage.slug });
-      console.log("[PREVIEW:SENDER] window.opened", { href: previewWindow.location?.href, closed: previewWindow.closed });
-
-      const closedCheck = window.setInterval(() => {
+      const postInterval = window.setInterval(() => {
         if (previewWindow.closed) {
-          window.clearInterval(closedCheck);
+          window.clearInterval(postInterval);
           window.removeEventListener("message", handlePreviewReady);
+          return;
         }
-      }, 1000);
+        sendPayload();
+      }, 200);
+
+      window.setTimeout(() => {
+        window.clearInterval(postInterval);
+        window.removeEventListener("message", handlePreviewReady);
+      }, 4000);
 
       previewWindow.focus();
       toast.success('Preview opened', { duration: 2000, position: 'top-center' });
@@ -489,15 +514,18 @@ export function CanvasToolbar({
               )}
             </button>
 
-            <button
-              type="button"
-              className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#363636] bg-[#1F1F1F] px-3 text-sm font-medium text-[#F5F5F5] transition hover:border-[#FACC15] hover:text-[#FACC15]"
-              onClick={async () => { await requireExportAuth(() => downloadZip()); }}
-              title="Export ZIP"
-            >
-              <Download className="w-4 h-4" />
-              <span className="hidden md:inline">Export ZIP</span>
-            </button>
+            <DownloadDropdown
+              onDownloadHtml={async () => {
+                await requireExportAuth(() => downloadZip());
+              }}
+              onDownloadReact={async () => {
+                await requireExportAuth(async () => {
+                  if (project) {
+                    await exportProjectAsReactZip(project);
+                  }
+                });
+              }}
+            />
           </>
         )}
       </div>

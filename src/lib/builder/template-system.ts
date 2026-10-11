@@ -1,6 +1,17 @@
-import { TEMPLATE_CATEGORIES, TEMPLATE_DATA_LIBRARY, type TemplateCategory, type TemplateDataDefinition, type TemplatePageType, type TemplateSectionData } from "./template-data";
+import {
+  TEMPLATE_CATEGORIES,
+  TEMPLATE_CATEGORY_GROUPS,
+  matchesTemplateCategory,
+  type TemplateCategoryGroup,
+  TEMPLATE_DATA_LIBRARY,
+  type TemplateCategory,
+  type TemplateDataDefinition,
+  type TemplatePageType,
+  type TemplateSectionData,
+} from "./template-data";
 
-export type { TemplateCategory, TemplatePageType };
+export type { TemplateCategory, TemplatePageType, TemplateCategoryGroup };
+export { TEMPLATE_CATEGORIES, TEMPLATE_CATEGORY_GROUPS, matchesTemplateCategory };
 
 export interface TemplateSectionDefinition {
   name: string;
@@ -21,7 +32,7 @@ export interface TemplateSectionDefinition {
 }
 
 export interface TemplatePageDefinition {
-  id: string;
+  id?: string;
   name: string;
   slug: string;
   description?: string;
@@ -36,9 +47,9 @@ export interface TemplateDefinition {
   pageType?: TemplatePageType;
   layout?: {
     type: "default" | "custom";
-  };
+  } | Record<string, any>;
   description: string;
-  accent: string;
+  accent?: string;
   thumbnail: string;
   previewImages?: string[];
   sharedSections?: TemplateSectionDefinition[];
@@ -63,8 +74,6 @@ export interface TemplateDefinition {
   seo?: Record<string, any>;
   projectSeo?: Record<string, any>;
 }
-
-export { TEMPLATE_CATEGORIES };
 
 const escapeHtml = (value: string) =>
   value

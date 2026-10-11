@@ -10,7 +10,7 @@ import { SeoDialog } from "./SeoDialog";
 import { RightContextPanel } from "./RightContextPanel";
 import { CanvasToolbar } from "./CanvasToolbar";
 import type { Page } from "@/lib/builder/store";
-import { AppNav } from "@/components/layout/AppNav";
+import { AppSidebarNav } from "@/components/layout/AppSidebar";
 
 export function BuilderShell() {
   const hydrate = useBuilder((s) => s.hydrate);
@@ -93,7 +93,7 @@ export function BuilderShell() {
   return (
     <div className="builder-shell flex h-screen w-full bg-[#171717] text-[#F5F5F5]">
       {/* LEFT SIDEBAR */}
-      <AppNav fixed={false} />
+      <AppSidebarNav compact />
 
       {/* CANVAS SECTION */}
       <div className="builder-canvas-section flex flex-1 min-w-0 flex-col">

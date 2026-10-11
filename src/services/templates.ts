@@ -39,6 +39,7 @@ export interface Template {
   sharedHeader?: PageSection | null;
   sharedFooter?: PageSection | null;
   globalCss?: string;
+  globalJs?: string;
   customHead?: string;
   assets?: Record<string, any>;
   createdBy: string;
@@ -112,7 +113,11 @@ function mapTemplate(snapshot: { id: string; data(): Record<string, unknown> }):
     sortOrder: typeof data.sortOrder === "number" ? data.sortOrder : undefined,
     widgets,
     pages,
+    sharedHeader: (data.sharedHeader as PageSection) || CUSTOM_WEBSITE_CHROME_MAP[snapshot.id]?.sharedHeader || (snapshot.id === "tpl-drivepro-driving-school" ? DRIVE_PRO_SHARED_HEADER : snapshot.id === "tpl-flow-yoga" ? FLOW_YOGA_SHARED_HEADER : snapshot.id === "tpl-nexora-agency" ? NEXORA_SHARED_HEADER : undefined),
+    sharedFooter: (data.sharedFooter as PageSection) || CUSTOM_WEBSITE_CHROME_MAP[snapshot.id]?.sharedFooter || (snapshot.id === "tpl-drivepro-driving-school" ? DRIVE_PRO_SHARED_FOOTER : snapshot.id === "tpl-flow-yoga" ? FLOW_YOGA_SHARED_FOOTER : snapshot.id === "tpl-nexora-agency" ? NEXORA_SHARED_FOOTER : undefined),
+    assets: (data.assets as Record<string, any>) || CUSTOM_WEBSITE_CHROME_MAP[snapshot.id]?.assets || (snapshot.id === "tpl-drivepro-driving-school" ? DRIVE_PRO_ASSETS : snapshot.id === "tpl-flow-yoga" ? FLOW_YOGA_ASSETS : snapshot.id === "tpl-nexora-agency" ? NEXORA_ASSETS : undefined),
     globalCss: data.globalCss ? String(data.globalCss) : undefined,
+    globalJs: data.globalJs ? String(data.globalJs) : undefined,
     customHead: data.customHead ? String(data.customHead) : undefined,
     createdBy: String(data.createdBy ?? ""),
     createdAt: data.createdAt && typeof (data.createdAt as any).toDate === "function"
@@ -125,6 +130,10 @@ function mapTemplate(snapshot: { id: string; data(): Record<string, unknown> }):
 }
 
 import { PREBUILT_TEMPLATES } from "./templateSeeds";
+import { FLOW_YOGA_SHARED_HEADER, FLOW_YOGA_SHARED_FOOTER, FLOW_YOGA_ASSETS } from "./templateSeedsYoga";
+import { NEXORA_SHARED_HEADER, NEXORA_SHARED_FOOTER, NEXORA_ASSETS } from "./templateSeedsAgency";
+import { DRIVE_PRO_SHARED_HEADER, DRIVE_PRO_SHARED_FOOTER, DRIVE_PRO_ASSETS } from "./templateSeedsDrivingSchool";
+import { CUSTOM_WEBSITE_CHROME_MAP } from "./templateSeedsWebsites";
 
 export async function seedPrebuiltTemplatesToFirestore(): Promise<number> {
   try {
@@ -289,8 +298,16 @@ export function createProjectFromTemplate(tpl: Template, customName?: string): s
       };
     });
 
-    const initialSharedHeader = tpl.sharedHeader
-      ? { ...tpl.sharedHeader, id: SHARED_HEADER_SECTION_ID, shared: "header" as const }
+    const customSeedHeader = CUSTOM_WEBSITE_CHROME_MAP[tpl.id]?.sharedHeader || (tpl.id === "tpl-drivepro-driving-school" ? DRIVE_PRO_SHARED_HEADER : tpl.id === "tpl-flow-yoga" ? FLOW_YOGA_SHARED_HEADER : tpl.id === "tpl-nexora-agency" ? NEXORA_SHARED_HEADER : undefined);
+    const customSeedFooter = CUSTOM_WEBSITE_CHROME_MAP[tpl.id]?.sharedFooter || (tpl.id === "tpl-drivepro-driving-school" ? DRIVE_PRO_SHARED_FOOTER : tpl.id === "tpl-flow-yoga" ? FLOW_YOGA_SHARED_FOOTER : tpl.id === "tpl-nexora-agency" ? NEXORA_SHARED_FOOTER : undefined);
+
+    const initialSharedHeader = (tpl.sharedHeader || customSeedHeader)
+      ? {
+          ...(tpl.sharedHeader || customSeedHeader)!,
+          id: SHARED_HEADER_SECTION_ID,
+          shared: "header" as const,
+          widgetInstance: (tpl.sharedHeader || customSeedHeader)!.widgetInstance ?? undefined,
+        }
       : (clonedPages.flatMap((p) => p.sections).find(isNavbarSection)
           ? {
               ...clonedPages.flatMap((p) => p.sections).find(isNavbarSection)!,
@@ -300,8 +317,13 @@ export function createProjectFromTemplate(tpl: Template, customName?: string): s
             }
           : current.sharedHeader);
 
-    const initialSharedFooter = tpl.sharedFooter
-      ? { ...tpl.sharedFooter, id: SHARED_FOOTER_SECTION_ID, shared: "footer" as const }
+    const initialSharedFooter = (tpl.sharedFooter || customSeedFooter)
+      ? {
+          ...(tpl.sharedFooter || customSeedFooter)!,
+          id: SHARED_FOOTER_SECTION_ID,
+          shared: "footer" as const,
+          widgetInstance: (tpl.sharedFooter || customSeedFooter)!.widgetInstance ?? undefined,
+        }
       : (clonedPages.flatMap((p) => p.sections).find(isFooterSection)
           ? {
               ...clonedPages.flatMap((p) => p.sections).find(isFooterSection)!,
@@ -316,6 +338,7 @@ export function createProjectFromTemplate(tpl: Template, customName?: string): s
         ...s.projects,
         [current.id]: {
           ...current,
+          layout: { type: "custom" },
           pages: clonedPages,
           currentPageId: clonedPages[0]?.id || current.currentPageId,
           selectedTemplateId: tpl.id,

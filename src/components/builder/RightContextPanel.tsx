@@ -31,6 +31,7 @@ import {
   CreditCard,
   MessageSquareQuote,
   Layers,
+  Star,
 } from "lucide-react";
 import { useMounted } from "@/hooks/use-mounted";
 import { getAllWidgetRegistrations, createWidgetInstance, type WidgetRegistration } from "./widgets/widgetRegistry";
@@ -156,6 +157,15 @@ function getWidgetVisual(widget: WidgetRegistration) {
       accentColor: "text-amber-400",
       badgeBg: "bg-[#202024] border-[#2F2F36]",
       subtitle: "Reviews in static grid or carousel",
+    };
+  }
+  // 12b. Google Reviews
+  if (type === "google-reviews" || id.includes("google-review")) {
+    return {
+      Icon: Star,
+      accentColor: "text-amber-400",
+      badgeBg: "bg-[#202024] border-[#2F2F36]",
+      subtitle: "Real-time Google Reviews & script widget",
     };
   }
   // 13. Footer

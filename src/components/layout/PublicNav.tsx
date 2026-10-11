@@ -45,7 +45,7 @@ export function PublicNav() {
           ) : (
             <>
               <Link
-                to="/login"
+                to={"/login" as any}
                 className="rounded-full border border-[#2a2a2f] px-4 py-2 text-xs font-semibold text-[#f4f4f5] hover:border-[#facc15] transition"
               >
                 Log in

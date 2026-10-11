@@ -1,6 +1,8 @@
 import { useMounted } from "@/hooks/use-mounted";
 import { useBuilder } from "@/lib/builder/store";
 import { buildSiteExport } from "@/lib/builder/preview";
+import { exportProjectAsReactZip } from "@/lib/builder/export/reactExporter";
+import { DownloadDropdown } from "./DownloadDropdown";
 import JSZip from "jszip";
 import { SaveStatus } from "./SaveStatus";
 import { Undo2, Redo2, Monitor, Tablet, Smartphone, Download, Save, Moon, Sun, Sparkles } from "lucide-react";
@@ -60,28 +62,22 @@ export function Toolbar() {
 
   async function openPreview() {
     if (!project || !mounted) {
-      console.warn("[PREVIEW:SENDER] skipped: missing project or mounted", { project: !!project, mounted });
       return;
     }
 
     const currentPage = project.pages.find((p) => p.id === project.currentPageId) || project.pages[0];
     if (!currentPage) {
-      console.warn("[PREVIEW:SENDER] skipped: no current page", { pageCount: project.pages?.length });
       toast.error('Preview failed: No current page available for preview');
       return;
     }
 
+    // Persist state so preview tab has immediate access via localStorage
+    try {
+      useBuilder.getState().persist();
+    } catch (err) {}
+
     const previewSlug = `${slugifyName(project.name)}-${project.id}`;
     const previewUrl = `${window.location.origin}/demo/${encodeURIComponent(previewSlug)}?page=${encodeURIComponent(currentPage.slug)}`;
-    console.log("[PREVIEW:SENDER] opening preview", { previewUrl, projectId: project.id, pageId: currentPage.id, pageSlug: currentPage.slug });
-
-    const previewWindow = window.open(previewUrl, '_blank');
-    if (!previewWindow) {
-      console.error("[PREVIEW:SENDER] window.open returned null: popup blocked?");
-      toast.error('Preview failed: Unable to open preview window');
-      return;
-    }
-    console.log("[PREVIEW:SENDER] window.opened", { href: previewWindow.location?.href, closed: previewWindow.closed });
 
     const payload = {
       __lovablePreviewPayload: true,
@@ -89,31 +85,64 @@ export function Toolbar() {
       project,
       pageId: currentPage.id,
     };
-    console.log("[PREVIEW:SENDER] sending payload", { keys: Object.keys(payload), projectId: payload.projectId, hasProject: !!payload.project });
 
+    // Save directly to dedicated preview storage keys
     try {
-      previewWindow.postMessage(payload, window.location.origin);
-      console.log("[PREVIEW:SENDER] first postMessage sent", { targetOrigin: window.location.origin });
-    } catch (err) {
-      console.error("[PREVIEW:SENDER] first postMessage failed", err);
+      const previewStr = JSON.stringify({
+        project,
+        pageId: currentPage.id,
+        timestamp: Date.now(),
+      });
+      localStorage.setItem(`wto-preview-${project.id}`, previewStr);
+      localStorage.setItem("wto-preview-latest", previewStr);
+      sessionStorage.setItem(`wto-preview-${project.id}`, previewStr);
+      sessionStorage.setItem("wto-preview-latest", previewStr);
+    } catch (err) {}
+
+    // Broadcast via BroadcastChannel
+    try {
+      const bc = new BroadcastChannel("wto-builder-preview");
+      bc.postMessage(payload);
+      bc.close();
+    } catch (err) {}
+
+    const previewWindow = window.open(previewUrl, '_blank');
+    if (!previewWindow) {
+      toast.error('Preview failed: Unable to open preview window');
+      return;
     }
+
+    const sendPayload = () => {
+      try {
+        previewWindow.postMessage(payload, "*");
+      } catch (err) {}
+    };
+
+    sendPayload();
+
+    const handlePreviewReady = (event: MessageEvent) => {
+      if (event.data && event.data.__previewReady) {
+        sendPayload();
+      }
+    };
+
+    window.addEventListener("message", handlePreviewReady);
 
     const postInterval = window.setInterval(() => {
       if (previewWindow.closed) {
         window.clearInterval(postInterval);
-        console.log("[PREVIEW:SENDER] preview window closed, stopped retries");
+        window.removeEventListener("message", handlePreviewReady);
         return;
       }
-      try {
-        previewWindow.postMessage(payload, window.location.origin);
-        console.log("[PREVIEW:SENDER] retry postMessage sent");
-      } catch (_) {
-        console.warn("[PREVIEW:SENDER] retry postMessage failed");
-      }
-    }, 250);
-    window.setTimeout(() => window.clearInterval(postInterval), 2000);
-    previewWindow.focus();
+      sendPayload();
+    }, 200);
 
+    window.setTimeout(() => {
+      window.clearInterval(postInterval);
+      window.removeEventListener("message", handlePreviewReady);
+    }, 4000);
+
+    previewWindow.focus();
     toast.success('Preview opened', { duration: 2000, position: 'top-center' });
   }
 
@@ -197,12 +226,17 @@ export function Toolbar() {
             >
               <Monitor className="h-3.5 w-3.5" /> Preview
             </button>
-            <button
-              className="flex h-8 items-center gap-2 rounded-full bg-[#FACC15] px-3 text-[11px] font-medium text-[#111111] transition hover:bg-[#FDE047]"
-              onClick={handleExportClick}
-            >
-              <Download className="h-3.5 w-3.5" /> Export ZIP
-            </button>
+            <DownloadDropdown
+              buttonClassName="flex h-8 items-center gap-1.5 rounded-full border border-[#363636] bg-[#1F1F1F] px-3 text-[11px] font-medium text-[#F5F5F5] transition hover:border-[#FACC15] hover:text-[#FACC15]"
+              onDownloadHtml={handleExportClick}
+              onDownloadReact={async () => {
+                await requireExportAuth(async () => {
+                  if (project) {
+                    await exportProjectAsReactZip(project);
+                  }
+                });
+              }}
+            />
           </div>
         ) : null}
       </div>

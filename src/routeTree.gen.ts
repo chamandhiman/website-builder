@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TemplatesRouteImport } from './routes/templates'
 import { Route as SuperAdminRouteImport } from './routes/super-admin'
 import { Route as RegisterRouteImport } from './routes/register'
-import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TemplatesIndexRouteImport } from './routes/templates.index'
@@ -26,14 +25,22 @@ import { Route as SiteSlugRouteImport } from './routes/site.$slug'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as EditorProjectIdRouteImport } from './routes/editor.$projectId'
 import { Route as DemoProjectIdRouteImport } from './routes/demo.$projectId'
+import { Route as DashboardWidgetsRouteImport } from './routes/dashboard.widgets'
 import { Route as DashboardTrashRouteImport } from './routes/dashboard.trash'
 import { Route as DashboardTemplatesRouteImport } from './routes/dashboard.templates'
 import { Route as DashboardSharedRouteImport } from './routes/dashboard.shared'
 import { Route as DashboardProjectsRouteImport } from './routes/dashboard.projects'
 import { Route as DashboardFavoritesRouteImport } from './routes/dashboard.favorites'
 import { Route as SuperAdminTemplatesIndexRouteImport } from './routes/super-admin.templates.index'
+import { Route as DashboardWidgetsIndexRouteImport } from './routes/dashboard.widgets.index'
 import { Route as SuperAdminTemplatesCreateRouteImport } from './routes/super-admin.templates.create'
+import { Route as DashboardWidgetsCreateRouteImport } from './routes/dashboard.widgets.create'
 import { Route as SuperAdminTemplatesTemplateIdEditRouteImport } from './routes/super-admin.templates.$templateId.edit'
+import { Route as DashboardWidgetsGoogleReviewsWidgetIdRouteImport } from './routes/dashboard.widgets.google-reviews.$widgetId'
+import { Route as DashboardWidgetsFaqAccordionWidgetIdRouteImport } from './routes/dashboard.widgets.faq-accordion.$widgetId'
+import { Route as DashboardWidgetsCountdownWidgetIdRouteImport } from './routes/dashboard.widgets.countdown.$widgetId'
+import { Route as DashboardWidgetsAnnouncementPopupWidgetIdRouteImport } from './routes/dashboard.widgets.announcement-popup.$widgetId'
+import { Route as DashboardWidgetsWidgetIdInstallRouteImport } from './routes/dashboard.widgets.$widgetId.install'
 
 const TemplatesRoute = TemplatesRouteImport.update({
   id: '/templates',
@@ -48,11 +55,6 @@ const SuperAdminRoute = SuperAdminRouteImport.update({
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -120,6 +122,11 @@ const DemoProjectIdRoute = DemoProjectIdRouteImport.update({
   path: '/demo/$projectId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardWidgetsRoute = DashboardWidgetsRouteImport.update({
+  id: '/widgets',
+  path: '/widgets',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardTrashRoute = DashboardTrashRouteImport.update({
   id: '/trash',
   path: '/trash',
@@ -151,23 +158,62 @@ const SuperAdminTemplatesIndexRoute =
     path: '/',
     getParentRoute: () => SuperAdminTemplatesRoute,
   } as any)
+const DashboardWidgetsIndexRoute = DashboardWidgetsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardWidgetsRoute,
+} as any)
 const SuperAdminTemplatesCreateRoute =
   SuperAdminTemplatesCreateRouteImport.update({
     id: '/create',
     path: '/create',
     getParentRoute: () => SuperAdminTemplatesRoute,
   } as any)
+const DashboardWidgetsCreateRoute = DashboardWidgetsCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => DashboardWidgetsRoute,
+} as any)
 const SuperAdminTemplatesTemplateIdEditRoute =
   SuperAdminTemplatesTemplateIdEditRouteImport.update({
     id: '/$templateId/edit',
     path: '/$templateId/edit',
     getParentRoute: () => SuperAdminTemplatesRoute,
   } as any)
+const DashboardWidgetsGoogleReviewsWidgetIdRoute =
+  DashboardWidgetsGoogleReviewsWidgetIdRouteImport.update({
+    id: '/google-reviews/$widgetId',
+    path: '/google-reviews/$widgetId',
+    getParentRoute: () => DashboardWidgetsRoute,
+  } as any)
+const DashboardWidgetsFaqAccordionWidgetIdRoute =
+  DashboardWidgetsFaqAccordionWidgetIdRouteImport.update({
+    id: '/faq-accordion/$widgetId',
+    path: '/faq-accordion/$widgetId',
+    getParentRoute: () => DashboardWidgetsRoute,
+  } as any)
+const DashboardWidgetsCountdownWidgetIdRoute =
+  DashboardWidgetsCountdownWidgetIdRouteImport.update({
+    id: '/countdown/$widgetId',
+    path: '/countdown/$widgetId',
+    getParentRoute: () => DashboardWidgetsRoute,
+  } as any)
+const DashboardWidgetsAnnouncementPopupWidgetIdRoute =
+  DashboardWidgetsAnnouncementPopupWidgetIdRouteImport.update({
+    id: '/announcement-popup/$widgetId',
+    path: '/announcement-popup/$widgetId',
+    getParentRoute: () => DashboardWidgetsRoute,
+  } as any)
+const DashboardWidgetsWidgetIdInstallRoute =
+  DashboardWidgetsWidgetIdInstallRouteImport.update({
+    id: '/$widgetId/install',
+    path: '/$widgetId/install',
+    getParentRoute: () => DashboardWidgetsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
-  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/super-admin': typeof SuperAdminRouteWithChildren
   '/templates': typeof TemplatesRouteWithChildren
@@ -176,6 +222,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/shared': typeof DashboardSharedRoute
   '/dashboard/templates': typeof DashboardTemplatesRoute
   '/dashboard/trash': typeof DashboardTrashRoute
+  '/dashboard/widgets': typeof DashboardWidgetsRouteWithChildren
   '/demo/$projectId': typeof DemoProjectIdRoute
   '/editor/$projectId': typeof EditorProjectIdRoute
   '/p/$slug': typeof PSlugRoute
@@ -187,13 +234,19 @@ export interface FileRoutesByFullPath {
   '/dashboard/': typeof DashboardIndexRoute
   '/super-admin/': typeof SuperAdminIndexRoute
   '/templates/': typeof TemplatesIndexRoute
+  '/dashboard/widgets/create': typeof DashboardWidgetsCreateRoute
   '/super-admin/templates/create': typeof SuperAdminTemplatesCreateRoute
+  '/dashboard/widgets/': typeof DashboardWidgetsIndexRoute
   '/super-admin/templates/': typeof SuperAdminTemplatesIndexRoute
+  '/dashboard/widgets/$widgetId/install': typeof DashboardWidgetsWidgetIdInstallRoute
+  '/dashboard/widgets/announcement-popup/$widgetId': typeof DashboardWidgetsAnnouncementPopupWidgetIdRoute
+  '/dashboard/widgets/countdown/$widgetId': typeof DashboardWidgetsCountdownWidgetIdRoute
+  '/dashboard/widgets/faq-accordion/$widgetId': typeof DashboardWidgetsFaqAccordionWidgetIdRoute
+  '/dashboard/widgets/google-reviews/$widgetId': typeof DashboardWidgetsGoogleReviewsWidgetIdRoute
   '/super-admin/templates/$templateId/edit': typeof SuperAdminTemplatesTemplateIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/dashboard/favorites': typeof DashboardFavoritesRoute
   '/dashboard/projects': typeof DashboardProjectsRoute
@@ -210,15 +263,21 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardIndexRoute
   '/super-admin': typeof SuperAdminIndexRoute
   '/templates': typeof TemplatesIndexRoute
+  '/dashboard/widgets/create': typeof DashboardWidgetsCreateRoute
   '/super-admin/templates/create': typeof SuperAdminTemplatesCreateRoute
+  '/dashboard/widgets': typeof DashboardWidgetsIndexRoute
   '/super-admin/templates': typeof SuperAdminTemplatesIndexRoute
+  '/dashboard/widgets/$widgetId/install': typeof DashboardWidgetsWidgetIdInstallRoute
+  '/dashboard/widgets/announcement-popup/$widgetId': typeof DashboardWidgetsAnnouncementPopupWidgetIdRoute
+  '/dashboard/widgets/countdown/$widgetId': typeof DashboardWidgetsCountdownWidgetIdRoute
+  '/dashboard/widgets/faq-accordion/$widgetId': typeof DashboardWidgetsFaqAccordionWidgetIdRoute
+  '/dashboard/widgets/google-reviews/$widgetId': typeof DashboardWidgetsGoogleReviewsWidgetIdRoute
   '/super-admin/templates/$templateId/edit': typeof SuperAdminTemplatesTemplateIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
-  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/super-admin': typeof SuperAdminRouteWithChildren
   '/templates': typeof TemplatesRouteWithChildren
@@ -227,6 +286,7 @@ export interface FileRoutesById {
   '/dashboard/shared': typeof DashboardSharedRoute
   '/dashboard/templates': typeof DashboardTemplatesRoute
   '/dashboard/trash': typeof DashboardTrashRoute
+  '/dashboard/widgets': typeof DashboardWidgetsRouteWithChildren
   '/demo/$projectId': typeof DemoProjectIdRoute
   '/editor/$projectId': typeof EditorProjectIdRoute
   '/p/$slug': typeof PSlugRoute
@@ -238,8 +298,15 @@ export interface FileRoutesById {
   '/dashboard/': typeof DashboardIndexRoute
   '/super-admin/': typeof SuperAdminIndexRoute
   '/templates/': typeof TemplatesIndexRoute
+  '/dashboard/widgets/create': typeof DashboardWidgetsCreateRoute
   '/super-admin/templates/create': typeof SuperAdminTemplatesCreateRoute
+  '/dashboard/widgets/': typeof DashboardWidgetsIndexRoute
   '/super-admin/templates/': typeof SuperAdminTemplatesIndexRoute
+  '/dashboard/widgets/$widgetId/install': typeof DashboardWidgetsWidgetIdInstallRoute
+  '/dashboard/widgets/announcement-popup/$widgetId': typeof DashboardWidgetsAnnouncementPopupWidgetIdRoute
+  '/dashboard/widgets/countdown/$widgetId': typeof DashboardWidgetsCountdownWidgetIdRoute
+  '/dashboard/widgets/faq-accordion/$widgetId': typeof DashboardWidgetsFaqAccordionWidgetIdRoute
+  '/dashboard/widgets/google-reviews/$widgetId': typeof DashboardWidgetsGoogleReviewsWidgetIdRoute
   '/super-admin/templates/$templateId/edit': typeof SuperAdminTemplatesTemplateIdEditRoute
 }
 export interface FileRouteTypes {
@@ -247,7 +314,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
-    | '/login'
     | '/register'
     | '/super-admin'
     | '/templates'
@@ -256,6 +322,7 @@ export interface FileRouteTypes {
     | '/dashboard/shared'
     | '/dashboard/templates'
     | '/dashboard/trash'
+    | '/dashboard/widgets'
     | '/demo/$projectId'
     | '/editor/$projectId'
     | '/p/$slug'
@@ -267,13 +334,19 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/super-admin/'
     | '/templates/'
+    | '/dashboard/widgets/create'
     | '/super-admin/templates/create'
+    | '/dashboard/widgets/'
     | '/super-admin/templates/'
+    | '/dashboard/widgets/$widgetId/install'
+    | '/dashboard/widgets/announcement-popup/$widgetId'
+    | '/dashboard/widgets/countdown/$widgetId'
+    | '/dashboard/widgets/faq-accordion/$widgetId'
+    | '/dashboard/widgets/google-reviews/$widgetId'
     | '/super-admin/templates/$templateId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/login'
     | '/register'
     | '/dashboard/favorites'
     | '/dashboard/projects'
@@ -290,14 +363,20 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/super-admin'
     | '/templates'
+    | '/dashboard/widgets/create'
     | '/super-admin/templates/create'
+    | '/dashboard/widgets'
     | '/super-admin/templates'
+    | '/dashboard/widgets/$widgetId/install'
+    | '/dashboard/widgets/announcement-popup/$widgetId'
+    | '/dashboard/widgets/countdown/$widgetId'
+    | '/dashboard/widgets/faq-accordion/$widgetId'
+    | '/dashboard/widgets/google-reviews/$widgetId'
     | '/super-admin/templates/$templateId/edit'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
-    | '/login'
     | '/register'
     | '/super-admin'
     | '/templates'
@@ -306,6 +385,7 @@ export interface FileRouteTypes {
     | '/dashboard/shared'
     | '/dashboard/templates'
     | '/dashboard/trash'
+    | '/dashboard/widgets'
     | '/demo/$projectId'
     | '/editor/$projectId'
     | '/p/$slug'
@@ -317,15 +397,21 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/super-admin/'
     | '/templates/'
+    | '/dashboard/widgets/create'
     | '/super-admin/templates/create'
+    | '/dashboard/widgets/'
     | '/super-admin/templates/'
+    | '/dashboard/widgets/$widgetId/install'
+    | '/dashboard/widgets/announcement-popup/$widgetId'
+    | '/dashboard/widgets/countdown/$widgetId'
+    | '/dashboard/widgets/faq-accordion/$widgetId'
+    | '/dashboard/widgets/google-reviews/$widgetId'
     | '/super-admin/templates/$templateId/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRouteWithChildren
-  LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   SuperAdminRoute: typeof SuperAdminRouteWithChildren
   TemplatesRoute: typeof TemplatesRouteWithChildren
@@ -356,13 +442,6 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -456,6 +535,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoProjectIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/widgets': {
+      id: '/dashboard/widgets'
+      path: '/widgets'
+      fullPath: '/dashboard/widgets'
+      preLoaderRoute: typeof DashboardWidgetsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/trash': {
       id: '/dashboard/trash'
       path: '/trash'
@@ -498,12 +584,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperAdminTemplatesIndexRouteImport
       parentRoute: typeof SuperAdminTemplatesRoute
     }
+    '/dashboard/widgets/': {
+      id: '/dashboard/widgets/'
+      path: '/'
+      fullPath: '/dashboard/widgets/'
+      preLoaderRoute: typeof DashboardWidgetsIndexRouteImport
+      parentRoute: typeof DashboardWidgetsRoute
+    }
     '/super-admin/templates/create': {
       id: '/super-admin/templates/create'
       path: '/create'
       fullPath: '/super-admin/templates/create'
       preLoaderRoute: typeof SuperAdminTemplatesCreateRouteImport
       parentRoute: typeof SuperAdminTemplatesRoute
+    }
+    '/dashboard/widgets/create': {
+      id: '/dashboard/widgets/create'
+      path: '/create'
+      fullPath: '/dashboard/widgets/create'
+      preLoaderRoute: typeof DashboardWidgetsCreateRouteImport
+      parentRoute: typeof DashboardWidgetsRoute
     }
     '/super-admin/templates/$templateId/edit': {
       id: '/super-admin/templates/$templateId/edit'
@@ -512,8 +612,70 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperAdminTemplatesTemplateIdEditRouteImport
       parentRoute: typeof SuperAdminTemplatesRoute
     }
+    '/dashboard/widgets/google-reviews/$widgetId': {
+      id: '/dashboard/widgets/google-reviews/$widgetId'
+      path: '/google-reviews/$widgetId'
+      fullPath: '/dashboard/widgets/google-reviews/$widgetId'
+      preLoaderRoute: typeof DashboardWidgetsGoogleReviewsWidgetIdRouteImport
+      parentRoute: typeof DashboardWidgetsRoute
+    }
+    '/dashboard/widgets/faq-accordion/$widgetId': {
+      id: '/dashboard/widgets/faq-accordion/$widgetId'
+      path: '/faq-accordion/$widgetId'
+      fullPath: '/dashboard/widgets/faq-accordion/$widgetId'
+      preLoaderRoute: typeof DashboardWidgetsFaqAccordionWidgetIdRouteImport
+      parentRoute: typeof DashboardWidgetsRoute
+    }
+    '/dashboard/widgets/countdown/$widgetId': {
+      id: '/dashboard/widgets/countdown/$widgetId'
+      path: '/countdown/$widgetId'
+      fullPath: '/dashboard/widgets/countdown/$widgetId'
+      preLoaderRoute: typeof DashboardWidgetsCountdownWidgetIdRouteImport
+      parentRoute: typeof DashboardWidgetsRoute
+    }
+    '/dashboard/widgets/announcement-popup/$widgetId': {
+      id: '/dashboard/widgets/announcement-popup/$widgetId'
+      path: '/announcement-popup/$widgetId'
+      fullPath: '/dashboard/widgets/announcement-popup/$widgetId'
+      preLoaderRoute: typeof DashboardWidgetsAnnouncementPopupWidgetIdRouteImport
+      parentRoute: typeof DashboardWidgetsRoute
+    }
+    '/dashboard/widgets/$widgetId/install': {
+      id: '/dashboard/widgets/$widgetId/install'
+      path: '/$widgetId/install'
+      fullPath: '/dashboard/widgets/$widgetId/install'
+      preLoaderRoute: typeof DashboardWidgetsWidgetIdInstallRouteImport
+      parentRoute: typeof DashboardWidgetsRoute
+    }
   }
 }
+
+interface DashboardWidgetsRouteChildren {
+  DashboardWidgetsCreateRoute: typeof DashboardWidgetsCreateRoute
+  DashboardWidgetsIndexRoute: typeof DashboardWidgetsIndexRoute
+  DashboardWidgetsWidgetIdInstallRoute: typeof DashboardWidgetsWidgetIdInstallRoute
+  DashboardWidgetsAnnouncementPopupWidgetIdRoute: typeof DashboardWidgetsAnnouncementPopupWidgetIdRoute
+  DashboardWidgetsCountdownWidgetIdRoute: typeof DashboardWidgetsCountdownWidgetIdRoute
+  DashboardWidgetsFaqAccordionWidgetIdRoute: typeof DashboardWidgetsFaqAccordionWidgetIdRoute
+  DashboardWidgetsGoogleReviewsWidgetIdRoute: typeof DashboardWidgetsGoogleReviewsWidgetIdRoute
+}
+
+const DashboardWidgetsRouteChildren: DashboardWidgetsRouteChildren = {
+  DashboardWidgetsCreateRoute: DashboardWidgetsCreateRoute,
+  DashboardWidgetsIndexRoute: DashboardWidgetsIndexRoute,
+  DashboardWidgetsWidgetIdInstallRoute: DashboardWidgetsWidgetIdInstallRoute,
+  DashboardWidgetsAnnouncementPopupWidgetIdRoute:
+    DashboardWidgetsAnnouncementPopupWidgetIdRoute,
+  DashboardWidgetsCountdownWidgetIdRoute:
+    DashboardWidgetsCountdownWidgetIdRoute,
+  DashboardWidgetsFaqAccordionWidgetIdRoute:
+    DashboardWidgetsFaqAccordionWidgetIdRoute,
+  DashboardWidgetsGoogleReviewsWidgetIdRoute:
+    DashboardWidgetsGoogleReviewsWidgetIdRoute,
+}
+
+const DashboardWidgetsRouteWithChildren =
+  DashboardWidgetsRoute._addFileChildren(DashboardWidgetsRouteChildren)
 
 interface DashboardRouteChildren {
   DashboardFavoritesRoute: typeof DashboardFavoritesRoute
@@ -521,6 +683,7 @@ interface DashboardRouteChildren {
   DashboardSharedRoute: typeof DashboardSharedRoute
   DashboardTemplatesRoute: typeof DashboardTemplatesRoute
   DashboardTrashRoute: typeof DashboardTrashRoute
+  DashboardWidgetsRoute: typeof DashboardWidgetsRouteWithChildren
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
@@ -530,6 +693,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardSharedRoute: DashboardSharedRoute,
   DashboardTemplatesRoute: DashboardTemplatesRoute,
   DashboardTrashRoute: DashboardTrashRoute,
+  DashboardWidgetsRoute: DashboardWidgetsRouteWithChildren,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
@@ -588,7 +752,6 @@ const TemplatesRouteWithChildren = TemplatesRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
-  LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   SuperAdminRoute: SuperAdminRouteWithChildren,
   TemplatesRoute: TemplatesRouteWithChildren,

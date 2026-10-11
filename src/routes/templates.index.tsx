@@ -11,6 +11,7 @@ import {
 import { toast } from "sonner";
 import { PublicNav } from "@/components/layout/PublicNav";
 import { PublicFooter } from "@/components/layout/PublicFooter";
+import { TEMPLATE_CATEGORIES, matchesTemplateCategory } from "@/lib/builder/templates";
 import { TemplatePreviewModal } from "@/components/builder/TemplatePreviewModal";
 
 export const Route = createFileRoute("/templates/")({
@@ -27,20 +28,7 @@ export const Route = createFileRoute("/templates/")({
   component: PublicTemplatesPage,
 });
 
-const CATEGORIES = [
-  "All",
-  "Real Estate",
-  "Freelancer",
-  "Healthcare",
-  "Fitness & Gym",
-  "Restaurant & Café",
-  "Beauty & Salon",
-  "SaaS & Technology",
-  "Photography",
-  "Law Firm",
-  "Agency",
-  "Business",
-] as const;
+const CATEGORIES = TEMPLATE_CATEGORIES;
 
 type FilterTab = "all" | "featured" | "new" | "upcoming";
 
@@ -89,10 +77,8 @@ function PublicTemplatesPage() {
     const q = search.trim().toLowerCase();
     return allTemplates.filter((tpl) => {
       // Category filter
-      if (selectedCategory !== "All") {
-        const tCat = (tpl.category || "").toLowerCase();
-        const sCat = selectedCategory.toLowerCase();
-        if (!tCat.includes(sCat) && !sCat.includes(tCat)) return false;
+      if (selectedCategory !== "All" && !matchesTemplateCategory(tpl.category, selectedCategory)) {
+        return false;
       }
 
       // Tab filter
@@ -404,7 +390,7 @@ function PublicTemplatesPage() {
         isOpen={Boolean(previewTemplate)}
         onClose={() => setPreviewTemplate(null)}
         template={previewTemplate}
-        onUseTemplate={(tpl) => {
+        onUseTemplate={(tpl: any) => {
           setPreviewTemplate(null);
           void handleUseTemplate(tpl);
         }}

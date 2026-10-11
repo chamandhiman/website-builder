@@ -18,16 +18,16 @@ export function TestimonialsProperties({ widgetId }: WidgetPropertyComponentProp
   const [expandedId, setExpandedId] = useState<string | null>(d.content.items[0]?.id ?? null);
 
   const upContent = (partial: Partial<TestimonialsWidgetData["content"]>) => {
-    if (!widget) return;
+    if (!widget || !widgetId) return;
     updateWidgetInstance(widgetId, { ...d, content: { ...d.content, ...partial } } as any);
   };
   const upStyle = (partial: Partial<TestimonialsWidgetData["style"]>) => {
-    if (!widget) return;
+    if (!widget || !widgetId) return;
     updateWidgetInstance(widgetId, { ...d, style: { ...d.style, ...partial } } as any);
   };
 
   const handleModeChange = (mode: "static" | "carousel") => {
-    if (!widget) return;
+    if (!widget || !widgetId) return;
     updateWidgetInstance(widgetId, { ...d, variant: mode === "carousel" ? "Carousel Slider" : "Static Grid", style: { ...d.style, mode } } as any);
   };
 

@@ -68,9 +68,9 @@ export function buildTestimonialsBootstrapMarkup(
   const avatarRadius = st.avatarBorderRadius || "9999px";
   const desktopCols = st.desktopColumns || 3;
 
-  const padTop = lo.paddingTop || "72px";
-  const padBottom = lo.paddingBottom || "72px";
-  const padX = lo.paddingX || "24px";
+  const padTop = String((lo as any).paddingTop || "72px");
+  const padBottom = String((lo as any).paddingBottom || "72px");
+  const padX = String((lo as any).paddingX || "24px");
 
   // Header
   const eyebrowHtml = ct.eyebrow

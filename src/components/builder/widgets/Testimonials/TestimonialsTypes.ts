@@ -129,6 +129,12 @@ export const defaultTestimonialsWidgetData: TestimonialsWidgetData = {
     hideOnTablet: false,
     hideOnDesktop: false,
   },
+  animation: {
+    type: "none",
+  },
+  advanced: {
+    visibility: true,
+  },
 };
 
 export function isTestimonialsWidgetData(data: unknown): data is TestimonialsWidgetData {

@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { toast } from "sonner";
 
 const MENU_ITEMS = [
   { key: "dashboard", label: "Dashboard", Icon: LayoutDashboard, route: "/super-admin" },
@@ -122,7 +123,14 @@ export function SuperAdminSidebar({ children }: { children: ReactNode }) {
                     Builder Dashboard
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-[#363636]" />
-                  <DropdownMenuItem onSelect={async () => { await logout(); }} className="text-[#D0D0D0] hover:bg-[#242424] hover:text-[#F5F5F5]">
+                  <DropdownMenuItem
+                    onSelect={async () => {
+                      await logout();
+                      navigate({ to: "/" });
+                      toast.success("Signed out successfully");
+                    }}
+                    className="text-[#D0D0D0] hover:bg-[#242424] hover:text-[#F5F5F5]"
+                  >
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign out
                   </DropdownMenuItem>

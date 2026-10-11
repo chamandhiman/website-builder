@@ -1,6 +1,14 @@
 import type { ComponentType } from "react";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { faMagic, faBars, faHeading, faParagraph, faHandPointer, faImage, faSquare, faColumns, faCopyright, faImages, faTableCells, faCircleQuestion, faBriefcase, faBuilding, faBullhorn, faChartLine, faUsers, faDollarSign, faQuoteLeft, faLayerGroup, faHeadset, faLocationPin } from "@fortawesome/free-solid-svg-icons";
+import { faMagic, faBars, faHeading, faParagraph, faHandPointer, faImage, faSquare, faColumns, faCopyright, faImages, faTableCells, faCircleQuestion, faBriefcase, faBuilding, faBullhorn, faChartLine, faUsers, faDollarSign, faQuoteLeft, faLayerGroup, faHeadset, faLocationPin, faStar, faCode } from "@fortawesome/free-solid-svg-icons";
+import { CustomHtml } from "./CustomHtml/CustomHtml";
+import { CustomHtmlProperties } from "./CustomHtml/CustomHtmlProperties";
+import { buildCustomHtmlBootstrapMarkup } from "./CustomHtml/CustomHtmlBootstrapExport";
+import { defaultCustomHtmlWidgetData } from "./CustomHtml/CustomHtmlTypes";
+import { GoogleReviews } from "./GoogleReviews/GoogleReviews";
+import { GoogleReviewsProperties } from "./GoogleReviews/GoogleReviewsProperties";
+import { buildGoogleReviewsBootstrapMarkup } from "./GoogleReviews/GoogleReviewsBootstrapExport";
+import { defaultGoogleReviewsWidgetData } from "./GoogleReviews/GoogleReviewsTypes";
 import { Contact } from "./Contact/Contact";
 import { ContactProperties } from "./Contact/ContactProperties";
 import { buildContactBootstrapMarkup } from "./Contact/ContactBootstrapExport";
@@ -135,6 +143,15 @@ export type WidgetRegistration<TData extends WidgetData = WidgetData> = WidgetDe
 
 export interface WidgetInstance<TData extends WidgetData = WidgetData> extends WidgetData {}
 
+export type { ContainerChildItem } from "./Container/ContainerTypes";
+
+export interface WidgetPropertyComponentProps {
+  widgetId?: string;
+  value?: WidgetData;
+  onChange?: (data: WidgetData) => void;
+  onClose?: () => void;
+}
+
 /** Canvas/editor vs preview/export rendering context for bootstrap markup. */
 export type WidgetExportContext = {
   editorMode?: boolean;
@@ -177,6 +194,8 @@ export const WIDGET_SORT_ORDER: string[] = [
   "overlay-banner",
   "gallery",
   "testimonials",
+  "google-reviews",
+  "custom-html",
   "contact",
   "map",
   "footer",
@@ -344,8 +363,10 @@ export function getWidgetExportContribution(
     "team",
     "pricing",
     "testimonials",
+    "google-reviews",
     "contact",
     "map",
+    "custom-html",
   ].includes(type);
 
   if (!isFullWidthWidgetType && !isFullWidthExportHtml(html)) {
@@ -890,4 +911,39 @@ registerWidget({
   defaultVariant: "Full Width Clean",
 });
 
+// ── GOOGLE REVIEWS DYNAMIC WIDGET (STUDIO PLATFORM & EMBED) ────────────────
+registerWidget({
+  id: "google-reviews-v1",
+  type: "google-reviews",
+  displayName: "Google Reviews",
+  icon: faStar,
+  category: "Marketing",
+  preview: "Dynamic Google Reviews widget configured via Widget Studio and embedded using real-time widget runtime.",
+  description: "Connect your business in the Widget Studio to fetch verified reviews, customize responsive layouts, and publish live embeds.",
+  component: GoogleReviews,
+  propertiesComponent: GoogleReviewsProperties,
+  bootstrapExporter: buildGoogleReviewsBootstrapMarkup,
+  defaultData: defaultGoogleReviewsWidgetData,
+  supportedVariants: ["Dynamic Embed"],
+  defaultVariant: "Dynamic Embed",
+});
+
+// ── CUSTOM HTML EMBED WIDGET (ADVANCED / EMBEDDABLE SNIPPETS) ───────────────
+registerWidget({
+  id: "custom-html-v1",
+  type: "custom-html",
+  displayName: "Custom HTML / Embed",
+  icon: faCode,
+  category: "Advanced",
+  preview: "Embed studio widgets (Google Reviews, Countdown Timer, etc.), third-party iframes, or custom HTML.",
+  description: "Generic embed container for studio widgets, third-party code snippets, and custom HTML.",
+  component: CustomHtml,
+  propertiesComponent: CustomHtmlProperties,
+  bootstrapExporter: buildCustomHtmlBootstrapMarkup,
+  defaultData: defaultCustomHtmlWidgetData,
+  supportedVariants: ["Default Embed"],
+  defaultVariant: "Default Embed",
+});
+
 export const widgetRegistryEntries = getAllWidgetRegistrations();
+

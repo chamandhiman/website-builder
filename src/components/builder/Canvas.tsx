@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useMounted } from "@/hooks/use-mounted";
 import { APP_CSS_HREF, buildPreviewHTML } from "@/lib/builder/preview";
 import { getImageObjectUrl } from "@/lib/builder/image-storage";
-import { createWidgetInstance, createWidgetSectionTemplate, getWidgetRegistration } from "@/components/builder/widgets/widgetRegistry";
+import { createWidgetInstance, createWidgetSectionTemplate, getWidgetRegistration, getWidgetBootstrapExport } from "@/components/builder/widgets/widgetRegistry";
 import { buildContainerChildData, createContainerChildItem } from "@/components/builder/widgets/Container/ContainerTypes";
 import { createGridColumn, getEqualColumnSpan, resolveGridColumnCount } from "@/components/builder/widgets/Grid/GridTypes";
 import { nanoid } from "nanoid";
@@ -194,7 +194,7 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
     if (!iframeWindow) return;
     try {
       iframeWindow.postMessage({ __wto: true, type: 'set-selected-section', payload: { sectionId: selectedId } }, '*');
-    } catch (_) {}
+    } catch (_) { }
   }, [mounted, selectedId]);
 
   useEffect(() => {
@@ -233,7 +233,7 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
         }
         parts.push('Body');
         setBreadcrumb(parts.reverse());
-      } catch (_) {}
+      } catch (_) { }
     }, 50);
     return () => window.clearTimeout(timer);
   }, [mounted, selectedId, selectedElement, srcDoc, setBreadcrumb]);
@@ -455,10 +455,10 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
               typeof widget.content?.backgroundImageSrc === "string"
                 ? widget.content.backgroundImageSrc
                 : String(
-                    widget.content?.backgroundImageSrc?.url ||
-                      widget.content?.backgroundImageSrc?.src ||
-                      "",
-                  ),
+                  widget.content?.backgroundImageSrc?.url ||
+                  widget.content?.backgroundImageSrc?.src ||
+                  "",
+                ),
             backgroundImageAlt: widget.content?.backgroundImageAlt ?? "",
           },
           style: widget.style ?? null,
@@ -571,14 +571,13 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
           keywords: pageOf(project)?.keywords,
           customHead: project.customHead,
           currentPageSlug: pageOf(project)?.slug,
-          previewCssHref: APP_CSS_HREF,
+          previewCssHref: project.globalCss ? undefined : APP_CSS_HREF,
           device,
         });
-        console.log("[DEBUG] buildPreviewHTML completed, length:", html.length);
         setSrcDoc(html);
         setSrcDocVersion((v) => v + 1);
       } catch (err) {
-        console.error("[DEBUG] build failed:", err);
+        console.error("buildPreviewHTML failed:", err);
       }
     };
 
@@ -594,9 +593,6 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [structuralKey, htmlKey, previewCycle]);
 
-  useEffect(() => {
-    console.log("[DEBUG] srcDoc updated, version:", srcDocVersion, "length:", srcDoc.length);
-  }, [srcDoc, srcDocVersion]);
 
   useEffect(() => {
     const doc = iframeRefToUse.current?.contentDocument;
@@ -630,7 +626,6 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
     function onMsg(e: MessageEvent) {
       const data = e.data as { __wto?: boolean; type?: string; payload?: Record<string, unknown> };
       if (!data || !data.__wto) return;
-      console.log("[DEBUG] postMessage received", { type: data.type, payloadKeys: data.payload ? Object.keys(data.payload) : [] });
       if (data.type === "select") {
         const sectionId = String(data.payload?.sectionId ?? "");
         select(sectionId);
@@ -653,21 +648,21 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
           : elementKind === "dom"
             ? { kind: "dom" as any, index: Number.isFinite(index) ? index : null, tag, sectionId: sectionId || null, textContent, href, src, alt }
             : {
-                kind: elementKind as any,
-                index: Number.isFinite(index) ? index : null,
-                tag,
-                sectionId: sectionId || null,
-                widgetId,
-                parentWidgetId,
-                childId,
-                elementKey,
-                elementType,
-                columnId,
-                textContent,
-                href,
-                src,
-                alt,
-              };
+              kind: elementKind as any,
+              index: Number.isFinite(index) ? index : null,
+              tag,
+              sectionId: sectionId || null,
+              widgetId,
+              parentWidgetId,
+              childId,
+              elementKey,
+              elementType,
+              columnId,
+              textContent,
+              href,
+              src,
+              alt,
+            };
         selectElement(nextSelection);
         setSelectedElementStyle(style);
       }
@@ -678,13 +673,13 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
           const isAbsolute = /^(https?:)?\/\//i.test(href);
           const url = isAbsolute ? href : (window.location.origin + (href.startsWith('/') ? href : '/' + href));
           window.open(url, '_blank', 'noopener,noreferrer');
-        } catch (_) {}
+        } catch (_) { }
       }
       if (data.type === 'preview-form-submit') {
         const action = String(data.payload?.action || '');
         const isAbsolute = /^(https?:)?\/\//i.test(action);
         const url = isAbsolute ? action : (window.location.origin + (action.startsWith('/') ? action : '/' + action));
-        try { window.open(url, '_blank', 'noopener,noreferrer'); } catch (_) {}
+        try { window.open(url, '_blank', 'noopener,noreferrer'); } catch (_) { }
       }
       if (data.type === "navigate-page") {
         const rawSlug = String(data.payload?.slug ?? "");
@@ -820,9 +815,9 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
           const equalSpan = getEqualColumnSpan(desiredCount);
           let columns = Array.isArray(containerWidget.content?.columns)
             ? containerWidget.content.columns.map((column: any) => ({
-                ...column,
-                children: Array.isArray(column.children) ? [...column.children] : [],
-              }))
+              ...column,
+              children: Array.isArray(column.children) ? [...column.children] : [],
+            }))
             : [];
           while (columns.length < desiredCount) {
             columns.push(createGridColumn(equalSpan));
@@ -905,14 +900,11 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
       if (data.type === "section-action") {
         const sid = String(data.payload?.sectionId ?? "");
         const act = String(data.payload?.action ?? "");
-        console.log("[DEBUG] section-action received", { sid, act, payload: data.payload });
         if (!sid) return;
         const state = useBuilder.getState();
         const cur = state.currentProject();
-        console.log("[DEBUG] currentProject", { projectId: cur?.id, currentProjectId: state.currentProjectId, sectionCount: cur?.pages?.[0]?.sections?.length });
         const secs = cur ? pageOf(cur)?.sections ?? [] : [];
         const fromIdx = secs.findIndex((s: any) => s.id === sid);
-        console.log("[DEBUG] section index", { fromIdx, sectionId: sid, found: fromIdx >= 0 });
         if (act === "move") {
           state.selectSection(sid);
         }
@@ -1263,18 +1255,17 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
                 srcDoc={srcDoc}
                 onLoad={() => {
                   restoreSavedScroll();
-                  try { window.dispatchEvent(new CustomEvent("wto-iframe-loaded")); } catch {}
+                  try { window.dispatchEvent(new CustomEvent("wto-iframe-loaded")); } catch { }
                 }}
                 className={`h-full w-full border-0 ${(disablePointerEvents || draggingLibrarySection) ? "pointer-events-none" : ""}`}
               />
             ) : null}
             {mounted && project && pageOf(project)?.sections.length === 0 && !project.sharedHeader && !project.sharedFooter ? (
               <div
-                className={`absolute inset-0 flex flex-col items-center justify-center gap-4 border px-6 py-10 text-center text-sm ${
-                  draggingLibrarySection
+                className={`absolute inset-0 flex flex-col items-center justify-center gap-4 border px-6 py-10 text-center text-sm ${draggingLibrarySection
                     ? "border-dashed border-[#FACC15] bg-[#FACC15]/10 text-[#FACC15]"
                     : "border-dashed border-[#363636] bg-white text-[#969696]"
-                }`}
+                  }`}
               >
                 {draggingLibrarySection ? (
                   <div className="max-w-[320px] space-y-2">

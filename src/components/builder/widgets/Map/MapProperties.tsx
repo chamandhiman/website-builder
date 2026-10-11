@@ -79,6 +79,7 @@ export function MapProperties({
       <div className="space-y-3 px-3 py-3">
         <div className={labelClass}>Variant</div>
         <SelectControl
+          label="Variant"
           value={d.variant}
           options={VARIANT_OPTIONS}
           onChange={(v) => {

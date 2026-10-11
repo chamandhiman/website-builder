@@ -1,8 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/super-admin/settings")({
   component: SuperAdminSettings,
@@ -10,6 +11,7 @@ export const Route = createFileRoute("/super-admin/settings")({
 
 function SuperAdminSettings() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="flex h-full flex-col gap-4 p-6">
@@ -33,7 +35,11 @@ function SuperAdminSettings() {
         <div className="mt-6">
           <Button
             variant="outline"
-            onClick={async () => { await logout(); }}
+            onClick={async () => {
+              await logout();
+              navigate({ to: "/" });
+              toast.success("Signed out successfully");
+            }}
             className="border-[#363636] text-[#F5F5F5] hover:bg-[#242424]"
           >
             <LogOut className="mr-2 h-4 w-4" />

@@ -18,7 +18,7 @@ export function PricingProperties({ widgetId }: WidgetPropertyComponentProps) {
   const [expandedTierId, setExpandedTierId] = useState<string | null>(pricingData.content.tiers[0]?.id ?? null);
 
   const updateContent = (partialContent: Partial<PricingWidgetData["content"]>) => {
-    if (!widget) return;
+    if (!widget || !widgetId) return;
     updateWidgetInstance(widgetId, {
       ...pricingData,
       content: {
@@ -29,7 +29,7 @@ export function PricingProperties({ widgetId }: WidgetPropertyComponentProps) {
   };
 
   const updateStyle = (partialStyle: Partial<PricingWidgetData["style"]>) => {
-    if (!widget) return;
+    if (!widget || !widgetId) return;
     updateWidgetInstance(widgetId, {
       ...pricingData,
       style: {

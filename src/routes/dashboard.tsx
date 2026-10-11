@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { CenteredLoader } from "@/components/ui/CenteredLoader";
 import { MainLayout } from "@/components/layout/MainLayout";
-import { CreateProjectFab } from "@/components/dashboard/CreateProjectFab";
 import { useAuth } from "@/lib/auth";
 import { useBuilder } from "@/lib/builder/store";
 
@@ -21,8 +20,7 @@ function DashboardLayout() {
     if (!authReady) return;
     if (!user) {
       navigate({
-        to: "/login",
-        search: { redirect: "/dashboard" },
+        to: "/",
       });
       return;
     }
@@ -44,18 +42,17 @@ function DashboardLayout() {
 
   if (!authReady || !user) {
     return (
-      <MainLayout hideHeader hasSidebar>
+      <MainLayout hideHeader hasSidebar={false}>
         <CenteredLoader message="Preparing your website builder…" details="This will only take a moment." />
       </MainLayout>
     );
   }
 
   return (
-    <MainLayout hideHeader hasSidebar>
+    <MainLayout hideHeader hasSidebar={false}>
       <AppSidebar>
         <Outlet />
       </AppSidebar>
-      <CreateProjectFab />
     </MainLayout>
   );
 }

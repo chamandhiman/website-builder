@@ -311,7 +311,7 @@ DO NOT include backticks, markdown markers or explanation. Output pure JSON only
 // -------------------------------------------------------------
 function buildDomainWidgets(input: GenerateTemplateInput, palette: ColorPalette): WidgetInstance[] {
   const industry = detectIndustry(input);
-  const images = CURATED_IMAGES[industry] || CURATED_IMAGES.general;
+  const images: Record<string, string> = (CURATED_IMAGES[industry] || CURATED_IMAGES.general) as any;
   const brandName = input.name.trim() || "Aura Luxe";
   const promptLower = input.prompt.toLowerCase();
 

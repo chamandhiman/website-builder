@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { X, Monitor, Tablet, Smartphone, Sparkles, ShieldCheck, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import type { Template } from "@/services/templates";
-import type { TemplateDefinition } from "@/lib/builder/template-data";
+import type { TemplateDefinition } from "@/lib/builder/templates";
 import type { Project, Page } from "@/lib/builder/store";
 import { composePageSections } from "@/lib/builder/sharedChrome";
 import { buildPreviewHTML, APP_CSS_HREF } from "@/lib/builder/preview";
@@ -168,7 +168,7 @@ export function TemplatePreviewModal({
       description: activePage.description,
       keywords: activePage.keywords,
       customHead: `${project.customHead || ""}\n${antiScrapingSnippet}`,
-      previewCssHref: APP_CSS_HREF,
+      previewCssHref: project.globalCss ? undefined : APP_CSS_HREF,
     });
   }, [project, activePage]);
 

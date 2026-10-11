@@ -753,7 +753,7 @@ export function normalizeHeroChildItem(heroData: HeroWidgetData, child: Containe
     };
 
     if (child.id === "primaryButton") {
-      injectedChildData.variant = injectedChildData.variant ?? btnStyle.variant;
+      injectedChildData.variant = (injectedChildData.variant ?? btnStyle.variant) as string | undefined;
       injectedChildData.content = {
         ...injectedChildData.content,
         text: injectedChildData.content?.text ?? "Get Started Free",
@@ -770,7 +770,7 @@ export function normalizeHeroChildItem(heroData: HeroWidgetData, child: Containe
     }
 
     if (child.id === "secondaryButton") {
-      injectedChildData.variant = injectedChildData.variant ?? btnStyle.variant;
+      injectedChildData.variant = (injectedChildData.variant ?? btnStyle.variant) as string | undefined;
       injectedChildData.content = {
         ...injectedChildData.content,
         text: injectedChildData.content?.text ?? "Learn more",

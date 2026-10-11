@@ -72,7 +72,7 @@ export const ROSE_BEAUTY_GLOBAL_CSS = `
 }
 
 /* Reset inside Beauty theme */
-html, body, .wto-page-shell {
+.wto-page-shell {
   font-family: var(--font-body) !important;
   font-size: var(--fs-body) !important;
   font-weight: 300 !important;
@@ -82,40 +82,27 @@ html, body, .wto-page-shell {
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
 }
-html { scroll-behavior: smooth; scroll-padding-top: 80px; -webkit-text-size-adjust: 100%; }
-img { display: block; max-width: 100%; height: auto; }
-a { color: inherit; text-decoration: none; font-family: inherit; }
-ul, ol { list-style: none; }
-em { font-style: italic; color: var(--accent); }
-::selection { background: var(--accent); color: #fff; }
-.container { width: min(100% - var(--gutter) * 2, var(--container)); margin-inline: auto; }
-.section { padding-block: var(--section); position: relative; }
-.muted { color: var(--muted); }
-
-/* Scroll progress bar */
-body::after {
-  content: ""; position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 70;
-  background: linear-gradient(90deg, var(--accent-2), var(--accent), var(--gold));
-  transform-origin: left; transform: scaleX(0);
-}
-@supports (animation-timeline: scroll()) {
-  body::after { animation: progress linear both; animation-timeline: scroll(root); }
-}
-@keyframes progress { to { transform: scaleX(1); } }
+.wto-page-shell img { display: block; max-width: 100%; height: auto; }
+.wto-page-shell a { color: inherit; text-decoration: none; font-family: inherit; }
+.wto-page-shell ul, .wto-page-shell ol { list-style: none; }
+.wto-page-shell em { font-style: italic; color: var(--accent); }
+.wto-page-shell .container { width: min(100% - var(--gutter) * 2, var(--container)); margin-inline: auto; }
+.wto-page-shell .section { padding-block: var(--section); position: relative; }
+.wto-page-shell .muted { color: var(--muted); }
 
 /* Typography */
-h1, h2, h3, h4, .brand-name {
+.wto-page-shell h1, .wto-page-shell h2, .wto-page-shell h3, .wto-page-shell h4, .wto-page-shell .brand-name {
   font-family: var(--font-display) !important;
   letter-spacing: -.01em;
   line-height: 1.02;
 }
-h1, .hero-title { font-size: var(--fs-hero) !important; font-weight: 300 !important; }
-h2, .section-title { font-size: var(--fs-h2) !important; font-weight: 400 !important; margin-bottom: 1.4rem; max-width: 15ch; }
-h3 { font-size: var(--fs-h3) !important; font-weight: 400 !important; }
-h4 { font-weight: 400 !important; }
-.brand-name { font-size: 1.7rem !important; font-weight: 500 !important; color: var(--ink) !important; }
-.section-head { text-align: center; margin-bottom: clamp(2.5rem, 5vw, 4rem); }
-.section-head .section-title { margin-inline: auto; }
+.wto-page-shell h1, .wto-page-shell .hero-title { font-size: var(--fs-hero) !important; font-weight: 300 !important; }
+.wto-page-shell h2, .wto-page-shell .section-title { font-size: var(--fs-h2) !important; font-weight: 400 !important; margin-bottom: 1.4rem; max-width: 15ch; }
+.wto-page-shell h3 { font-size: var(--fs-h3) !important; font-weight: 400 !important; }
+.wto-page-shell h4 { font-weight: 400 !important; }
+.wto-page-shell .brand-name { font-size: 1.7rem !important; font-weight: 500 !important; color: var(--ink) !important; }
+.wto-page-shell .section-head { text-align: center; margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+.wto-page-shell .section-head .section-title { margin-inline: auto; }
 .eyebrow {
   display: inline-flex; align-items: center; gap: .7rem; margin-bottom: 1rem;
   font-family: var(--font-body) !important;

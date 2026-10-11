@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LoginDialog } from "@/components/builder/LoginDialog";
+import { toast } from "sonner";
 
 export function Header({ hideBranding, hideProfile }: { hideBranding?: boolean; hideProfile?: boolean } = {}) {
   const mounted = useMounted();
@@ -32,6 +33,9 @@ export function Header({ hideBranding, hideProfile }: { hideBranding?: boolean; 
 
   const handleLogout = async () => {
     await logout();
+    setShowProjectDashboard(false);
+    navigate({ to: "/" });
+    toast.success("Signed out successfully");
   };
 
   const handleSwitchAccount = async () => {

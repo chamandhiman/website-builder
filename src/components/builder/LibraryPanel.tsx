@@ -35,6 +35,7 @@ const MAIN_MENU_ITEMS = [
   { key: "dashboard" as const, label: "Dashboard", Icon: LayoutDashboard, route: "/dashboard" },
   { key: "projects" as const, label: "My Projects", Icon: FolderOpen, route: "/dashboard/projects" },
   { key: "templates" as const, label: "Templates", Icon: Layers, route: "/dashboard/templates" },
+  { key: "widgets" as const, label: "Widgets", Icon: Grid2x2, route: "/dashboard/widgets" },
   { key: "favorites" as const, label: "Favorites", Icon: Heart, route: "/dashboard/favorites" },
   { key: "trash" as const, label: "Trash", Icon: Trash2, route: "/dashboard/trash" },
 ] as const;
@@ -57,7 +58,7 @@ export function LibraryPanel({ variant = "editor" }: { variant?: "editor" | "das
   const navigate = useNavigate();
   const [q, setQ] = useState("");
   const [openWidgetId, setOpenWidgetId] = useState<string | null>(null);
-  const [openCats, setOpenCats] = useState<Record<string, boolean>>(() => ({ Hero: true, Navigation: true, Features: true, Carousel: true }));
+  const [openCats, setOpenCats] = useState<Record<string, boolean>>(() => ({ Hero: true, Navigation: true, Features: true, Carousel: true, Advanced: true }));
   const [seoModalPageId, setSeoModalPageId] = useState<string | null>(null);
   const mounted = useMounted();
   const addSection = useBuilder((s) => s.addSection);
@@ -102,6 +103,7 @@ export function LibraryPanel({ variant = "editor" }: { variant?: "editor" | "das
     dashboard: "/dashboard",
     projects: "/dashboard/projects",
     templates: "/dashboard/templates",
+    widgets: "/dashboard/widgets",
     favorites: "/dashboard/favorites",
     trash: "/dashboard/trash",
   };
@@ -354,10 +356,13 @@ useEffect(() => {
     setCredentials({ firstName: "", lastName: "", email: "", password: "", remember: false });
   };
 
-const handleLogout = async () => {
-  await logout();
-  setAccountOpen(false);
-};
+  const handleLogout = async () => {
+    await logout();
+    setAccountOpen(false);
+    setShowProjectDashboard(false);
+    navigate({ to: "/" });
+    toast.success("Signed out successfully");
+  };
 
   useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {

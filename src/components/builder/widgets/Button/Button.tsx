@@ -147,7 +147,7 @@ export function Button({ data = defaultButtonWidgetData }: ButtonProps) {
     return { alignmentClass, wrapperStyle, buttonStyle, url, target, rel, iconLeft, iconRight, dataAttributes, visible: advanced.visibility ?? true, content };
   }
 
-  const elementsToRender = [{ key: "button", duplicateId: null, entry: null as { content?: Record<string, unknown>; style?: Record<string, unknown>; layout?: Record<string, unknown>; advanced?: Record<string, unknown> } | null }].concat(
+  const elementsToRender = [{ key: "button", duplicateId: null as string | null, entry: null as { content?: Record<string, unknown>; style?: Record<string, unknown>; layout?: Record<string, unknown>; advanced?: Record<string, unknown> } | null }].concat(
     duplicateEntries.map((entry) => ({ key: entry.key, duplicateId: entry.id, entry })),
   );
 

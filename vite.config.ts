@@ -19,9 +19,9 @@ export default defineConfig({
       // Dev-only preview writer endpoint: POST /__wto/preview
       {
         name: 'wto-preview-endpoint',
-        configureServer(server) {
+        configureServer(server: any) {
           const fsp = fs.promises;
-          server.middlewares.use(async (req, res, next) => {
+          server.middlewares.use(async (req: any, res: any, next: any) => {
             const url = req.url || '';
             const method = req.method || 'GET';
             const host = (req.headers.host || '').split(':')[0].toLowerCase();
@@ -114,7 +114,7 @@ export default defineConfig({
               }
               const indexFile = path.join(outDir, 'index.html');
               if (!(await fsp.stat(indexFile).catch(() => false))) {
-                const firstPage = files.find((f) => /\.html?$/.test(String(f.path)));
+                const firstPage = files.find((f: any) => /\.html?$/.test(String(f.path)));
                 if (firstPage) {
                   await fsp.writeFile(indexFile, String(firstPage.content || ''));
                 }
@@ -125,7 +125,7 @@ export default defineConfig({
               res.statusCode = 200;
               res.setHeader('content-type', 'application/json');
               res.end(JSON.stringify({ ok: true, url: '/preview/' + slug + '/index.html' }));
-            } catch (err) {
+            } catch (err: any) {
               res.statusCode = 500;
               res.end(JSON.stringify({ ok: false, error: String(err && err.stack ? err.stack : err) }));
             }

@@ -143,14 +143,14 @@ function closeDb(db: IDBDatabase | null) {
   if (db) db.close();
 }
 
-export function createImageAssetReference(dataUrl: string, filenameHint?: string): { ref: BuilderImageReference; blob: Blob } {
+export function createImageAssetReference(dataUrl: string, filenameHint?: string): { ref: BuilderImageReference & { imageId: string }; blob: Blob } {
   const mimeMatch = /^data:([^;]+);/.exec(dataUrl);
   const mimeType = mimeMatch?.[1] || "image/png";
   const ext = getExtension(filenameHint, mimeType);
   const filename = createFilename(ext, filenameHint);
   const imageId = `img-${nanoid(8)}`;
   const blob = dataUrlToBlob(dataUrl);
-  const ref: BuilderImageReference = {
+  const ref: BuilderImageReference & { imageId: string } = {
     imageId,
     sourceType: "upload",
     src: `builder://images/${filename}`,
@@ -165,13 +165,14 @@ export function createImageAssetReference(dataUrl: string, filenameHint?: string
   return { ref, blob };
 }
 
-export async function saveImageBlob(imageId: string, filename: string, blob: Blob, mimeType: string) {
+export async function saveImageBlob(imageId: string | undefined, filename: string, blob: Blob, mimeType: string) {
+  const safeId = imageId || `img-${nanoid(8)}`;
   const db = await openImageDb();
   try {
     await new Promise<void>((resolve, reject) => {
       const tx = db.transaction(DB_STORE, "readwrite");
       const store = tx.objectStore(DB_STORE);
-      const request = store.put({ imageId, filename, mimeType, blob, createdAt: Date.now() });
+      const request = store.put({ imageId: safeId, filename, mimeType, blob, createdAt: Date.now() });
       request.onsuccess = () => resolve();
       request.onerror = () => reject(request.error || new Error("Failed to save image"));
     });

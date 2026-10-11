@@ -1,5 +1,6 @@
 import { WTO_CAROUSEL_RUNTIME } from "@/components/builder/widgets/Carousel/CarouselRuntime";
 import { WTO_FAQ_RUNTIME } from "@/components/builder/widgets/FAQ/FAQRuntime";
+import { WTO_STANDALONE_WIDGET_JS } from "@/lib/widget-runtime/wtoWidgetRuntime";
 
 export type WidgetExportResult = {
   html: string;
@@ -64,7 +65,10 @@ export function dedupeJsBlocks(blocks: string[]): string {
 /** Static runtimes keyed by widget type. Safe to include when the widget appears anywhere in the site. */
 export const WIDGET_TYPE_EXPORT_JS: Record<string, string> = {
   carousel: WTO_CAROUSEL_RUNTIME,
+  testimonials: WTO_CAROUSEL_RUNTIME,
   faq: WTO_FAQ_RUNTIME,
+  "google-reviews": WTO_STANDALONE_WIDGET_JS,
+  "custom-html": WTO_STANDALONE_WIDGET_JS,
 };
 
 export const BOOTSTRAP_CSS_CDN =
@@ -75,6 +79,10 @@ export const FONT_AWESOME_CDN =
   "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css";
 export const GOOGLE_FONTS_CDN =
   "https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Cormorant:ital,wght@0,300..700;1,300..700&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@300;400;500;600;700;800;900&family=Jost:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap";
+
+export const DEFAULT_FAVICON_BASE64 =
+  "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAACk0lEQVR4AcSVSehOURiHz98YslBWyMI8hAUryYIsUOYhpdiYSyhkSomMJYmklIUhMykWykZ2VgiFKGSpkDk8z+2c63z3+3x/Jfn6Ped97/ve77z3DPfcNuEf//57gQ4McA6cgkfwPqJvzJz3EG6sZiOYwV8ewhmYBwOhS0TfmLkHxKZDQzUqYGwPd1+APvAUVsEg6ASdIek+Tl+4CLvB/2J+qS5AaheshW+wBgbAFHBaPmI/gHpBMwJWwCdYBzuhRtUCToudf+WuSbAfvsM4yPWKi6Vg7jB2MnwGi0zDlsoLuFh7Y2YL9gZU1UJAemGvQdJNHEeLCfbRXkfyAlZ2zo0/t4Hb8AP+REe46R70g6lQqFqgCNKcgFkwGpJuJec31uk6GnM+bOHmBUYWkRDOYtvBaUhyWsami8xuz3xdp0o7ykbyAj0MwCLYBhbBNNUmsofAB8CEZzbQEwrlBdJcO9StZPOnM5dDutRyPHeSfbmNd3BdymC6eB2d3tG6k/IiMdzQuGWPkWkLm2EZFMoL3CkiIYyPVpMXeUPAqRDcOi0kchLcom4S3BDyAleKSAhLsHncIoRCN5tWmEv+HHSEQnlHl4l47gzFOq+YUi+j5zq0tl19B+zLc6tmBF/oxGMCE/bRTICkxTiePZgwxqaCR4uhSzQtMBFc8JoCxII3eJI6xKsEVoKjvI5Ni49bo4NcrQfl0/fXSfjn5Ce7AScVOYDv62+hYfhVeXqacwe9I2l/q7GlDJQX0fE98In8iDwhNgQsdBdb1cYYeIs9DmoBTXco1KhAkaBxoex8Nr7bz++Bn0zXilCdnCofzmN7eMo2K+A9Lt55nPkwGLqC64Op02MiM8G1SmdS3SKT/ys5akdZdvITAAD//wFmLf8AAAAGSURBVAMAdS11MdmAY/oAAAAASUVORK5CYII=";
+
 
 
 /**
@@ -95,6 +103,7 @@ export const FULL_WIDTH_EXPORT_MARKERS = [
   "wto-team",
   "wto-pricing",
   "wto-testimonials",
+  "wto-google-reviews",
 ] as const;
 
 export function isFullWidthExportHtml(html: string): boolean {

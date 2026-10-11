@@ -79,7 +79,7 @@ em { font-style: italic; color: var(--accent); }
 .section { padding-block: var(--section); position: relative; }
 
 /* Typography */
-h1, h2, h3, .footer-big, .brand-name {
+.wto-page-shell h1, .wto-page-shell h2, .wto-page-shell h3, .wto-page-shell .footer-big, .wto-page-shell .brand-name {
   font-family: var(--font-display); font-weight: 400; line-height: 1.05; letter-spacing: -.02em;
 }
 .section-title { font-size: var(--fs-h2); margin-bottom: 1.5rem; max-width: 16ch; }

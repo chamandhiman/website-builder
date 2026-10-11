@@ -1,5 +1,5 @@
 import type { WidgetData } from "../widgetRegistry";
-import { defaultNavbarWidgetData, isNavbarWidgetData, type NavbarNavItem } from "./NavbarTypes";
+import { defaultNavbarWidgetData, isNavbarWidgetData, type NavbarNavItem, type NavbarWidgetData } from "./NavbarTypes";
 
 function escapeHtml(value: string | undefined) {
   if (!value) return "";
@@ -79,7 +79,10 @@ function getNavbarVariantPresentation(
   };
 }
 
-export function buildNavbarBootstrapMarkup(data: WidgetData = defaultNavbarWidgetData): string {
+export function buildNavbarBootstrapMarkup(
+  data: WidgetData = defaultNavbarWidgetData,
+  _context?: { editorMode?: boolean },
+): string {
   const navbarData = isNavbarWidgetData(data) ? data : defaultNavbarWidgetData;
   const breakpoint = navbarData.layout.breakpoint ?? "lg";
   const bpMin = breakpointMinWidth(breakpoint);
