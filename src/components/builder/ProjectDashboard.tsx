@@ -2,9 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import {
-  Layers,
   Plus,
-  ArrowRight,
   Eye,
   CheckCircle2,
   Clock,
@@ -17,7 +15,6 @@ import {
   TrendingUp,
   GraduationCap,
   Play,
-  Home,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useBuilder } from "@/lib/builder/store";
@@ -26,7 +23,6 @@ import { CreateProjectDialog } from "./CreateProjectDialog";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { TEMPLATE_LIBRARY } from "@/lib/builder/templates";
-import { DashboardThemeSelector } from "@/lib/dashboard-theme";
 
 interface ProjectDashboardProps {
   onOpenEditor?: (projectId: string) => void;
@@ -190,50 +186,23 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
       <CreateProjectDialog open={createOpen} onOpenChange={setCreateOpen} />
 
       {/* ================= HERO GREETING BANNER ================= */}
-      <section className="relative rounded-[22px] bg-gradient-to-br from-[#17150f] via-[#141418] to-[#121215] border border-white/[0.07] p-8 overflow-hidden flex flex-col md:flex-row items-start md:items-end justify-between gap-6 shadow-2xl">
+      <section className="relative rounded-[22px] bg-gradient-to-br from-[#17150f] via-[#141418] to-[#121215] border border-white/[0.07] p-6 lg:p-7 overflow-hidden shadow-xl">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute -top-24 right-1/4 w-80 h-80 rounded-full bg-[#ffc21a]/15 blur-3xl pointer-events-none" />
           <div className="absolute -bottom-24 right-1/3 w-64 h-64 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
         </div>
 
-        <div className="relative z-10 max-w-xl">
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ffc21a]/10 border border-[#ffc21a]/25 text-[#ffc21a] text-xs font-bold mb-3.5">
+        <div className="relative z-10 max-w-2xl">
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ffc21a]/10 border border-[#ffc21a]/25 text-[#ffc21a] text-xs font-bold mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-[#ffc21a] animate-pulse" />
             Thursday, 8 October
           </span>
-          <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight leading-tight mb-2">
-            Good evening, <span className="text-[#ffc21a]">Web Tool Ocean</span> 👋
+          <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight leading-tight mb-2">
+            Good evening, <span className="text-[#ffc21a]">{displayName}</span> 👋
           </h1>
-          <p className="text-sm text-[#9a9aa3] leading-relaxed">
+          <p className="text-xs md:text-sm text-[#9a9aa3] leading-relaxed">
             You have 2 sites live and 2 drafts in progress. Pick up where you left off or start something new.
           </p>
-        </div>
-
-        <div className="relative z-10 flex items-center gap-3 shrink-0 flex-wrap">
-          <button
-            type="button"
-            onClick={() => setCreateOpen(true)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-lg shadow-[#ffc21a]/25 hover:opacity-95 transition cursor-pointer"
-          >
-            <span>+ New project</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/dashboard/templates" as never })}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#151518] border border-white/10 hover:border-white/20 text-white font-bold text-xs transition cursor-pointer"
-          >
-            <span>Browse templates</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/" })}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#151518] border border-white/10 hover:border-[#ffc21a]/40 text-[#d4d4d8] hover:text-white font-bold text-xs transition cursor-pointer"
-            title="Exit Dashboard and return to Landing Page"
-          >
-            <Home className="w-3.5 h-3.5 text-[#ffc21a]" />
-            <span>Exit Dashboard</span>
-          </button>
-          <DashboardThemeSelector mode="banner-button" />
         </div>
       </section>
 
@@ -286,68 +255,7 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
         </div>
       </section>
 
-      {/* ================= 3 QUICK ACTIONS ================= */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Start from blank */}
-        <button
-          type="button"
-          onClick={() => setCreateOpen(true)}
-          className="flex items-center justify-between p-4 rounded-2xl bg-[#151518] border border-white/[0.07] hover:border-[#ffc21a]/40 transition group cursor-pointer text-left"
-        >
-          <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-[#ffc21a]/10 text-[#ffc21a] flex items-center justify-center shrink-0 font-bold text-lg">
-              +
-            </div>
-            <div>
-              <strong className="block text-sm font-bold text-white group-hover:text-[#ffc21a] transition">
-                Start from blank
-              </strong>
-              <small className="block text-xs text-[#9a9aa3]">Build with drag &amp; drop</small>
-            </div>
-          </div>
-          <ArrowRight className="w-4 h-4 text-[#6b6b74] group-hover:text-[#ffc21a] group-hover:translate-x-1 transition" />
-        </button>
 
-        {/* Use a template */}
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/dashboard/templates" as never })}
-          className="flex items-center justify-between p-4 rounded-2xl bg-[#151518] border border-white/[0.07] hover:border-[#ffc21a]/40 transition group cursor-pointer text-left"
-        >
-          <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-[#60a5fa]/10 text-[#60a5fa] flex items-center justify-center shrink-0">
-              <Layers className="w-5 h-5" />
-            </div>
-            <div>
-              <strong className="block text-sm font-bold text-white group-hover:text-[#ffc21a] transition">
-                Use a template
-              </strong>
-              <small className="block text-xs text-[#9a9aa3]">11 designs, 20 categories</small>
-            </div>
-          </div>
-          <ArrowRight className="w-4 h-4 text-[#6b6b74] group-hover:text-[#ffc21a] group-hover:translate-x-1 transition" />
-        </button>
-
-        {/* Add a widget */}
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/dashboard/widgets" as never })}
-          className="flex items-center justify-between p-4 rounded-2xl bg-[#151518] border border-white/[0.07] hover:border-[#ffc21a]/40 transition group cursor-pointer text-left"
-        >
-          <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-[#22c55e]/10 text-[#22c55e] flex items-center justify-center shrink-0">
-              <Grid2x2 className="w-5 h-5" />
-            </div>
-            <div>
-              <strong className="block text-sm font-bold text-white group-hover:text-[#ffc21a] transition">
-                Add a widget
-              </strong>
-              <small className="block text-xs text-[#9a9aa3]">Timers, reviews &amp; more</small>
-            </div>
-          </div>
-          <ArrowRight className="w-4 h-4 text-[#6b6b74] group-hover:text-[#ffc21a] group-hover:translate-x-1 transition" />
-        </button>
-      </section>
 
       {/* ================= MAIN 2-COLUMN SECTION ================= */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
