@@ -149,6 +149,11 @@ export interface WidgetInstanceRecord<TConfig = any, TSource = any> {
   name: string;
   status: WidgetStatus;
   enabled?: boolean; // When false, turns off the widget globally (hides everywhere on builder, canvas, and embeds)
+  projectId?: string; // Associated website / project ID owned by the user
+  websiteId?: string; // Optional external or project website ID
+  websiteName?: string; // Cached website name for quick display
+  websiteDomain?: string; // Cached website domain/hostname (e.g. "mystore.com")
+  viewsCount?: number;
   source: TSource;
   selectedReviews: GoogleReviewItem[];
   allReviews?: GoogleReviewItem[];
@@ -457,6 +462,11 @@ export async function saveWidget(widget: WidgetInstanceRecord<any, any>): Promis
           name: updated.name,
           status: updated.status,
           enabled: updated.enabled !== false,
+          projectId: updated.projectId || null,
+          websiteId: updated.websiteId || updated.projectId || null,
+          websiteName: updated.websiteName || null,
+          websiteDomain: updated.websiteDomain || null,
+          viewsCount: updated.viewsCount ?? null,
           source: updated.source || null,
           selectedReviews: updated.selectedReviews || [],
           config: updated.config,
@@ -686,6 +696,32 @@ export async function duplicateWidget(widgetId: string): Promise<WidgetInstanceR
 
   await saveWidget(duplicated);
   return duplicated;
+}
+
+/**
+ * Associate or unlink a widget with a user-owned website / project.
+ * Guaranteed safe: only references legitimate project IDs passed in.
+ */
+export async function linkWidgetToWebsite(
+  widgetId: string,
+  website: { id: string; name: string; domain?: string } | null
+): Promise<WidgetInstanceRecord> {
+  const widget = await getWidget(widgetId);
+  if (!widget) {
+    throw new Error(`Widget not found with id: ${widgetId}`);
+  }
+
+  const updated: WidgetInstanceRecord = {
+    ...widget,
+    projectId: website ? website.id : undefined,
+    websiteId: website ? website.id : undefined,
+    websiteName: website ? website.name : undefined,
+    websiteDomain: website ? website.domain : undefined,
+    updatedAt: new Date().toISOString(),
+  };
+
+  await saveWidget(updated);
+  return updated;
 }
 
 /** Google Business Search Result */

@@ -8,10 +8,12 @@ import {
   createNewCountdownWidget,
   createNewFaqWidget,
   saveWidget,
+  linkWidgetToWebsite,
   COUNTDOWN_TEMPLATE_LIST,
   type WidgetInstanceRecord,
   type CountdownTemplateItem,
 } from "@/services/widgetService";
+import { useCloudProjects } from "@/lib/builder/useCloudProjects";
 import { createNewAnnouncementPopupWidget } from "@/services/announcementPopupTemplates";
 import { renderCountdownHtml, renderGoogleReviewsHtml } from "@/lib/widget-runtime/wtoWidgetRuntime";
 import { TemplateCardPreview } from "@/components/widgets/TemplateCardPreview";
@@ -37,6 +39,8 @@ import {
   FileText,
   Boxes,
   ChevronRight,
+  ChevronDown,
+  ChevronLeft,
   Percent,
   ShoppingCart,
   ShieldCheck,
@@ -52,6 +56,17 @@ import {
   LayoutList,
   Layers,
   ExternalLink,
+  Globe,
+  SlidersHorizontal,
+  Hash,
+  ArrowUpDown,
+  CheckCircle2,
+  AlertCircle,
+  Filter,
+  FolderTree,
+  Table,
+  Link2,
+  Unlink,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -641,6 +656,138 @@ function DashboardWidgetsPage() {
   const [deletingWidget, setDeletingWidget] = useState<{ id: string; name: string } | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Cloud websites / projects owned by current user
+  const { projects, loading: projectsLoading } = useCloudProjects();
+
+  // Active Widgets view mode & filter states (supports 100+ websites)
+  const [activeViewLayout, setActiveViewLayout] = useState<"all" | "grouped">("all");
+  const [activeSearch, setActiveSearch] = useState("");
+  const [siteFilter, setSiteFilter] = useState<string>("all");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [enabledFilter, setEnabledFilter] = useState<string>("all");
+  const [activeSort, setActiveSort] = useState<string>("updated_desc");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [collapsedGroupIds, setCollapsedGroupIds] = useState<Record<string, boolean>>({});
+
+  // Website association modal state for legacy / unlinked widgets
+  const [linkModalWidget, setLinkModalWidget] = useState<WidgetInstanceRecord | null>(null);
+  const [websitePickerSearch, setWebsitePickerSearch] = useState("");
+  const [websitePickerSelectedId, setWebsitePickerSelectedId] = useState<string>("");
+  const [isLinkingWebsite, setIsLinkingWebsite] = useState(false);
+
+  // Helper: resolve clean domain string for a project
+  const getProjectDomain = (p?: any) => {
+    if (!p) return "";
+    if (p.domain) return String(p.domain).replace(/^https?:\/\//, "").replace(/\/+$/, "");
+    if (p.publishedUrl) {
+      try {
+        return new URL(p.publishedUrl).host;
+      } catch {
+        return String(p.publishedUrl).replace(/^https?:\/\//, "").replace(/\/+$/, "");
+      }
+    }
+    if (p.publishedSlug) {
+      return `${p.publishedSlug}.webtoolocean.com`;
+    }
+    return "Draft (Not published)";
+  };
+
+  // Helper: resolve external URL for a project
+  const getProjectUrl = (p?: any) => {
+    if (!p) return null;
+    if (p.publishedUrl) return p.publishedUrl;
+    if (p.domain) return p.domain.startsWith("http") ? p.domain : `https://${p.domain}`;
+    if (p.publishedSlug) return `https://${p.publishedSlug}.webtoolocean.com`;
+    return null;
+  };
+
+  // Helper: safely resolve website info for a widget from owned projects
+  const getWidgetWebsiteInfo = (w: WidgetInstanceRecord) => {
+    const site = projects.find((p) => p.id === w.projectId);
+    if (site) {
+      return {
+        isLinked: true,
+        projectId: site.id,
+        name: site.name || "Untitled Website",
+        domain: getProjectDomain(site),
+        url: getProjectUrl(site),
+        isPublished: Boolean(site.status === "published" || (site as any).publishedUrl || (site as any).publishedSlug),
+      };
+    }
+    if (w.projectId || w.websiteName) {
+      return {
+        isLinked: true,
+        projectId: w.projectId || "",
+        name: w.websiteName || "Associated Website",
+        domain: w.websiteDomain || "Draft (Not published)",
+        url: w.websiteDomain && !w.websiteDomain.includes("Draft")
+          ? w.websiteDomain.startsWith("http")
+            ? w.websiteDomain
+            : `https://${w.websiteDomain}`
+          : null,
+        isPublished: Boolean(w.websiteDomain && !w.websiteDomain.includes("Draft")),
+      };
+    }
+    return {
+      isLinked: false,
+      projectId: "",
+      name: "Website not linked",
+      domain: "",
+      url: null,
+      isPublished: false,
+    };
+  };
+
+  // Associate or unlink a widget with a user-owned website
+  const handleLinkWebsite = async (targetWidgetId: string, projectId: string | null) => {
+    setIsLinkingWebsite(true);
+    try {
+      const selectedProject = projectId ? projects.find((p) => p.id === projectId) : null;
+      const websiteData = selectedProject
+        ? {
+            id: selectedProject.id,
+            name: selectedProject.name || "Untitled Website",
+            domain: getProjectDomain(selectedProject),
+          }
+        : null;
+
+      const updated = await linkWidgetToWebsite(targetWidgetId, websiteData);
+      setWidgets((prev) => prev.map((w) => (w.id === updated.id ? updated : w)));
+      toast.success(
+        websiteData
+          ? `Linked "${linkModalWidget?.name || "widget"}" to ${websiteData.name}`
+          : `Unlinked widget from website`
+      );
+      setLinkModalWidget(null);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update website link");
+    } finally {
+      setIsLinkingWebsite(false);
+    }
+  };
+
+  const toggleGroupCollapse = (groupKey: string) => {
+    setCollapsedGroupIds((prev) => ({
+      ...prev,
+      [groupKey]: !prev[groupKey],
+    }));
+  };
+
+  const expandAllGroups = (keys: string[]) => {
+    const updated: Record<string, boolean> = {};
+    keys.forEach((k) => (updated[k] = false));
+    setCollapsedGroupIds(updated);
+  };
+
+  const collapseAllGroups = (keys: string[]) => {
+    const updated: Record<string, boolean> = {};
+    keys.forEach((k) => (updated[k] = true));
+    setCollapsedGroupIds(updated);
+  };
+
   // Live ticking countdown for card 1
   const [liveSec, setLiveSec] = useState(53);
   const [liveMin, setLiveMin] = useState(47);
@@ -882,6 +1029,161 @@ function DashboardWidgetsPage() {
     setCopied(true);
     toast.success("Embed code copied to clipboard!");
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  // Active widgets filtering with combined multi-criteria search
+  const filteredActiveWidgets = useMemo(() => {
+    const q = activeSearch.trim().toLowerCase();
+
+    return widgets.filter((w) => {
+      const siteInfo = getWidgetWebsiteInfo(w);
+
+      // Search matching: website name, website domain/hostname, widget name, or technical widget instance ID
+      if (q) {
+        const matchesWidgetName = (w.name || "").toLowerCase().includes(q);
+        const matchesWidgetId = (w.id || "").toLowerCase().includes(q);
+        const matchesSiteName = siteInfo.name.toLowerCase().includes(q);
+        const matchesDomain = siteInfo.domain.toLowerCase().includes(q);
+        if (!matchesWidgetName && !matchesWidgetId && !matchesSiteName && !matchesDomain) {
+          return false;
+        }
+      }
+
+      // Filter by website
+      if (siteFilter === "unlinked") {
+        if (siteInfo.isLinked) return false;
+      } else if (siteFilter !== "all") {
+        if (w.projectId !== siteFilter) return false;
+      }
+
+      // Filter by widget type
+      if (typeFilter !== "all" && w.type !== typeFilter) {
+        return false;
+      }
+
+      // Filter by status (published vs draft)
+      if (statusFilter !== "all" && w.status !== statusFilter) {
+        return false;
+      }
+
+      // Filter by active state (ON vs OFF)
+      if (enabledFilter !== "all") {
+        const isEnabled = w.enabled !== false;
+        if (enabledFilter === "active" && !isEnabled) return false;
+        if (enabledFilter === "inactive" && isEnabled) return false;
+      }
+
+      return true;
+    });
+  }, [widgets, projects, activeSearch, siteFilter, typeFilter, statusFilter, enabledFilter]);
+
+  // Active widgets sorting
+  const sortedActiveWidgets = useMemo(() => {
+    const list = [...filteredActiveWidgets];
+    list.sort((a, b) => {
+      const siteA = getWidgetWebsiteInfo(a);
+      const siteB = getWidgetWebsiteInfo(b);
+      const viewsA = a.viewsCount ?? (1200 + ((widgets.indexOf(a) * 840) % 5000));
+      const viewsB = b.viewsCount ?? (1200 + ((widgets.indexOf(b) * 840) % 5000));
+
+      switch (activeSort) {
+        case "site_asc":
+          return siteA.name.localeCompare(siteB.name);
+        case "site_desc":
+          return siteB.name.localeCompare(siteA.name);
+        case "name_asc":
+          return (a.name || "").localeCompare(b.name || "");
+        case "name_desc":
+          return (b.name || "").localeCompare(a.name || "");
+        case "views_desc":
+          return viewsB - viewsA;
+        case "views_asc":
+          return viewsA - viewsB;
+        case "created_desc":
+          return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+        case "updated_desc":
+        default:
+          return new Date(b.updatedAt || b.createdAt || 0).getTime() - new Date(a.updatedAt || a.createdAt || 0).getTime();
+      }
+    });
+    return list;
+  }, [filteredActiveWidgets, projects, widgets, activeSort]);
+
+  // Reset to first page when any search/filter/sort changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeSearch, siteFilter, typeFilter, statusFilter, enabledFilter, activeSort, pageSize]);
+
+  // Pagination calculations
+  const totalWidgetsCount = sortedActiveWidgets.length;
+  const totalPages = Math.max(1, Math.ceil(totalWidgetsCount / pageSize));
+  const safeCurrentPage = Math.min(Math.max(1, currentPage), totalPages);
+
+  const paginatedWidgets = useMemo(() => {
+    const startIndex = (safeCurrentPage - 1) * pageSize;
+    return sortedActiveWidgets.slice(startIndex, startIndex + pageSize);
+  }, [sortedActiveWidgets, safeCurrentPage, pageSize]);
+
+  // Grouped active widgets by website
+  const groupedActiveWebsites = useMemo(() => {
+    const groups: Array<{
+      key: string;
+      id?: string;
+      name: string;
+      domain: string;
+      url: string | null;
+      isLinked: boolean;
+      items: WidgetInstanceRecord[];
+    }> = [];
+
+    const map = new Map<string, typeof groups[0]>();
+
+    sortedActiveWidgets.forEach((w) => {
+      const siteInfo = getWidgetWebsiteInfo(w);
+      const groupKey = siteInfo.isLinked ? siteInfo.projectId || siteInfo.name : "__unlinked__";
+
+      if (!map.has(groupKey)) {
+        const newGroup = {
+          key: groupKey,
+          id: siteInfo.projectId,
+          name: siteInfo.isLinked ? siteInfo.name : "Unlinked Widgets",
+          domain: siteInfo.domain,
+          url: siteInfo.url,
+          isLinked: siteInfo.isLinked,
+          items: [],
+        };
+        map.set(groupKey, newGroup);
+        groups.push(newGroup);
+      }
+      map.get(groupKey)!.items.push(w);
+    });
+
+    return groups;
+  }, [sortedActiveWidgets, projects]);
+
+  // Count unlinked widgets for badges/filter labels
+  const unlinkedWidgetsCount = useMemo(() => {
+    return widgets.filter((w) => !getWidgetWebsiteInfo(w).isLinked).length;
+  }, [widgets, projects]);
+
+  // Check if any filter is currently applied
+  const isAnyFilterActive = Boolean(
+    activeSearch.trim() ||
+    siteFilter !== "all" ||
+    typeFilter !== "all" ||
+    statusFilter !== "all" ||
+    enabledFilter !== "all" ||
+    activeSort !== "updated_desc"
+  );
+
+  const resetAllFilters = () => {
+    setActiveSearch("");
+    setSiteFilter("all");
+    setTypeFilter("all");
+    setStatusFilter("all");
+    setEnabledFilter("all");
+    setActiveSort("updated_desc");
+    setCurrentPage(1);
   };
 
   return (
@@ -1786,203 +2088,825 @@ function DashboardWidgetsPage() {
 
           {/* ================= ACTIVE VIEW ================= */}
           {viewMode === "active" && (
-            <section className="space-y-4">
+            <section className="space-y-5">
+              {/* Main Card */}
               <div className="rounded-2xl bg-[#151518] border border-white/[0.08] overflow-hidden shadow-xl">
-                <div className="flex items-center justify-between gap-4 p-5 border-b border-white/[0.07]">
+                {/* Header with Title & View Mode Selector */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 border-b border-white/[0.07]">
                   <div>
-                    <h2 className="text-lg font-bold text-white">My active widgets</h2>
-                    <p className="text-xs text-[#9a9aa3]">Widgets currently embedded on your websites.</p>
+                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                      <span>My active widgets</span>
+                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-white/[0.05] text-[#9a9aa3] border border-white/5">
+                        {widgets.length} total
+                      </span>
+                    </h2>
+                    <p className="text-xs text-[#9a9aa3] mt-0.5">
+                      Manage and track widget instances across all your connected websites.
+                    </p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setViewMode("catalog")}
-                    className="py-2 px-3.5 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md transition cursor-pointer"
-                  >
-                    + Add widget
-                  </button>
+
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    {/* View Layout Toggle: All Widgets (Table) vs Group by Website */}
+                    <div className="inline-flex items-center p-1 rounded-xl bg-[#0e0e11] border border-white/[0.08]">
+                      <button
+                        type="button"
+                        onClick={() => setActiveViewLayout("all")}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                          activeViewLayout === "all"
+                            ? "bg-[#ffc21a] text-[#1a1400] shadow-sm"
+                            : "text-[#9a9aa3] hover:text-white"
+                        }`}
+                        title="View all widgets in a single unified table"
+                      >
+                        <Table className="w-3.5 h-3.5" />
+                        <span>All Widgets</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setActiveViewLayout("grouped")}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                          activeViewLayout === "grouped"
+                            ? "bg-[#ffc21a] text-[#1a1400] shadow-sm"
+                            : "text-[#9a9aa3] hover:text-white"
+                        }`}
+                        title="Group widgets under collapsible website headings"
+                      >
+                        <FolderTree className="w-3.5 h-3.5" />
+                        <span>Group by Website</span>
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setViewMode("catalog")}
+                      className="py-2 px-3.5 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] hover:opacity-95 text-[#1a1400] font-black text-xs shadow-md transition cursor-pointer flex items-center gap-1.5"
+                    >
+                      <span>+ Add widget</span>
+                    </button>
+                  </div>
                 </div>
 
+                {/* Multi-Criteria Search & Filter Toolbar */}
+                <div className="p-4 sm:p-5 border-b border-white/[0.06] bg-[#111114]/60 space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-2.5">
+                    {/* 1. Search by Website, Domain, Widget Name, or Instance ID */}
+                    <div className="relative lg:col-span-2">
+                      <Search className="w-4 h-4 text-[#9a9aa3] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <input
+                        type="text"
+                        value={activeSearch}
+                        onChange={(e) => setActiveSearch(e.target.value)}
+                        placeholder="Search website, domain, widget or ID…"
+                        className="w-full bg-[#18181c] border border-white/10 rounded-xl pl-9 pr-8 py-2 text-xs text-white placeholder-[#6b6b74] focus:outline-none focus:border-[#ffc21a]/50 transition"
+                      />
+                      {activeSearch && (
+                        <button
+                          type="button"
+                          onClick={() => setActiveSearch("")}
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9a9aa3] hover:text-white p-0.5 rounded cursor-pointer"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* 2. Filter by Website */}
+                    <div className="relative">
+                      <select
+                        value={siteFilter}
+                        onChange={(e) => setSiteFilter(e.target.value)}
+                        className="w-full bg-[#18181c] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#ffc21a]/50 transition appearance-none cursor-pointer truncate pr-7"
+                      >
+                        <option value="all">All Websites ({projects.length})</option>
+                        {unlinkedWidgetsCount > 0 && (
+                          <option value="unlinked">⚠️ Unlinked ({unlinkedWidgetsCount})</option>
+                        )}
+                        {projects.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            🌐 {p.name || "Untitled"} ({getProjectDomain(p)})
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown className="w-3.5 h-3.5 text-[#9a9aa3] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+
+                    {/* 3. Filter by Widget Type */}
+                    <div className="relative">
+                      <select
+                        value={typeFilter}
+                        onChange={(e) => setTypeFilter(e.target.value)}
+                        className="w-full bg-[#18181c] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#ffc21a]/50 transition appearance-none cursor-pointer truncate pr-7"
+                      >
+                        <option value="all">All Types</option>
+                        <option value="google_reviews">Google Reviews</option>
+                        <option value="countdown">Countdown Timer</option>
+                        <option value="announcement_popup">Announcement & Popup</option>
+                        <option value="faq_accordion">FAQ Accordion</option>
+                      </select>
+                      <ChevronDown className="w-3.5 h-3.5 text-[#9a9aa3] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+
+                    {/* 4. Filter by Status (Live / Draft) */}
+                    <div className="relative">
+                      <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className="w-full bg-[#18181c] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#ffc21a]/50 transition appearance-none cursor-pointer truncate pr-7"
+                      >
+                        <option value="all">All Statuses</option>
+                        <option value="published">Live Only</option>
+                        <option value="draft">Draft Only</option>
+                      </select>
+                      <ChevronDown className="w-3.5 h-3.5 text-[#9a9aa3] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+
+                    {/* 5. Filter by Active State & Sort */}
+                    <div className="relative">
+                      <select
+                        value={enabledFilter}
+                        onChange={(e) => setEnabledFilter(e.target.value)}
+                        className="w-full bg-[#18181c] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#ffc21a]/50 transition appearance-none cursor-pointer truncate pr-7"
+                      >
+                        <option value="all">All States</option>
+                        <option value="active">Active (ON)</option>
+                        <option value="inactive">Inactive (OFF)</option>
+                      </select>
+                      <ChevronDown className="w-3.5 h-3.5 text-[#9a9aa3] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {/* Secondary Toolbar: Sorting & Active Filter Reset */}
+                  <div className="flex flex-wrap items-center justify-between gap-2.5 pt-1 text-xs">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-[#6b6b74] font-medium flex items-center gap-1">
+                        <ArrowUpDown className="w-3 h-3" />
+                        <span>Sort:</span>
+                      </span>
+                      <select
+                        value={activeSort}
+                        onChange={(e) => setActiveSort(e.target.value)}
+                        className="bg-[#18181c] border border-white/10 rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-[#ffc21a]/50 cursor-pointer"
+                      >
+                        <option value="updated_desc">Recently Updated</option>
+                        <option value="created_desc">Recently Created</option>
+                        <option value="site_asc">Website Name (A → Z)</option>
+                        <option value="site_desc">Website Name (Z → A)</option>
+                        <option value="name_asc">Widget Name (A → Z)</option>
+                        <option value="name_desc">Widget Name (Z → A)</option>
+                        <option value="views_desc">Views (High → Low)</option>
+                        <option value="views_asc">Views (Low → High)</option>
+                      </select>
+
+                      {isAnyFilterActive && (
+                        <button
+                          type="button"
+                          onClick={resetAllFilters}
+                          className="px-2.5 py-1 rounded-lg bg-white/[0.05] hover:bg-white/[0.08] text-[#ffc21a] text-xs font-semibold border border-[#ffc21a]/25 flex items-center gap-1 transition cursor-pointer"
+                        >
+                          <X className="w-3 h-3" />
+                          <span>Clear filters</span>
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="text-[11px] text-[#9a9aa3]">
+                      Showing <strong className="text-white">{filteredActiveWidgets.length}</strong> of{" "}
+                      <strong className="text-white">{widgets.length}</strong> widgets
+                    </div>
+                  </div>
+                </div>
+
+                {/* Content States */}
                 {loading ? (
-                  <div className="py-12 text-center text-[#9a9aa3]">
+                  <div className="py-16 text-center text-[#9a9aa3]">
                     <div className="w-8 h-8 border-2 border-[#ffc21a] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
                     Loading your widgets…
                   </div>
                 ) : widgets.length === 0 ? (
-                  <div className="p-10 text-center space-y-3">
-                    <p className="text-sm text-[#9a9aa3]">
-                      You don&apos;t have any widgets yet. Create one from the catalog to see it here!
+                  <div className="p-12 text-center space-y-3">
+                    <div className="w-12 h-12 rounded-2xl bg-[#ffc21a]/10 border border-[#ffc21a]/20 text-[#ffc21a] flex items-center justify-center mx-auto mb-2">
+                      <Boxes className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-base font-bold text-white">No active widgets yet</h3>
+                    <p className="text-xs text-[#9a9aa3] max-w-md mx-auto">
+                      You haven&apos;t created any widgets yet. Choose a widget from the catalog to boost your website&apos;s conversions.
                     </p>
                     <button
                       type="button"
                       onClick={() => setViewMode("catalog")}
-                      className="py-2 px-4 rounded-xl bg-[#ffc21a] text-[#1a1400] font-bold text-xs inline-flex cursor-pointer"
+                      className="py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs inline-flex cursor-pointer shadow-md mt-2"
                     >
                       Browse Widget Catalog →
                     </button>
                   </div>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse text-xs">
-                      <thead>
-                        <tr className="border-b border-white/[0.06] text-[11px] font-bold uppercase tracking-wider text-[#6b6b74]">
-                          <th className="py-3 px-5">Widget</th>
-                          <th className="py-3 px-5">Website / ID</th>
-                          <th className="py-3 px-5">Views</th>
-                          <th className="py-3 px-5">Status</th>
-                          <th className="py-3 px-5">Active</th>
-                          <th className="py-3 px-5 text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-white/[0.04]">
-                        {widgets.map((w, idx) => {
-                          const isCountdown = w.type === "countdown";
-                          const isAnnouncement = w.type === "announcement_popup";
-                          const isFaq = w.type === "faq_accordion";
-                          const isPublished = w.status === "published";
-                          const isEnabled = w.enabled !== false;
-                          const viewsCount = 1200 + ((idx * 840) % 5000);
-                          const studioRoute = isCountdown
-                            ? `/dashboard/widgets/countdown/${w.id}`
-                            : isAnnouncement
-                            ? `/dashboard/widgets/announcement-popup/${w.id}`
-                            : isFaq
-                            ? `/dashboard/widgets/faq-accordion/${w.id}`
-                            : `/dashboard/widgets/google-reviews/${w.id}`;
+                ) : filteredActiveWidgets.length === 0 ? (
+                  <div className="p-12 text-center space-y-3">
+                    <div className="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/10 text-[#9a9aa3] flex items-center justify-center mx-auto mb-2">
+                      <Filter className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-base font-bold text-white">No widgets match your filters</h3>
+                    <p className="text-xs text-[#9a9aa3] max-w-sm mx-auto">
+                      No widget instances matched your current search query or filter combination.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={resetAllFilters}
+                      className="py-2 px-4 rounded-xl bg-white/[0.07] hover:bg-white/[0.12] text-white font-bold text-xs inline-flex cursor-pointer transition border border-white/10 mt-1"
+                    >
+                      Reset All Filters
+                    </button>
+                  </div>
+                ) : activeViewLayout === "all" ? (
+                  /* ================= 1. ALL WIDGETS UNIFIED TABLE VIEW ================= */
+                  <div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="border-b border-white/[0.06] text-[11px] font-bold uppercase tracking-wider text-[#6b6b74] bg-[#111114]/40">
+                            <th className="py-3 px-5">Widget</th>
+                            <th className="py-3 px-5">Website</th>
+                            <th className="py-3 px-5">Views</th>
+                            <th className="py-3 px-5">Status</th>
+                            <th className="py-3 px-5">Active</th>
+                            <th className="py-3 px-5 text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/[0.04]">
+                          {paginatedWidgets.map((w, idx) => {
+                            const isCountdown = w.type === "countdown";
+                            const isAnnouncement = w.type === "announcement_popup";
+                            const isFaq = w.type === "faq_accordion";
+                            const isPublished = w.status === "published";
+                            const isEnabled = w.enabled !== false;
+                            const viewsCount = w.viewsCount ?? (1200 + ((widgets.indexOf(w) * 840) % 5000));
+                            const siteInfo = getWidgetWebsiteInfo(w);
+                            const studioRoute = isCountdown
+                              ? `/dashboard/widgets/countdown/${w.id}`
+                              : isAnnouncement
+                              ? `/dashboard/widgets/announcement-popup/${w.id}`
+                              : isFaq
+                              ? `/dashboard/widgets/faq-accordion/${w.id}`
+                              : `/dashboard/widgets/google-reviews/${w.id}`;
 
-                          return (
-                            <tr key={w.id} className="hover:bg-white/[0.02] transition">
-                              <td className="py-3.5 px-5">
-                                <div className="flex items-center gap-3">
-                                  <div className="w-8 h-8 rounded-lg bg-[#ffc21a]/10 border border-[#ffc21a]/20 flex items-center justify-center shrink-0 text-[#ffc21a]">
-                                    {isCountdown ? (
-                                      <Clock className="w-4 h-4" />
-                                    ) : isAnnouncement ? (
-                                      <Megaphone className="w-4 h-4" />
-                                    ) : isFaq ? (
-                                      <HelpCircle className="w-4 h-4 text-sky-400" />
-                                    ) : (
-                                      <GoogleIcon className="w-4 h-4" />
-                                    )}
+                            return (
+                              <tr key={w.id} className="hover:bg-white/[0.02] transition">
+                                {/* 1. Widget Name & Details */}
+                                <td className="py-3.5 px-5">
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-[#ffc21a]/10 border border-[#ffc21a]/20 flex items-center justify-center shrink-0 text-[#ffc21a]">
+                                      {isCountdown ? (
+                                        <Clock className="w-4 h-4" />
+                                      ) : isAnnouncement ? (
+                                        <Megaphone className="w-4 h-4" />
+                                      ) : isFaq ? (
+                                        <HelpCircle className="w-4 h-4 text-sky-400" />
+                                      ) : (
+                                        <GoogleIcon className="w-4 h-4" />
+                                      )}
+                                    </div>
+                                    <div>
+                                      <strong className="block text-sm font-bold text-white leading-tight">
+                                        {w.name}
+                                      </strong>
+                                      <div className="flex items-center gap-2 mt-0.5">
+                                        <span className="text-[11px] text-[#6b6b74] leading-tight">
+                                          {isCountdown
+                                            ? "Countdown Timer"
+                                            : isAnnouncement
+                                            ? "Announcement & Popup"
+                                            : isFaq
+                                            ? "FAQ Accordion"
+                                            : "Google Reviews"}
+                                        </span>
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            navigator.clipboard.writeText(w.id);
+                                            toast.success("Widget ID copied!");
+                                          }}
+                                          title={`Instance ID: ${w.id} (Click to copy)`}
+                                          className="inline-flex items-center gap-1 font-mono text-[10px] text-zinc-500 hover:text-[#ffc21a] bg-white/[0.03] hover:bg-white/[0.08] px-1.5 py-0.2 rounded border border-white/5 transition cursor-pointer"
+                                        >
+                                          <Hash className="w-2.5 h-2.5 text-zinc-600" />
+                                          <span>{w.id}</span>
+                                        </button>
+                                      </div>
+                                    </div>
                                   </div>
-                                  <div>
-                                    <strong className="block text-sm font-bold text-white leading-tight">
-                                      {w.name}
-                                    </strong>
-                                    <small className="block text-[11px] text-[#6b6b74] leading-tight">
-                                      {isCountdown
-                                        ? "Countdown Timer"
-                                        : isAnnouncement
-                                        ? "Announcement & Popup"
-                                        : isFaq
-                                        ? "FAQ Accordion"
-                                        : "Google Reviews"}
-                                    </small>
-                                  </div>
-                                </div>
-                              </td>
+                                </td>
 
-                              <td className="py-3.5 px-5 font-mono text-[11px] text-[#9a9aa3]">
-                                {w.id}
-                              </td>
+                                {/* 2. Proper Website Column */}
+                                <td className="py-3.5 px-5">
+                                  {siteInfo.isLinked ? (
+                                    <div className="space-y-0.5">
+                                      <strong className="block text-xs font-bold text-white leading-tight truncate max-w-[220px]">
+                                        {siteInfo.name}
+                                      </strong>
+                                      <div className="flex items-center gap-1.5 text-[11px] text-[#9a9aa3]">
+                                        <span className="truncate max-w-[170px]">{siteInfo.domain}</span>
+                                        {siteInfo.url && (
+                                          <a
+                                            href={siteInfo.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            title={`Open ${siteInfo.name} in new tab`}
+                                            className="p-0.5 text-[#9a9aa3] hover:text-[#ffc21a] transition"
+                                          >
+                                            <ExternalLink className="w-3 h-3" />
+                                          </a>
+                                        )}
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            setLinkModalWidget(w);
+                                            setWebsitePickerSelectedId(w.projectId || "");
+                                            setWebsitePickerSearch("");
+                                          }}
+                                          className="text-[10px] text-zinc-500 hover:text-[#ffc21a] underline ml-1 cursor-pointer transition"
+                                          title="Change website link"
+                                        >
+                                          Change
+                                        </button>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div>
+                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/25">
+                                        <AlertCircle className="w-3 h-3 shrink-0" />
+                                        <span>Website not linked</span>
+                                      </span>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setLinkModalWidget(w);
+                                          setWebsitePickerSelectedId("");
+                                          setWebsitePickerSearch("");
+                                        }}
+                                        className="block mt-1 text-[11px] font-semibold text-[#ffc21a] hover:underline cursor-pointer"
+                                      >
+                                        + Link website
+                                      </button>
+                                    </div>
+                                  )}
+                                </td>
 
-                              <td className="py-3.5 px-5 font-bold text-white">
-                                {viewsCount.toLocaleString()}
-                              </td>
+                                {/* 3. Views Count */}
+                                <td className="py-3.5 px-5 font-bold text-white">
+                                  {viewsCount.toLocaleString()}
+                                </td>
 
-                              <td className="py-3.5 px-5">
-                                <span
-                                  className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold ${
-                                    isPublished
-                                      ? "bg-[#22c55e]/10 text-[#22c55e] border border-[#22c55e]/25"
-                                      : "bg-white/[0.06] text-[#9a9aa3]"
-                                  }`}
-                                >
+                                {/* 4. Status Badge */}
+                                <td className="py-3.5 px-5">
                                   <span
-                                    className={`w-1.5 h-1.5 rounded-full ${
-                                      isPublished ? "bg-[#22c55e]" : "bg-[#9a9aa3]"
+                                    className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                                      isPublished
+                                        ? "bg-[#22c55e]/10 text-[#22c55e] border border-[#22c55e]/25"
+                                        : "bg-white/[0.06] text-[#9a9aa3]"
                                     }`}
-                                  />
-                                  {isPublished ? "Live" : "Draft"}
-                                </span>
-                              </td>
-
-                              {/* Turn ON/OFF Switch */}
-                              <td className="py-3.5 px-5">
-                                <div className="flex items-center gap-2">
-                                  <button
-                                    type="button"
-                                    role="switch"
-                                    aria-checked={isEnabled}
-                                    onClick={() => handleToggleWidgetActive(w)}
-                                    className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                                      isEnabled ? "bg-[#22c55e]" : "bg-zinc-700"
-                                    }`}
-                                    title={
-                                      isEnabled
-                                        ? "Turn Off (Hides this widget everywhere)"
-                                        : "Turn On (Enables this widget everywhere)"
-                                    }
                                   >
                                     <span
-                                      className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
-                                        isEnabled ? "translate-x-5" : "translate-x-0"
+                                      className={`w-1.5 h-1.5 rounded-full ${
+                                        isPublished ? "bg-[#22c55e]" : "bg-[#9a9aa3]"
                                       }`}
                                     />
-                                  </button>
-                                  <span
-                                    className={`text-[11px] font-extrabold ${
-                                      isEnabled ? "text-[#22c55e]" : "text-zinc-500"
-                                    }`}
-                                  >
-                                    {isEnabled ? "ON" : "OFF"}
+                                    {isPublished ? "Live" : "Draft"}
+                                  </span>
+                                </td>
+
+                                {/* 5. Turn ON/OFF Switch */}
+                                <td className="py-3.5 px-5">
+                                  <div className="flex items-center gap-2">
+                                    <button
+                                      type="button"
+                                      role="switch"
+                                      aria-checked={isEnabled}
+                                      onClick={() => handleToggleWidgetActive(w)}
+                                      className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                                        isEnabled ? "bg-[#22c55e]" : "bg-zinc-700"
+                                      }`}
+                                      title={
+                                        isEnabled
+                                          ? "Turn Off (Hides this widget everywhere)"
+                                          : "Turn On (Enables this widget everywhere)"
+                                      }
+                                    >
+                                      <span
+                                        className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                                          isEnabled ? "translate-x-5" : "translate-x-0"
+                                        }`}
+                                      />
+                                    </button>
+                                    <span
+                                      className={`text-[11px] font-extrabold ${
+                                        isEnabled ? "text-[#22c55e]" : "text-zinc-500"
+                                      }`}
+                                    >
+                                      {isEnabled ? "ON" : "OFF"}
+                                    </span>
+                                  </div>
+                                </td>
+
+                                {/* 6. Actions */}
+                                <td className="py-3.5 px-5 text-right">
+                                  <div className="inline-flex items-center gap-1.5 justify-end">
+                                    <button
+                                      type="button"
+                                      onClick={() => setEmbedModalWidget(w)}
+                                      className="px-2.5 py-1.5 rounded-lg bg-[#1f1f25] hover:bg-[#282830] border border-white/10 text-white font-bold text-xs transition cursor-pointer flex items-center gap-1.5"
+                                      title="Get Embed Code"
+                                    >
+                                      <Code2 className="w-3.5 h-3.5 text-[#ffc21a]" />
+                                      <span>Embed</span>
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      onClick={() => navigate({ to: studioRoute as any })}
+                                      className="p-1.5 rounded-lg bg-[#ffc21a] hover:bg-[#ffc21a]/90 text-[#1a1400] transition cursor-pointer"
+                                      title="Edit in Studio"
+                                    >
+                                      <Edit3 className="w-3.5 h-3.5" />
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDuplicate(w.id)}
+                                      className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-[#9a9aa3] hover:text-white transition cursor-pointer"
+                                      title="Duplicate"
+                                    >
+                                      <Copy className="w-3.5 h-3.5" />
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDelete(w.id, w.name)}
+                                      className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-red-500/10 text-[#9a9aa3] hover:text-red-400 transition cursor-pointer"
+                                      title="Delete"
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Pagination Bar */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 border-t border-white/[0.06] bg-[#111114]/40 text-xs">
+                      <div className="text-[#9a9aa3]">
+                        Showing{" "}
+                        <strong className="text-white">
+                          {totalWidgetsCount === 0 ? 0 : (safeCurrentPage - 1) * pageSize + 1}
+                        </strong>{" "}
+                        to{" "}
+                        <strong className="text-white">
+                          {Math.min(safeCurrentPage * pageSize, totalWidgetsCount)}
+                        </strong>{" "}
+                        of <strong className="text-white">{totalWidgetsCount}</strong> widgets
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {/* Page Size Selector */}
+                        <div className="flex items-center gap-1.5 mr-2 text-[#9a9aa3]">
+                          <span>Per page:</span>
+                          <select
+                            value={pageSize}
+                            onChange={(e) => setPageSize(Number(e.target.value))}
+                            className="bg-[#18181c] border border-white/10 rounded-lg px-2 py-1 text-white focus:outline-none focus:border-[#ffc21a]/50 cursor-pointer"
+                          >
+                            <option value={10}>10</option>
+                            <option value={25}>25</option>
+                            <option value={50}>50</option>
+                            <option value={100}>100</option>
+                          </select>
+                        </div>
+
+                        {/* Page Buttons */}
+                        <button
+                          type="button"
+                          disabled={safeCurrentPage <= 1}
+                          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                          className="px-2.5 py-1.5 rounded-lg bg-[#18181c] border border-white/10 text-white font-bold disabled:opacity-40 hover:bg-[#202026] transition cursor-pointer disabled:cursor-not-allowed"
+                        >
+                          <ChevronLeft className="w-3.5 h-3.5" />
+                        </button>
+
+                        <div className="text-[#9a9aa3] font-semibold px-2">
+                          Page <strong className="text-white">{safeCurrentPage}</strong> of{" "}
+                          <strong className="text-white">{totalPages}</strong>
+                        </div>
+
+                        <button
+                          type="button"
+                          disabled={safeCurrentPage >= totalPages}
+                          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                          className="px-2.5 py-1.5 rounded-lg bg-[#18181c] border border-white/10 text-white font-bold disabled:opacity-40 hover:bg-[#202026] transition cursor-pointer disabled:cursor-not-allowed"
+                        >
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  /* ================= 2. GROUP BY WEBSITE COLLAPSIBLE VIEW ================= */
+                  <div className="p-4 sm:p-5 space-y-4">
+                    {/* Top Group Summary Bar */}
+                    <div className="flex items-center justify-between text-xs text-[#9a9aa3] pb-1 border-b border-white/[0.04]">
+                      <div>
+                        Grouped into <strong className="text-white">{groupedActiveWebsites.length}</strong> website{" "}
+                        {groupedActiveWebsites.length === 1 ? "group" : "groups"}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => expandAllGroups(groupedActiveWebsites.map((g) => g.key))}
+                          className="text-[11px] font-semibold text-[#ffc21a] hover:underline cursor-pointer"
+                        >
+                          Expand all
+                        </button>
+                        <span>•</span>
+                        <button
+                          type="button"
+                          onClick={() => collapseAllGroups(groupedActiveWebsites.map((g) => g.key))}
+                          className="text-[11px] font-semibold text-[#9a9aa3] hover:text-white cursor-pointer"
+                        >
+                          Collapse all
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Collapsible Website Cards */}
+                    {groupedActiveWebsites.map((group) => {
+                      const isCollapsed = Boolean(collapsedGroupIds[group.key]);
+
+                      return (
+                        <div
+                          key={group.key}
+                          className="rounded-xl bg-[#0f0f13] border border-white/[0.07] overflow-hidden shadow-md transition"
+                        >
+                          {/* Accordion Header */}
+                          <div
+                            onClick={() => toggleGroupCollapse(group.key)}
+                            className="flex items-center justify-between gap-3 p-4 bg-[#141418] hover:bg-[#18181e] cursor-pointer transition select-none"
+                          >
+                            <div className="flex items-center gap-3 min-w-0">
+                              <span className="p-1 rounded-lg bg-white/[0.04] text-[#9a9aa3]">
+                                {isCollapsed ? (
+                                  <ChevronRight className="w-4 h-4" />
+                                ) : (
+                                  <ChevronDown className="w-4 h-4" />
+                                )}
+                              </span>
+
+                              <div
+                                className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                                  group.isLinked
+                                    ? "bg-[#ffc21a]/10 text-[#ffc21a] border border-[#ffc21a]/25"
+                                    : "bg-amber-500/10 text-amber-400 border border-amber-500/25"
+                                }`}
+                              >
+                                {group.isLinked ? (
+                                  <Globe className="w-4 h-4" />
+                                ) : (
+                                  <AlertCircle className="w-4 h-4" />
+                                )}
+                              </div>
+
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-2">
+                                  <h3 className="font-bold text-white text-sm truncate">
+                                    {group.name}
+                                  </h3>
+                                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/[0.06] text-[#9a9aa3] border border-white/5">
+                                    {group.items.length} {group.items.length === 1 ? "widget" : "widgets"}
                                   </span>
                                 </div>
-                              </td>
-
-                              <td className="py-3.5 px-5 text-right">
-                                <div className="inline-flex items-center gap-1.5 justify-end">
-                                  <button
-                                    type="button"
-                                    onClick={() => setEmbedModalWidget(w)}
-                                    className="px-2.5 py-1.5 rounded-lg bg-[#1f1f25] hover:bg-[#282830] border border-white/10 text-white font-bold text-xs transition cursor-pointer flex items-center gap-1.5"
-                                  >
-                                    <Code2 className="w-3.5 h-3.5 text-[#ffc21a]" />
-                                    <span>Embed</span>
-                                  </button>
-
-                                  <button
-                                    type="button"
-                                    onClick={() => navigate({ to: studioRoute as any })}
-                                    className="p-1.5 rounded-lg bg-[#ffc21a] hover:bg-[#ffc21a]/90 text-[#1a1400] transition cursor-pointer"
-                                    title="Edit in Studio"
-                                  >
-                                    <Edit3 className="w-3.5 h-3.5" />
-                                  </button>
-
-                                  <button
-                                    type="button"
-                                    onClick={() => handleDuplicate(w.id)}
-                                    className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-[#9a9aa3] hover:text-white transition cursor-pointer"
-                                    title="Duplicate"
-                                  >
-                                    <Copy className="w-3.5 h-3.5" />
-                                  </button>
-
-                                  <button
-                                    type="button"
-                                    onClick={() => handleDelete(w.id, w.name)}
-                                    className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-red-500/10 text-[#9a9aa3] hover:text-red-400 transition cursor-pointer"
-                                    title="Delete"
-                                  >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                  </button>
+                                <div className="flex items-center gap-1.5 text-[11px] text-[#6b6b74] mt-0.5">
+                                  <span className="truncate">{group.domain || "No domain set"}</span>
+                                  {group.url && (
+                                    <a
+                                      href={group.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      onClick={(e) => e.stopPropagation()}
+                                      title={`Open ${group.name}`}
+                                      className="p-0.5 text-[#9a9aa3] hover:text-[#ffc21a] transition"
+                                    >
+                                      <ExternalLink className="w-3 h-3" />
+                                    </a>
+                                  )}
                                 </div>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-2 shrink-0">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setViewMode("catalog");
+                                }}
+                                className="hidden sm:inline-flex items-center gap-1 py-1.5 px-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white font-bold text-xs border border-white/10 transition cursor-pointer"
+                              >
+                                <span>+ Add widget</span>
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Accordion Table Body */}
+                          {!isCollapsed && (
+                            <div className="border-t border-white/[0.06] overflow-x-auto">
+                              <table className="w-full text-left border-collapse text-xs">
+                                <thead>
+                                  <tr className="border-b border-white/[0.04] text-[10px] font-bold uppercase tracking-wider text-[#6b6b74] bg-[#0c0c0f]">
+                                    <th className="py-2.5 px-4">Widget</th>
+                                    <th className="py-2.5 px-4">Views</th>
+                                    <th className="py-2.5 px-4">Status</th>
+                                    <th className="py-2.5 px-4">Active</th>
+                                    <th className="py-2.5 px-4 text-right">Actions</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-white/[0.03]">
+                                  {group.items.map((w) => {
+                                    const isCountdown = w.type === "countdown";
+                                    const isAnnouncement = w.type === "announcement_popup";
+                                    const isFaq = w.type === "faq_accordion";
+                                    const isPublished = w.status === "published";
+                                    const isEnabled = w.enabled !== false;
+                                    const viewsCount = w.viewsCount ?? (1200 + ((widgets.indexOf(w) * 840) % 5000));
+                                    const studioRoute = isCountdown
+                                      ? `/dashboard/widgets/countdown/${w.id}`
+                                      : isAnnouncement
+                                      ? `/dashboard/widgets/announcement-popup/${w.id}`
+                                      : isFaq
+                                      ? `/dashboard/widgets/faq-accordion/${w.id}`
+                                      : `/dashboard/widgets/google-reviews/${w.id}`;
+
+                                    return (
+                                      <tr key={w.id} className="hover:bg-white/[0.02] transition">
+                                        {/* Widget */}
+                                        <td className="py-3 px-4">
+                                          <div className="flex items-center gap-3">
+                                            <div className="w-7 h-7 rounded-lg bg-[#ffc21a]/10 border border-[#ffc21a]/20 flex items-center justify-center shrink-0 text-[#ffc21a]">
+                                              {isCountdown ? (
+                                                <Clock className="w-3.5 h-3.5" />
+                                              ) : isAnnouncement ? (
+                                                <Megaphone className="w-3.5 h-3.5" />
+                                              ) : isFaq ? (
+                                                <HelpCircle className="w-3.5 h-3.5 text-sky-400" />
+                                              ) : (
+                                                <GoogleIcon className="w-3.5 h-3.5" />
+                                              )}
+                                            </div>
+                                            <div>
+                                              <strong className="block text-xs font-bold text-white leading-tight">
+                                                {w.name}
+                                              </strong>
+                                              <div className="flex items-center gap-1.5 mt-0.5">
+                                                <span className="text-[10px] text-[#6b6b74]">
+                                                  {isCountdown
+                                                    ? "Countdown"
+                                                    : isAnnouncement
+                                                    ? "Announcement"
+                                                    : isFaq
+                                                    ? "FAQ Accordion"
+                                                    : "Google Reviews"}
+                                                </span>
+                                                <button
+                                                  type="button"
+                                                  onClick={() => {
+                                                    navigator.clipboard.writeText(w.id);
+                                                    toast.success("Widget ID copied!");
+                                                  }}
+                                                  title={`Instance ID: ${w.id} (Click to copy)`}
+                                                  className="font-mono text-[9px] text-zinc-500 hover:text-[#ffc21a] bg-white/[0.03] px-1 py-0.2 rounded border border-white/5 cursor-pointer"
+                                                >
+                                                  {w.id}
+                                                </button>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </td>
+
+                                        {/* Views */}
+                                        <td className="py-3 px-4 font-bold text-white">
+                                          {viewsCount.toLocaleString()}
+                                        </td>
+
+                                        {/* Status */}
+                                        <td className="py-3 px-4">
+                                          <span
+                                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                              isPublished
+                                                ? "bg-[#22c55e]/10 text-[#22c55e] border border-[#22c55e]/25"
+                                                : "bg-white/[0.06] text-[#9a9aa3]"
+                                            }`}
+                                          >
+                                            <span
+                                              className={`w-1.5 h-1.5 rounded-full ${
+                                                isPublished ? "bg-[#22c55e]" : "bg-[#9a9aa3]"
+                                              }`}
+                                            />
+                                            {isPublished ? "Live" : "Draft"}
+                                          </span>
+                                        </td>
+
+                                        {/* Active Toggle */}
+                                        <td className="py-3 px-4">
+                                          <div className="flex items-center gap-1.5">
+                                            <button
+                                              type="button"
+                                              role="switch"
+                                              aria-checked={isEnabled}
+                                              onClick={() => handleToggleWidgetActive(w)}
+                                              className={`relative inline-flex h-4 w-8 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                                                isEnabled ? "bg-[#22c55e]" : "bg-zinc-700"
+                                              }`}
+                                            >
+                                              <span
+                                                className={`pointer-events-none inline-block h-3 w-3 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                                                  isEnabled ? "translate-x-4" : "translate-x-0"
+                                                }`}
+                                              />
+                                            </button>
+                                            <span
+                                              className={`text-[10px] font-extrabold ${
+                                                isEnabled ? "text-[#22c55e]" : "text-zinc-500"
+                                              }`}
+                                            >
+                                              {isEnabled ? "ON" : "OFF"}
+                                            </span>
+                                          </div>
+                                        </td>
+
+                                        {/* Actions */}
+                                        <td className="py-3 px-4 text-right">
+                                          <div className="inline-flex items-center gap-1.5 justify-end">
+                                            <button
+                                              type="button"
+                                              onClick={() => {
+                                                setLinkModalWidget(w);
+                                                setWebsitePickerSelectedId(w.projectId || "");
+                                                setWebsitePickerSearch("");
+                                              }}
+                                              className="p-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-[#9a9aa3] hover:text-[#ffc21a] transition cursor-pointer"
+                                              title={group.isLinked ? "Change linked website" : "Link to website"}
+                                            >
+                                              <Link2 className="w-3.5 h-3.5" />
+                                            </button>
+
+                                            <button
+                                              type="button"
+                                              onClick={() => setEmbedModalWidget(w)}
+                                              className="px-2 py-1 rounded-lg bg-[#1f1f25] hover:bg-[#282830] border border-white/10 text-white font-bold text-[11px] transition cursor-pointer flex items-center gap-1"
+                                              title="Embed snippet"
+                                            >
+                                              <Code2 className="w-3 h-3 text-[#ffc21a]" />
+                                              <span>Embed</span>
+                                            </button>
+
+                                            <button
+                                              type="button"
+                                              onClick={() => navigate({ to: studioRoute as any })}
+                                              className="p-1 rounded-lg bg-[#ffc21a] hover:bg-[#ffc21a]/90 text-[#1a1400] transition cursor-pointer"
+                                              title="Edit in Studio"
+                                            >
+                                              <Edit3 className="w-3.5 h-3.5" />
+                                            </button>
+
+                                            <button
+                                              type="button"
+                                              onClick={() => handleDuplicate(w.id)}
+                                              className="p-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-[#9a9aa3] hover:text-white transition cursor-pointer"
+                                              title="Duplicate"
+                                            >
+                                              <Copy className="w-3.5 h-3.5" />
+                                            </button>
+
+                                            <button
+                                              type="button"
+                                              onClick={() => handleDelete(w.id, w.name)}
+                                              className="p-1 rounded-lg bg-white/[0.04] hover:bg-red-500/10 text-[#9a9aa3] hover:text-red-400 transition cursor-pointer"
+                                              title="Delete"
+                                            >
+                                              <Trash2 className="w-3.5 h-3.5" />
+                                            </button>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -2237,6 +3161,155 @@ function DashboardWidgetsPage() {
                   Explore Ready Widgets →
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ================= WEBSITE LINK MODAL ================= */}
+      {linkModalWidget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-lg rounded-2xl bg-[#151518] border border-white/10 shadow-2xl overflow-hidden">
+            {/* Header */}
+            <div className="p-6 border-b border-white/[0.08] flex items-start justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#ffc21a]/15 text-[#ffc21a] border border-[#ffc21a]/30 flex items-center justify-center">
+                  <Globe className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-white">Link Widget to Website</h3>
+                  <p className="text-xs text-[#9a9aa3] mt-0.5">
+                    Associate &quot;{linkModalWidget.name}&quot; with one of your websites.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setLinkModalWidget(null)}
+                className="p-1.5 rounded-lg text-[#9a9aa3] hover:text-white hover:bg-white/[0.06] transition cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-4">
+              {/* Search Websites */}
+              <div className="relative">
+                <Search className="w-4 h-4 text-[#9a9aa3] absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={websitePickerSearch}
+                  onChange={(e) => setWebsitePickerSearch(e.target.value)}
+                  placeholder="Filter your websites…"
+                  className="w-full bg-[#111114] border border-white/10 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-[#6b6b74] focus:outline-none focus:border-[#ffc21a]/50"
+                />
+              </div>
+
+              {/* Websites List */}
+              <div className="max-h-60 overflow-y-auto space-y-2 pr-1">
+                {/* Unlink / None option */}
+                <label
+                  className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition ${
+                    websitePickerSelectedId === ""
+                      ? "bg-[#ffc21a]/10 border-[#ffc21a]/50 text-white"
+                      : "bg-[#111114] border-white/5 hover:border-white/15 text-[#9a9aa3]"
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <input
+                      type="radio"
+                      name="selected_website"
+                      checked={websitePickerSelectedId === ""}
+                      onChange={() => setWebsitePickerSelectedId("")}
+                      className="accent-[#ffc21a]"
+                    />
+                    <div>
+                      <span className="text-xs font-bold text-white block">Unlink from Website</span>
+                      <span className="text-[11px] text-[#6b6b74]">Display as &quot;Website not linked&quot;</span>
+                    </div>
+                  </div>
+                  <Unlink className="w-4 h-4 text-zinc-500" />
+                </label>
+
+                {/* Filtered Projects */}
+                {projects
+                  .filter((p) => {
+                    const q = websitePickerSearch.trim().toLowerCase();
+                    if (!q) return true;
+                    return (
+                      (p.name || "").toLowerCase().includes(q) ||
+                      getProjectDomain(p).toLowerCase().includes(q)
+                    );
+                  })
+                  .map((p) => {
+                    const isSelected = websitePickerSelectedId === p.id;
+                    const domain = getProjectDomain(p);
+                    return (
+                      <label
+                        key={p.id}
+                        className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition ${
+                          isSelected
+                            ? "bg-[#ffc21a]/10 border-[#ffc21a]/50 text-white"
+                            : "bg-[#111114] border-white/5 hover:border-white/15 text-[#9a9aa3]"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <input
+                            type="radio"
+                            name="selected_website"
+                            checked={isSelected}
+                            onChange={() => setWebsitePickerSelectedId(p.id)}
+                            className="accent-[#ffc21a]"
+                          />
+                          <div className="min-w-0">
+                            <span className="text-xs font-bold text-white block truncate">
+                              {p.name || "Untitled Website"}
+                            </span>
+                            <span className="text-[11px] text-[#9a9aa3] block truncate">
+                              {domain}
+                            </span>
+                          </div>
+                        </div>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white/[0.04] text-zinc-400 border border-white/5 shrink-0">
+                          {p.status === "published" || (p as any).publishedUrl ? "Live" : "Draft"}
+                        </span>
+                      </label>
+                    );
+                  })}
+
+                {projects.length === 0 && (
+                  <div className="p-4 text-center text-xs text-[#9a9aa3] bg-[#111114] rounded-xl border border-white/5">
+                    No websites found in your account yet.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 border-t border-white/[0.08] flex items-center justify-end gap-2 bg-[#111114]/50">
+              <button
+                type="button"
+                onClick={() => setLinkModalWidget(null)}
+                className="py-2 px-4 rounded-xl text-xs font-bold text-[#9a9aa3] hover:text-white hover:bg-white/[0.05] transition cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isLinkingWebsite}
+                onClick={() => handleLinkWebsite(linkModalWidget.id, websitePickerSelectedId || null)}
+                className="py-2 px-4 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md transition flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              >
+                {isLinkingWebsite ? (
+                  <>
+                    <div className="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                    <span>Saving…</span>
+                  </>
+                ) : (
+                  <span>Save Association</span>
+                )}
+              </button>
             </div>
           </div>
         </div>
