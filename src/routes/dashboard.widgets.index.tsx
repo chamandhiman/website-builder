@@ -12,6 +12,7 @@ import {
   type WidgetInstanceRecord,
   type CountdownTemplateItem,
 } from "@/services/widgetService";
+import { createNewAnnouncementPopupWidget } from "@/services/announcementPopupTemplates";
 import { renderCountdownHtml, renderGoogleReviewsHtml } from "@/lib/widget-runtime/wtoWidgetRuntime";
 import { TemplateCardPreview } from "@/components/widgets/TemplateCardPreview";
 import {
@@ -30,6 +31,27 @@ import {
   Sparkles,
   HelpCircle,
   Eye,
+  MessageSquare,
+  LayoutGrid,
+  Share2,
+  FileText,
+  Boxes,
+  ChevronRight,
+  Percent,
+  ShoppingCart,
+  ShieldCheck,
+  Quote,
+  Zap,
+  Package,
+  Calendar,
+  Send,
+  ClipboardList,
+  QrCode,
+  Headphones,
+  Bell,
+  LayoutList,
+  Layers,
+  ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -45,6 +67,8 @@ export const Route = createFileRoute("/dashboard/widgets/")({
   },
   component: DashboardWidgetsPage,
 });
+
+const pad = (n: number) => String(n).padStart(2, "0");
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -69,6 +93,525 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" {...props}>
+      <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 6.46 17.5 2 12.04 2ZM12.04 20.15C10.56 20.15 9.11 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.8 7.37 7.49 3.68 12.04 3.68C16.58 3.68 20.28 7.37 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15ZM16.56 14.39C16.31 14.26 15.09 13.66 14.86 13.58C14.64 13.5 14.47 13.46 14.31 13.71C14.14 13.96 13.66 14.52 13.51 14.69C13.37 14.85 13.22 14.88 12.97 14.75C12.72 14.63 11.92 14.36 10.97 13.51C10.23 12.85 9.73 12.03 9.58 11.78C9.44 11.53 9.56 11.4 9.69 11.27C9.8 11.16 9.94 10.99 10.06 10.84C10.19 10.7 10.23 10.59 10.31 10.43C10.4 10.26 10.35 10.12 10.29 10C10.23 9.87 9.73 8.65 9.53 8.14C9.33 7.65 9.12 7.71 8.97 7.71C8.82 7.7 8.66 7.7 8.49 7.7C8.32 7.7 8.05 7.76 7.82 8.01C7.6 8.26 6.95 8.87 6.95 10.12C6.95 11.37 7.86 12.57 7.99 12.74C8.11 12.91 9.77 15.47 12.31 16.57C12.91 16.83 13.38 16.99 13.74 17.1C14.34 17.29 14.89 17.26 15.33 17.2C15.82 17.13 16.83 16.59 17.04 16C17.25 15.41 17.25 14.9 17.19 14.8C17.12 14.7 16.96 14.64 16.71 14.52L16.56 14.39Z" />
+    </svg>
+  );
+}
+
+function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" {...props}>
+      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+    </svg>
+  );
+}
+
+function YouTubeIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" {...props}>
+      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+    </svg>
+  );
+}
+
+function InstagramIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
+
+export interface CatalogCategory {
+  id: string;
+  label: string;
+  iconName: string;
+  headerTitle: string;
+  headerIcon: string;
+}
+
+export interface CatalogWidgetItem {
+  id: string;
+  title: string;
+  description: string;
+  categoryId: string;
+  status: "ready" | "coming_soon";
+  iconType: string;
+  iconBgClass: string;
+  features: string[];
+}
+
+const CATALOG_CATEGORIES: CatalogCategory[] = [
+  { id: "all", label: "All widgets", iconName: "layout_grid", headerTitle: "All Widgets", headerIcon: "layout_grid" },
+  { id: "support", label: "Support", iconName: "message", headerTitle: "Support & Communication", headerIcon: "message" },
+  { id: "sales", label: "Sales & Promotions", iconName: "megaphone", headerTitle: "Sales & Promotions", headerIcon: "megaphone" },
+  { id: "reviews", label: "Reviews & Trust", iconName: "star", headerTitle: "Reviews & Trust", headerIcon: "star" },
+  { id: "urgency", label: "Urgency", iconName: "clock", headerTitle: "Urgency & Engagement", headerIcon: "clock" },
+  { id: "social", label: "Social", iconName: "share", headerTitle: "Social Media", headerIcon: "share" },
+  { id: "forms", label: "Forms", iconName: "file_text", headerTitle: "Forms & Surveys", headerIcon: "file_text" },
+  { id: "other", label: "Other", iconName: "boxes", headerTitle: "Other Utilities", headerIcon: "boxes" },
+];
+
+const CATALOG_WIDGETS: CatalogWidgetItem[] = [
+  // 1. Support & Communication
+  {
+    id: "whatsapp_chat",
+    title: "WhatsApp Live Chat",
+    description: "Let visitors chat with you on WhatsApp.",
+    categoryId: "support",
+    status: "coming_soon",
+    iconType: "whatsapp",
+    iconBgClass: "bg-[#25d366] text-white",
+    features: [
+      "Floating WhatsApp chat bubble with custom button position",
+      "Pre-filled welcome greetings and starter questions",
+      "Custom support agent avatar, name, and online badge",
+      "Direct redirection to WhatsApp Web or mobile app",
+    ],
+  },
+  {
+    id: "faq_accordion",
+    title: "FAQ Accordion",
+    description: "Answer common questions easily.",
+    categoryId: "support",
+    status: "ready",
+    iconType: "faq",
+    iconBgClass: "bg-[#0284c7] text-white",
+    features: [
+      "8 modern preset designs (Classic, Modern, Minimal, Floating)",
+      "Instant live search and category filter tabs",
+      "Rich text answers with markdown & links support",
+      "Automatic Google FAQPage Schema markup for rich SEO snippets",
+    ],
+  },
+  {
+    id: "live_chat",
+    title: "Live Chat",
+    description: "Chat with visitors in real-time.",
+    categoryId: "support",
+    status: "coming_soon",
+    iconType: "live_chat",
+    iconBgClass: "bg-[#8b5cf6] text-white",
+    features: [
+      "Real-time 2-way messaging with typing indicators",
+      "Automated greeting triggers based on time on page",
+      "Collect email & lead data before starting chat",
+      "Desktop & mobile instant push alerts",
+    ],
+  },
+  {
+    id: "contact_form",
+    title: "Contact Form",
+    description: "Collect messages from your visitors.",
+    categoryId: "support",
+    status: "coming_soon",
+    iconType: "contact_form",
+    iconBgClass: "bg-[#f97316] text-white",
+    features: [
+      "Drag-and-drop custom form field builder",
+      "Instant email delivery and dashboard inbox",
+      "Spam protection with smart honeypot & reCAPTCHA",
+      "File upload attachment support",
+    ],
+  },
+
+  // 2. Sales & Promotions
+  {
+    id: "announcement_bar",
+    title: "Announcement Bar",
+    description: "Show offers and important updates.",
+    categoryId: "sales",
+    status: "ready",
+    iconType: "announcement_bar",
+    iconBgClass: "bg-[#f43f5e] text-white",
+    features: [
+      "Top and bottom sticky notification bars",
+      "Integrated countdown timer for urgent sales",
+      "Coupon code copy button with click-to-copy",
+      "Exit-intent and scroll trigger display rules",
+    ],
+  },
+  {
+    id: "popup",
+    title: "Popup",
+    description: "Display popups for offers and announcements.",
+    categoryId: "sales",
+    status: "ready",
+    iconType: "popup",
+    iconBgClass: "bg-[#a855f7] text-white",
+    features: [
+      "Exit-intent modal popups that retain leaving visitors",
+      "Timed delay & page scroll percentage triggers",
+      "Special discount code popups with CTA link",
+      "Mobile-responsive full screen or centered dialog",
+    ],
+  },
+  {
+    id: "sales_notification",
+    title: "Sales Notification",
+    description: "Show recent sales and sign-ups.",
+    categoryId: "sales",
+    status: "coming_soon",
+    iconType: "sales_notification",
+    iconBgClass: "bg-[#f97316] text-white",
+    features: [
+      "Realistic recent purchase popups (FOMO alerts)",
+      "Custom product names, customer avatars & locations",
+      "Configurable cycle intervals and randomize option",
+      "Increases buyer trust and conversion rates",
+    ],
+  },
+  {
+    id: "discount_coupon",
+    title: "Discount Coupon",
+    description: "Show discount codes and special deals.",
+    categoryId: "sales",
+    status: "coming_soon",
+    iconType: "discount_coupon",
+    iconBgClass: "bg-[#10b981] text-white",
+    features: [
+      "Click-to-copy promo codes with micro-animations",
+      "Scratch card & mystery discount reveal gamification",
+      "Timed coupons with countdown to expiry",
+      "Direct checkout redirect with code pre-applied",
+    ],
+  },
+
+  // 3. Reviews & Trust
+  {
+    id: "google_reviews",
+    title: "Google Reviews",
+    description: "Show customer reviews on your site.",
+    categoryId: "reviews",
+    status: "ready",
+    iconType: "google",
+    iconBgClass: "bg-white text-zinc-900 border border-white/20",
+    features: [
+      "Direct Google Places search & review synchronization",
+      "Carousel, grid, masonry & floating rating badge",
+      "Filter only 4-star and 5-star positive reviews",
+      "Verified Google reviewer badge & authentic stars",
+    ],
+  },
+  {
+    id: "testimonial_slider",
+    title: "Testimonial Slider",
+    description: "Display customer testimonials.",
+    categoryId: "reviews",
+    status: "coming_soon",
+    iconType: "testimonial_slider",
+    iconBgClass: "bg-[#4f46e5] text-white",
+    features: [
+      "Touch-friendly carousel with smooth autoplay",
+      "Client photo, company name, role and star rating",
+      "Support for video testimonial embeds",
+      "Custom accent colors matching your brand palette",
+    ],
+  },
+  {
+    id: "trust_badges",
+    title: "Trust Badges",
+    description: "Show trust badges and payment icons.",
+    categoryId: "reviews",
+    status: "coming_soon",
+    iconType: "trust_badges",
+    iconBgClass: "bg-[#10b981] text-white",
+    features: [
+      "Verified SSL, McAfee, Norton security badges",
+      "Payment method icons (Visa, Mastercard, Amex, PayPal, Apple Pay)",
+      "30-day money back guarantee & free shipping emblems",
+      "High-resolution vector rendering on all screen sizes",
+    ],
+  },
+  {
+    id: "rating_stars",
+    title: "Rating Stars",
+    description: "Display star ratings for products or services.",
+    categoryId: "reviews",
+    status: "coming_soon",
+    iconType: "rating_stars",
+    iconBgClass: "bg-[#f59e0b] text-white",
+    features: [
+      "Compact star rating badge for hero sections and headers",
+      "Fractional stars (e.g., 4.9/5) with total review counter",
+      "Schema.org AggregateRating markup for Google Rich Snippets",
+      "Customizable star colors, sizes and layout styles",
+    ],
+  },
+
+  // 4. Urgency & Engagement
+  {
+    id: "countdown_timer",
+    title: "Countdown Timer",
+    description: "Create urgency for offers or events.",
+    categoryId: "urgency",
+    status: "ready",
+    iconType: "countdown_timer",
+    iconBgClass: "bg-[#ef4444] text-white",
+    features: [
+      "10 designer presets (Flip clock, cyber digital, minimal bar)",
+      "Evergreen visitor timers & fixed deadline dates",
+      "Sticky header, bottom bar or embedded in-page",
+      "Custom actions on timer expiry (hide, redirect, show message)",
+    ],
+  },
+  {
+    id: "limited_time_offer",
+    title: "Limited Time Offer",
+    description: "Highlight special offers.",
+    categoryId: "urgency",
+    status: "coming_soon",
+    iconType: "limited_time_offer",
+    iconBgClass: "bg-[#f97316] text-white",
+    features: [
+      "Flash sale ribbon banner with animated pulsing badge",
+      "Original price vs discounted price calculation display",
+      "Countdown timer built into promotional ribbon",
+      "High-contrast color themes for maximum click-through",
+    ],
+  },
+  {
+    id: "stock_counter",
+    title: "Stock Counter",
+    description: "Show remaining stock or limited availability.",
+    categoryId: "urgency",
+    status: "coming_soon",
+    iconType: "stock_counter",
+    iconBgClass: "bg-[#8b5cf6] text-white",
+    features: [
+      "Animated inventory progress bar ('Only 3 left in stock!')",
+      "Dynamic stock countdown triggered on visitor page view",
+      "Custom low-stock threshold warning messages",
+      "Proven to reduce checkout abandonment",
+    ],
+  },
+  {
+    id: "event_countdown",
+    title: "Event Countdown",
+    description: "Countdown to your upcoming event.",
+    categoryId: "urgency",
+    status: "coming_soon",
+    iconType: "event_countdown",
+    iconBgClass: "bg-[#0ea5e9] text-white",
+    features: [
+      "Dedicated countdown for webinars, conferences & launches",
+      "1-click 'Add to Google Calendar' and 'Apple iCal' button",
+      "Automatic visitor timezone detection",
+      "Event location, speaker avatars and registration CTA",
+    ],
+  },
+
+  // 5. Social Media
+  {
+    id: "instagram_feed",
+    title: "Instagram Feed",
+    description: "Display your Instagram photos or reels.",
+    categoryId: "social",
+    status: "coming_soon",
+    iconType: "instagram",
+    iconBgClass: "bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] text-white",
+    features: [
+      "Auto-updating grid and carousel feeds from your profile",
+      "Lightbox modal popup to view photos and videos in HD",
+      "Filter by specific hashtags or user reels",
+      "Shoppable post links directly to product pages",
+    ],
+  },
+  {
+    id: "social_icons",
+    title: "Social Icons",
+    description: "Add social media links to your site.",
+    categoryId: "social",
+    status: "coming_soon",
+    iconType: "social_icons",
+    iconBgClass: "bg-[#3b82f6] text-white",
+    features: [
+      "40+ official brand icons (Twitter/X, LinkedIn, TikTok, etc.)",
+      "Floating sidebar or embedded header/footer links",
+      "Sleek hover effects, brand color fills and glowing badges",
+      "Custom URL links with automatic tooltips",
+    ],
+  },
+  {
+    id: "facebook_page",
+    title: "Facebook Page",
+    description: "Show your Facebook page feed.",
+    categoryId: "social",
+    status: "coming_soon",
+    iconType: "facebook",
+    iconBgClass: "bg-[#1877f2] text-white",
+    features: [
+      "Display your Facebook page posts, likes & cover photo",
+      "Integrated page 'Like' button without leaving your site",
+      "Direct Facebook Messenger chat button option",
+      "Responsive container width adapting to any layout",
+    ],
+  },
+  {
+    id: "youtube_video",
+    title: "YouTube Video",
+    description: "Embed YouTube videos on your site.",
+    categoryId: "social",
+    status: "coming_soon",
+    iconType: "youtube",
+    iconBgClass: "bg-[#ef4444] text-white",
+    features: [
+      "Embed videos, Shorts or full YouTube playlists",
+      "Custom branded video player frame and thumbnail cover",
+      "Autoplay on mute & looping capabilities",
+      "Responsive 16:9 aspect ratio across mobile and desktop",
+    ],
+  },
+
+  // 6. Forms & Surveys
+  {
+    id: "newsletter_signup",
+    title: "Newsletter Signup",
+    description: "Grow your email list with opt-in forms.",
+    categoryId: "forms",
+    status: "coming_soon",
+    iconType: "newsletter",
+    iconBgClass: "bg-[#7c3aed] text-white",
+    features: [
+      "High-converting email opt-in banner & popup modal",
+      "Direct sync with Mailchimp, ConvertKit, Klaviyo & Webhooks",
+      "GDPR compliant opt-in checkbox",
+      "Custom thank-you message and discount lead magnet delivery",
+    ],
+  },
+  {
+    id: "feedback_survey",
+    title: "Feedback Survey",
+    description: "Collect feedback and NPS from visitors.",
+    categoryId: "forms",
+    status: "coming_soon",
+    iconType: "survey",
+    iconBgClass: "bg-[#06b6d4] text-white",
+    features: [
+      "1-click Net Promoter Score (NPS) and star rating surveys",
+      "Emoji mood feedback and optional text comments",
+      "Targeted popup after visitor completes a purchase",
+      "CSV export and real-time dashboard analytics",
+    ],
+  },
+
+  // 7. Other Utilities
+  {
+    id: "qr_code",
+    title: "QR Code Generator",
+    description: "Generate scannable QR codes for links & menus.",
+    categoryId: "other",
+    status: "coming_soon",
+    iconType: "qr_code",
+    iconBgClass: "bg-[#475569] text-white",
+    features: [
+      "Custom color, rounded dots & centered logo upload",
+      "Links, WiFi passwords, vCard contacts and digital menus",
+      "Download high-res SVG & PNG files for print or web",
+      "Track total scans and visitor devices",
+    ],
+  },
+  {
+    id: "audio_player",
+    title: "Audio Player",
+    description: "Stream audio tracks, episodes or background music.",
+    categoryId: "other",
+    status: "coming_soon",
+    iconType: "audio_player",
+    iconBgClass: "bg-[#db2777] text-white",
+    features: [
+      "Compact sticky audio player for podcasts & music tracks",
+      "Audio waveform visualizer with scrub control",
+      "Track title, artist name, and album artwork",
+      "Continuous background playback as visitors browse pages",
+    ],
+  },
+];
+
+function renderItemIcon(iconType: string) {
+  switch (iconType) {
+    case "whatsapp":
+      return <WhatsAppIcon />;
+    case "faq":
+      return <HelpCircle className="w-5 h-5 text-white" />;
+    case "live_chat":
+      return <MessageSquare className="w-5 h-5 text-white" />;
+    case "contact_form":
+      return <Send className="w-5 h-5 text-white" />;
+    case "announcement_bar":
+      return <Megaphone className="w-5 h-5 text-white" />;
+    case "popup":
+      return <Layers className="w-5 h-5 text-white" />;
+    case "sales_notification":
+      return <ShoppingCart className="w-5 h-5 text-white" />;
+    case "discount_coupon":
+      return <Percent className="w-5 h-5 text-white" />;
+    case "google":
+      return <GoogleIcon className="w-5 h-5" />;
+    case "testimonial_slider":
+      return <Quote className="w-5 h-5 text-white" />;
+    case "trust_badges":
+      return <ShieldCheck className="w-5 h-5 text-white" />;
+    case "rating_stars":
+      return <Star className="w-5 h-5 text-white fill-white" />;
+    case "countdown_timer":
+      return <Clock className="w-5 h-5 text-white" />;
+    case "limited_time_offer":
+      return <Zap className="w-5 h-5 text-white fill-white" />;
+    case "stock_counter":
+      return <Package className="w-5 h-5 text-white" />;
+    case "event_countdown":
+      return <Calendar className="w-5 h-5 text-white" />;
+    case "instagram":
+      return <InstagramIcon />;
+    case "social_icons":
+      return <Share2 className="w-5 h-5 text-white" />;
+    case "facebook":
+      return <FacebookIcon />;
+    case "youtube":
+      return <YouTubeIcon />;
+    case "newsletter":
+      return <Send className="w-5 h-5 text-white" />;
+    case "survey":
+      return <ClipboardList className="w-5 h-5 text-white" />;
+    case "qr_code":
+      return <QrCode className="w-5 h-5 text-white" />;
+    case "audio_player":
+      return <Headphones className="w-5 h-5 text-white" />;
+    default:
+      return <Sparkles className="w-5 h-5 text-white" />;
+  }
+}
+
+function renderCategoryPillIcon(iconName: string, className = "w-3.5 h-3.5") {
+  switch (iconName) {
+    case "layout_grid":
+      return <LayoutGrid className={className} />;
+    case "message":
+      return <MessageSquare className={className} />;
+    case "megaphone":
+      return <Megaphone className={className} />;
+    case "star":
+      return <Star className={className} />;
+    case "clock":
+      return <Clock className={className} />;
+    case "share":
+      return <Share2 className={className} />;
+    case "file_text":
+      return <FileText className={className} />;
+    case "boxes":
+      return <Boxes className={className} />;
+    default:
+      return <Sparkles className={className} />;
+  }
+}
+
+
 function DashboardWidgetsPage() {
   const { tab } = Route.useSearch();
   const navigate = useNavigate();
@@ -86,6 +629,10 @@ function DashboardWidgetsPage() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [catalogLayout, setCatalogLayout] = useState<"list" | "cards">("list");
+  const [comingSoonModalWidget, setComingSoonModalWidget] = useState<CatalogWidgetItem | null>(null);
+  const [notifyEmail, setNotifyEmail] = useState("");
+  const [notifiedWidgetIds, setNotifiedWidgetIds] = useState<string[]>([]);
   const [creatingCountdownKey, setCreatingCountdownKey] = useState<string | null>(null);
   const [creatingGoogle, setCreatingGoogle] = useState(false);
   const [googleWidgetName, setGoogleWidgetName] = useState("My Google Reviews");
@@ -191,6 +738,82 @@ function DashboardWidgetsPage() {
       toast.error("Failed to create FAQ Accordion");
     }
   };
+
+  const handleCreateAnnouncement = async (displayMode: "bar" | "popup" = "bar") => {
+    try {
+      const newWidget = createNewAnnouncementPopupWidget(
+        displayMode === "bar" ? "Announcement Bar" : "Promo Popup Modal",
+        displayMode === "bar" ? "sale_bar" : "coupon_popup",
+        displayMode
+      );
+      await saveWidget(newWidget);
+      toast.success(`${displayMode === "bar" ? "Announcement Bar" : "Popup"} created! Opening Studio…`);
+      navigate({
+        to: "/dashboard/widgets/announcement-popup/$widgetId",
+        params: { widgetId: newWidget.id },
+      } as any);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to create announcement widget");
+    }
+  };
+
+  const handleWidgetClick = (item: CatalogWidgetItem) => {
+    if (item.status === "ready") {
+      if (item.id === "countdown_timer") {
+        setViewMode("choose_countdown");
+      } else if (item.id === "google_reviews") {
+        setViewMode("choose_google_reviews");
+      } else if (item.id === "faq_accordion") {
+        handleCreateFaq("classic_accordion");
+      } else if (item.id === "announcement_bar") {
+        handleCreateAnnouncement("bar");
+      } else if (item.id === "popup") {
+        handleCreateAnnouncement("popup");
+      }
+    } else {
+      setComingSoonModalWidget(item);
+    }
+  };
+
+  const handleNotifySubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!comingSoonModalWidget) return;
+    setNotifiedWidgetIds((prev) => [...prev, comingSoonModalWidget.id]);
+    toast.success(`You're on the priority waitlist! We'll notify you as soon as ${comingSoonModalWidget.title} is ready.`);
+    setComingSoonModalWidget(null);
+    setNotifyEmail("");
+  };
+
+  const filteredCatalogSections = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+
+    return CATALOG_CATEGORIES.filter((cat) => cat.id !== "all")
+      .map((cat) => {
+        if (selectedCategory !== "all" && selectedCategory !== cat.id) {
+          return null;
+        }
+
+        const items = CATALOG_WIDGETS.filter((w) => {
+          if (w.categoryId !== cat.id) return false;
+          if (!q) return true;
+          return (
+            w.title.toLowerCase().includes(q) ||
+            w.description.toLowerCase().includes(q) ||
+            cat.label.toLowerCase().includes(q)
+          );
+        });
+
+        if (items.length === 0) return null;
+
+        return {
+          ...cat,
+          items,
+        };
+      })
+      .filter(Boolean) as Array<CatalogCategory & { items: CatalogWidgetItem[] }>;
+  }, [searchQuery, selectedCategory]);
+
 
   const handleToggleWidgetActive = async (w: WidgetInstanceRecord) => {
     const nextEnabled = w.enabled === false ? true : false;
@@ -487,7 +1110,7 @@ function DashboardWidgetsPage() {
                     viewMode === "catalog" ? "bg-black/20 text-[#1a1400]" : "bg-white/10 text-[#9a9aa3]"
                   }`}
                 >
-                  6
+                  {CATALOG_WIDGETS.length}
                 </span>
               </button>
 
@@ -517,7 +1140,7 @@ function DashboardWidgetsPage() {
                     viewMode === "active" ? "bg-black/20 text-[#1a1400]" : "bg-white/10 text-[#9a9aa3]"
                   }`}
                 >
-                  {widgets.length || 4}
+                  {widgets.length || 0}
                 </span>
               </button>
             </div>
@@ -545,7 +1168,7 @@ function DashboardWidgetsPage() {
                 </svg>
               </div>
               <div>
-                <div className="text-2xl font-black text-white leading-tight">6</div>
+                <div className="text-2xl font-black text-white leading-tight">{CATALOG_WIDGETS.length}</div>
                 <div className="text-xs text-[#9a9aa3]">Widgets in catalog</div>
               </div>
             </div>
@@ -567,7 +1190,7 @@ function DashboardWidgetsPage() {
                 </svg>
               </div>
               <div>
-                <div className="text-2xl font-black text-white leading-tight">2</div>
+                <div className="text-2xl font-black text-white leading-tight">5</div>
                 <div className="text-xs text-[#9a9aa3]">Ready to use</div>
               </div>
             </div>
@@ -589,7 +1212,7 @@ function DashboardWidgetsPage() {
                 </svg>
               </div>
               <div>
-                <div className="text-2xl font-black text-white leading-tight">{widgets.length || 4}</div>
+                <div className="text-2xl font-black text-white leading-tight">{widgets.length || 0}</div>
                 <div className="text-xs text-[#9a9aa3]">Active on your sites</div>
               </div>
             </div>
@@ -623,730 +1246,557 @@ function DashboardWidgetsPage() {
           {/* ================= CATALOG VIEW ================= */}
           {viewMode === "catalog" && (
             <section className="space-y-6">
-              {/* Category Filter Pills & Search */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-2">
+              {/* Category Filter Pills & Search Bar (Screenshot 1 Layout) */}
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-2">
+                {/* Category Pills */}
                 <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none flex-1">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedCategory("all")}
-                    className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs transition cursor-pointer shrink-0 ${
-                      selectedCategory === "all"
-                        ? "bg-[#ffc21a] text-[#1a1400] font-black shadow-md shadow-[#ffc21a]/25"
-                        : "bg-[#151518] border border-white/[0.08] text-[#9a9aa3] hover:text-white font-semibold"
-                    }`}
-                  >
-                    <span>All widgets</span>
-                    <span
-                      className={`text-[10px] font-black px-1.5 py-0.2 rounded-full ${
-                        selectedCategory === "all" ? "bg-black/20 text-[#1a1400]" : "text-[#6b6b74]"
-                      }`}
-                    >
-                      6
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedCategory("urgency")}
-                    className={`px-4 py-2 rounded-full text-xs transition cursor-pointer shrink-0 ${
-                      selectedCategory === "urgency"
-                        ? "bg-[#ffc21a] text-[#1a1400] font-black shadow-md"
-                        : "bg-[#151518] border border-white/[0.08] text-[#9a9aa3] hover:text-white font-semibold"
-                    }`}
-                  >
-                    Urgency &amp; Timers
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedCategory("social_proof")}
-                    className={`px-4 py-2 rounded-full text-xs transition cursor-pointer shrink-0 ${
-                      selectedCategory === "social_proof"
-                        ? "bg-[#ffc21a] text-[#1a1400] font-black shadow-md"
-                        : "bg-[#151518] border border-white/[0.08] text-[#9a9aa3] hover:text-white font-semibold"
-                    }`}
-                  >
-                    Social Proof &amp; Reviews
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedCategory("chat")}
-                    className={`px-4 py-2 rounded-full text-xs transition cursor-pointer shrink-0 ${
-                      selectedCategory === "chat"
-                        ? "bg-[#ffc21a] text-[#1a1400] font-black shadow-md"
-                        : "bg-[#151518] border border-white/[0.08] text-[#9a9aa3] hover:text-white font-semibold"
-                    }`}
-                  >
-                    Chat &amp; Contact
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedCategory("promo")}
-                    className={`px-4 py-2 rounded-full text-xs transition cursor-pointer shrink-0 ${
-                      selectedCategory === "promo"
-                        ? "bg-[#ffc21a] text-[#1a1400] font-black shadow-md"
-                        : "bg-[#151518] border border-white/[0.08] text-[#9a9aa3] hover:text-white font-semibold"
-                    }`}
-                  >
-                    Promotions &amp; Bars
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedCategory("support")}
-                    className={`px-4 py-2 rounded-full text-xs transition cursor-pointer shrink-0 ${
-                      selectedCategory === "support"
-                        ? "bg-[#ffc21a] text-[#1a1400] font-black shadow-md"
-                        : "bg-[#151518] border border-white/[0.08] text-[#9a9aa3] hover:text-white font-semibold"
-                    }`}
-                  >
-                    Customer Support
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedCategory("media")}
-                    className={`px-4 py-2 rounded-full text-xs transition cursor-pointer shrink-0 ${
-                      selectedCategory === "media"
-                        ? "bg-[#ffc21a] text-[#1a1400] font-black shadow-md"
-                        : "bg-[#151518] border border-white/[0.08] text-[#9a9aa3] hover:text-white font-semibold"
-                    }`}
-                  >
-                    Social Media
-                  </button>
+                  {CATALOG_CATEGORIES.map((cat) => {
+                    const isSelected = selectedCategory === cat.id;
+                    return (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => setSelectedCategory(cat.id)}
+                        className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs transition cursor-pointer shrink-0 ${
+                          isSelected
+                            ? "bg-[#ffc21a] text-[#1a1400] font-black shadow-md shadow-[#ffc21a]/25"
+                            : "bg-[#151518] border border-white/[0.08] text-[#9a9aa3] hover:text-white font-semibold hover:bg-white/[0.04]"
+                        }`}
+                      >
+                        {renderCategoryPillIcon(cat.iconName)}
+                        <span>{cat.label}</span>
+                        {cat.id === "all" && (
+                          <span
+                            className={`text-[10px] font-black px-1.5 py-0.2 rounded-full ${
+                              isSelected ? "bg-black/20 text-[#1a1400]" : "text-[#6b6b74]"
+                            }`}
+                          >
+                            {CATALOG_WIDGETS.length}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
 
-                <div className="flex items-center gap-2 bg-[#151518] border border-white/[0.08] focus-within:border-[#ffc21a]/50 rounded-xl px-3 py-1.5 w-full md:w-[240px] shrink-0">
-                  <Search className="w-3.5 h-3.5 text-[#6b6b74] shrink-0" />
-                  <input
-                    type="search"
-                    placeholder="Search widgets..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="bg-transparent border-0 outline-none text-xs text-white placeholder:text-[#6b6b74] flex-1 min-w-0"
-                  />
-                  <kbd className="text-[10px] font-semibold text-[#6b6b74] border border-white/10 rounded px-1.5 py-0.5 shrink-0">⌘K</kbd>
+                {/* Right controls: Search & Layout Toggle */}
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex items-center gap-2 bg-[#151518] border border-white/[0.08] focus-within:border-[#ffc21a]/50 rounded-xl px-3 py-1.5 w-full sm:w-[250px]">
+                    <Search className="w-3.5 h-3.5 text-[#6b6b74] shrink-0" />
+                    <input
+                      type="search"
+                      placeholder="Search widgets..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="bg-transparent border-0 outline-none text-xs text-white placeholder:text-[#6b6b74] flex-1 min-w-0"
+                    />
+                    {searchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setSearchQuery("")}
+                        className="text-[#6b6b74] hover:text-white text-xs"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Toggle Between Row List (Screenshot 1) and Card Previews */}
+                  <div className="hidden sm:flex items-center p-1 rounded-xl bg-[#151518] border border-white/[0.08] shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setCatalogLayout("list")}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                        catalogLayout === "list"
+                          ? "bg-[#ffc21a] text-[#1a1400]"
+                          : "text-[#9a9aa3] hover:text-white"
+                      }`}
+                      title="Categorized List Rows (Screenshot 1)"
+                    >
+                      <LayoutList className="w-3.5 h-3.5" />
+                      <span className="hidden md:inline">Rows</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCatalogLayout("cards")}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                        catalogLayout === "cards"
+                          ? "bg-[#ffc21a] text-[#1a1400]"
+                          : "text-[#9a9aa3] hover:text-white"
+                      }`}
+                      title="Interactive Live Cards"
+                    >
+                      <LayoutGrid className="w-3.5 h-3.5" />
+                      <span className="hidden md:inline">Cards</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              {/* Grid of Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {/* FAQ Accordion (Ready & Fully Functional) */}
-                {filterMatches("support", "faq accordion") && (
-                  <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/30 transition overflow-hidden flex flex-col justify-between group shadow-lg">
-                    {/* Preview Box */}
-                    <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(56,189,248,0.12),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
-                      <div className="w-full max-w-[280px] space-y-2">
-                        {/* Open question */}
-                        <div className="p-2.5 rounded-lg bg-white/[0.06] border border-white/10 shadow-sm">
-                          <div className="flex items-center justify-between text-xs font-bold text-white">
-                            <span>How does it work?</span>
-                            <span className="text-[#ffc21a] text-xs font-black">−</span>
+              {/* ================= PRIMARY LIST LAYOUT (SCREENSHOT 1) ================= */}
+              {catalogLayout === "list" && (
+                <div className="space-y-8">
+                  {filteredCatalogSections.length === 0 ? (
+                    <div className="rounded-2xl bg-[#151518] border border-white/[0.08] p-10 text-center space-y-3">
+                      <div className="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/10 text-[#9a9aa3] flex items-center justify-center mx-auto">
+                        <Search className="w-5 h-5" />
+                      </div>
+                      <h3 className="text-base font-bold text-white">No widgets found</h3>
+                      <p className="text-xs text-[#9a9aa3] max-w-sm mx-auto">
+                        We couldn&apos;t find any widgets matching &ldquo;{searchQuery}&rdquo;. Try another search term or clear the filter.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSearchQuery("");
+                          setSelectedCategory("all");
+                        }}
+                        className="py-2 px-4 rounded-xl bg-[#ffc21a] text-[#1a1400] font-bold text-xs inline-flex cursor-pointer shadow-md"
+                      >
+                        Reset Filters
+                      </button>
+                    </div>
+                  ) : (
+                    filteredCatalogSections.map((sec) => (
+                      <section key={sec.id} className="space-y-3">
+                        {/* Section Header with Category Icon, Title, and "View all ->" */}
+                        <div className="flex items-center justify-between pb-1">
+                          <h2 className="flex items-center gap-2 text-base font-extrabold text-white tracking-tight">
+                            <span className="text-[#ffc21a]">
+                              {renderCategoryPillIcon(sec.headerIcon, "w-4 h-4")}
+                            </span>
+                            <span>{sec.headerTitle}</span>
+                          </h2>
+
+                          <button
+                            type="button"
+                            onClick={() => setSelectedCategory(selectedCategory === sec.id ? "all" : sec.id)}
+                            className="text-xs font-bold text-sky-400 hover:text-sky-300 flex items-center gap-1 transition cursor-pointer"
+                          >
+                            <span>{selectedCategory === sec.id ? "Show all categories" : "View all"}</span>
+                            <span className="text-sm">→</span>
+                          </button>
+                        </div>
+
+                        {/* 2-Column Grid Matching Screenshot 1 */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                          {sec.items.map((item) => {
+                            const isReady = item.status === "ready";
+                            const isNotified = notifiedWidgetIds.includes(item.id);
+
+                            return (
+                              <div
+                                key={item.id}
+                                onClick={() => handleWidgetClick(item)}
+                                className="rounded-2xl bg-[#0b0e14]/90 hover:bg-[#121622] border border-white/[0.08] hover:border-white/20 p-3.5 sm:p-4 transition-all duration-200 cursor-pointer flex items-center justify-between group shadow-sm hover:shadow-lg hover:shadow-black/40"
+                              >
+                                {/* Left side: Squircle Icon + Info */}
+                                <div className="flex items-center gap-3.5 min-w-0 pr-3">
+                                  <div
+                                    className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-md ${item.iconBgClass}`}
+                                  >
+                                    {renderItemIcon(item.iconType)}
+                                  </div>
+
+                                  <div className="min-w-0">
+                                    <div className="text-sm font-bold text-white group-hover:text-white transition flex items-center gap-2">
+                                      <span className="truncate">{item.title}</span>
+                                    </div>
+                                    <p className="text-xs text-[#9a9aa3] mt-0.5 truncate leading-tight">
+                                      {item.description}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                {/* Right side: Status Badge + Arrow */}
+                                <div className="flex items-center gap-2.5 shrink-0">
+                                  {isReady ? (
+                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#22c55e]/15 border border-[#22c55e]/30 text-[#22c55e] text-xs font-bold shadow-sm shadow-[#22c55e]/15">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-pulse" />
+                                      Ready
+                                    </span>
+                                  ) : (
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-[#a1a1aa] text-[11px] font-semibold">
+                                      {isNotified ? "Waitlisted ✓" : "Coming soon"}
+                                    </span>
+                                  )}
+
+                                  <ChevronRight className="w-4 h-4 text-[#71717a] group-hover:text-white group-hover:translate-x-0.5 transition" />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </section>
+                    ))
+                  )}
+                </div>
+              )}
+
+              {/* ================= SECONDARY CARD PREVIEW LAYOUT (SCREENSHOT 2) ================= */}
+              {catalogLayout === "cards" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {/* FAQ Accordion (Ready & Fully Functional) */}
+                  {filterMatches("support", "faq accordion") && (
+                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/30 transition overflow-hidden flex flex-col justify-between group shadow-lg">
+                      {/* Preview Box */}
+                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(56,189,248,0.12),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
+                        <div className="w-full max-w-[280px] space-y-2">
+                          <div className="p-2.5 rounded-lg bg-white/[0.06] border border-white/10 shadow-sm">
+                            <div className="flex items-center justify-between text-xs font-bold text-white">
+                              <span>How does it work?</span>
+                              <span className="text-[#ffc21a] text-xs font-black">−</span>
+                            </div>
+                            <p className="text-[10px] text-[#9a9aa3] mt-1 leading-snug line-clamp-1">
+                              Everything is automated and completely customizable.
+                            </p>
                           </div>
-                          <p className="text-[10px] text-[#9a9aa3] mt-1 leading-snug line-clamp-1">
-                            Everything is automated and completely customizable.
+                          <div className="px-2.5 py-1.5 rounded-lg bg-white/[0.02] border border-white/[0.06] flex items-center justify-between text-xs font-medium text-zinc-300">
+                            <span>Can I embed this anywhere?</span>
+                            <span className="text-zinc-500 text-xs font-bold">+</span>
+                          </div>
+                        </div>
+                        <span className="text-[11px] font-bold text-sky-400 bg-sky-400/10 border border-sky-400/20 px-3 py-0.5 rounded-full mt-2">
+                          💬 Live Accordion &amp; Search
+                        </span>
+                      </div>
+
+                      {/* Card Body */}
+                      <div className="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
+                              Ready
+                            </span>
+                            <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
+                              8 Pro presets
+                            </span>
+                          </div>
+                          <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
+                            Customer Support
+                          </p>
+                          <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
+                            <span className="w-7 h-7 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center">
+                              <HelpCircle className="w-4 h-4" />
+                            </span>
+                            <span>FAQ Accordion</span>
+                          </h3>
+                          <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
+                            Display frequently asked questions and answers in a clean, interactive accordion with live search, categories, and 8 ready-made templates.
+                          </p>
+                          <ul className="flex flex-wrap gap-1.5 mb-2">
+                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
+                              ✓ 8 templates
+                            </li>
+                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
+                              ✓ Live search
+                            </li>
+                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
+                              ✓ Category filter
+                            </li>
+                          </ul>
+                        </div>
+
+                        <div className="pt-4 mt-2 border-t border-white/[0.06]">
+                          <button
+                            type="button"
+                            onClick={() => handleCreateFaq("classic_accordion")}
+                            className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-sky-400 to-indigo-500 hover:opacity-95 text-black font-extrabold text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow-md shadow-sky-500/10"
+                          >
+                            <span>+ Create FAQ Widget</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  )}
+
+                  {/* Countdown Timer (Ready) */}
+                  {filterMatches("urgency", "countdown timer") && (
+                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/30 transition overflow-hidden flex flex-col justify-between group shadow-lg">
+                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(255,194,26,0.12),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-3">
+                        <div className="flex items-center gap-1.5">
+                          <div className="flex flex-col items-center gap-1">
+                            <div className="relative w-14 h-14 rounded-xl bg-gradient-to-b from-[#26262c] to-[#1f1f24] border border-white/10 text-white font-black text-2xl flex items-center justify-center shadow-lg">
+                              <span>02</span>
+                              <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-black/60" />
+                            </div>
+                            <small className="text-[9px] font-extrabold uppercase tracking-widest text-[#6b6b74]">
+                              HRS
+                            </small>
+                          </div>
+                          <span className="text-[#ffc21a] font-bold text-xl pb-3.5">:</span>
+                          <div className="flex flex-col items-center gap-1">
+                            <div className="relative w-14 h-14 rounded-xl bg-gradient-to-b from-[#26262c] to-[#1f1f24] border border-white/10 text-white font-black text-2xl flex items-center justify-center shadow-lg">
+                              <span>{pad(liveMin)}</span>
+                              <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-black/60" />
+                            </div>
+                            <small className="text-[9px] font-extrabold uppercase tracking-widest text-[#6b6b74]">
+                              MIN
+                            </small>
+                          </div>
+                          <span className="text-[#ffc21a] font-bold text-xl pb-3.5">:</span>
+                          <div className="flex flex-col items-center gap-1">
+                            <div className="relative w-14 h-14 rounded-xl bg-gradient-to-b from-[#26262c] to-[#1f1f24] border border-[#ffc21a]/30 text-[#ffc21a] font-black text-2xl flex items-center justify-center shadow-lg animate-pulse">
+                              <span>{pad(liveSec)}</span>
+                              <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-black/60" />
+                            </div>
+                            <small className="text-[9px] font-extrabold uppercase tracking-widest text-[#6b6b74]">
+                              SEC
+                            </small>
+                          </div>
+                        </div>
+                        <span className="text-[11px] font-bold text-[#ffc21a] bg-[#ffc21a]/10 border border-[#ffc21a]/20 px-3 py-0.5 rounded-full mt-3">
+                          ⚡ Flash sale ends soon
+                        </span>
+                      </div>
+
+                      <div className="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
+                              Ready
+                            </span>
+                            <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
+                              10 Pro presets
+                            </span>
+                          </div>
+                          <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
+                            Urgency &amp; Conversions
+                          </p>
+                          <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
+                            <span className="w-7 h-7 rounded-lg bg-[#ef4444]/15 border border-[#ef4444]/30 text-[#ef4444] flex items-center justify-center">
+                              <Clock className="w-4 h-4" />
+                            </span>
+                            <span>Countdown Timer</span>
+                          </h3>
+                          <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
+                            Sales deadlines, evergreen visitor timers, recurring bars &amp; number counters with flip-clock styles and expiry actions.
+                          </p>
+                          <ul className="flex flex-wrap gap-1.5 mb-2">
+                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
+                              ✓ Date &amp; evergreen
+                            </li>
+                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
+                              ✓ Sticky bars
+                            </li>
+                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
+                              ✓ Flip clock
+                            </li>
+                          </ul>
+                        </div>
+
+                        <div className="pt-4 mt-2 border-t border-white/[0.06] flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setViewMode("choose_countdown")}
+                            className="flex-1 py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md shadow-[#ffc21a]/20 hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer"
+                          >
+                            <span>Choose widget</span>
+                            <span className="text-sm">→</span>
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  )}
+
+                  {/* Google Reviews (Ready) */}
+                  {filterMatches("reviews", "google reviews") && (
+                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/30 transition overflow-hidden flex flex-col justify-between group shadow-lg">
+                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(66,133,244,0.12),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
+                        <div className="w-[220px] p-2.5 rounded-xl bg-[#1f1f25] border border-white/10 shadow-xl flex items-center gap-2.5">
+                          <span className="w-8 h-8 rounded-full bg-[#3b82f6] text-white font-black text-xs flex items-center justify-center shrink-0">
+                            M
+                          </span>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <strong className="text-xs font-bold text-white">Meera</strong>
+                              <span className="text-[#ffc21a] text-[10px]">★★★★★</span>
+                            </div>
+                            <p className="text-[11px] text-[#9a9aa3] truncate">Highly recommended.</p>
+                          </div>
+                        </div>
+
+                        <div className="absolute right-3.5 bottom-3 bg-white text-black px-2.5 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5">
+                          <GoogleIcon className="w-3.5 h-3.5" />
+                          <span className="font-extrabold text-[11px]">4.9</span>
+                          <span className="text-[#f59e0b] text-[10px]">★</span>
+                        </div>
+                      </div>
+
+                      <div className="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
+                              Ready
+                            </span>
+                            <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
+                              Live Google Places
+                            </span>
+                          </div>
+                          <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
+                            Social Proof &amp; Trust
+                          </p>
+                          <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
+                            <span className="w-7 h-7 rounded-lg bg-white border border-white text-black flex items-center justify-center">
+                              <GoogleIcon className="w-4 h-4" />
+                            </span>
+                            <span>Google Reviews</span>
+                          </h3>
+                          <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
+                            Display authentic Google reviews with verified badges, real-time ratings and carousel, grid, masonry or floating layouts.
+                          </p>
+                          <ul className="flex flex-wrap gap-1.5 mb-2">
+                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
+                              ✓ Live sync
+                            </li>
+                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
+                              ✓ Carousel &amp; grid
+                            </li>
+                          </ul>
+                        </div>
+
+                        <div className="pt-4 mt-2 border-t border-white/[0.06] flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setViewMode("choose_google_reviews")}
+                            className="flex-1 py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md shadow-[#ffc21a]/20 hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer"
+                          >
+                            <span>Choose widget</span>
+                            <span className="text-sm">→</span>
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  )}
+
+                  {/* Announcement Bar & Popup (Ready) */}
+                  {filterMatches("sales", "announcement bar") && (
+                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/30 transition overflow-hidden flex flex-col justify-between group shadow-lg">
+                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(250,204,21,0.12),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
+                        <div className="w-[230px] rounded-xl overflow-hidden bg-[#1f1f25] border border-white/10 shadow-xl">
+                          <div className="bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] text-[10px] font-black py-1 px-2.5 overflow-hidden whitespace-nowrap flex items-center justify-between">
+                            <span>🔥 Summer Sale — 25% OFF</span>
+                            <span className="text-[9px] bg-black/20 px-1 rounded font-mono">SAVE25</span>
+                          </div>
+                          <div className="p-3 space-y-1.5 opacity-60">
+                            <div className="h-1.5 bg-white/30 rounded w-3/4" />
+                            <div className="h-1 bg-white/15 rounded w-1/2" />
+                          </div>
+                        </div>
+                        <span className="text-[11px] font-bold text-[#ffc21a] bg-[#ffc21a]/10 border border-[#ffc21a]/20 px-3 py-0.5 rounded-full mt-3 flex items-center gap-1">
+                          <Megaphone className="w-3 h-3" />
+                          <span>Bars &amp; Modal Popups</span>
+                        </span>
+                      </div>
+
+                      <div className="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
+                              Ready
+                            </span>
+                            <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
+                              12 Pro presets
+                            </span>
+                          </div>
+                          <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
+                            Promotions &amp; Conversion
+                          </p>
+                          <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
+                            <span className="w-7 h-7 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-400 flex items-center justify-center">
+                              <Megaphone className="w-4 h-4" />
+                            </span>
+                            <span>Announcement &amp; Popup</span>
+                          </h3>
+                          <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
+                            Sticky top/bottom notification bars and modal popups with live countdown, exit-intent triggers, discount codes and scheduling.
                           </p>
                         </div>
-                        {/* Closed question */}
-                        <div className="px-2.5 py-1.5 rounded-lg bg-white/[0.02] border border-white/[0.06] flex items-center justify-between text-xs font-medium text-zinc-300">
-                          <span>Can I embed this anywhere?</span>
-                          <span className="text-zinc-500 text-xs font-bold">+</span>
+
+                        <div className="pt-4 mt-2 border-t border-white/[0.06] flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleCreateAnnouncement("bar")}
+                            className="flex-1 py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md shadow-[#ffc21a]/20 hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer"
+                          >
+                            <span>Choose widget</span>
+                            <span className="text-sm">→</span>
+                          </button>
                         </div>
                       </div>
-                      <span className="text-[11px] font-bold text-sky-400 bg-sky-400/10 border border-sky-400/20 px-3 py-0.5 rounded-full mt-2">
-                        💬 Live Accordion &amp; Search
-                      </span>
-                    </div>
+                    </article>
+                  )}
 
-                    {/* Card Body */}
-                    <div className="p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center gap-2 mb-3">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
-                            Ready
-                          </span>
-                          <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
-                            8 Pro presets
-                          </span>
-                        </div>
-                        <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
-                          Customer Support
-                        </p>
-                        <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
-                          <span className="w-7 h-7 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center">
-                            <HelpCircle className="w-4 h-4" />
-                          </span>
-                          <span>FAQ Accordion</span>
-                        </h3>
-                        <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
-                          Display frequently asked questions and answers in a clean, interactive accordion with live search, categories, and 8 ready-made templates.
-                        </p>
-                        <ul className="flex flex-wrap gap-1.5 mb-2">
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ 8 templates
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Live search
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Category filter
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Rich text answers
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Schema FAQPage
-                          </li>
-                        </ul>
-                      </div>
-
-                      {/* Card Foot */}
-                      <div className="pt-4 mt-2 border-t border-white/[0.06]">
-                        <button
-                          type="button"
-                          onClick={() => handleCreateFaq("classic_accordion")}
-                          className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-sky-400 to-indigo-500 hover:opacity-95 text-black font-extrabold text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow-md shadow-sky-500/10"
-                        >
-                          <span>+ Create FAQ Widget</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                )}
-
-                {/* 1. Countdown Timer (Ready) */}
-                {filterMatches("urgency", "countdown timer") && (
-                  <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/30 transition overflow-hidden flex flex-col justify-between group shadow-lg">
-                    {/* Preview Box */}
-                    <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(255,194,26,0.12),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-3">
-                      <div className="flex items-center gap-1.5">
-                        <div className="flex flex-col items-center gap-1">
-                          <div className="relative w-14 h-14 rounded-xl bg-gradient-to-b from-[#26262c] to-[#1f1f24] border border-white/10 text-white font-black text-2xl flex items-center justify-center shadow-lg">
-                            <span>02</span>
-                            <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-black/60" />
-                          </div>
-                          <small className="text-[9px] font-extrabold uppercase tracking-widest text-[#6b6b74]">
-                            HRS
-                          </small>
-                        </div>
-                        <span className="text-[#ffc21a] font-bold text-xl pb-3.5">:</span>
-                        <div className="flex flex-col items-center gap-1">
-                          <div className="relative w-14 h-14 rounded-xl bg-gradient-to-b from-[#26262c] to-[#1f1f24] border border-white/10 text-white font-black text-2xl flex items-center justify-center shadow-lg">
-                            <span>{pad(liveMin)}</span>
-                            <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-black/60" />
-                          </div>
-                          <small className="text-[9px] font-extrabold uppercase tracking-widest text-[#6b6b74]">
-                            MIN
-                          </small>
-                        </div>
-                        <span className="text-[#ffc21a] font-bold text-xl pb-3.5">:</span>
-                        <div className="flex flex-col items-center gap-1">
-                          <div className="relative w-14 h-14 rounded-xl bg-gradient-to-b from-[#26262c] to-[#1f1f24] border border-[#ffc21a]/30 text-[#ffc21a] font-black text-2xl flex items-center justify-center shadow-lg animate-pulse">
-                            <span>{pad(liveSec)}</span>
-                            <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-black/60" />
-                          </div>
-                          <small className="text-[9px] font-extrabold uppercase tracking-widest text-[#6b6b74]">
-                            SEC
-                          </small>
-                        </div>
-                      </div>
-                      <span className="text-[11px] font-bold text-[#ffc21a] bg-[#ffc21a]/10 border border-[#ffc21a]/20 px-3 py-0.5 rounded-full mt-3">
-                        ⚡ Flash sale ends soon
-                      </span>
-                    </div>
-
-                    {/* Card Body */}
-                    <div className="p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center gap-2 mb-3">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
-                            Ready
-                          </span>
-                          <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
-                            10 Pro presets
-                          </span>
-                        </div>
-                        <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
-                          Urgency &amp; Conversions
-                        </p>
-                        <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
-                          <span className="w-7 h-7 rounded-lg bg-[#ffc21a]/10 border border-[#ffc21a]/20 text-[#ffc21a] flex items-center justify-center">
-                            <Clock className="w-4 h-4" />
-                          </span>
-                          <span>Countdown Timer</span>
-                        </h3>
-                        <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
-                          Sales deadlines, evergreen visitor timers, recurring bars &amp; number counters with flip-clock styles and expiry actions.
-                        </p>
-                        <ul className="flex flex-wrap gap-1.5 mb-2">
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Date &amp; evergreen
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Sticky bars
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Flip clock
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Sound alerts
-                          </li>
-                        </ul>
-                      </div>
-
-                      {/* Card Foot */}
-                      <div className="pt-4 mt-2 border-t border-white/[0.06] flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setViewMode("choose_countdown")}
-                          className="flex-1 py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md shadow-[#ffc21a]/20 hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer"
-                        >
-                          <span>Choose widget</span>
-                          <span className="text-sm">→</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setViewMode("choose_countdown")}
-                          className="w-10 h-10 rounded-xl bg-[#1f1f25] border border-white/10 hover:border-[#ffc21a]/40 text-[#9a9aa3] hover:text-[#ffc21a] flex items-center justify-center transition cursor-pointer shrink-0"
-                          title="Preview"
-                        >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
-                            <circle cx="12" cy="12" r="3" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                )}
-
-                {/* 2. Google Reviews (Ready) */}
-                {filterMatches("social_proof", "google reviews") && (
-                  <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/30 transition overflow-hidden flex flex-col justify-between group shadow-lg">
-                    {/* Preview Box */}
-                    <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(66,133,244,0.12),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
-                      {/* Review Card */}
-                      <div className="w-[220px] p-2.5 rounded-xl bg-[#1f1f25] border border-white/10 shadow-xl flex items-center gap-2.5">
-                        <span className="w-8 h-8 rounded-full bg-[#3b82f6] text-white font-black text-xs flex items-center justify-center shrink-0">
-                          M
-                        </span>
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-1.5">
-                            <strong className="text-xs font-bold text-white">Meera</strong>
-                            <span className="text-[#ffc21a] text-[10px]">★★★★★</span>
-                          </div>
-                          <p className="text-[11px] text-[#9a9aa3] truncate">Highly recommended.</p>
-                        </div>
-                      </div>
-
-                      {/* Google 4.9 Badge */}
-                      <div className="absolute right-3.5 bottom-3 bg-white text-black px-2.5 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5">
-                        <GoogleIcon className="w-3.5 h-3.5" />
-                        <span className="font-extrabold text-[11px]">4.9</span>
-                        <span className="text-[#f59e0b] text-[10px]">★</span>
-                      </div>
-                    </div>
-
-                    {/* Card Body */}
-                    <div className="p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center gap-2 mb-3">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
-                            Ready
-                          </span>
-                          <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
-                            Live Google Places
-                          </span>
-                        </div>
-                        <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
-                          Social Proof &amp; Trust
-                        </p>
-                        <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
-                          <span className="w-7 h-7 rounded-lg bg-white border border-white text-black flex items-center justify-center">
-                            <GoogleIcon className="w-4 h-4" />
-                          </span>
-                          <span>Google Reviews</span>
-                        </h3>
-                        <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
-                          Display authentic Google reviews with verified badges, real-time ratings and carousel, grid, masonry or floating layouts.
-                        </p>
-                        <ul className="flex flex-wrap gap-1.5 mb-2">
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Live sync
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Carousel &amp; grid
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Verified badges
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ 5-star filter
-                          </li>
-                        </ul>
-                      </div>
-
-                      {/* Card Foot */}
-                      <div className="pt-4 mt-2 border-t border-white/[0.06] flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setViewMode("choose_google_reviews")}
-                          className="flex-1 py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md shadow-[#ffc21a]/20 hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer"
-                        >
-                          <span>Choose widget</span>
-                          <span className="text-sm">→</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setViewMode("choose_google_reviews")}
-                          className="w-10 h-10 rounded-xl bg-[#1f1f25] border border-white/10 hover:border-[#ffc21a]/40 text-[#9a9aa3] hover:text-[#ffc21a] flex items-center justify-center transition cursor-pointer shrink-0"
-                          title="Preview"
-                        >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
-                            <circle cx="12" cy="12" r="3" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                )}
-
-                {/* 3. WhatsApp Live Chat (Coming soon) */}
-                {filterMatches("chat", "whatsapp live chat") && (
-                  <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-white/20 transition overflow-hidden flex flex-col justify-between group shadow-lg">
-                    {/* Preview Box */}
-                    <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(37,211,102,0.12),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
-                      {/* Chat Window */}
-                      <div className="w-[210px] rounded-xl overflow-hidden bg-[#1f1f25] border border-white/10 shadow-xl pb-2">
-                        <div className="flex items-center gap-2 px-3 py-2 bg-[#075e54]">
-                          <span className="w-5 h-5 rounded-full bg-[#25d366] text-black font-extrabold text-[10px] flex items-center justify-center">
-                            W
-                          </span>
-                          <div>
-                            <strong className="block text-[11px] font-bold text-white leading-tight">Support</strong>
-                            <small className="block text-[9px] text-[#a7f3d0] leading-tight">● Online</small>
-                          </div>
-                        </div>
-                        <p className="m-2 p-1.5 rounded-lg bg-[#2a2a31] text-[10px] text-white w-fit">
-                          Hi there 👋 How can we help?
-                        </p>
-                        <div className="mr-2 ml-auto p-1.5 rounded-lg bg-[#005c4b] w-fit flex gap-1">
-                          <span className="w-1 h-1 rounded-full bg-[#d1fae5] animate-ping" />
-                          <span className="w-1 h-1 rounded-full bg-[#d1fae5] animate-pulse" />
-                          <span className="w-1 h-1 rounded-full bg-[#d1fae5]" />
-                        </div>
-                      </div>
-
-                      {/* Floating Green WhatsApp Button */}
-                      <span className="absolute right-4 bottom-3 w-9 h-9 rounded-full bg-[#25d366] text-white flex items-center justify-center shadow-lg shadow-[#25d366]/40 animate-pulse">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z" />
-                        </svg>
-                      </span>
-                    </div>
-
-                    {/* Card Body */}
-                    <div className="p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between gap-2 mb-3">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#ffc21a]/10 border border-[#ffc21a]/25 text-[#ffc21a] text-[11px] font-bold">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#ffc21a]" />
-                            Coming soon
-                          </span>
-                          <span className="flex items-center gap-1.5 text-[11px] font-bold text-[#6b6b74]">
-                            <span className="w-14 h-1 rounded-full bg-white/10 overflow-hidden block">
-                              <span className="w-[72%] h-full bg-gradient-to-r from-[#ff9f0a] to-[#ffc21a] block" />
+                  {/* WhatsApp Live Chat (Coming soon preview) */}
+                  {filterMatches("support", "whatsapp live chat") && (
+                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-white/20 transition overflow-hidden flex flex-col justify-between group shadow-lg">
+                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(37,211,102,0.12),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
+                        <div className="w-[210px] rounded-xl overflow-hidden bg-[#1f1f25] border border-white/10 shadow-xl pb-2">
+                          <div className="flex items-center gap-2 px-3 py-2 bg-[#075e54]">
+                            <span className="w-5 h-5 rounded-full bg-[#25d366] text-black font-extrabold text-[10px] flex items-center justify-center">
+                              W
                             </span>
-                            72%
-                          </span>
+                            <div>
+                              <strong className="block text-[11px] font-bold text-white leading-tight">Support</strong>
+                              <small className="block text-[9px] text-[#a7f3d0] leading-tight">● Online</small>
+                            </div>
+                          </div>
+                          <p className="m-2 p-1.5 rounded-lg bg-[#2a2a31] text-[10px] text-white w-fit">
+                            Hi there 👋 How can we help?
+                          </p>
                         </div>
-                        <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
-                          Chat &amp; Contact
-                        </p>
-                        <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
-                          <span className="w-7 h-7 rounded-lg bg-[#25d366]/15 border border-[#25d366]/30 text-[#25d366] flex items-center justify-center">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z" />
-                            </svg>
-                          </span>
-                          <span>WhatsApp Live Chat</span>
-                        </h3>
-                        <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
-                          Floating WhatsApp button with custom greeting, avatar and pre-filled messages that turn visitors into phone leads.
-                        </p>
-                        <ul className="flex flex-wrap gap-1.5 mb-2">
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Floating bubble
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Custom greeting
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Mobile ready
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Lead capture
-                          </li>
-                        </ul>
-                      </div>
 
-                      {/* Card Foot */}
-                      <div className="pt-4 mt-2 border-t border-white/[0.06]">
-                        <button
-                          type="button"
-                          onClick={() => toast.success("We'll notify you as soon as WhatsApp Live Chat is released!")}
-                          className="w-full py-2.5 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-dashed border-white/10 hover:border-[#ffc21a]/40 text-[#9a9aa3] hover:text-white font-bold text-xs transition cursor-pointer"
-                        >
-                          🔔 Notify me when ready
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                )}
-
-                {/* 4. Sales Pop Notifications (Coming soon) */}
-                {filterMatches("social_proof", "sales pop notifications") && (
-                  <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-white/20 transition overflow-hidden flex flex-col justify-between group shadow-lg">
-                    {/* Preview Box */}
-                    <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(167,139,250,0.12),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col justify-end p-4">
-                      <div className="flex items-center gap-2.5 p-2 rounded-xl bg-[#f7f7f8] text-black shadow-xl w-fit">
-                        <span className="w-8 h-8 rounded-lg bg-[#ffe9a8] flex items-center justify-center text-sm">
-                          🛍️
+                        <span className="absolute right-4 bottom-3 w-9 h-9 rounded-full bg-[#25d366] text-white flex items-center justify-center shadow-lg shadow-[#25d366]/40 animate-pulse">
+                          <WhatsAppIcon />
                         </span>
+                      </div>
+
+                      <div className="p-5 flex-1 flex flex-col justify-between">
                         <div>
-                          <strong className="block text-xs font-bold leading-tight">Priya from Delhi</strong>
-                          <small className="block text-[10px] text-zinc-600 leading-tight">
-                            just bought Premium Plan · 2m ago
-                          </small>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Card Body */}
-                    <div className="p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between gap-2 mb-3">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#ffc21a]/10 border border-[#ffc21a]/25 text-[#ffc21a] text-[11px] font-bold">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#ffc21a]" />
-                            Coming soon
-                          </span>
-                          <span className="flex items-center gap-1.5 text-[11px] font-bold text-[#6b6b74]">
-                            <span className="w-14 h-1 rounded-full bg-white/10 overflow-hidden block">
-                              <span className="w-[45%] h-full bg-gradient-to-r from-[#ff9f0a] to-[#ffc21a] block" />
+                          <div className="flex items-center justify-between gap-2 mb-3">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/[0.06] border border-white/10 text-[#a1a1aa] text-[11px] font-semibold">
+                              Coming soon
                             </span>
-                            45%
-                          </span>
-                        </div>
-                        <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
-                          Social Proof &amp; Trust
-                        </p>
-                        <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
-                          <span className="w-7 h-7 rounded-lg bg-[#a78bfa]/15 border border-[#a78bfa]/30 text-[#a78bfa] flex items-center justify-center">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4zM10 21h4" />
-                            </svg>
-                          </span>
-                          <span>Sales Pop Notifications</span>
-                        </h3>
-                        <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
-                          Show real-time purchase and sign-up pop-ups to create FOMO and build instant trust with new visitors.
-                        </p>
-                        <ul className="flex flex-wrap gap-1.5 mb-2">
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Live activity
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Custom timing
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Geo labels
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Click tracking
-                          </li>
-                        </ul>
-                      </div>
-
-                      {/* Card Foot */}
-                      <div className="pt-4 mt-2 border-t border-white/[0.06]">
-                        <button
-                          type="button"
-                          onClick={() => toast.success("We'll notify you as soon as Sales Pop is released!")}
-                          className="w-full py-2.5 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-dashed border-white/10 hover:border-[#ffc21a]/40 text-[#9a9aa3] hover:text-white font-bold text-xs transition cursor-pointer"
-                        >
-                          🔔 Notify me when ready
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                )}
-
-                {/* 5. Announcement & Popup (Ready to Deploy) */}
-                {filterMatches("promo", "announcement & popup") && (
-                  <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/30 transition overflow-hidden flex flex-col justify-between group shadow-lg">
-                    {/* Preview Box */}
-                    <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(250,204,21,0.12),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
-                      <div className="w-[230px] rounded-xl overflow-hidden bg-[#1f1f25] border border-white/10 shadow-xl">
-                        <div className="bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] text-[10px] font-black py-1 px-2.5 overflow-hidden whitespace-nowrap flex items-center justify-between">
-                          <span>🔥 Summer Sale — 25% OFF</span>
-                          <span className="text-[9px] bg-black/20 px-1 rounded font-mono">SAVE25</span>
-                        </div>
-                        <div className="p-3 space-y-1.5 opacity-60">
-                          <div className="h-1.5 bg-white/30 rounded w-3/4" />
-                          <div className="h-1 bg-white/15 rounded w-1/2" />
-                        </div>
-                      </div>
-                      <span className="text-[11px] font-bold text-[#ffc21a] bg-[#ffc21a]/10 border border-[#ffc21a]/20 px-3 py-0.5 rounded-full mt-3 flex items-center gap-1">
-                        <Megaphone className="w-3 h-3" />
-                        <span>Bars &amp; Modal Popups</span>
-                      </span>
-                    </div>
-
-                    {/* Card Body */}
-                    <div className="p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center gap-2 mb-3">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
-                            Ready
-                          </span>
-                          <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
-                            12 Pro presets
-                          </span>
-                        </div>
-                        <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
-                          Promotions &amp; Conversion
-                        </p>
-                        <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
-                          <span className="w-7 h-7 rounded-lg bg-amber-400/15 border border-amber-400/30 text-amber-400 flex items-center justify-center">
-                            <Megaphone className="w-4 h-4" />
-                          </span>
-                          <span>Announcement &amp; Popup</span>
-                        </h3>
-                        <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
-                          Top/bottom notification strips &amp; modal popups with live countdown, exit-intent triggers, discount codes and scheduling.
-                        </p>
-                        <ul className="flex flex-wrap gap-1.5 mb-2">
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Sticky bars
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Exit-intent popups
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Countdown timer
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Coupon copy
-                          </li>
-                        </ul>
-                      </div>
-
-                      {/* Card Foot */}
-                      <div className="pt-4 mt-2 border-t border-white/[0.06] flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => navigate({ to: "/dashboard/widgets/create" as any, search: { type: "announcement_popup" } as any })}
-                          className="flex-1 py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md shadow-[#ffc21a]/20 hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer"
-                        >
-                          <span>Choose widget</span>
-                          <span className="text-sm">→</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => navigate({ to: "/dashboard/widgets/create" as any, search: { type: "announcement_popup" } as any })}
-                          className="w-10 h-10 rounded-xl bg-[#1f1f25] border border-white/10 hover:border-[#ffc21a]/40 text-[#9a9aa3] hover:text-[#ffc21a] flex items-center justify-center transition cursor-pointer shrink-0"
-                          title="Preview"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                )}
-
-                {/* 6. Instagram Feed (Coming soon) */}
-                {filterMatches("media", "instagram feed") && (
-                  <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-white/20 transition overflow-hidden flex flex-col justify-between group shadow-lg">
-                    {/* Preview Box */}
-                    <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(217,70,239,0.12),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
-                      <div className="grid grid-cols-3 gap-2">
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-tr from-[#f58529] to-[#dd2a7b]" />
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-tr from-[#8134af] to-[#515bd4]" />
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-tr from-[#feda77] to-[#f58529]" />
-                      </div>
-                      <span className="absolute text-2xl text-pink-500 animate-ping">♥</span>
-                    </div>
-
-                    {/* Card Body */}
-                    <div className="p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between gap-2 mb-3">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#ffc21a]/10 border border-[#ffc21a]/25 text-[#ffc21a] text-[11px] font-bold">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#ffc21a]" />
-                            Coming soon
-                          </span>
-                          <span className="flex items-center gap-1.5 text-[11px] font-bold text-[#6b6b74]">
-                            <span className="w-14 h-1 rounded-full bg-white/10 overflow-hidden block">
-                              <span className="w-[15%] h-full bg-gradient-to-r from-[#ff9f0a] to-[#ffc21a] block" />
+                          </div>
+                          <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
+                            Chat &amp; Contact
+                          </p>
+                          <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
+                            <span className="w-7 h-7 rounded-lg bg-[#25d366]/15 border border-[#25d366]/30 text-[#25d366] flex items-center justify-center">
+                              <WhatsAppIcon />
                             </span>
-                            15%
-                          </span>
+                            <span>WhatsApp Live Chat</span>
+                          </h3>
+                          <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
+                            Floating WhatsApp button with custom greeting, avatar and pre-filled messages that turn visitors into phone leads.
+                          </p>
                         </div>
-                        <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
-                          Social Media
-                        </p>
-                        <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
-                          <span className="w-7 h-7 rounded-lg bg-pink-500/15 border border-pink-500/30 text-pink-400 flex items-center justify-center">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <rect x="3" y="3" width="18" height="18" rx="5" />
-                              <circle cx="12" cy="12" r="4" />
-                            </svg>
-                          </span>
-                          <span>Instagram Feed</span>
-                        </h3>
-                        <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
-                          Embed a beautiful, auto-updating Instagram grid or slider that keeps your site fresh with every post.
-                        </p>
-                        <ul className="flex flex-wrap gap-1.5 mb-2">
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Auto refresh
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Grid &amp; slider
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Lightbox
-                          </li>
-                          <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                            ✓ Shoppable posts
-                          </li>
-                        </ul>
-                      </div>
 
-                      {/* Card Foot */}
-                      <div className="pt-4 mt-2 border-t border-white/[0.06]">
-                        <button
-                          type="button"
-                          onClick={() => toast.success("We'll notify you as soon as Instagram Feed is released!")}
-                          className="w-full py-2.5 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-dashed border-white/10 hover:border-[#ffc21a]/40 text-[#9a9aa3] hover:text-white font-bold text-xs transition cursor-pointer"
-                        >
-                          🔔 Notify me when ready
-                        </button>
+                        <div className="pt-4 mt-2 border-t border-white/[0.06]">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const item = CATALOG_WIDGETS.find((w) => w.id === "whatsapp_chat");
+                              if (item) setComingSoonModalWidget(item);
+                            }}
+                            className="w-full py-2.5 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-dashed border-white/10 hover:border-[#ffc21a]/40 text-[#9a9aa3] hover:text-white font-bold text-xs transition cursor-pointer"
+                          >
+                            🔔 Notify me when ready
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </article>
-                )}
-              </div>
+                    </article>
+                  )}
+                </div>
+              )}
             </section>
           )}
+
 
           {/* ================= ACTIVE VIEW ================= */}
           {viewMode === "active" && (
@@ -1694,6 +2144,113 @@ function DashboardWidgetsPage() {
                   </>
                 )}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ================= COMING SOON PREVIEW MODAL ================= */}
+      {comingSoonModalWidget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-lg rounded-3xl bg-[#111114] border border-white/[0.1] shadow-[0_32px_80px_rgba(0,0,0,0.85)] overflow-hidden">
+            {/* Accent glow bar */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#ffc21a]/80 to-transparent" />
+
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={() => setComingSoonModalWidget(null)}
+              className="absolute top-4 right-4 p-2 rounded-xl text-[#9a9aa3] hover:text-white hover:bg-white/[0.07] transition cursor-pointer"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="p-6 sm:p-7 space-y-5">
+              {/* Header with Icon, Title, and Badge */}
+              <div className="flex items-center gap-4">
+                <div
+                  className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ${comingSoonModalWidget.iconBgClass}`}
+                >
+                  {renderItemIcon(comingSoonModalWidget.iconType)}
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="text-xl font-black text-white tracking-tight truncate">
+                      {comingSoonModalWidget.title}
+                    </h3>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#ffc21a]/15 text-[#ffc21a] border border-[#ffc21a]/30 shrink-0">
+                      Coming Soon
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#9a9aa3] mt-1 leading-relaxed">
+                    {comingSoonModalWidget.description}
+                  </p>
+                </div>
+              </div>
+
+              {/* Planned Features */}
+              <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4 space-y-2.5">
+                <h4 className="text-[11px] font-bold text-white uppercase tracking-wider text-[#9a9aa3]">
+                  Planned Features for Release
+                </h4>
+                <ul className="space-y-2">
+                  {comingSoonModalWidget.features.map((feat, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-xs text-zinc-300">
+                      <span className="text-[#22c55e] font-bold mt-0.5">✓</span>
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Priority Waitlist Form */}
+              <div className="rounded-2xl bg-gradient-to-br from-[#1a1811] to-[#141419] border border-[#ffc21a]/20 p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Bell className="w-4 h-4 text-[#ffc21a]" />
+                  <h4 className="text-xs font-black text-white">Get Priority Early Access</h4>
+                </div>
+                <p className="text-[11px] text-[#9a9aa3] leading-relaxed">
+                  Be the first to test this widget when the beta drops. We&apos;ll notify you with an instant activation link.
+                </p>
+
+                <form onSubmit={handleNotifySubmit} className="flex gap-2">
+                  <input
+                    type="email"
+                    value={notifyEmail}
+                    onChange={(e) => setNotifyEmail(e.target.value)}
+                    placeholder="Enter your email for notification..."
+                    className="flex-1 bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder:text-zinc-500 outline-none focus:border-[#ffc21a]"
+                  />
+                  <button
+                    type="submit"
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs hover:opacity-95 shadow-md transition cursor-pointer shrink-0"
+                  >
+                    Notify Me
+                  </button>
+                </form>
+              </div>
+
+              {/* Footer buttons */}
+              <div className="flex items-center justify-between pt-1">
+                <button
+                  type="button"
+                  onClick={() => setComingSoonModalWidget(null)}
+                  className="text-xs text-[#9a9aa3] hover:text-white transition cursor-pointer"
+                >
+                  ← Back to Catalog
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setComingSoonModalWidget(null);
+                    setSelectedCategory("urgency");
+                  }}
+                  className="text-xs font-bold text-[#ffc21a] hover:underline transition cursor-pointer"
+                >
+                  Explore Ready Widgets →
+                </button>
+              </div>
             </div>
           </div>
         </div>
