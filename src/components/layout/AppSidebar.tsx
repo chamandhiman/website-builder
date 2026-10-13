@@ -276,121 +276,128 @@ export function AppSidebarNav({
         }}
         className={`wto-sidebar ${
           isCompact
-            ? "compact wto-sidebar-compact w-[64px] min-w-[64px] max-w-[64px] p-2 items-center gap-3"
-            : "w-[260px] p-4 gap-4"
-        } shrink-0 sticky top-0 h-screen flex flex-col bg-[#111114] border-r border-white/[0.07] z-40 overflow-y-auto ${className}`}
+            ? "compact wto-sidebar-compact w-[64px] min-w-[64px] max-w-[64px] p-2 items-center"
+            : "w-[260px] p-3 sm:p-3.5"
+        } shrink-0 sticky top-0 h-screen max-h-screen flex flex-col justify-between bg-[#111114] border-r border-white/[0.07] z-40 overflow-hidden ${className}`}
       >
-        {/* Brand Header */}
-        {isCompact ? (
-          <Tooltip>
-            <TooltipTrigger asChild>
+        {/* Pinned Top Header */}
+        <div className={`shrink-0 w-full flex flex-col gap-2.5 pb-1 ${isCompact ? "items-center" : ""}`}>
+          {/* Brand Header */}
+          {isCompact ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={() => handleNav("/dashboard")}
+                  className="flex items-center justify-center cursor-pointer hover:opacity-90 transition pt-1 outline-none"
+                  aria-label="WebToolOcean Dashboard"
+                >
+                  <span className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-br from-[#ffc21a] to-[#ff9f0a] shadow-[0_8px_24px_-8px_rgba(255,194,26,0.6)]">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 32 32"
+                      fill="none"
+                      stroke="#1a1400"
+                      strokeWidth="2.4"
+                      strokeLinecap="round"
+                      className="w-5 h-5 animate-pulse"
+                    >
+                      <path d="M5 11c3.5-3 7-3 11 0s7.5 3 11 0M5 17c3.5-3 7-3 11 0s7.5 3 11 0M5 23c3.5-3 7-3 11 0s7.5 3 11 0" />
+                    </svg>
+                  </span>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent
+                side="right"
+                sideOffset={14}
+                className="bg-[#18181c] border border-white/10 text-white font-semibold text-xs px-2.5 py-1.5 rounded-lg shadow-2xl z-50 pointer-events-none"
+              >
+                Back to Dashboard
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            <div className="flex items-center justify-between w-full">
               <button
                 type="button"
                 onClick={() => handleNav("/dashboard")}
-                className="flex items-center justify-center cursor-pointer hover:opacity-90 transition pt-1 outline-none"
-                aria-label="WebToolOcean Dashboard"
+                className="flex items-center gap-3 px-1 py-1 text-left cursor-pointer hover:opacity-90 transition flex-1 min-w-0"
+                aria-label="WebToolOcean home"
               >
                 <span className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-br from-[#ffc21a] to-[#ff9f0a] shadow-[0_8px_24px_-8px_rgba(255,194,26,0.6)]">
                   <svg
-                    width="22"
-                    height="22"
+                    width="24"
+                    height="24"
                     viewBox="0 0 32 32"
                     fill="none"
                     stroke="#1a1400"
                     strokeWidth="2.4"
                     strokeLinecap="round"
-                    className="w-5 h-5 animate-pulse"
+                    className="w-6 h-6 animate-pulse"
                   >
                     <path d="M5 11c3.5-3 7-3 11 0s7.5 3 11 0M5 17c3.5-3 7-3 11 0s7.5 3 11 0M5 23c3.5-3 7-3 11 0s7.5 3 11 0" />
                   </svg>
                 </span>
+                <div className="truncate">
+                  <strong className="block text-[15px] font-extrabold text-white tracking-tight leading-tight truncate">
+                    WebToolOcean
+                  </strong>
+                  <small className="block text-xs text-[#6b6b74] leading-tight">Website Builder</small>
+                </div>
               </button>
-            </TooltipTrigger>
-            <TooltipContent
-              side="right"
-              sideOffset={14}
-              className="bg-[#18181c] border border-white/10 text-white font-semibold text-xs px-2.5 py-1.5 rounded-lg shadow-2xl z-50 pointer-events-none"
-            >
-              Back to Dashboard
-            </TooltipContent>
-          </Tooltip>
-        ) : (
-          <div className="flex items-center justify-between w-full">
+              {onClose && (
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-[#888] hover:bg-white/10 hover:text-white transition shrink-0 ml-1"
+                  aria-label="Close menu"
+                  title="Close menu"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* New Project Button */}
+          {isCompact ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={() => setCreateOpen(true)}
+                  aria-label="Create New Project"
+                  className="w-10 h-10 flex items-center justify-center rounded-xl border border-dashed border-[#ffc21a]/30 hover:border-[#ffc21a] text-[#ffc21a] bg-[#ffc21a]/[0.02] hover:bg-[#ffc21a]/[0.08] transition text-xl font-bold cursor-pointer outline-none"
+                >
+                  <span>+</span>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent
+                side="right"
+                sideOffset={14}
+                className="bg-[#18181c] border border-white/10 text-white font-semibold text-xs px-2.5 py-1.5 rounded-lg shadow-2xl z-50 pointer-events-none"
+              >
+                Create New Project
+              </TooltipContent>
+            </Tooltip>
+          ) : (
             <button
               type="button"
-              onClick={() => handleNav("/dashboard")}
-              className="flex items-center gap-3 px-1 py-1 text-left cursor-pointer hover:opacity-90 transition flex-1 min-w-0"
-              aria-label="WebToolOcean home"
+              onClick={() => setCreateOpen(true)}
+              className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-dashed border-[#ffc21a]/30 hover:border-[#ffc21a] text-[#9a9aa3] hover:text-white bg-[#ffc21a]/[0.02] hover:bg-[#ffc21a]/[0.06] transition text-sm font-semibold cursor-pointer"
             >
-              <span className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-br from-[#ffc21a] to-[#ff9f0a] shadow-[0_8px_24px_-8px_rgba(255,194,26,0.6)]">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 32 32"
-                  fill="none"
-                  stroke="#1a1400"
-                  strokeWidth="2.4"
-                  strokeLinecap="round"
-                  className="w-6 h-6 animate-pulse"
-                >
-                  <path d="M5 11c3.5-3 7-3 11 0s7.5 3 11 0M5 17c3.5-3 7-3 11 0s7.5 3 11 0M5 23c3.5-3 7-3 11 0s7.5 3 11 0" />
-                </svg>
-              </span>
-              <div className="truncate">
-                <strong className="block text-[15px] font-extrabold text-white tracking-tight leading-tight truncate">
-                  WebToolOcean
-                </strong>
-                <small className="block text-xs text-[#6b6b74] leading-tight">Website Builder</small>
-              </div>
+              <span className="text-[#ffc21a] text-lg font-bold leading-none">+</span>
+              <span>New project</span>
             </button>
-            {onClose && (
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-[#888] hover:bg-white/10 hover:text-white transition shrink-0 ml-1"
-                aria-label="Close menu"
-                title="Close menu"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
-        )}
+          )}
+        </div>
 
-        {/* New Project Button */}
-        {isCompact ? (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                onClick={() => setCreateOpen(true)}
-                aria-label="Create New Project"
-                className="w-10 h-10 flex items-center justify-center rounded-xl border border-dashed border-[#ffc21a]/30 hover:border-[#ffc21a] text-[#ffc21a] bg-[#ffc21a]/[0.02] hover:bg-[#ffc21a]/[0.08] transition text-xl font-bold cursor-pointer outline-none"
-              >
-                <span>+</span>
-              </button>
-            </TooltipTrigger>
-            <TooltipContent
-              side="right"
-              sideOffset={14}
-              className="bg-[#18181c] border border-white/10 text-white font-semibold text-xs px-2.5 py-1.5 rounded-lg shadow-2xl z-50 pointer-events-none"
-            >
-              Create New Project
-            </TooltipContent>
-          </Tooltip>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setCreateOpen(true)}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-dashed border-[#ffc21a]/30 hover:border-[#ffc21a] text-[#9a9aa3] hover:text-white bg-[#ffc21a]/[0.02] hover:bg-[#ffc21a]/[0.06] transition text-sm font-semibold cursor-pointer"
-          >
-            <span className="text-[#ffc21a] text-lg font-bold leading-none">+</span>
-            <span>New project</span>
-          </button>
-        )}
-
-        {/* Navigation Sections */}
-        <nav className={`flex flex-col gap-1 w-full text-xs font-semibold ${isCompact ? "items-center" : ""}`}>
+        {/* Scrollable Middle: Navigation Sections */}
+        <nav
+          className={`wto-sidebar-nav-scroll flex-1 min-h-0 flex flex-col gap-1 w-full text-xs font-semibold py-1 ${
+            isCompact ? "items-center" : ""
+          }`}
+        >
           {!isCompact && (
             <p className="text-[11px] font-extrabold tracking-wider text-[#6b6b74] uppercase px-3 pt-2 pb-1">
               Workspace
@@ -534,8 +541,9 @@ export function AppSidebarNav({
           })}
         </nav>
 
-        {/* Theme Switcher & Exit Dashboard to Landing Page */}
-        <div className={`mt-auto w-full pt-2 flex flex-col gap-1.5 ${isCompact ? "items-center" : ""}`}>
+        {/* Pinned Bottom Footer (Sticks to bottom) */}
+        <div className={`shrink-0 w-full pt-1.5 mt-auto flex flex-col gap-1 border-t border-white/[0.08] ${isCompact ? "items-center" : ""}`}>
+          {/* Theme Switcher & Exit Dashboard to Landing Page */}
           {isCompact ? (
             <>
               <DashboardThemeSelector mode="compact-icon" />
@@ -565,56 +573,55 @@ export function AppSidebarNav({
               <button
                 type="button"
                 onClick={() => navigate({ to: "/" })}
-                className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-semibold text-[#9a9aa3] hover:text-white hover:bg-white/[0.04] transition cursor-pointer"
+                className="w-full flex items-center gap-3 px-3 py-1.5 rounded-xl text-xs font-semibold text-[#9a9aa3] hover:text-white hover:bg-white/[0.04] transition cursor-pointer"
               >
                 <Home className="w-4 h-4 shrink-0 text-[#ffc21a]" />
                 <span>Exit Dashboard</span>
               </button>
             </>
           )}
-        </div>
 
-        {/* User Footer Profile */}
-        <div className={`w-full ${isCompact ? "flex justify-center pt-2" : ""}`}>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              {isCompact ? (
-                <button
-                  type="button"
-                  className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#38bdf8] to-[#ffc21a] text-[#1a1400] font-black text-sm flex items-center justify-center shrink-0 cursor-pointer hover:opacity-90 transition shadow-md outline-none"
-                  aria-label="User profile menu"
-                >
-                  {avatarChar}
-                </button>
-              ) : (
-                <div
-                  className="flex items-center gap-3 pt-3 border-t border-white/[0.08] cursor-pointer hover:bg-white/[0.02] p-1.5 rounded-xl transition"
-                  role="button"
-                  tabIndex={0}
-                >
-                  <span className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#38bdf8] to-[#ffc21a] text-[#1a1400] font-black text-sm flex items-center justify-center shrink-0">
-                    {avatarChar}
-                  </span>
-                  <div className="flex-1 min-w-0 text-left">
-                    <strong className="block text-xs font-bold text-white truncate">{displayName}</strong>
-                    <small className="block text-[11px] text-[#6b6b74] truncate">{userEmail}</small>
-                  </div>
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#6b6b74"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="shrink-0"
+          {/* User Footer Profile */}
+          <div className={`w-full ${isCompact ? "flex justify-center pt-0.5" : "pt-0.5"}`}>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                {isCompact ? (
+                  <button
+                    type="button"
+                    className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#38bdf8] to-[#ffc21a] text-[#1a1400] font-black text-sm flex items-center justify-center shrink-0 cursor-pointer hover:opacity-90 transition shadow-md outline-none"
+                    aria-label="User profile menu"
                   >
-                    <path d="m6 9 6 6 6-6" />
-                  </svg>
-                </div>
-              )}
-            </DropdownMenuTrigger>
+                    {avatarChar}
+                  </button>
+                ) : (
+                  <div
+                    className="flex items-center gap-2.5 cursor-pointer hover:bg-white/[0.02] p-1.5 rounded-xl transition"
+                    role="button"
+                    tabIndex={0}
+                  >
+                    <span className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#38bdf8] to-[#ffc21a] text-[#1a1400] font-black text-xs flex items-center justify-center shrink-0">
+                      {avatarChar}
+                    </span>
+                    <div className="flex-1 min-w-0 text-left">
+                      <strong className="block text-xs font-bold text-white truncate">{displayName}</strong>
+                      <small className="block text-[11px] text-[#6b6b74] truncate">{userEmail}</small>
+                    </div>
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#6b6b74"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="shrink-0"
+                    >
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </div>
+                )}
+              </DropdownMenuTrigger>
             <DropdownMenuContent
               align={isCompact ? "end" : "start"}
               side={isCompact ? "right" : "top"}
@@ -672,7 +679,8 @@ export function AppSidebarNav({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      </aside>
+      </div>
+    </aside>
 
       {/* Modal for creating a new project */}
       <CreateProjectDialog open={createOpen} onOpenChange={setCreateOpen} />
