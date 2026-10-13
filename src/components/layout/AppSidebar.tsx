@@ -20,7 +20,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
-import { LogOut, User as UserIcon, Home, X, Palette } from "lucide-react";
+import { LogOut, User as UserIcon, Home, X, Palette, Menu } from "lucide-react";
 import { DashboardThemeSelector, useDashboardTheme } from "@/lib/dashboard-theme";
 
 export function AppSidebarNav({
@@ -278,7 +278,7 @@ export function AppSidebarNav({
           isCompact
             ? "compact wto-sidebar-compact w-[64px] min-w-[64px] max-w-[64px] p-2 items-center"
             : "w-[260px] p-3 sm:p-3.5"
-        } shrink-0 sticky top-0 h-screen max-h-screen flex flex-col justify-between bg-[#111114] border-r border-white/[0.07] z-40 overflow-hidden ${className}`}
+        } shrink-0 sticky top-0 bottom-0 h-screen max-h-screen h-[100dvh] max-h-[100dvh] flex flex-col justify-between bg-[#111114] border-r border-white/[0.07] z-40 overflow-hidden ${className}`}
       >
         {/* Pinned Top Header */}
         <div className={`shrink-0 w-full flex flex-col gap-2.5 pb-1 ${isCompact ? "items-center" : ""}`}>
@@ -394,7 +394,7 @@ export function AppSidebarNav({
 
         {/* Scrollable Middle: Navigation Sections */}
         <nav
-          className={`wto-sidebar-nav-scroll flex-1 min-h-0 flex flex-col gap-1 w-full text-xs font-semibold py-1 ${
+          className={`wto-sidebar-nav-scroll flex-1 min-h-0 overflow-y-auto overflow-x-hidden scrollbar-none flex flex-col gap-1 w-full text-xs font-semibold py-1 ${
             isCompact ? "items-center" : ""
           }`}
         >
@@ -689,16 +689,65 @@ export function AppSidebarNav({
 }
 
 export function AppSidebar({ children }: { children?: ReactNode }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+
+  // Automatically close mobile menu when navigating
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [location.pathname]);
+
   if (!children) {
     return <AppSidebarNav />;
   }
 
   return (
-    <div className="wto-app-layout flex min-h-screen bg-[#0b0b0d] text-[#f4f4f5]">
-      <AppSidebarNav />
-      {/* Main page content area */}
-      <div className="flex-1 min-w-0 min-h-screen overflow-y-auto bg-[#0b0b0d]">
-        {children}
+    <div className="wto-app-layout flex h-screen max-h-screen h-[100dvh] max-h-[100dvh] w-full overflow-hidden bg-[#0b0b0d] text-[#f4f4f5]">
+      {/* DESKTOP SIDEBAR - Stationary, fixed top-to-bottom, never scrolls with page */}
+      <div className="hidden md:flex h-full shrink-0">
+        <AppSidebarNav />
+      </div>
+
+      {/* MOBILE DRAWER (Below md: < 768px) */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 flex md:hidden">
+          <div
+            className="fixed inset-0 bg-black/70 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+            onClick={() => setMobileOpen(false)}
+          />
+          <div className="relative z-10 flex h-full w-[260px] max-w-[85vw] flex-col bg-[#111114] border-r border-white/10 shadow-2xl animate-in slide-in-from-left duration-200">
+            <AppSidebarNav onClose={() => setMobileOpen(false)} />
+          </div>
+        </div>
+      )}
+
+      {/* RIGHT CONTENT AREA - Dedicated independent scrollable viewport */}
+      <div className="wto-app-content-scroll flex-1 min-w-0 h-full max-h-screen max-h-[100dvh] overflow-y-auto overflow-x-hidden bg-[#0b0b0d] flex flex-col scroll-smooth">
+        {/* Mobile top bar with hamburger icon */}
+        <div className="md:hidden shrink-0 flex items-center justify-between px-4 py-3 bg-[#111114] border-b border-white/[0.08] sticky top-0 z-30">
+          <button
+            type="button"
+            onClick={() => setMobileOpen(true)}
+            className="flex items-center gap-2 p-1.5 -ml-1 text-[#9a9aa3] hover:text-white rounded-lg hover:bg-white/[0.06] transition cursor-pointer"
+            aria-label="Open sidebar menu"
+          >
+            <Menu className="w-5 h-5 text-[#ffc21a]" />
+            <span className="text-xs font-bold text-white">Menu</span>
+          </button>
+          <div className="flex items-center gap-2">
+            <span className="w-7 h-7 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#ffc21a] to-[#ff9f0a] shadow-sm">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="none" stroke="#1a1400" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M5 11c3.5-3 7-3 11 0s7.5 3 11 0M5 17c3.5-3 7-3 11 0s7.5 3 11 0M5 23c3.5-3 7-3 11 0s7.5 3 11 0" />
+              </svg>
+            </span>
+            <span className="text-xs font-extrabold text-white">WebToolOcean</span>
+          </div>
+        </div>
+
+        {/* Page Main Content */}
+        <div className="flex-1 min-w-0">
+          {children}
+        </div>
       </div>
     </div>
   );

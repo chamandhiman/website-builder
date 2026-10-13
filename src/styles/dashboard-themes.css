@@ -12,7 +12,8 @@
    1. NAVY BLUE THEME
    ========================================================== */
 [data-dashboard-theme="navy"] .wto-app-layout,
-[data-dashboard-theme="navy"] .wto-app-layout > div {
+[data-dashboard-theme="navy"] .wto-app-layout > div,
+[data-dashboard-theme="navy"] .wto-app-content-scroll {
   background-color: #070c18 !important;
   color: #f1f5f9 !important;
 }
@@ -81,7 +82,8 @@
    2. WHITE / LIGHT THEME
    ========================================================== */
 [data-dashboard-theme="light"] .wto-app-layout,
-[data-dashboard-theme="light"] .wto-app-layout > div {
+[data-dashboard-theme="light"] .wto-app-layout > div,
+[data-dashboard-theme="light"] .wto-app-content-scroll {
   background-color: #f8fafc !important;
   color: #0f172a !important;
 }

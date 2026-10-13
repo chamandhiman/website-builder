@@ -15,9 +15,9 @@ export function MainLayout({ children, hideHeader, hasSidebar, headerProps }: { 
   }, []);
 
   return (
-    <div className={`min-h-screen flex flex-col overflow-hidden bg-[#171717] text-[#F5F5F5] ${hasSidebar ? "pl-[180px]" : ""}`}>
+    <div className={`h-screen max-h-screen h-[100dvh] max-h-[100dvh] flex flex-col overflow-hidden bg-[#171717] text-[#F5F5F5] ${hasSidebar ? "pl-[180px]" : ""}`}>
       {!hideHeader ? <Header {...headerProps} /> : null}
-      <main className="flex-1 min-h-0 overflow-hidden mainWrapper">{children}</main>
+      <main className="flex-1 min-h-0 h-full max-h-full overflow-hidden mainWrapper">{children}</main>
     </div>
   );
 }
