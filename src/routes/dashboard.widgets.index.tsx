@@ -2369,29 +2369,15 @@ function DashboardWidgetsPage() {
                                       <strong className="block text-sm font-bold text-white leading-tight">
                                         {w.name}
                                       </strong>
-                                      <div className="flex items-center gap-2 mt-0.5">
-                                        <span className="text-[11px] text-[#6b6b74] leading-tight">
-                                          {isCountdown
-                                            ? "Countdown Timer"
-                                            : isAnnouncement
-                                            ? "Announcement & Popup"
-                                            : isFaq
-                                            ? "FAQ Accordion"
-                                            : "Google Reviews"}
-                                        </span>
-                                        <button
-                                          type="button"
-                                          onClick={() => {
-                                            navigator.clipboard.writeText(w.id);
-                                            toast.success("Widget ID copied!");
-                                          }}
-                                          title={`Instance ID: ${w.id} (Click to copy)`}
-                                          className="inline-flex items-center gap-1 font-mono text-[10px] text-zinc-500 hover:text-[#ffc21a] bg-white/[0.03] hover:bg-white/[0.08] px-1.5 py-0.2 rounded border border-white/5 transition cursor-pointer"
-                                        >
-                                          <Hash className="w-2.5 h-2.5 text-zinc-600" />
-                                          <span>{w.id}</span>
-                                        </button>
-                                      </div>
+                                      <small className="block text-[11px] text-[#6b6b74] leading-tight mt-0.5">
+                                        {isCountdown
+                                          ? "Countdown Timer"
+                                          : isAnnouncement
+                                          ? "Announcement & Popup"
+                                          : isFaq
+                                          ? "FAQ Accordion"
+                                          : "Google Reviews"}
+                                      </small>
                                     </div>
                                   </div>
                                 </td>
@@ -2766,28 +2752,15 @@ function DashboardWidgetsPage() {
                                               <strong className="block text-xs font-bold text-white leading-tight">
                                                 {w.name}
                                               </strong>
-                                              <div className="flex items-center gap-1.5 mt-0.5">
-                                                <span className="text-[10px] text-[#6b6b74]">
-                                                  {isCountdown
-                                                    ? "Countdown"
-                                                    : isAnnouncement
-                                                    ? "Announcement"
-                                                    : isFaq
-                                                    ? "FAQ Accordion"
-                                                    : "Google Reviews"}
-                                                </span>
-                                                <button
-                                                  type="button"
-                                                  onClick={() => {
-                                                    navigator.clipboard.writeText(w.id);
-                                                    toast.success("Widget ID copied!");
-                                                  }}
-                                                  title={`Instance ID: ${w.id} (Click to copy)`}
-                                                  className="font-mono text-[9px] text-zinc-500 hover:text-[#ffc21a] bg-white/[0.03] px-1 py-0.2 rounded border border-white/5 cursor-pointer"
-                                                >
-                                                  {w.id}
-                                                </button>
-                                              </div>
+                                              <small className="block text-[10px] text-[#6b6b74] leading-tight mt-0.5">
+                                                {isCountdown
+                                                  ? "Countdown Timer"
+                                                  : isAnnouncement
+                                                  ? "Announcement & Popup"
+                                                  : isFaq
+                                                  ? "FAQ Accordion"
+                                                  : "Google Reviews"}
+                                              </small>
                                             </div>
                                           </div>
                                         </td>
