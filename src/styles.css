@@ -3,6 +3,7 @@
 @import "tw-animate-css";
 @import "./styles/widget-hub.css";
 @import "./styles/wto-auth.css";
+@import "./styles/dashboard-themes.css";
 
 @custom-variant dark (&:is(.dark *));
 

@@ -26,6 +26,7 @@ import { CreateProjectDialog } from "./CreateProjectDialog";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { TEMPLATE_LIBRARY } from "@/lib/builder/templates";
+import { DashboardThemeSelector } from "@/lib/dashboard-theme";
 
 interface ProjectDashboardProps {
   onOpenEditor?: (projectId: string) => void;
@@ -232,6 +233,7 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
             <Home className="w-3.5 h-3.5 text-[#ffc21a]" />
             <span>Exit Dashboard</span>
           </button>
+          <DashboardThemeSelector mode="banner-button" />
         </div>
       </section>
 

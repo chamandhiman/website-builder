@@ -1,0 +1,186 @@
+/* Dashboard Themes: Dark (Black), Navy Blue, and White (Light) */
+
+/* Base transitions for smooth switching */
+.wto-app-layout,
+.wto-app-layout aside,
+.wto-app-layout section,
+.wto-app-layout div {
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+/* ==========================================================
+   1. NAVY BLUE THEME
+   ========================================================== */
+[data-dashboard-theme="navy"] .wto-app-layout,
+[data-dashboard-theme="navy"] .wto-app-layout > div {
+  background-color: #070c18 !important;
+  color: #f1f5f9 !important;
+}
+
+/* Sidebar in Navy */
+[data-dashboard-theme="navy"] aside.wto-sidebar {
+  background-color: #0b1429 !important;
+  border-color: rgba(56, 189, 248, 0.16) !important;
+}
+
+[data-dashboard-theme="navy"] .wto-sidebar button:hover,
+[data-dashboard-theme="navy"] .wto-sidebar nav button:hover {
+  background-color: rgba(56, 189, 248, 0.08) !important;
+  color: #ffffff !important;
+}
+
+/* Hero Greeting Banner in Navy */
+[data-dashboard-theme="navy"] .wto-app-layout section.relative.rounded-\[22px\] {
+  background: linear-gradient(135deg, #0d1a38 0%, #0a1530 55%, #070e22 100%) !important;
+  border-color: rgba(56, 189, 248, 0.24) !important;
+  box-shadow: 0 20px 45px -15px rgba(2, 6, 23, 0.7) !important;
+}
+
+/* Cards & Panels in Navy */
+[data-dashboard-theme="navy"] .wto-app-layout div[class*="bg-[#151518]"],
+[data-dashboard-theme="navy"] .wto-app-layout div[class*="bg-[#18181c]"],
+[data-dashboard-theme="navy"] .wto-app-layout div[class*="bg-[#141418]"],
+[data-dashboard-theme="navy"] .wto-app-layout div[class*="bg-[#16161a]"],
+[data-dashboard-theme="navy"] .wto-app-layout section[class*="bg-[#151518]"],
+[data-dashboard-theme="navy"] .wto-app-layout article[class*="bg-[#151518]"] {
+  background-color: #0f1c3d !important;
+  border-color: rgba(56, 189, 248, 0.15) !important;
+  box-shadow: 0 10px 25px -5px rgba(2, 6, 23, 0.5) !important;
+}
+
+/* Secondary Action Buttons in Navy */
+[data-dashboard-theme="navy"] .wto-app-layout button[class*="bg-[#151518]"],
+[data-dashboard-theme="navy"] .wto-app-layout a[class*="bg-[#151518]"] {
+  background-color: #14244d !important;
+  border-color: rgba(56, 189, 248, 0.22) !important;
+  color: #f1f5f9 !important;
+}
+
+[data-dashboard-theme="navy"] .wto-app-layout button[class*="bg-[#151518]"]:hover,
+[data-dashboard-theme="navy"] .wto-app-layout a[class*="bg-[#151518]"]:hover {
+  background-color: #1a2f63 !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+}
+
+/* Inputs in Navy */
+[data-dashboard-theme="navy"] .wto-app-layout input,
+[data-dashboard-theme="navy"] .wto-app-layout textarea {
+  background-color: #0a1329 !important;
+  border-color: rgba(56, 189, 248, 0.2) !important;
+  color: #f8fafc !important;
+}
+
+/* Text adjustments in Navy */
+[data-dashboard-theme="navy"] .wto-app-layout .text-\[\#9a9aa3\],
+[data-dashboard-theme="navy"] .wto-app-layout .text-\[\#8e8e98\] {
+  color: #94a3b8 !important;
+}
+
+
+/* ==========================================================
+   2. WHITE / LIGHT THEME
+   ========================================================== */
+[data-dashboard-theme="light"] .wto-app-layout,
+[data-dashboard-theme="light"] .wto-app-layout > div {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Sidebar in Light */
+[data-dashboard-theme="light"] aside.wto-sidebar {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.03) !important;
+}
+
+[data-dashboard-theme="light"] aside.wto-sidebar strong,
+[data-dashboard-theme="light"] aside.wto-sidebar .text-white {
+  color: #0f172a !important;
+}
+
+[data-dashboard-theme="light"] aside.wto-sidebar .text-\[\#9a9aa3\],
+[data-dashboard-theme="light"] aside.wto-sidebar .text-\[\#6b6b74\],
+[data-dashboard-theme="light"] aside.wto-sidebar .text-\[\#8e8e98\] {
+  color: #64748b !important;
+}
+
+[data-dashboard-theme="light"] aside.wto-sidebar button:hover,
+[data-dashboard-theme="light"] aside.wto-sidebar nav button:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+/* Hero Greeting Banner in Light */
+[data-dashboard-theme="light"] .wto-app-layout section.relative.rounded-\[22px\] {
+  background: linear-gradient(135deg, #ffffff 0%, #fefce8 60%, #f1f5f9 100%) !important;
+  border-color: #fde047 !important;
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Cards & Panels in Light */
+[data-dashboard-theme="light"] .wto-app-layout div[class*="bg-[#151518]"],
+[data-dashboard-theme="light"] .wto-app-layout div[class*="bg-[#18181c]"],
+[data-dashboard-theme="light"] .wto-app-layout div[class*="bg-[#141418]"],
+[data-dashboard-theme="light"] .wto-app-layout div[class*="bg-[#16161a]"],
+[data-dashboard-theme="light"] .wto-app-layout section[class*="bg-[#151518]"],
+[data-dashboard-theme="light"] .wto-app-layout article[class*="bg-[#151518]"] {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03) !important;
+  color: #0f172a !important;
+}
+
+/* Headings & Text in Light */
+[data-dashboard-theme="light"] .wto-app-layout .text-white,
+[data-dashboard-theme="light"] .wto-app-layout h1,
+[data-dashboard-theme="light"] .wto-app-layout h2,
+[data-dashboard-theme="light"] .wto-app-layout h3 {
+  color: #0f172a !important;
+}
+
+[data-dashboard-theme="light"] .wto-app-layout .text-\[\#d4d4d8\],
+[data-dashboard-theme="light"] .wto-app-layout .text-\[\#f4f4f5\] {
+  color: #1e293b !important;
+}
+
+[data-dashboard-theme="light"] .wto-app-layout .text-\[\#9a9aa3\],
+[data-dashboard-theme="light"] .wto-app-layout .text-\[\#8e8e98\],
+[data-dashboard-theme="light"] .wto-app-layout .text-\[\#6b6b74\] {
+  color: #64748b !important;
+}
+
+/* Borders in Light */
+[data-dashboard-theme="light"] .wto-app-layout .border-white\/\[0\.07\],
+[data-dashboard-theme="light"] .wto-app-layout .border-white\/\[0\.08\],
+[data-dashboard-theme="light"] .wto-app-layout .border-white\/10 {
+  border-color: #e2e8f0 !important;
+}
+
+/* Secondary Buttons in Light */
+[data-dashboard-theme="light"] .wto-app-layout button[class*="bg-[#151518]"],
+[data-dashboard-theme="light"] .wto-app-layout a[class*="bg-[#151518]"] {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-dashboard-theme="light"] .wto-app-layout button[class*="bg-[#151518]"]:hover,
+[data-dashboard-theme="light"] .wto-app-layout a[class*="bg-[#151518]"]:hover {
+  background-color: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+}
+
+/* Inputs in Light */
+[data-dashboard-theme="light"] .wto-app-layout input,
+[data-dashboard-theme="light"] .wto-app-layout textarea {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* Project Card Thumbnails in Light */
+[data-dashboard-theme="light"] .wto-app-layout .bg-white\/\[0\.03\],
+[data-dashboard-theme="light"] .wto-app-layout .bg-white\/\[0\.04\] {
+  background-color: #f1f5f9 !important;
+}

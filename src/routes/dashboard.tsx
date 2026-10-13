@@ -5,6 +5,7 @@ import { CenteredLoader } from "@/components/ui/CenteredLoader";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { useAuth } from "@/lib/auth";
 import { useBuilder } from "@/lib/builder/store";
+import { DashboardThemeProvider } from "@/lib/dashboard-theme";
 
 export const Route = createFileRoute("/dashboard")({
   component: DashboardLayout,
@@ -49,10 +50,12 @@ function DashboardLayout() {
   }
 
   return (
-    <MainLayout hideHeader hasSidebar={false}>
-      <AppSidebar>
-        <Outlet />
-      </AppSidebar>
-    </MainLayout>
+    <DashboardThemeProvider>
+      <MainLayout hideHeader hasSidebar={false}>
+        <AppSidebar>
+          <Outlet />
+        </AppSidebar>
+      </MainLayout>
+    </DashboardThemeProvider>
   );
 }

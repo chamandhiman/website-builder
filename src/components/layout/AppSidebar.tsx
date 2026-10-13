@@ -20,7 +20,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
-import { LogOut, User as UserIcon, Home, X } from "lucide-react";
+import { LogOut, User as UserIcon, Home, X, Palette } from "lucide-react";
+import { DashboardThemeSelector, useDashboardTheme } from "@/lib/dashboard-theme";
 
 export function AppSidebarNav({
   className = "",
@@ -36,6 +37,7 @@ export function AppSidebarNav({
   const { user, logout } = useAuth();
   const setShowProjectDashboard = useBuilder((s) => s.setShowProjectDashboard);
   const { projects: cloudProjects } = useCloudProjects();
+  const { theme, setTheme } = useDashboardTheme();
 
   const [createOpen, setCreateOpen] = useState(false);
   const [widgetsCount, setWidgetsCount] = useState<number>(() => {
@@ -532,37 +534,43 @@ export function AppSidebarNav({
           })}
         </nav>
 
-        {/* Exit Dashboard to Landing Page */}
-        <div className={`mt-auto w-full pt-2 ${isCompact ? "flex justify-center" : ""}`}>
+        {/* Theme Switcher & Exit Dashboard to Landing Page */}
+        <div className={`mt-auto w-full pt-2 flex flex-col gap-1.5 ${isCompact ? "items-center" : ""}`}>
           {isCompact ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: "/" })}
-                  className="w-10 h-10 flex items-center justify-center rounded-xl text-[#9a9aa3] hover:text-[#ffc21a] hover:bg-white/[0.06] transition cursor-pointer outline-none"
-                  aria-label="Exit Dashboard"
+            <>
+              <DashboardThemeSelector mode="compact-icon" />
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={() => navigate({ to: "/" })}
+                    className="w-10 h-10 flex items-center justify-center rounded-xl text-[#9a9aa3] hover:text-[#ffc21a] hover:bg-white/[0.06] transition cursor-pointer outline-none"
+                    aria-label="Exit Dashboard"
+                  >
+                    <Home className="w-4 h-4 text-[#ffc21a]" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="right"
+                  sideOffset={14}
+                  className="bg-[#18181c] border border-white/10 text-white font-semibold text-xs px-2.5 py-1.5 rounded-lg shadow-2xl z-50 pointer-events-none"
                 >
-                  <Home className="w-4 h-4 text-[#ffc21a]" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent
-                side="right"
-                sideOffset={14}
-                className="bg-[#18181c] border border-white/10 text-white font-semibold text-xs px-2.5 py-1.5 rounded-lg shadow-2xl z-50 pointer-events-none"
-              >
-                Exit Dashboard (Landing Page)
-              </TooltipContent>
-            </Tooltip>
+                  Exit Dashboard (Landing Page)
+                </TooltipContent>
+              </Tooltip>
+            </>
           ) : (
-            <button
-              type="button"
-              onClick={() => navigate({ to: "/" })}
-              className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-semibold text-[#9a9aa3] hover:text-white hover:bg-white/[0.04] transition cursor-pointer"
-            >
-              <Home className="w-4 h-4 shrink-0 text-[#ffc21a]" />
-              <span>Exit Dashboard</span>
-            </button>
+            <>
+              <DashboardThemeSelector mode="sidebar-row" />
+              <button
+                type="button"
+                onClick={() => navigate({ to: "/" })}
+                className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-semibold text-[#9a9aa3] hover:text-white hover:bg-white/[0.04] transition cursor-pointer"
+              >
+                <Home className="w-4 h-4 shrink-0 text-[#ffc21a]" />
+                <span>Exit Dashboard</span>
+              </button>
+            </>
           )}
         </div>
 
@@ -631,6 +639,23 @@ export function AppSidebarNav({
               >
                 <Home className="mr-2 h-3.5 w-3.5 text-[#ffc21a]" />
                 Exit Dashboard
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  const allThemes: Array<"dark" | "navy" | "light"> = ["dark", "navy", "light"];
+                  const idx = allThemes.indexOf(theme);
+                  const next = allThemes[(idx + 1) % allThemes.length];
+                  setTheme(next);
+                }}
+                className="cursor-pointer text-xs focus:bg-[#25252d] focus:text-[#ffc21a] flex items-center justify-between"
+              >
+                <span className="flex items-center">
+                  <Palette className="mr-2 h-3.5 w-3.5 text-[#ffc21a]" />
+                  Theme
+                </span>
+                <span className="capitalize text-[#ffc21a] font-semibold text-[11px] bg-white/[0.06] px-1.5 py-0.5 rounded">
+                  {theme}
+                </span>
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-[#26262e]" />
               <DropdownMenuItem
