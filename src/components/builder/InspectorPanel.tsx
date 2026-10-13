@@ -31,8 +31,15 @@ export function InspectorPanel() {
     );
   }
 
-  // When an individual element is selected, show its properties only
-  if (selectedElement && selectedElement.kind !== "section") {
+  // When an individual element is selected, show its properties only (never for custom HTML placeholder or embedded widgets)
+  const isCustomHtmlOrPlaceholder = Boolean(
+    selectedElement?.widgetType === "custom-html" ||
+    selectedElement?.textContent?.includes("Add your widget here") ||
+    selectedElement?.elementKey?.includes("custom_html") ||
+    selectedElement?.elementType === "custom-html"
+  );
+
+  if (selectedElement && selectedElement.kind !== "section" && !isCustomHtmlOrPlaceholder) {
     return (
       <SelectedElementInspector
         selectedElement={selectedElement}

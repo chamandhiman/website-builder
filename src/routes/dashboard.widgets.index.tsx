@@ -1557,43 +1557,78 @@ function DashboardWidgetsPage() {
 
       {/* ================= EMBED CODE MODAL ================= */}
       {embedModalWidget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="relative w-full max-w-lg p-6 rounded-2xl bg-[#151518] border border-white/10 shadow-2xl">
-            <button
-              type="button"
-              className="absolute top-4 right-4 p-1.5 rounded-lg text-[#9a9aa3] hover:text-white hover:bg-white/[0.06] transition cursor-pointer"
-              onClick={() => setEmbedModalWidget(null)}
-              aria-label="Close"
-            >
-              <X className="w-4 h-4" />
-            </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-2xl rounded-3xl bg-[#111114] border border-white/[0.08] shadow-[0_32px_80px_rgba(0,0,0,0.8)] overflow-hidden">
 
-            <div className="w-10 h-10 rounded-xl bg-[#ffc21a]/10 border border-[#ffc21a]/20 flex items-center justify-center mb-3 text-[#ffc21a]">
-              <Code2 className="w-5 h-5" />
+            {/* Glow accent bar */}
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#ffc21a]/60 to-transparent" />
+
+            {/* Header */}
+            <div className="px-8 pt-8 pb-6 border-b border-white/[0.06]">
+              <button
+                type="button"
+                className="absolute top-5 right-5 p-2 rounded-xl text-[#9a9aa3] hover:text-white hover:bg-white/[0.07] transition cursor-pointer"
+                onClick={() => setEmbedModalWidget(null)}
+                aria-label="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#ffc21a]/20 to-[#ff9f0a]/10 border border-[#ffc21a]/25 flex items-center justify-center text-[#ffc21a] shadow-lg shadow-[#ffc21a]/10">
+                  <Code2 className="w-7 h-7" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-black text-white tracking-tight">Embed your widget</h3>
+                  <p className="text-sm text-[#9a9aa3] mt-0.5">Drop one snippet — works everywhere.</p>
+                </div>
+              </div>
+
+              {/* Platform badges */}
+              <div className="flex flex-wrap gap-2 mt-1">
+                {["WordPress", "Shopify", "Webflow", "Wix", "Custom HTML"].map((p) => (
+                  <span key={p} className="px-2.5 py-1 rounded-lg bg-white/[0.05] border border-white/[0.08] text-[11px] font-semibold text-[#9a9aa3]">
+                    {p}
+                  </span>
+                ))}
+              </div>
             </div>
 
-            <h3 className="text-lg font-black text-white mb-1">Embed your widget</h3>
-            <p className="text-xs text-[#9a9aa3] mb-4">
-              Paste this snippet anywhere on your website. It works on WordPress, Shopify, Wix, Webflow, and custom HTML.
-            </p>
+            {/* Code block */}
+            <div className="px-8 py-6">
+              <div className="relative group rounded-2xl bg-[#0a0a0c] border border-white/[0.07] overflow-hidden">
+                {/* Top bar */}
+                <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.06] bg-white/[0.02]">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-3 h-3 rounded-full bg-[#ff5f57]" />
+                    <span className="w-3 h-3 rounded-full bg-[#febc2e]" />
+                    <span className="w-3 h-3 rounded-full bg-[#28c840]" />
+                  </div>
+                  <span className="text-[11px] font-mono text-[#9a9aa3]/60 tracking-widest uppercase">HTML Snippet</span>
+                  <div className="w-16" />
+                </div>
 
-            <pre className="p-3.5 rounded-xl bg-[#0b0b0d] border border-white/[0.08] overflow-x-auto text-xs font-mono text-zinc-200 mb-5 leading-relaxed">
-              <code>{embedCodeString}</code>
-            </pre>
+                {/* Code content */}
+                <pre className="px-6 py-5 overflow-x-auto text-sm font-mono text-[#a8d8a8] leading-7 whitespace-pre-wrap break-all">
+                  <code>{embedCodeString}</code>
+                </pre>
+              </div>
+            </div>
 
-            <div className="flex items-center gap-3">
+            {/* Footer actions */}
+            <div className="px-8 pb-8 flex items-center gap-3">
               <button
                 type="button"
                 onClick={copyEmbedCode}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-sm shadow-lg shadow-[#ffc21a]/20 hover:shadow-[#ffc21a]/40 hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 cursor-pointer"
               >
-                {copied ? <Check className="w-4 h-4" /> : null}
+                {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
                 <span>{copied ? "Copied!" : "Copy code"}</span>
               </button>
               <button
                 type="button"
                 onClick={() => setEmbedModalWidget(null)}
-                className="py-2.5 px-4 rounded-xl bg-[#1f1f25] border border-white/10 text-white font-bold text-xs hover:bg-[#282830] transition cursor-pointer"
+                className="py-3.5 px-6 rounded-2xl bg-white/[0.05] border border-white/[0.1] text-white font-bold text-sm hover:bg-white/[0.09] active:scale-[0.98] transition-all cursor-pointer"
               >
                 Done
               </button>

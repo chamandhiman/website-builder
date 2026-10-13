@@ -242,26 +242,29 @@ function resolveAssetValue(value: BuilderAssetEntry | string | undefined) {
 
 // Rewrite `images/<filename>` refs with the resolved asset value from the asset map.
 export function resolveAssetPaths(html: string, assets?: Record<string, BuilderAssetEntry | string>) {
-  if (!assets) return html;
   let out = html;
-  for (const [name, value] of Object.entries(assets)) {
-    const data = resolveAssetValue(value);
-    if (!data) continue;
-    const safeName = normalizeAssetRef(name);
-    const variants = [
-      `builder://images/${safeName}`,
-      `images/${safeName}`,
-      `/${safeName}`,
-      `./images/${safeName}`,
-      `/images/${safeName}`,
-      safeName,
-    ];
-    for (const variant of variants) {
-      const esc = escapeRegExp(variant);
-      const pattern = new RegExp(`(^|[\\s"'=(])${esc}(?=$|[\\s"')>])`, "g");
-      out = out.replace(pattern, `$1${data}`);
+  if (assets) {
+    for (const [name, value] of Object.entries(assets)) {
+      const data = resolveAssetValue(value);
+      if (!data) continue;
+      const safeName = normalizeAssetRef(name);
+      const variants = [
+        `builder://images/${safeName}`,
+        `images/${safeName}`,
+        `/${safeName}`,
+        `./images/${safeName}`,
+        `/images/${safeName}`,
+        safeName,
+      ];
+      for (const variant of variants) {
+        const esc = escapeRegExp(variant);
+        const pattern = new RegExp(`(^|[\\s"'=(])${esc}(?=$|[\\s"')>])`, "g");
+        out = out.replace(pattern, `$1${data}`);
+      }
     }
   }
+  // Convert any remaining relative src="images/..." or src="./images/..." to root-relative "/images/..."
+  out = out.replace(/(src|href)=["'](?:\.\/)?images\/([^"']+)["']/gi, '$1="/images/$2"');
   return out;
 }
 
@@ -294,6 +297,93 @@ body[data-builder-edit-mode="1"] .builder-editor-only,
 body[data-builder-edit-mode="1"] [data-builder-editor-only="1"] { display: flex !important; }
 body[data-builder-edit-mode="1"] .builder-editor-only.inline-flex,
 body[data-builder-edit-mode="1"] [data-builder-editor-only="1"].inline-flex { display: inline-flex !important; }
+
+/* Custom HTML & Embed widget placeholders */
+.wto-custom-html-empty,
+.wto-custom-html-pending {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-height: 180px !important;
+  margin: 24px 0 !important;
+  padding: 40px 24px !important;
+  box-sizing: border-box !important;
+  border: 2px dashed #f59e0b !important;
+  border-radius: 16px !important;
+  background-color: #18181b !important;
+  color: #f4f4f5 !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.2s ease !important;
+}
+.wto-custom-html-empty:hover,
+.wto-custom-html-pending:hover {
+  border-color: #fbbf24 !important;
+  background-color: #202024 !important;
+  box-shadow: 0 8px 32px rgba(245, 158, 11, 0.25) !important;
+}
+
+/* CRITICAL: Never display empty or pending placeholders in preview or published sites */
+body:not([data-builder-edit-mode="1"]) .wto-custom-html-empty,
+body:not([data-builder-edit-mode="1"]) .wto-custom-html-pending,
+body[data-builder-edit-mode="0"] .wto-custom-html-empty,
+body[data-builder-edit-mode="0"] .wto-custom-html-pending {
+  display: none !important;
+}
+
+/* Announcement bars & top widgets stay above sticky headers and page flow */
+[data-wto-widget-root] {
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+.wto-embedded-widget-container,
+.wto-custom-html-wrapper {
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+}
+.wto-announcement-bar-root:not(.wto-closed):not([data-wto-closed="1"]) {
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  z-index: 100000 !important;
+}
+.wto-announcement-bar-root.wto-closed,
+.wto-announcement-bar-root[data-wto-closed="1"],
+[data-wto-widget-root].wto-closed,
+[data-wto-widget-root][data-wto-closed="1"] {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+.wto-bar-inner {
+  box-sizing: border-box !important;
+}
+.wto-bar-reopen-btn {
+  box-sizing: border-box !important;
+  z-index: 100001 !important;
+  pointer-events: auto !important;
+}
+.wto-popup-backdrop {
+  z-index: 999999 !important;
+}
+.wto-popup-backdrop.wto-closed,
+.wto-popup-backdrop[data-wto-closed="1"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
 
 details > summary { list-style: none; }
 details > summary::-webkit-details-marker { display: none; }
@@ -808,7 +898,16 @@ export const RUNTIME_SCRIPT = `
 
   function isEditableTextNode(el) {
     if (!el || !el.textContent || !el.textContent.trim()) return false;
-    if (el.closest && (el.closest('[data-wto-toolbar]') || el.closest('[data-wto-ignore-edit]') || el.closest('[data-wto-nav-btn]'))) return false;
+    if (el.closest && (
+      el.closest('[data-wto-toolbar]') ||
+      el.closest('[data-wto-ignore-edit]') ||
+      el.closest('[data-wto-nav-btn]') ||
+      el.closest('.wto-custom-html-empty') ||
+      el.closest('.wto-custom-html-pending') ||
+      el.closest('.wto-custom-html-wrapper') ||
+      el.closest('.wto-embedded-widget-container') ||
+      el.closest('[data-wto-widget]')
+    )) return false;
     const tag = (el.tagName || '').toLowerCase();
     if (['script', 'style', 'svg', 'img', 'video', 'audio', 'canvas', 'iframe', 'input', 'textarea', 'select'].includes(tag)) return false;
     const hasInteractiveChild = !!(el.querySelector && el.querySelector('a,button,input,select,textarea'));
@@ -865,6 +964,22 @@ export const RUNTIME_SCRIPT = `
   function resolveElementSelection(target) {
     if (!target) return { elementKind: 'section', index: null, tag: null, sectionId: null, widgetId: null, widgetType: null, parentWidgetId: null, childId: null, elementKey: null, elementType: null };
     const section = target.closest && target.closest('[data-wto-section]');
+    const customHtmlEmbedEl = target.closest && target.closest('.wto-custom-html-empty, .wto-custom-html-pending, .wto-embedded-widget-container, [data-wto-widget]');
+    if (customHtmlEmbedEl) {
+      const root = customHtmlEmbedEl.closest && customHtmlEmbedEl.closest('[data-widget-id], [data-wto-widget-root]');
+      return {
+        sectionId: section ? section.dataset.wtoSection : null,
+        elementKind: 'section',
+        index: null,
+        tag: 'div',
+        widgetId: root ? root.getAttribute('data-widget-id') : null,
+        widgetType: 'custom-html',
+        parentWidgetId: null,
+        childId: null,
+        elementKey: null,
+        elementType: null,
+      };
+    }
     const widgetRoot = target.closest && target.closest('[data-wto-widget-root], [data-widget-id]');
     const sectionWidgetRoot = section ? section.querySelector('[data-wto-widget-root]') : null;
     const rootWidgetId = widgetRoot ? widgetRoot.getAttribute('data-widget-id') : null;
@@ -3515,7 +3630,7 @@ export function buildPreviewHTML(opts: {
       const canvasLabel = editable ? sectionLabelForCanvas(s) : null;
       const widgetLabel = canvasLabel || (s.widgetInstance ? getWidgetSelectionLabel(s.widgetInstance.type) : "");
       const widgetRootHtml = s.widgetInstance
-        ? `<div data-wto-widget-root="1" data-widget-id="${escapeAttribute(s.widgetInstance.id)}" data-widget="${escapeAttribute(s.widgetInstance.type)}" data-wto-widget-label="${escapeAttribute(widgetLabel)}" data-widget-variant="${escapeAttribute(String(s.widgetInstance.variant ?? ""))}"${gridColumnCount != null ? ` data-grid-columns-count="${escapeAttribute(String(gridColumnCount))}"` : ""}${s.shared ? ` data-wto-shared="${escapeAttribute(s.shared)}"` : ""}>${cleanRawHtml}</div>`
+        ? `<div data-wto-widget-root="1" data-widget-id="${escapeAttribute(s.widgetInstance.id)}" data-widget="${escapeAttribute(s.widgetInstance.type)}" data-wto-widget-label="${escapeAttribute(widgetLabel)}" data-widget-variant="${escapeAttribute(String(s.widgetInstance.variant ?? ""))}"${gridColumnCount != null ? ` data-grid-columns-count="${escapeAttribute(String(gridColumnCount))}"` : ""}${s.shared ? ` data-wto-shared="${escapeAttribute(s.shared)}"` : ""} style="display:block;width:100%;">${cleanRawHtml}</div>`
         : cleanRawHtml;
       const visibleHtml = applyRootAttributes(widgetRootHtml, {
         className: s.className,
@@ -3615,6 +3730,15 @@ export function buildPreviewHTML(opts: {
       background: rgba(250, 204, 21, 0.85) !important;
       color: #171717 !important;
     }
+
+    body[data-builder-edit-mode="1"] .wto-custom-html-empty,
+    body[data-builder-edit-mode="1"] .wto-custom-html-pending {
+      cursor: pointer !important;
+    }
+    body[data-builder-edit-mode="1"] .wto-custom-html-empty:hover {
+      border-color: #f59e0b !important;
+      box-shadow: 0 8px 30px rgba(245, 158, 11, 0.25) !important;
+    }
     `
     : "";
 
@@ -3664,7 +3788,7 @@ ${previewStyles}
   [data-section-role="header"],
   #wto-shared-header {
     position: sticky !important;
-    top: 0 !important;
+    top: var(--wto-header-top, 0px) !important;
     z-index: 1000 !important;
     width: 100% !important;
   }
@@ -3678,7 +3802,7 @@ ${previewStyles}
  <div class="wto-page-shell">
  ${sectionHTML || (editable ? '<div style="padding:80px;text-align:center;color:#94a3b8;font-family:system-ui">Drag sections from the left to start building →</div>' : "")}
  </div>
- <script>window.__wtoCurrentPageSlug = ${JSON.stringify(currentPageSlug ?? "index")};</script>
+ <script>window.__wtoCurrentPageSlug = ${JSON.stringify(currentPageSlug ?? "index")}; window.__wtoIsPreview = true;</script>
  ${bootstrapScript}
  <script>${editable ? RUNTIME_SCRIPT : EXPORT_RUNTIME}</script>
  <script>try{new Function(${escapeInlineScript(globalJs || "")})();}catch(e){console.error(e)}</script>

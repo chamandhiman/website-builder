@@ -1,42 +1,100 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{userId}/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+    // =========================
+    // USER PROFILE
+    // =========================
+    match /users/{userId} {
+      allow read, write: if request.auth != null &&
+                         request.auth.uid == userId;
     }
 
+    // =========================
+    // USER PROJECTS (Metadata)
+    // =========================
+    match /users/{userId}/projects/{projectId} {
+      allow read, write: if request.auth != null &&
+                         request.auth.uid == userId;
+    }
+
+    // =========================
+    // BUILDER PROJECT STATE
+    // =========================
+    match /users/{userId}/builderProjects/{projectId} {
+      allow read, write: if request.auth != null &&
+                         request.auth.uid == userId;
+    }
+
+    // =========================
+    // PUBLISHED WEBSITES
+    // =========================
     match /publishedWebsites/{slug} {
+      // Anyone on the internet can view published websites
       allow read: if true;
+
+      // Any signed-in user can publish or update their website
       allow create, update: if request.auth != null;
-      allow delete: if request.auth != null && (
-        resource.data.ownerId == request.auth.uid
-        || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "super_admin"
-      );
+
+      // Only owner or super_admin can delete
+      allow delete: if request.auth != null &&
+        (
+          !('ownerId' in resource.data)
+          || resource.data.ownerId == request.auth.uid
+          || (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', '') == "super_admin")
+        );
     }
 
+    // =========================
+    // PUBLISHED WIDGETS
+    // =========================
     match /publishedWidgets/{widgetId} {
+      // Anyone can load published widgets embedded on websites
       allow read: if true;
-      allow write: if request.auth != null;
+
+      // Any signed-in user can create or update a widget
+      allow create, update: if request.auth != null;
+
+      // Only owner or super_admin can delete
+      allow delete: if request.auth != null &&
+        (
+          !('ownerId' in resource.data)
+          || resource.data.ownerId == request.auth.uid
+          || (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', '') == "super_admin")
+        );
     }
 
+    // =========================
+    // TEMPLATES
+    // =========================
     match /templates/{templateId} {
-      allow read: if request.auth != null
-        && (
-          get(/databases/$(database)/documents/templates/$(templateId)).data.status == "published"
-          || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "super_admin"
+
+      // Super Admin can read/list all templates.
+      // Normal users can read only published templates.
+      allow get: if request.auth != null &&
+        (
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "super_admin"
+          ||
+          resource.data.status == "published"
         );
 
-      allow list: if request.auth != null
-        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "super_admin";
+      allow list: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "super_admin";
 
-      allow create: if request.auth != null
-        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "super_admin";
+      // Only Super Admin can create templates.
+      allow create: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "super_admin";
 
-      allow update: if request.auth != null
-        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "super_admin";
+      // Only Super Admin can update templates.
+      allow update: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "super_admin";
 
-      allow delete: if request.auth != null
-        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "super_admin";
+      // Only Super Admin can delete templates.
+      allow delete: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "super_admin";
     }
   }
 }
+
+

@@ -47,7 +47,12 @@ export default defineConfig({
                   ? path.join(process.cwd(), 'public', 'preview', requestPath, 'index.html')
                   : path.join(process.cwd(), 'public', 'preview', requestPath);
               } else if (/\.(jpg|jpeg|png|webp|svg|gif|ico)$/i.test(parsed.pathname)) {
-                filePath = path.join(process.cwd(), 'public', parsed.pathname.replace(/^\//, ''));
+                const imagesMatch = parsed.pathname.match(/(?:^|\/)(images\/[^\/].*\.(?:jpg|jpeg|png|webp|svg|gif|ico))$/i);
+                if (imagesMatch) {
+                  filePath = path.join(process.cwd(), 'public', imagesMatch[1]);
+                } else {
+                  filePath = path.join(process.cwd(), 'public', parsed.pathname.replace(/^\//, ''));
+                }
               }
 
               if (filePath) {

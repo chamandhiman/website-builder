@@ -22,7 +22,10 @@ export async function saveBuilderProject(project: Project) {
   await setDoc(
     getProjectDocRef(user.uid, project.id),
     {
-      ...sanitizeForFirestore(project),
+      ...sanitizeForFirestore({
+        ...project,
+        ownerId: user.uid,
+      }),
       updatedAtServer: serverTimestamp(),
     },
     { merge: true }

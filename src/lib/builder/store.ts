@@ -121,6 +121,7 @@ export interface Page {
 export interface Project {
   id: string;
   name: string;
+  ownerId?: string;
   pages: Page[];
   currentPageId: string;
   source?: "template" | "custom";
@@ -176,6 +177,7 @@ interface SelectedElementInfo {
   childId?: string | null;
   elementKey?: string | null;
   elementType?: string | null;
+  widgetType?: string | null;
   columnId?: string | null;
   childContainerId?: string | null;
   textContent?: string;
@@ -564,6 +566,7 @@ function emptyProject(name = "Untitled Project"): Project {
   return {
     id,
     name,
+    ownerId: auth.currentUser?.uid,
     pages,
     currentPageId: pageId,
     source: "custom",
@@ -645,7 +648,10 @@ async function persistProjectToCloud(project: Project): Promise<boolean> {
   }
 
   try {
-    await saveBuilderProjectState(project);
+    await saveBuilderProjectState({
+      ...project,
+      ownerId: firebaseUser.uid,
+    });
     await saveProjectMetadata(mapBuilderProjectToMetadata(project));
     //console.log("Project saved successfully");
     return true;
@@ -771,6 +777,35 @@ export const useBuilder = create<BuilderState>((set, get) => ({
     const wroteToIndexedDb = writeToIndexedDB(payload);
     if (wroteToIndexedDb) {
       requestPersistentStorage();
+    }
+
+    // Keep preview storage and cross-tab broadcast channel in sync with latest project state
+    try {
+      const curProj = currentProjectId ? projects[currentProjectId] : null;
+      if (curProj) {
+        const previewStr = JSON.stringify({
+          project: curProj,
+          pageId: curProj.currentPageId,
+          timestamp: Date.now(),
+        });
+        localStorage.setItem(`wto-preview-${curProj.id}`, previewStr);
+        localStorage.setItem("wto-preview-latest", previewStr);
+        sessionStorage.setItem(`wto-preview-${curProj.id}`, previewStr);
+        sessionStorage.setItem("wto-preview-latest", previewStr);
+        if (typeof BroadcastChannel !== "undefined") {
+          const bc = new BroadcastChannel("wto-builder-preview");
+          bc.postMessage({
+            __lovablePreviewPayload: true,
+            projectId: curProj.id,
+            project: curProj,
+            pageId: curProj.currentPageId,
+          });
+          bc.close();
+        }
+      }
+    } catch (_) {}
+
+    if (wroteToIndexedDb) {
       return true;
     }
 

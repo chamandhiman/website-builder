@@ -172,6 +172,10 @@ export function renderAnnouncementPopupHtml(
     data-ap-countdown-expired-msg="${escapeXml(cd.completionMessage || "Offer has ended")}"
     data-ap-dismiss-storage="${dispRules.dismissPersistence !== false ? "1" : "0"}"
     data-ap-bar-pos="${escapeXml(barPos.position)}"
+    data-ap-sticky="${barPos.sticky !== false ? "1" : "0"}"
+    data-ap-contained="${barPos.contained ? "1" : "0"}"
+    data-ap-max-width="${Number(barPos.maxWidth || 1000)}"
+    data-ap-reopen="${barPos.showReopenButton ? "1" : "0"}"
   `.trim();
 
   // Scoped CSS
@@ -221,6 +225,28 @@ export function renderAnnouncementPopupHtml(
       animation: ${cls}-scale-up ${anim.durationMs}ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
+    .${cls}.wto-closed,
+    .${cls}[data-wto-closed="1"] {
+      display: none !important;
+      height: 0 !important;
+      min-height: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    .${cls} .wto-bar-close-btn,
+    .${cls} .wto-popup-close-btn {
+      cursor: pointer !important;
+      pointer-events: auto !important;
+      z-index: 10 !important;
+    }
+    .${cls} .wto-bar-close-btn svg,
+    .${cls} .wto-popup-close-btn svg {
+      pointer-events: none !important;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .${cls}.wto-ap-anim-fade,
       .${cls}.wto-ap-anim-slide_down,
@@ -240,24 +266,38 @@ export function renderAnnouncementPopupHtml(
     // =========================================================================
     // 1. ANNOUNCEMENT BAR
     // =========================================================================
-    const isFixedTop = barPos.position === "fixed_top";
-    const isFixedBottom = barPos.position === "fixed_bottom";
-    const isFlowTop = barPos.position === "flow_top";
-    const isFlowBottom = barPos.position === "flow_bottom";
+    const isPreview = Boolean(options?.isPreview);
+    const normPos =
+      barPos.position === "top_fixed" ? "fixed_top" :
+      barPos.position === "bottom_fixed" ? "fixed_bottom" :
+      barPos.position === "top_flow" ? "flow_top" :
+      barPos.position === "bottom_flow" ? "flow_bottom" :
+      barPos.position || "fixed_top";
+
+    const isFixedTop = normPos === "fixed_top";
+    const isFixedBottom = normPos === "fixed_bottom";
+    const isFlowTop = normPos === "flow_top";
+    const isFlowBottom = normPos === "flow_bottom";
+    const zIndex = Math.max(99999, Number(barPos.zIndex || 99999));
 
     let posStyle = "";
     if (isFixedTop) {
-      posStyle = `position: ${barPos.sticky ? "sticky" : "fixed"}; top: 0; left: 0; right: 0; width: 100%; z-index: ${barPos.zIndex};`;
+      posStyle = `display: block !important; position: ${barPos.sticky !== false ? "fixed" : "absolute"} !important; top: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: ${zIndex} !important; ${barPos.contained ? "pointer-events: none;" : ""}`;
     } else if (isFixedBottom) {
-      posStyle = `position: ${barPos.sticky ? "sticky" : "fixed"}; bottom: 0; left: 0; right: 0; width: 100%; z-index: ${barPos.zIndex};`;
+      posStyle = `display: block !important; position: ${barPos.sticky !== false ? "fixed" : "absolute"} !important; bottom: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: ${zIndex} !important; ${barPos.contained ? "pointer-events: none;" : ""}`;
+    } else if (isFlowTop) {
+      posStyle = `display: block !important; position: ${barPos.sticky !== false ? "sticky; top: 0;" : "relative;"} width: 100% !important; z-index: ${zIndex} !important; ${barPos.contained ? "pointer-events: none;" : ""}`;
     } else {
-      // Flow
-      posStyle = `position: relative; width: 100%; z-index: ${barPos.zIndex};`;
+      // flow_bottom
+      posStyle = `display: block !important; position: ${barPos.sticky ? "sticky; bottom: 0;" : "relative;"} width: 100% !important; z-index: ${zIndex} !important; ${barPos.contained ? "pointer-events: none;" : ""}`;
     }
 
+    const maxWidth = Math.max(300, Number(barPos.maxWidth || 1000));
     const containerStyle = barPos.contained
-      ? `max-width: ${barPos.maxWidth}px; margin: 0 auto; border-radius: ${layout.borderRadius}px;`
-      : `width: 100%;`;
+      ? `max-width: ${maxWidth}px !important; width: calc(100% - 32px) !important; margin: ${
+          isFixedBottom || isFlowBottom ? "0 auto 16px auto" : "16px auto 0 auto"
+        } !important; border-radius: ${layout.borderRadius || 12}px !important; pointer-events: auto !important; box-shadow: ${layout.shadow || "0 10px 30px rgba(0,0,0,0.35)"} !important; border: ${layout.borderWidth || 1}px solid ${colors.borderColor || "rgba(255,255,255,0.15)"} !important;`
+      : `width: 100% !important; max-width: 100% !important; margin: 0 !important; border-radius: 0 !important; pointer-events: auto !important; border-top: ${isFixedBottom ? `${layout.borderWidth || 1}px solid ${colors.borderColor || "rgba(255,255,255,0.15)"}` : "none"} !important; border-bottom: ${isFixedTop || isFlowTop ? `${layout.borderWidth || 1}px solid ${colors.borderColor || "rgba(255,255,255,0.15)"}` : "none"} !important;`;
 
     html = `
       <div class="${cls} wto-announcement-bar-root wto-ap-anim-${anim.type}" ${dataAttrs} style="${posStyle}">
@@ -265,10 +305,11 @@ export function renderAnnouncementPopupHtml(
           background-color: ${colors.background};
           color: ${colors.textColor};
           padding: ${layout.paddingY}px ${layout.paddingX}px;
-          border-top: ${isFixedBottom ? `${layout.borderWidth}px solid ${colors.borderColor}` : "none"};
-          border-bottom: ${isFixedTop || isFlowTop ? `${layout.borderWidth}px solid ${colors.borderColor}` : "none"};
-          border: ${barPos.contained ? `${layout.borderWidth}px solid ${colors.borderColor}` : undefined};
-          box-shadow: ${layout.shadow};
+          min-height: 44px;
+          display: flex !important;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
           ${containerStyle}
         ">
           <div class="wto-bar-content-wrapper" style="
@@ -450,10 +491,11 @@ export function renderAnnouncementPopupHtml(
                 background: transparent;
                 border: none;
                 color: ${colors.textColor};
-                opacity: 0.65;
+                opacity: 0.75;
                 font-size: 16px;
                 line-height: 1;
-                cursor: pointer;
+                cursor: pointer !important;
+                pointer-events: auto !important;
                 padding: 4px;
                 display: flex;
                 align-items: center;
@@ -461,8 +503,9 @@ export function renderAnnouncementPopupHtml(
                 border-radius: 4px;
                 transition: opacity 0.15s, background 0.15s;
                 margin-left: auto;
+                z-index: 10;
               ">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <svg style="pointer-events: none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
                   <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
@@ -476,21 +519,30 @@ export function renderAnnouncementPopupHtml(
         ${barPos.showReopenButton ? `
           <button type="button" class="wto-bar-reopen-btn" style="
             display: none;
-            position: fixed;
-            ${isFixedBottom ? "bottom: 16px;" : "top: 16px;"}
-            right: 16px;
+            position: fixed !important;
+            ${isFixedBottom || isFlowBottom ? "bottom: 16px !important;" : "top: 16px !important;"}
+            right: 16px !important;
             background: ${colors.background};
             color: ${colors.textColor};
-            border: 1px solid ${colors.borderColor};
-            padding: 6px 14px;
+            border: 1px solid ${colors.borderColor || "rgba(255,255,255,0.2)"};
+            padding: 7px 16px;
             border-radius: 9999px;
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 700;
-            box-shadow: ${layout.shadow};
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
             cursor: pointer;
-            z-index: ${barPos.zIndex};
+            z-index: 100001 !important;
+            pointer-events: auto !important;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
           ">
-            ${escapeXml(barPos.reopenButtonText || "Open Bar")}
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            <span>${escapeXml(barPos.reopenButtonText || "Open Bar")}</span>
           </button>
         ` : ""}
       </div>
@@ -523,10 +575,10 @@ export function renderAnnouncementPopupHtml(
 
     html = `
       <div class="${cls} wto-popup-backdrop wto-ap-anim-${anim.type}" ${dataAttrs} role="dialog" aria-modal="true" aria-labelledby="${cls}-title" aria-describedby="${cls}-desc" style="
-        position: fixed;
+        position: ${options?.isPreview ? "absolute" : "fixed"};
         inset: 0;
-        width: 100vw;
-        height: 100vh;
+        width: ${options?.isPreview ? "100%" : "100vw"};
+        height: ${options?.isPreview ? "100%" : "100vh"};
         background-color: ${colors.overlayColor};
         backdrop-filter: blur(4px);
         -webkit-backdrop-filter: blur(4px);
@@ -552,28 +604,29 @@ export function renderAnnouncementPopupHtml(
         ">
           <!-- Close Button Top Right -->
           ${content.showCloseButton ? `
-            <button type="button" class="wto-popup-close-btn" aria-label="Close dialog" style="
-              position: absolute;
-              top: 14px;
-              right: 14px;
-              width: 32px;
-              height: 32px;
-              border-radius: 50%;
-              background: rgba(0, 0, 0, 0.35);
-              border: 1px solid rgba(255, 255, 255, 0.15);
-              color: #ffffff;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              cursor: pointer;
-              z-index: 10;
-              transition: transform 0.15s, background 0.15s;
-            ">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </button>
+              <button type="button" class="wto-popup-close-btn" aria-label="Close dialog" style="
+                position: absolute;
+                top: 14px;
+                right: 14px;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background: rgba(0, 0, 0, 0.35);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #ffffff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer !important;
+                pointer-events: auto !important;
+                z-index: 10;
+                transition: transform 0.15s, background 0.15s;
+              ">
+                <svg style="pointer-events: none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
           ` : ""}
 
           <!-- Top or Side Image -->
@@ -764,10 +817,72 @@ export function attachAnnouncementPopupInteractivity(
   container: HTMLElement,
   options?: { isPreview?: boolean }
 ): () => void {
-  const isPreview = Boolean(options?.isPreview);
-  const elements = container.querySelectorAll<HTMLElement>(
-    ".wto-announcement-bar-root, .wto-popup-backdrop, [data-ap-mode]"
+  const isPreview = Boolean(
+    options?.isPreview ||
+    (typeof window !== "undefined" && (
+      Boolean((window as any).__wtoIsPreview) ||
+      window.location.pathname.includes("/demo/") ||
+      window.location.pathname.includes("/editor/") ||
+      window.location.pathname.includes("/preview") ||
+      window.location.search.includes("preview=") ||
+      document.body?.getAttribute("data-builder-edit-mode") === "1" ||
+      document.body?.classList.contains("builder-editor-mode") ||
+      (function() {
+        try {
+          if (window.parent && window.parent !== window) {
+            const pp = window.parent.location.pathname || "";
+            const ps = window.parent.location.search || "";
+            if (
+              (window.parent as any).__wtoIsPreview ||
+              pp.includes("/demo/") ||
+              pp.includes("/editor/") ||
+              pp.includes("/preview") ||
+              ps.includes("preview=")
+            ) {
+              return true;
+            }
+          }
+        } catch (_) {}
+        try {
+          if (window.top && window.top !== window) {
+            const tp = window.top.location.pathname || "";
+            const ts = window.top.location.search || "";
+            if (
+              (window.top as any).__wtoIsPreview ||
+              tp.includes("/demo/") ||
+              tp.includes("/editor/") ||
+              tp.includes("/preview") ||
+              ts.includes("preview=")
+            ) {
+              return true;
+            }
+          }
+        } catch (_) {}
+        return false;
+      })()
+    ))
   );
+  // In preview mode or studio canvas, purge any duplicate or stale widget roots first so only ONE active widget is ever shown
+  const isStudioPreview = !!(container && (container.hasAttribute("data-wto-mock-canvas") || container.querySelector("[data-wto-mock-canvas]")));
+  if (isStudioPreview) {
+    const directStale = container.querySelectorAll<HTMLElement>(
+      ":scope > .wto-announcement-bar-root, :scope > .wto-popup-backdrop, :scope > .wto-announcement-popup-root"
+    );
+    directStale.forEach((el) => el.remove());
+  }
+
+  const elements = Array.from(container.querySelectorAll<HTMLElement>(
+    ".wto-announcement-bar-root, .wto-popup-backdrop, [data-ap-mode]"
+  ));
+
+  // If in preview mode, ensure only the single active widget is present:
+  if (isPreview && elements.length > 1) {
+    // Keep only the newest/last rendered element, remove any older duplicates
+    while (elements.length > 1) {
+      const oldEl = elements.shift();
+      oldEl?.remove();
+    }
+  }
 
   const cleanupTasks: Array<() => void> = [];
 
@@ -784,7 +899,15 @@ export function attachAnnouncementPopupInteractivity(
     const isCountdown = root.getAttribute("data-ap-countdown") === "1";
     const targetTimestamp = Number(root.getAttribute("data-ap-target-timestamp") || 0);
 
-    // 1. Scheduling checks (Only enforced in live mode)
+    // In preview/editor, clean up any previous seen flags so refreshes never hide the widget
+    if (isPreview && widgetId) {
+      try {
+        sessionStorage.removeItem(`wto_ap_seen_${widgetId}`);
+        localStorage.removeItem(`wto_ap_seen_${widgetId}`);
+      } catch (_) {}
+    }
+
+    // 1. Scheduling checks (Only enforced in live production mode, NEVER in preview/editor)
     if (!isPreview && scheduleEnabled) {
       const now = Date.now();
       if (startTimeStr) {
@@ -803,8 +926,8 @@ export function attachAnnouncementPopupInteractivity(
       }
     }
 
-    // 2. Frequency & Persistence checks (Only in live mode)
-    if (!isPreview && freq !== "always") {
+    // 2. Frequency & Persistence checks (Only for popups in live production mode, NEVER in preview/editor and NEVER for announcement bars)
+    if (!isPreview && mode === "popup" && freq !== "always") {
       try {
         const storageKey = `wto_ap_seen_${widgetId}`;
         if (freq === "session") {
@@ -837,9 +960,9 @@ export function attachAnnouncementPopupInteractivity(
       }
     }
 
-    // Record seen if live
+    // Record seen only for popups and never in preview
     const recordSeen = () => {
-      if (isPreview) return;
+      if (isPreview || mode !== "popup") return;
       try {
         const storageKey = `wto_ap_seen_${widgetId}`;
         const now = String(Date.now());
@@ -849,7 +972,16 @@ export function attachAnnouncementPopupInteractivity(
     };
 
     // 3. Triggers & Initial Visibility
-    if (!isPreview && mode === "popup") {
+    if (root.classList.contains("wto-closed") || root.getAttribute("data-wto-closed") === "1") {
+      return;
+    }
+    if (mode === "bar") {
+      root.style.display = "block";
+    } else if (isPreview) {
+      // In editor or preview mode, always keep popups visible for editing/previewing
+      root.style.display = "flex";
+    } else {
+      // Live production popup triggering
       if (trigger === "delay") {
         root.style.display = "none";
         const tid = setTimeout(() => {
@@ -895,31 +1027,168 @@ export function attachAnnouncementPopupInteractivity(
       }
     }
 
-    // 4. Close & Reopen Button Handlers
-    const closeBtn = root.querySelector<HTMLElement>(".wto-bar-close-btn, .wto-popup-close-btn");
-    const reopenBtn = root.querySelector<HTMLElement>(".wto-bar-reopen-btn");
+    // Hoist announcement bar to top/bottom of page body on live storefronts so position options are strictly respected.
+    // In studio preview canvas, DO NOT hoist - React manages the slot and transform: translateZ(0) contains fixed positioning.
+    const studioPreview = root.closest<HTMLElement>("[data-wto-mock-canvas], .relative.flex-1.flex.flex-col");
+    if (!studioPreview && mode === "bar") {
+      const barPosVal = root.getAttribute("data-ap-bar-pos") || "fixed_top";
+      const isTop = barPosVal === "fixed_top" || barPosVal === "flow_top" || barPosVal === "top_fixed" || barPosVal === "top_flow";
+      const isBottom = barPosVal === "fixed_bottom" || barPosVal === "flow_bottom" || barPosVal === "bottom_fixed" || barPosVal === "bottom_flow";
 
-    if (closeBtn) {
-      const handleClose = (e: Event) => {
-        e.preventDefault();
-        e.stopPropagation();
-        root.style.display = "none";
-        if (reopenBtn) reopenBtn.style.display = "block";
-        recordSeen();
-      };
-      closeBtn.addEventListener("click", handleClose);
-      cleanupTasks.push(() => closeBtn.removeEventListener("click", handleClose));
+      const hoistTarget = root.ownerDocument?.body || document.body;
+      if (hoistTarget) {
+        // Remove any old hoisted instance of this widget
+        const existingOld = hoistTarget.querySelector<HTMLElement>(`[data-wto-widget="${widgetId}"]`);
+        if (existingOld && existingOld !== root) {
+          existingOld.remove();
+        }
+
+        if (isTop && root.parentElement !== hoistTarget) {
+          hoistTarget.prepend(root);
+          cleanupTasks.push(() => {
+            if (root.parentElement === hoistTarget) root.remove();
+          });
+        } else if (isBottom && root.parentElement !== hoistTarget) {
+          hoistTarget.appendChild(root);
+          cleanupTasks.push(() => {
+            if (root.parentElement === hoistTarget) root.remove();
+          });
+        }
+      }
     }
 
-    if (reopenBtn) {
-      const handleReopen = (e: Event) => {
+    // 4. Close & Reopen Button Handlers
+    const reopenBtn = root.querySelector<HTMLElement>(".wto-bar-reopen-btn");
+
+    const closeWidget = (e?: Event) => {
+      if (e) {
         e.preventDefault();
         e.stopPropagation();
-        root.style.display = "block";
-        reopenBtn.style.display = "none";
-      };
-      reopenBtn.addEventListener("click", handleReopen);
-      cleanupTasks.push(() => reopenBtn.removeEventListener("click", handleReopen));
+      }
+
+      root.classList.add("wto-closed");
+      root.setAttribute("data-wto-closed", "1");
+
+      if (reopenBtn) {
+        const barInner = root.querySelector<HTMLElement>(".wto-bar-inner");
+        if (barInner) barInner.style.setProperty("display", "none", "important");
+        root.style.setProperty("height", "0px", "important");
+        root.style.setProperty("min-height", "0px", "important");
+        root.style.setProperty("padding", "0px", "important");
+        root.style.setProperty("margin", "0px", "important");
+        root.style.setProperty("pointer-events", "none", "important");
+        root.style.setProperty("background", "transparent", "important");
+        root.style.setProperty("box-shadow", "none", "important");
+        root.style.setProperty("border", "none", "important");
+        reopenBtn.style.setProperty("display", "inline-flex", "important");
+        reopenBtn.style.setProperty("pointer-events", "auto", "important");
+      } else {
+        root.style.setProperty("display", "none", "important");
+        root.style.setProperty("height", "0px", "important");
+        root.style.setProperty("min-height", "0px", "important");
+        root.style.setProperty("padding", "0px", "important");
+        root.style.setProperty("margin", "0px", "important");
+        root.style.setProperty("visibility", "hidden", "important");
+        root.style.setProperty("pointer-events", "none", "important");
+        const barInner = root.querySelector<HTMLElement>(".wto-bar-inner");
+        if (barInner) barInner.style.setProperty("display", "none", "important");
+
+        // Also collapse parent widget root container if present so zero leftover height remains
+        const widgetRoot = root.closest<HTMLElement>("[data-wto-widget-root], [data-widget-id]");
+        if (widgetRoot && widgetRoot !== root) {
+          widgetRoot.style.setProperty("display", "none", "important");
+          widgetRoot.style.setProperty("height", "0px", "important");
+          widgetRoot.classList.add("wto-closed");
+        }
+      }
+
+      updateBarOffset();
+      recordSeen();
+    };
+
+    const reopenWidget = (e?: Event) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      root.classList.remove("wto-closed");
+      root.removeAttribute("data-wto-closed");
+
+      const barInner = root.querySelector<HTMLElement>(".wto-bar-inner");
+      if (barInner) barInner.style.removeProperty("display");
+      root.style.removeProperty("display");
+      root.style.removeProperty("height");
+      root.style.removeProperty("min-height");
+      root.style.removeProperty("padding");
+      root.style.removeProperty("margin");
+      root.style.removeProperty("pointer-events");
+      root.style.removeProperty("background");
+      root.style.removeProperty("box-shadow");
+      root.style.removeProperty("border");
+      root.style.removeProperty("visibility");
+
+      if (reopenBtn) {
+        reopenBtn.style.setProperty("display", "none", "important");
+      }
+
+      const widgetRoot = root.closest<HTMLElement>("[data-wto-widget-root], [data-widget-id]");
+      if (widgetRoot && widgetRoot !== root) {
+        widgetRoot.style.removeProperty("display");
+        widgetRoot.style.removeProperty("height");
+        widgetRoot.classList.remove("wto-closed");
+      }
+
+      setTimeout(updateBarOffset, 30);
+    };
+
+    // Attach click to all close buttons
+    const closeBtns = root.querySelectorAll<HTMLElement>(".wto-bar-close-btn, .wto-popup-close-btn, [data-ap-close], .wto-close-btn");
+    closeBtns.forEach((btn) => {
+      btn.addEventListener("click", closeWidget);
+      cleanupTasks.push(() => btn.removeEventListener("click", closeWidget));
+    });
+
+    // Delegated click handler on root as fail-safe (capture phase)
+    const handleRootClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      const btn = target?.closest<HTMLElement>(".wto-bar-close-btn, .wto-popup-close-btn, [data-ap-close], .wto-close-btn");
+      if (btn && root.contains(btn)) {
+        closeWidget(e);
+      }
+    };
+    root.addEventListener("click", handleRootClick, true);
+    cleanupTasks.push(() => root.removeEventListener("click", handleRootClick, true));
+
+    if (reopenBtn) {
+      reopenBtn.addEventListener("click", reopenWidget);
+      cleanupTasks.push(() => reopenBtn.removeEventListener("click", reopenWidget));
+    }
+
+    const updateBarOffset = () => {
+      if (mode === "bar") {
+        const barPosVal = root.getAttribute("data-ap-bar-pos") || "fixed_top";
+        const isFixedTop = barPosVal === "fixed_top" || barPosVal === "top_fixed";
+        const barInner = root.querySelector<HTMLElement>(".wto-bar-inner");
+        const isClosed = root.classList.contains("wto-closed") || root.getAttribute("data-wto-closed") === "1" || root.style.display === "none";
+        const isVisible = !isClosed && (!barInner || (barInner.style.display !== "none" && !barInner.classList.contains("wto-closed")));
+        if (isFixedTop && isVisible) {
+          const h = (barInner ? barInner.offsetHeight : root.offsetHeight) || 44;
+          const isContainedVal = root.getAttribute("data-ap-contained") === "1";
+          const offset = isContainedVal ? h + 16 : h;
+          document.documentElement.style.setProperty("--wto-header-top", `${offset}px`);
+        } else {
+          document.documentElement.style.setProperty("--wto-header-top", "0px");
+        }
+      }
+    };
+    if (mode === "bar") {
+      setTimeout(updateBarOffset, 60);
+      window.addEventListener("resize", updateBarOffset);
+      cleanupTasks.push(() => {
+        window.removeEventListener("resize", updateBarOffset);
+        document.documentElement.style.setProperty("--wto-header-top", "0px");
+      });
     }
 
     // Backdrop click and Escape key closing for Popup

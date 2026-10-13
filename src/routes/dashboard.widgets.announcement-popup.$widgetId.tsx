@@ -204,13 +204,27 @@ function AnnouncementPopupStudioPage() {
     };
     return renderAnnouncementPopupHtml(mockWidget, {
       device: previewDevice,
+      isPreview: true,
     });
   }, [widget, config, previewDevice, previewKey]);
 
   // Attach preview interactivity
   useEffect(() => {
     if (!previewContainerRef.current) return;
-    const cleanup = attachAnnouncementPopupInteractivity(previewContainerRef.current, {
+    const previewEl = previewContainerRef.current;
+
+    // Immediately remove any direct orphaned announcement bars or popups left behind from previous renders/hoists
+    Array.from(previewEl.children).forEach((child) => {
+      if (
+        child.classList.contains("wto-announcement-bar-root") ||
+        child.classList.contains("wto-announcement-popup-root") ||
+        child.classList.contains("wto-popup-backdrop")
+      ) {
+        child.remove();
+      }
+    });
+
+    const cleanup = attachAnnouncementPopupInteractivity(previewEl, {
       isPreview: true,
     });
     return cleanup;
@@ -286,6 +300,25 @@ function AnnouncementPopupStudioPage() {
   }
 
   const isBar = config.displayMode === "bar";
+  const rawBar = config.barPosition;
+  const barObj: AnnouncementBarPositionConfig =
+    typeof rawBar === "object" && rawBar !== null
+      ? (rawBar as AnnouncementBarPositionConfig)
+      : {
+          position: typeof rawBar === "string" ? rawBar : "fixed_top",
+          sticky: config.sticky ?? true,
+          contained: config.barLayout === "contained",
+          maxWidth: 1200,
+          zIndex: 9999,
+          showReopenButton: false,
+          reopenButtonText: "Open Bar",
+        };
+  const currentPos =
+    barObj.position === "top_fixed" ? "fixed_top" :
+    barObj.position === "bottom_fixed" ? "fixed_bottom" :
+    barObj.position === "top_flow" ? "flow_top" :
+    barObj.position === "bottom_flow" ? "flow_bottom" :
+    barObj.position || "fixed_top";
 
   return (
     <div className="min-h-screen bg-[#141416] text-zinc-100 flex flex-col overflow-hidden">
@@ -1487,154 +1520,128 @@ function AnnouncementPopupStudioPage() {
                         Display Position
                       </h4>
 
-                      {(() => {
-                        const rawBar = config.barPosition;
-                        const barObj: AnnouncementBarPositionConfig =
-                          typeof rawBar === "object" && rawBar !== null
-                            ? (rawBar as AnnouncementBarPositionConfig)
-                            : {
-                                position: (typeof rawBar === "string" ? rawBar : "fixed_top"),
-                                sticky: config.sticky ?? true,
-                                contained: config.barLayout === "contained",
-                                maxWidth: 1200,
-                                zIndex: 9999,
-                                showReopenButton: false,
-                                reopenButtonText: "Open Bar",
+                      <div className="grid grid-cols-2 gap-2">
+                        {[
+                          { id: "fixed_top", label: "Fixed at Top" },
+                          { id: "fixed_bottom", label: "Fixed at Bottom" },
+                          { id: "flow_top", label: "Normal Flow (Top)" },
+                          { id: "flow_bottom", label: "Normal Flow (Bottom)" },
+                        ].map((pos) => (
+                          <button
+                            key={pos.id}
+                            type="button"
+                            onClick={() =>
+                              updateConfig((p) => {
+                                const prevBar =
+                                  typeof p.barPosition === "object" && p.barPosition !== null
+                                    ? p.barPosition
+                                    : barObj;
+                                return {
+                                  ...p,
+                                  barPosition: {
+                                    ...prevBar,
+                                    position: pos.id as AnnouncementBarPosition,
+                                  },
+                                };
+                              })
+                            }
+                            className={`p-2.5 rounded-lg text-xs font-semibold text-left transition border ${
+                              currentPos === pos.id
+                                ? "bg-amber-400/10 border-amber-400 text-amber-300 font-bold"
+                                : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white"
+                            }`}
+                          >
+                            {pos.label}
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="pt-2 border-t border-zinc-800 space-y-3">
+                        <SettingSwitch
+                          checked={Boolean(barObj.sticky)}
+                          onChange={(val) =>
+                            updateConfig((p) => {
+                              const prevBar =
+                                typeof p.barPosition === "object" && p.barPosition !== null
+                                  ? p.barPosition
+                                  : barObj;
+                              return {
+                                ...p,
+                                barPosition: { ...prevBar, sticky: val },
                               };
-                        const currentPos =
-                          barObj.position === "top_fixed" ? "fixed_top" :
-                          barObj.position === "bottom_fixed" ? "fixed_bottom" :
-                          barObj.position === "top_flow" ? "flow_top" :
-                          barObj.position === "bottom_flow" ? "flow_bottom" :
-                          barObj.position || "fixed_top";
+                            })
+                          }
+                          label="Sticky on Scroll"
+                          description="Remains anchored while the visitor scrolls"
+                        />
 
-                        return (
-                          <>
-                            <div className="grid grid-cols-2 gap-2">
-                              {[
-                                { id: "fixed_top", label: "Fixed at Top" },
-                                { id: "fixed_bottom", label: "Fixed at Bottom" },
-                                { id: "flow_top", label: "Normal Flow (Top)" },
-                                { id: "flow_bottom", label: "Normal Flow (Bottom)" },
-                              ].map((pos) => (
-                                <button
-                                  key={pos.id}
-                                  type="button"
-                                  onClick={() =>
-                                    updateConfig((p) => {
-                                      const prevBar =
-                                        typeof p.barPosition === "object" && p.barPosition !== null
-                                          ? p.barPosition
-                                          : barObj;
-                                      return {
-                                        ...p,
-                                        barPosition: {
-                                          ...prevBar,
-                                          position: pos.id as AnnouncementBarPosition,
-                                        },
-                                      };
-                                    })
-                                  }
-                                  className={`p-2.5 rounded-lg text-xs font-semibold text-left transition border ${
-                                    currentPos === pos.id
-                                      ? "bg-amber-400/10 border-amber-400 text-amber-300 font-bold"
-                                      : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white"
-                                  }`}
-                                >
-                                  {pos.label}
-                                </button>
-                              ))}
-                            </div>
+                        <SettingSwitch
+                          checked={Boolean(barObj.contained)}
+                          onChange={(val) =>
+                            updateConfig((p) => {
+                              const prevBar =
+                                typeof p.barPosition === "object" && p.barPosition !== null
+                                  ? p.barPosition
+                                  : barObj;
+                              return {
+                                ...p,
+                                barPosition: { ...prevBar, contained: val },
+                              };
+                            })
+                          }
+                          label="Contained Width (Floating Banner)"
+                          description="Limits width instead of full edge-to-edge stretch"
+                        />
 
-                            <div className="pt-2 border-t border-zinc-800 space-y-3">
-                              <SettingSwitch
-                                checked={Boolean(barObj.sticky)}
-                                onChange={(val) =>
-                                  updateConfig((p) => {
-                                    const prevBar =
-                                      typeof p.barPosition === "object" && p.barPosition !== null
-                                        ? p.barPosition
-                                        : barObj;
-                                    return {
-                                      ...p,
-                                      barPosition: { ...prevBar, sticky: val },
-                                    };
-                                  })
-                                }
-                                label="Sticky on Scroll"
-                                description="Remains anchored while the visitor scrolls"
-                              />
+                        {barObj.contained && (
+                          <div>
+                            <label className="text-[11px] text-zinc-400 block mb-1">
+                              Max Width: {barObj.maxWidth}px
+                            </label>
+                            <input
+                              type="range"
+                              min={600}
+                              max={1400}
+                              step={20}
+                              value={barObj.maxWidth}
+                              onChange={(e) =>
+                                updateConfig((p) => {
+                                  const prevBar =
+                                    typeof p.barPosition === "object" && p.barPosition !== null
+                                    ? p.barPosition
+                                    : barObj;
+                                  return {
+                                    ...p,
+                                    barPosition: {
+                                      ...prevBar,
+                                      maxWidth: Number(e.target.value),
+                                    },
+                                  };
+                                })
+                              }
+                              className="w-full accent-amber-400"
+                            />
+                          </div>
+                        )}
 
-                              <SettingSwitch
-                                checked={Boolean(barObj.contained)}
-                                onChange={(val) =>
-                                  updateConfig((p) => {
-                                    const prevBar =
-                                      typeof p.barPosition === "object" && p.barPosition !== null
-                                        ? p.barPosition
-                                        : barObj;
-                                    return {
-                                      ...p,
-                                      barPosition: { ...prevBar, contained: val },
-                                    };
-                                  })
-                                }
-                                label="Contained Width (Floating Banner)"
-                                description="Limits width instead of full edge-to-edge stretch"
-                              />
-
-                              {barObj.contained && (
-                                <div>
-                                  <label className="text-[11px] text-zinc-400 block mb-1">
-                                    Max Width: {barObj.maxWidth}px
-                                  </label>
-                                  <input
-                                    type="range"
-                                    min={600}
-                                    max={1400}
-                                    step={20}
-                                    value={barObj.maxWidth}
-                                    onChange={(e) =>
-                                      updateConfig((p) => {
-                                        const prevBar =
-                                          typeof p.barPosition === "object" && p.barPosition !== null
-                                            ? p.barPosition
-                                            : barObj;
-                                        return {
-                                          ...p,
-                                          barPosition: {
-                                            ...prevBar,
-                                            maxWidth: Number(e.target.value),
-                                          },
-                                        };
-                                      })
-                                    }
-                                    className="w-full accent-amber-400"
-                                  />
-                                </div>
-                              )}
-
-                              <SettingSwitch
-                                checked={Boolean(barObj.showReopenButton)}
-                                onChange={(val) =>
-                                  updateConfig((p) => {
-                                    const prevBar =
-                                      typeof p.barPosition === "object" && p.barPosition !== null
-                                        ? p.barPosition
-                                        : barObj;
-                                    return {
-                                      ...p,
-                                      barPosition: { ...prevBar, showReopenButton: val },
-                                    };
-                                  })
-                                }
-                                label="Show Reopen Button When Dismissed"
-                                description="Leaves a subtle pill to restore the bar"
-                              />
-                            </div>
-                          </>
-                        );
-                      })()}
+                        <SettingSwitch
+                          checked={Boolean(barObj.showReopenButton)}
+                          onChange={(val) =>
+                            updateConfig((p) => {
+                              const prevBar =
+                                typeof p.barPosition === "object" && p.barPosition !== null
+                                  ? p.barPosition
+                                  : barObj;
+                              return {
+                                ...p,
+                                barPosition: { ...prevBar, showReopenButton: val },
+                              };
+                            })
+                          }
+                          label="Show Reopen Button When Dismissed"
+                          description="Leaves a subtle pill to restore the bar"
+                        />
+                      </div>
                     </div>
                   </div>
                 ) : (
@@ -1876,12 +1883,13 @@ function AnnouncementPopupStudioPage() {
         {/* Center Live Website Mockup & Canvas */}
         <div className="flex-1 bg-zinc-950 flex flex-col items-center justify-start overflow-y-auto p-4 md:p-8 relative">
           <div
-            className={`w-full transition-all duration-300 relative shadow-2xl rounded-2xl border border-zinc-800 overflow-hidden bg-[#0d0f14] ${
+            className={`w-full transition-all duration-300 relative shadow-2xl rounded-2xl border border-zinc-800 overflow-hidden bg-[#0d0f14] flex flex-col ${
               previewDevice === "mobile" ? "max-w-[390px] min-h-[680px]" : "max-w-5xl min-h-[720px]"
             }`}
+            style={{ transform: "translateZ(0)" }}
           >
             {/* Mock Browser Top Bar */}
-            <div className="h-9 bg-zinc-900 border-b border-zinc-800 px-4 flex items-center justify-between select-none">
+            <div className="h-9 bg-zinc-900 border-b border-zinc-800 px-4 flex items-center justify-between select-none shrink-0 z-40">
               <div className="flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-rose-500/80"></div>
                 <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80"></div>
@@ -1894,76 +1902,100 @@ function AnnouncementPopupStudioPage() {
             </div>
 
             {/* Live Rendered Widget Inside Preview Canvas */}
-            <div ref={previewContainerRef} className="w-full relative">
+            <div
+              ref={previewContainerRef}
+              data-wto-mock-canvas="1"
+              style={{ transform: "translateZ(0)" }}
+              className="relative flex-1 flex flex-col w-full overflow-hidden"
+            >
               {renderedOutput.css && <style>{renderedOutput.css}</style>}
+
+              {/* Top / Floating / Modal Widget (When NOT flow_bottom) */}
+              {(!isBar || currentPos !== "flow_bottom") && (
+                <div
+                  className="w-full"
+                  dangerouslySetInnerHTML={{
+                    __html: renderedOutput.html,
+                  }}
+                />
+              )}
+
+              {/* Realistic Website Demo Content Underneath */}
               <div
-                dangerouslySetInnerHTML={{
-                  __html: renderedOutput.html,
-                }}
-              />
-            </div>
-
-            {/* Realistic Website Demo Content Underneath */}
-            <div className="p-6 md:p-12 space-y-12 select-none pointer-events-none opacity-80">
-              {/* Mock Nav */}
-              <div className="flex items-center justify-between border-b border-zinc-800/60 pb-4">
-                <div className="flex items-center gap-2 font-bold text-base text-white">
-                  <div className="w-7 h-7 rounded-lg bg-amber-400 text-black flex items-center justify-center font-black">
-                    A
-                  </div>
-                  <span>Apex Commerce</span>
-                </div>
-                <div className="hidden sm:flex items-center gap-6 text-xs text-zinc-400 font-medium">
-                  <span>Products</span>
-                  <span>Solutions</span>
-                  <span>Pricing</span>
-                  <span>Company</span>
-                </div>
-                <div className="px-3 py-1.5 rounded-full bg-zinc-800 text-zinc-200 text-xs font-semibold">
-                  Cart (0)
-                </div>
-              </div>
-
-              {/* Mock Hero */}
-              <div className="max-w-2xl mx-auto text-center space-y-4 pt-6">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800/80 border border-zinc-700 text-amber-300 text-xs font-semibold">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Summer Collection 2026 Live Now</span>
-                </div>
-                <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">
-                  Design Better. Launch Faster. Convert Smarter.
-                </h1>
-                <p className="text-sm text-zinc-400 leading-relaxed max-w-lg mx-auto">
-                  Transform your storefront with responsive promotional campaigns, high-converting notification bars, and targeted modal offers.
-                </p>
-                <div className="flex items-center justify-center gap-3 pt-2">
-                  <div className="px-5 py-2.5 rounded-xl bg-amber-400 text-black font-bold text-xs shadow-lg shadow-amber-500/10">
-                    Explore Catalog
-                  </div>
-                  <div className="px-4 py-2.5 rounded-xl bg-zinc-800 text-zinc-300 font-semibold text-xs border border-zinc-700">
-                    View Lookbook
-                  </div>
-                </div>
-              </div>
-
-              {/* Mock Product Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
-                {[
-                  { name: "Nordic Minimalist Chair", price: "$249.00", badge: "Best Seller" },
-                  { name: "Ceramic Studio Lamp", price: "$89.00", badge: "New" },
-                  { name: "Organic Wool Throw", price: "$120.00", badge: "20% Off" },
-                ].map((item, i) => (
-                  <div key={i} className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 space-y-3">
-                    <div className="h-32 rounded-lg bg-zinc-850 flex items-center justify-center text-zinc-600 text-xs font-medium">
-                      Product Preview
+                className={`p-6 md:p-12 space-y-12 select-none pointer-events-none opacity-80 flex-1 ${
+                  isBar && currentPos === "fixed_bottom" ? "pb-24" : ""
+                }`}
+              >
+                {/* Mock Nav */}
+                <div className="flex items-center justify-between border-b border-zinc-800/60 pb-4">
+                  <div className="flex items-center gap-2 font-bold text-base text-white">
+                    <div className="w-7 h-7 rounded-lg bg-amber-400 text-black flex items-center justify-center font-black">
+                      A
                     </div>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-white">{item.name}</span>
-                      <span className="text-amber-400 font-mono font-bold">{item.price}</span>
+                    <span>Apex Commerce</span>
+                  </div>
+                  <div className="hidden sm:flex items-center gap-6 text-xs text-zinc-400 font-medium">
+                    <span>Products</span>
+                    <span>Solutions</span>
+                    <span>Pricing</span>
+                    <span>Company</span>
+                  </div>
+                  <div className="px-3 py-1.5 rounded-full bg-zinc-800 text-zinc-200 text-xs font-semibold">
+                    Cart (0)
+                  </div>
+                </div>
+
+                {/* Mock Hero */}
+                <div className="max-w-2xl mx-auto text-center space-y-4 pt-6">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800/80 border border-zinc-700 text-amber-300 text-xs font-semibold">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Summer Collection 2026 Live Now</span>
+                  </div>
+                  <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">
+                    Design Better. Launch Faster. Convert Smarter.
+                  </h1>
+                  <p className="text-sm text-zinc-400 leading-relaxed max-w-lg mx-auto">
+                    Transform your storefront with responsive promotional campaigns, high-converting notification bars, and targeted modal offers.
+                  </p>
+                  <div className="flex items-center justify-center gap-3 pt-2">
+                    <div className="px-5 py-2.5 rounded-xl bg-amber-400 text-black font-bold text-xs shadow-lg shadow-amber-500/10">
+                      Explore Catalog
+                    </div>
+                    <div className="px-4 py-2.5 rounded-xl bg-zinc-800 text-zinc-300 font-semibold text-xs border border-zinc-700">
+                      View Lookbook
                     </div>
                   </div>
-                ))}
+                </div>
+
+                {/* Mock Product Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+                  {[
+                    { name: "Nordic Minimalist Chair", price: "$249.00", badge: "Best Seller" },
+                    { name: "Ceramic Studio Lamp", price: "$89.00", badge: "New" },
+                    { name: "Organic Wool Throw", price: "$120.00", badge: "20% Off" },
+                  ].map((item, i) => (
+                    <div key={i} className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 space-y-3">
+                      <div className="h-32 rounded-lg bg-zinc-850 flex items-center justify-center text-zinc-600 text-xs font-medium">
+                        Product Preview
+                      </div>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-bold text-white">{item.name}</span>
+                        <span className="text-amber-400 font-mono font-bold">{item.price}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
+
+              {/* Bottom Flow Widget (When flow_bottom) */}
+              {isBar && currentPos === "flow_bottom" && (
+                <div
+                  className="w-full mt-auto"
+                  dangerouslySetInnerHTML={{
+                    __html: renderedOutput.html,
+                  }}
+                />
+              )}
             </div>
           </div>
         </div>

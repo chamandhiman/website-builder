@@ -316,27 +316,29 @@ export function RightContextPanel() {
             })}
           </div>
         ) : (
-          <div className="flex w-full flex-col items-center gap-1">
-            {TABS.map(({ key, Icon }) => {
-              const isActive = activeTab === key;
-              return (
-                <Tooltip key={key}>
-                  <TooltipTrigger asChild>
-                    <button
-                      type="button"
-                      onClick={() => { setActiveTab(key); setCollapsed(false); }}
-                      className={`flex h-8 w-8 items-center justify-center rounded-lg transition ${
-                        isActive ? "bg-[#27272A] text-[#FACC15]" : "text-[#94A3B8] hover:bg-[#202020] hover:text-[#F4F4F5]"
-                      }`}
-                    >
-                      <Icon className="h-4 w-4" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="left">{key.charAt(0).toUpperCase() + key.slice(1)}</TooltipContent>
-                </Tooltip>
-              );
-            })}
-          </div>
+          <TooltipProvider delayDuration={120}>
+            <div className="flex w-full flex-col items-center gap-1">
+              {TABS.map(({ key, Icon }) => {
+                const isActive = activeTab === key;
+                return (
+                  <Tooltip key={key}>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        onClick={() => { setActiveTab(key); setCollapsed(false); }}
+                        className={`flex h-8 w-8 items-center justify-center rounded-lg transition ${
+                          isActive ? "bg-[#27272A] text-[#FACC15]" : "text-[#94A3B8] hover:bg-[#202020] hover:text-[#F4F4F5]"
+                        }`}
+                      >
+                        <Icon className="h-4 w-4" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="left">{key.charAt(0).toUpperCase() + key.slice(1)}</TooltipContent>
+                  </Tooltip>
+                );
+              })}
+            </div>
+          </TooltipProvider>
         )}
         <button
           type="button"

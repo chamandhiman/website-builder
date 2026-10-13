@@ -25,6 +25,7 @@ export function CustomHtml({ data = defaultCustomHtmlWidgetData }: { data: Widge
   const containerRef = useRef<HTMLDivElement>(null);
   const rawHtml = String(d.content?.html || "").trim();
   const [livePreviewMarkup, setLivePreviewMarkup] = useState<string | null>(null);
+  const [isWidgetDisabled, setIsWidgetDisabled] = useState(false);
 
   // Check if this Custom HTML contains a WebToolOcean widget embed (e.g. data-wto-widget="wgt_google_...")
   const wtoWidgetMatch = rawHtml.match(/data-wto-widget=["']([^"']+)["']/);
@@ -34,6 +35,7 @@ export function CustomHtml({ data = defaultCustomHtmlWidgetData }: { data: Widge
     let mounted = true;
     if (!detectedWidgetId) {
       setLivePreviewMarkup(null);
+      setIsWidgetDisabled(false);
       return;
     }
 
@@ -61,9 +63,11 @@ export function CustomHtml({ data = defaultCustomHtmlWidgetData }: { data: Widge
         }
         if (mounted && record) {
           if (record.enabled === false) {
+            setIsWidgetDisabled(true);
             setLivePreviewMarkup("");
             return;
           }
+          setIsWidgetDisabled(false);
           const rendered =
             record.type === "countdown"
               ? renderCountdownHtml(record as any)
@@ -120,11 +124,12 @@ export function CustomHtml({ data = defaultCustomHtmlWidgetData }: { data: Widge
 
   useEffect(() => {
     if (!containerRef.current) return;
-    const cleanup = attachWidgetInteractivity(containerRef.current);
+    const cleanup = attachWidgetInteractivity(containerRef.current, { isPreview: true });
     return cleanup;
   }, [livePreviewMarkup, rawHtml]);
 
   if (d.advanced?.visibility === false) return null;
+  if (detectedWidgetId && isWidgetDisabled) return null;
 
   return (
     <BaseWidget
@@ -139,14 +144,35 @@ export function CustomHtml({ data = defaultCustomHtmlWidgetData }: { data: Widge
     >
       <div ref={containerRef} className="w-full">
         {!rawHtml ? (
-          <div className="py-12 px-6 my-3 rounded-2xl border-2 border-dashed border-amber-400/50 bg-zinc-900/80 text-center flex flex-col items-center justify-center gap-2 select-none">
-            <div className="w-12 h-12 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mx-auto text-xl font-bold">
-              <Code2 className="w-6 h-6" />
-            </div>
-            <h4 className="font-bold text-white text-base">Custom HTML / Widget Embed</h4>
-            <p className="text-xs text-zinc-400 max-w-md mx-auto leading-relaxed">
-              Click this block to embed studio widgets (Google Reviews, Countdown Timer, etc.), third-party embeds (iFrames, YouTube, Calendly), or custom HTML &amp; CSS.
-            </p>
+          <div
+            className="wto-custom-html-empty select-none"
+            data-wto-ignore-edit="1"
+            data-builder-selectable="false"
+            data-builder-editor-only="1"
+            contentEditable={false}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              minHeight: "68px",
+              width: "100%",
+              margin: "12px 0",
+              padding: "16px 20px",
+              boxSizing: "border-box",
+              border: "2px dashed rgba(245, 158, 11, 0.4)",
+              borderRadius: "12px",
+              backgroundColor: "#18181b",
+              color: "#fbbf24",
+              fontSize: "13.5px",
+              fontWeight: 600,
+              textAlign: "center",
+              userSelect: "none",
+              cursor: "pointer",
+            }}
+          >
+            <Code2 className="w-4 h-4 text-amber-400 shrink-0 pointer-events-none" />
+            <span className="pointer-events-none">Add your widget here...</span>
           </div>
         ) : livePreviewMarkup ? (
           <div className="w-full" dangerouslySetInnerHTML={{ __html: livePreviewMarkup }} />

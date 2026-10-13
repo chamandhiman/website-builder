@@ -2,6 +2,7 @@ import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "@/firebase/firebase";
 import { sanitizeForFirestore } from "@/services/firestore";
 import { saveBuilderProject } from "@/services/builderProject";
+import { saveProjectMetadata } from "@/services/project";
 import { useBuilder, type Project } from "@/lib/builder/store";
 
 export interface PublishedWebsiteRecord {
@@ -108,8 +109,8 @@ export async function isSlugTaken(slug: string): Promise<boolean> {
     const docRef = doc(db, "publishedWebsites", cleanSlug);
     const snap = await getDoc(docRef);
     return snap.exists();
-  } catch (error) {
-    console.error("Error checking slug availability:", error);
+  } catch (error: any) {
+    console.error(`[Publishing:isSlugTaken] Error checking slug availability for [${cleanSlug}]:`, error?.code || error?.message || error);
     // If permission or network issue, fail safe
     return false;
   }
@@ -155,8 +156,8 @@ export async function getPublishedWebsite(slug: string): Promise<PublishedWebsit
       return null;
     }
     return snap.data() as PublishedWebsiteRecord;
-  } catch (error) {
-    console.error(`Failed to fetch published website [${slug}]:`, error);
+  } catch (error: any) {
+    console.error(`[Publishing:getPublishedWebsite] Failed to fetch published website [${cleanSlug}]:`, error?.code || error?.message || error);
     return null;
   }
 }
@@ -170,17 +171,37 @@ export interface PublishResult {
 
 /**
  * Complete publishing workflow:
- * 1. Checks if website already has a permanent public slug.
- * 2. If no slug -> generates a secure unique slug (lowercase letters + numbers).
- * 3. Builds the public website payload.
- * 4. Saves to public collection "publishedWebsites/{slug}".
- * 5. Updates user's project with published status, slug, URL, and timestamp.
- * 6. Returns the live public URL (e.g. "https://a7k29x.webtoolocean.com").
+ * 1. Checks and awaits Firebase authentication state readiness.
+ * 2. Checks if website already has a permanent public slug.
+ * 3. If no slug -> generates a secure unique slug.
+ * 4. Builds the public website payload with matching owner UID.
+ * 5. Saves to public collection "publishedWebsites/{slug}".
+ * 6. Updates user's private project document in "users/{userId}/builderProjects/{projectId}".
+ * 7. Synchronizes project metadata in "users/{userId}/projects/{projectId}".
+ * 8. Returns the live public URL (e.g. "https://a7k29x.webtoolocean.com").
  */
 export async function publishWebsite(project: Project): Promise<PublishResult> {
-  const user = auth.currentUser;
+  // 1. Ensure Firebase auth state is completely ready
+  if (typeof auth.authStateReady === "function") {
+    await auth.authStateReady();
+  }
+
+  let user = auth.currentUser;
+  if (!user) {
+    // Grace period for token synchronization
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    user = auth.currentUser;
+  }
+
   if (!user) {
     throw new Error("You must be signed in to publish your website.");
+  }
+
+  // Validate ID token is fresh so Firestore attaches valid auth headers
+  try {
+    await user.getIdToken();
+  } catch (tokenErr) {
+    console.warn("[Publishing:auth] Warning refreshing token:", tokenErr);
   }
 
   if (!project.pages || project.pages.length === 0) {
@@ -190,18 +211,20 @@ export async function publishWebsite(project: Project): Promise<PublishResult> {
   const existingSlug = project.publishedSlug?.trim().toLowerCase();
   const isFirstPublish = !existingSlug;
 
-  // 1. Permanent slug logic: reuse if exists, otherwise generate unique
+  // 2. Permanent slug logic: reuse if exists, otherwise generate unique
   let slug = existingSlug;
   if (!slug) {
     slug = await generateUniqueSlug();
   }
 
   const publishedAt = Date.now();
-  const publicUrl = `https://${slug}.webtoolocean.com`;
+  const origin = typeof window !== "undefined" && window.location.origin ? window.location.origin : "https://builder.webtoolocean.com";
+  const publicUrl = `${origin}/site/${slug}`;
 
-  // 2. Prepare the clean project clone for public rendering
+  // 3. Prepare the clean project clone with verified owner UID
   const projectSnapshot: Project = {
     ...JSON.parse(JSON.stringify(project)),
+    ownerId: user.uid,
     published: true,
     publishedSlug: slug,
     publishedUrl: publicUrl,
@@ -209,7 +232,7 @@ export async function publishWebsite(project: Project): Promise<PublishResult> {
     updatedAt: publishedAt,
   };
 
-  // 3. Save to public "publishedWebsites/{slug}" collection
+  // 4. Save to public "publishedWebsites/{slug}" collection
   const publicRecord: PublishedWebsiteRecord = {
     slug,
     subdomain: slug,
@@ -224,22 +247,60 @@ export async function publishWebsite(project: Project): Promise<PublishResult> {
   };
 
   const publicDocRef = doc(db, "publishedWebsites", slug);
-  await setDoc(
-    publicDocRef,
-    {
-      ...sanitizeForFirestore(publicRecord),
-      publishedAtServer: serverTimestamp(),
-    },
-    { merge: true }
-  );
+  try {
+    await setDoc(
+      publicDocRef,
+      {
+        ...sanitizeForFirestore(publicRecord),
+        publishedAtServer: serverTimestamp(),
+      },
+      { merge: true }
+    );
+  } catch (error: any) {
+    console.error(`[Publishing:setDoc] Failed writing to publishedWebsites/${slug}:`, error?.code || error?.message || error);
+    throw new Error(`Publish failed writing to publishedWebsites/${slug}: ${error?.message || "Missing or insufficient permissions."}`);
+  }
 
-  // 4. Update the Zustand store
+  // 5. Update the Zustand store
   const store = useBuilder.getState();
   store.publishProject(project.id, slug, publicUrl);
 
-  // 5. Update the user's private cloud document
-  const updatedCurrentProject = store.currentProject() || projectSnapshot;
-  await saveBuilderProject(updatedCurrentProject);
+  // 6. Update the user's private cloud document (builderProjects subcollection)
+  const updatedCurrentProject: Project = {
+    ...(store.currentProject() || projectSnapshot),
+    ownerId: user.uid,
+    published: true,
+    publishedSlug: slug,
+    publishedUrl: publicUrl,
+    publishedAt,
+    updatedAt: publishedAt,
+  };
+
+  try {
+    await saveBuilderProject(updatedCurrentProject);
+  } catch (error: any) {
+    console.error(`[Publishing:saveBuilderProject] Failed saving users/${user.uid}/builderProjects/${project.id}:`, error?.code || error?.message || error);
+    throw new Error(`Publish failed saving project state: ${error?.message || "Missing or insufficient permissions."}`);
+  }
+
+  // 7. Synchronize project metadata in users/{userId}/projects/{projectId}
+  try {
+    await saveProjectMetadata({
+      id: updatedCurrentProject.id,
+      name: updatedCurrentProject.name,
+      templateId: updatedCurrentProject.selectedTemplateId ?? null,
+      thumbnail: updatedCurrentProject.thumbnail || "",
+      description: updatedCurrentProject.description || "",
+      favorite: false,
+      status: "published",
+      createdAt: updatedCurrentProject.createdAt ?? Date.now(),
+      updatedAt: publishedAt,
+      pages: updatedCurrentProject.pages.map((p) => p.slug || p.id),
+      isPublic: true,
+    });
+  } catch (metadataErr: any) {
+    console.warn(`[Publishing:saveProjectMetadata] Non-fatal metadata sync warning:`, metadataErr?.message || metadataErr);
+  }
 
   return {
     slug,

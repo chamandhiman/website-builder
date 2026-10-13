@@ -9,7 +9,9 @@ export type AnnouncementBarPosition =
   | "top_flow"
   | "bottom_flow"
   | "fixed_top"
-  | "fixed_bottom";
+  | "fixed_bottom"
+  | "flow_top"
+  | "flow_bottom";
 
 export type PopupTriggerType =
   | "immediate"
@@ -343,13 +345,13 @@ export function normalizeAnnouncementPopupConfig(raw: any): AnnouncementPopupCon
       rawPos === "bottom_flow" ? "flow_bottom" :
       rawPos;
     cfg.barPosition = {
-      position: mappedPos as AnnouncementBarPosition,
       sticky: raw.sticky ?? true,
       contained: raw.barLayout === "contained",
       maxWidth: 1200,
       zIndex: raw.zIndex ?? 99999,
       showReopenButton: false,
       reopenButtonText: "Open Bar",
+      position: mappedPos as AnnouncementBarPosition,
     };
   } else {
     const rawPos = raw.barPosition.position ?? "fixed_top";
@@ -360,7 +362,6 @@ export function normalizeAnnouncementPopupConfig(raw: any): AnnouncementPopupCon
       rawPos === "bottom_flow" ? "flow_bottom" :
       rawPos;
     cfg.barPosition = {
-      position: mappedPos as AnnouncementBarPosition,
       sticky: raw.barPosition.sticky ?? raw.sticky ?? true,
       contained: raw.barPosition.contained ?? (raw.barLayout === "contained"),
       maxWidth: raw.barPosition.maxWidth ?? 1200,
@@ -368,8 +369,11 @@ export function normalizeAnnouncementPopupConfig(raw: any): AnnouncementPopupCon
       showReopenButton: raw.barPosition.showReopenButton ?? false,
       reopenButtonText: raw.barPosition.reopenButtonText ?? "Open Bar",
       ...raw.barPosition,
+      position: mappedPos as AnnouncementBarPosition,
     };
   }
+  cfg.sticky = cfg.barPosition.sticky;
+  cfg.barLayout = cfg.barPosition.contained ? "contained" : "full_width";
 
   // Layout
   cfg.layout = {

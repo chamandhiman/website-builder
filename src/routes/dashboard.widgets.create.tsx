@@ -303,7 +303,7 @@ function CreateWidgetTypePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#18181b] text-zinc-100 p-6 md:p-10 ml-0 md:ml-[180px]">
+    <div className="min-h-screen bg-[#18181b] text-zinc-100 p-6 md:p-10">
       <div className="max-w-5xl mx-auto space-y-8">
         {/* ================= STEP 2: COUNTDOWN TEMPLATES SELECTION SCREEN ================= */}
         {view === "countdown_templates" ? (
@@ -471,40 +471,42 @@ function CreateWidgetTypePage() {
                         style={{
                           backgroundColor: cfg.colors?.background || "#18181b",
                           borderColor: cfg.colors?.borderColor || "#3f3f46",
-                          color: cfg.colors?.textColor || "#ffffff",
                         }}
                       >
-                        {cfg.content?.showBadge && cfg.content?.badgeText && (
+                        {cfg.showBadge && cfg.badgeText && (
                           <span
-                            className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase mb-1.5"
+                            className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase mb-1.5 flex items-center gap-1"
                             style={{
-                              backgroundColor: cfg.colors?.badgeBackground || "#ef4444",
-                              color: cfg.colors?.badgeTextColor || "#ffffff",
+                              backgroundColor: cfg.colors?.badgeBg || "#ef4444",
+                              color: cfg.colors?.badgeText || "#ffffff",
                             }}
                           >
-                            {cfg.content.badgeText}
+                            {cfg.badgeText}
                           </span>
                         )}
                         <div
-                          className="text-xs font-bold line-clamp-1 mb-1"
+                          className="text-xs font-bold line-clamp-2 mb-1 px-2"
                           style={{ color: cfg.colors?.headingColor || "#ffffff" }}
                         >
-                          {cfg.content?.headline}
+                          {cfg.headline}
                         </div>
-                        {cfg.content?.description && (
-                          <div className="text-[10px] opacity-80 line-clamp-2 max-w-[220px]">
-                            {cfg.content.description}
+                        {cfg.description && (
+                          <div
+                            className="text-[10px] opacity-70 line-clamp-2 max-w-[220px]"
+                            style={{ color: cfg.colors?.textColor || "#a1a1aa" }}
+                          >
+                            {cfg.description}
                           </div>
                         )}
-                        {cfg.buttons?.primary?.enabled && (
+                        {cfg.primaryButton?.show && (
                           <div
                             className="mt-2.5 px-3 py-1 rounded-full text-[10px] font-bold"
                             style={{
-                              backgroundColor: cfg.buttons.primary.backgroundColor || "#facc15",
-                              color: cfg.buttons.primary.textColor || "#000000",
+                              backgroundColor: cfg.colors?.primaryBtnBg || "#facc15",
+                              color: cfg.colors?.primaryBtnText || "#000000",
                             }}
                           >
-                            {cfg.buttons.primary.text}
+                            {cfg.primaryButton.text}
                           </div>
                         )}
                       </div>

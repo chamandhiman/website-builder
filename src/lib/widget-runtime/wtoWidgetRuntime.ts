@@ -9,6 +9,7 @@ export { renderFaqHtml, attachFaqInteractivity };
 
 export interface RenderWidgetOptions {
   device?: "desktop" | "tablet" | "mobile";
+  isPreview?: boolean;
 }
 
 /**
@@ -270,7 +271,7 @@ function escapeXml(v: string | number | boolean | undefined | null) {
  */
 export function attachWidgetInteractivity(
   container: HTMLElement | null,
-  options?: { previewDevice?: "desktop" | "tablet" | "mobile" },
+  options?: { previewDevice?: "desktop" | "tablet" | "mobile"; isPreview?: boolean },
 ): () => void {
   if (!container) return () => { };
 
@@ -279,8 +280,8 @@ export function attachWidgetInteractivity(
   // Countdown timer runtime interactivity
   cleanups.push(attachCountdownInteractivity(container));
 
-  // Announcement bar & popup runtime interactivity
-  cleanups.push(attachAnnouncementPopupInteractivity(container));
+  // Announcement bar & popup runtime interactivity (defaults to preview mode inside editor/app)
+  cleanups.push(attachAnnouncementPopupInteractivity(container, { isPreview: options?.isPreview ?? true }));
 
   // FAQ Accordion runtime interactivity
   cleanups.push(attachFaqInteractivity(container));
@@ -875,15 +876,66 @@ export const WTO_STANDALONE_WIDGET_JS = `
       var isCd = ap.getAttribute('data-ap-countdown') === '1';
       var targetTs = Number(ap.getAttribute('data-ap-target-timestamp') || 0);
 
-      // Scheduling check
-      if (schedEnabled) {
+      var isPreviewMode = Boolean(
+        typeof window !== 'undefined' && (
+          window.__wtoIsPreview ||
+          window.location.pathname.indexOf('/demo/') !== -1 ||
+          window.location.pathname.indexOf('/editor/') !== -1 ||
+          window.location.pathname.indexOf('/preview') !== -1 ||
+          window.location.search.indexOf('preview=') !== -1 ||
+          (document.body && (
+            document.body.getAttribute('data-builder-edit-mode') === '1' ||
+            document.body.classList.contains('builder-editor-mode')
+          )) ||
+          (function(){
+            try {
+              if (window.parent && window.parent !== window) {
+                var pp = window.parent.location.pathname || '';
+                var ps = window.parent.location.search || '';
+                if (
+                  window.parent.__wtoIsPreview ||
+                  pp.indexOf('/demo/') !== -1 ||
+                  pp.indexOf('/editor/') !== -1 ||
+                  pp.indexOf('/preview') !== -1 ||
+                  ps.indexOf('preview=') !== -1
+                ) return true;
+              }
+            } catch(e) {}
+            try {
+              if (window.top && window.top !== window) {
+                var tp = window.top.location.pathname || '';
+                var ts = window.top.location.search || '';
+                if (
+                  window.top.__wtoIsPreview ||
+                  tp.indexOf('/demo/') !== -1 ||
+                  tp.indexOf('/editor/') !== -1 ||
+                  tp.indexOf('/preview') !== -1 ||
+                  ts.indexOf('preview=') !== -1
+                ) return true;
+              }
+            } catch(e) {}
+            return false;
+          })()
+        )
+      );
+
+      // In preview/editor, clean up previous seen flags so refreshes never hide the widget
+      if (isPreviewMode && widgetId) {
+        try {
+          sessionStorage.removeItem('wto_ap_seen_' + widgetId);
+          localStorage.removeItem('wto_ap_seen_' + widgetId);
+        } catch(e) {}
+      }
+
+      // Scheduling check (only if live production mode, NEVER in editor/preview)
+      if (!isPreviewMode && schedEnabled) {
         var now = Date.now();
         if (startStr && now < new Date(startStr).getTime()) { ap.style.display = 'none'; return; }
         if (endStr && now > new Date(endStr).getTime()) { ap.style.display = 'none'; return; }
       }
 
-      // Frequency check
-      if (freq !== 'always' && widgetId) {
+      // Frequency check (only for popups in live production mode, NEVER in editor/preview and NEVER for announcement bars)
+      if (!isPreviewMode && mode === 'popup' && freq !== 'always' && widgetId) {
         var key = 'wto_ap_seen_' + widgetId;
         if (freq === 'session' && sessionStorage.getItem(key)) { ap.style.display = 'none'; return; }
         if (freq === 'once' && localStorage.getItem(key)) { ap.style.display = 'none'; return; }
@@ -894,7 +946,7 @@ export const WTO_STANDALONE_WIDGET_JS = `
       }
 
       function markSeen() {
-        if (!widgetId) return;
+        if (!widgetId || isPreviewMode || mode !== 'popup') return;
         var key = 'wto_ap_seen_' + widgetId;
         var nowStr = String(Date.now());
         try {
@@ -903,8 +955,60 @@ export const WTO_STANDALONE_WIDGET_JS = `
         } catch(e) {}
       }
 
-      // Triggering
-      if (mode === 'popup') {
+      function updateBarOffset() {
+        if (mode === 'bar') {
+          var barPos = ap.getAttribute('data-ap-bar-pos') || '';
+          var isFixedTop = barPos === 'fixed_top' || barPos === 'top_fixed';
+          var barInner = ap.querySelector('.wto-bar-inner');
+          var isClosed = ap.classList.contains('wto-closed') || ap.getAttribute('data-wto-closed') === '1' || ap.style.display === 'none';
+          var isVisible = !isClosed && (!barInner || (barInner.style.display !== 'none' && !barInner.classList.contains('wto-closed')));
+          if (isFixedTop && isVisible) {
+            var h = (barInner ? barInner.offsetHeight : ap.offsetHeight) || 44;
+            var isContained = ap.getAttribute('data-ap-contained') === '1';
+            var offset = isContained ? h + 16 : h;
+            document.documentElement.style.setProperty('--wto-header-top', offset + 'px');
+          } else {
+            document.documentElement.style.setProperty('--wto-header-top', '0px');
+          }
+        }
+      }
+      if (mode === 'bar') {
+        setTimeout(updateBarOffset, 60);
+        window.addEventListener('resize', updateBarOffset);
+      }
+
+      // Hoist announcement bar to top/bottom of page body on live storefronts so position options are strictly respected.
+      // In studio preview canvas, DO NOT hoist - React manages the slot and transform: translateZ(0) contains fixed positioning.
+      var studioPreview = ap.closest ? ap.closest('[data-wto-mock-canvas], .relative.flex-1.flex.flex-col') : null;
+      if (!studioPreview && mode === 'bar') {
+        var barPosVal = ap.getAttribute('data-ap-bar-pos') || 'fixed_top';
+        var isTop = barPosVal === 'fixed_top' || barPosVal === 'flow_top' || barPosVal === 'top_fixed' || barPosVal === 'top_flow';
+        var isBottom = barPosVal === 'fixed_bottom' || barPosVal === 'flow_bottom' || barPosVal === 'bottom_fixed' || barPosVal === 'bottom_flow';
+
+        var hoistTarget = ap.ownerDocument ? ap.ownerDocument.body : document.body;
+        if (hoistTarget) {
+          var existingOld = hoistTarget.querySelector('[data-wto-widget="' + widgetId + '"]');
+          if (existingOld && existingOld !== ap) {
+            existingOld.remove();
+          }
+          if (isTop && ap.parentElement !== hoistTarget) {
+            hoistTarget.prepend(ap);
+          } else if (isBottom && ap.parentElement !== hoistTarget) {
+            hoistTarget.appendChild(ap);
+          }
+        }
+      }
+
+      // Triggering & Initial Visibility
+      if (mode === 'bar') {
+        if (!ap.classList.contains('wto-closed') && ap.getAttribute('data-wto-closed') !== '1') {
+          ap.style.display = 'block';
+        }
+      } else if (isPreviewMode) {
+        // In editor or preview mode, always keep popups visible for editing/previewing
+        ap.style.display = 'flex';
+      } else {
+        // Live production popup triggering
         if (trigger === 'delay') {
           ap.style.display = 'none';
           setTimeout(function(){ ap.style.display = 'flex'; markSeen(); }, delaySec * 1000);
@@ -940,22 +1044,94 @@ export const WTO_STANDALONE_WIDGET_JS = `
       }
 
       // Close & Reopen buttons
-      var closeBtn = ap.querySelector('.wto-bar-close-btn, .wto-popup-close-btn');
       var reopenBtn = ap.querySelector('.wto-bar-reopen-btn');
-      if (closeBtn) {
-        closeBtn.addEventListener('click', function(e){
-          e.preventDefault(); e.stopPropagation();
-          ap.style.display = 'none';
-          if (reopenBtn) reopenBtn.style.display = 'block';
-          markSeen();
-        });
+
+      function closeAp(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        ap.classList.add('wto-closed');
+        ap.setAttribute('data-wto-closed', '1');
+
+        if (reopenBtn) {
+          var barInner = ap.querySelector('.wto-bar-inner');
+          if (barInner) barInner.style.setProperty('display', 'none', 'important');
+          ap.style.setProperty('height', '0px', 'important');
+          ap.style.setProperty('min-height', '0px', 'important');
+          ap.style.setProperty('padding', '0px', 'important');
+          ap.style.setProperty('margin', '0px', 'important');
+          ap.style.setProperty('pointer-events', 'none', 'important');
+          ap.style.setProperty('background', 'transparent', 'important');
+          ap.style.setProperty('box-shadow', 'none', 'important');
+          ap.style.setProperty('border', 'none', 'important');
+          reopenBtn.style.setProperty('display', 'inline-flex', 'important');
+          reopenBtn.style.setProperty('pointer-events', 'auto', 'important');
+        } else {
+          ap.style.setProperty('display', 'none', 'important');
+          ap.style.setProperty('height', '0px', 'important');
+          ap.style.setProperty('min-height', '0px', 'important');
+          ap.style.setProperty('padding', '0px', 'important');
+          ap.style.setProperty('margin', '0px', 'important');
+          ap.style.setProperty('visibility', 'hidden', 'important');
+          ap.style.setProperty('pointer-events', 'none', 'important');
+          var barInner = ap.querySelector('.wto-bar-inner');
+          if (barInner) barInner.style.setProperty('display', 'none', 'important');
+
+          var widgetRoot = ap.closest && ap.closest('[data-wto-widget-root], [data-widget-id]');
+          if (widgetRoot && widgetRoot !== ap) {
+            widgetRoot.style.setProperty('display', 'none', 'important');
+            widgetRoot.style.setProperty('height', '0px', 'important');
+            widgetRoot.classList.add('wto-closed');
+          }
+        }
+        updateBarOffset();
+        markSeen();
       }
+
+      function reopenAp(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        ap.classList.remove('wto-closed');
+        ap.removeAttribute('data-wto-closed');
+
+        var barInner = ap.querySelector('.wto-bar-inner');
+        if (barInner) barInner.style.removeProperty('display');
+        ap.style.removeProperty('display');
+        ap.style.removeProperty('height');
+        ap.style.removeProperty('min-height');
+        ap.style.removeProperty('padding');
+        ap.style.removeProperty('margin');
+        ap.style.removeProperty('pointer-events');
+        ap.style.removeProperty('background');
+        ap.style.removeProperty('box-shadow');
+        ap.style.removeProperty('border');
+        ap.style.removeProperty('visibility');
+
+        if (reopenBtn) {
+          reopenBtn.style.setProperty('display', 'none', 'important');
+        }
+
+        var widgetRoot = ap.closest && ap.closest('[data-wto-widget-root], [data-widget-id]');
+        if (widgetRoot && widgetRoot !== ap) {
+          widgetRoot.style.removeProperty('display');
+          widgetRoot.style.removeProperty('height');
+          widgetRoot.classList.remove('wto-closed');
+        }
+
+        setTimeout(updateBarOffset, 30);
+      }
+
+      ap.querySelectorAll('.wto-bar-close-btn, .wto-popup-close-btn, [data-ap-close], .wto-close-btn').forEach(function(btn){
+        btn.addEventListener('click', closeAp);
+      });
+
+      ap.addEventListener('click', function(e){
+        var target = e.target;
+        var btn = target && target.closest ? target.closest('.wto-bar-close-btn, .wto-popup-close-btn, [data-ap-close], .wto-close-btn') : null;
+        if (btn && ap.contains(btn)) {
+          closeAp(e);
+        }
+      }, true);
+
       if (reopenBtn) {
-        reopenBtn.addEventListener('click', function(e){
-          e.preventDefault(); e.stopPropagation();
-          ap.style.display = 'block';
-          reopenBtn.style.display = 'none';
-        });
+        reopenBtn.addEventListener('click', reopenAp);
       }
 
       if (mode === 'popup') {
@@ -1244,6 +1420,11 @@ export const WTO_STANDALONE_WIDGET_JS = `
         if (widgetData && widgetData.enabled === false) {
           el.style.display = 'none';
           el.innerHTML = '';
+          var parentWrapper = el.closest && el.closest('.wto-embedded-widget-container, .wto-custom-html-wrapper');
+          if (parentWrapper) {
+            parentWrapper.style.display = 'none';
+            parentWrapper.innerHTML = '';
+          }
           return;
         }
 
@@ -1289,6 +1470,49 @@ export const WTO_STANDALONE_WIDGET_JS = `
   } else {
     initDynamicWidgets();
   }
+
+  // Fail-safe global capture-phase close listener so clicking any close button anywhere in the page always dismisses the widget
+  document.addEventListener('click', function(e){
+    var target = e.target;
+    var btn = target && target.closest ? target.closest('.wto-bar-close-btn, .wto-popup-close-btn, [data-ap-close], .wto-close-btn') : null;
+    if (!btn) return;
+    var root = btn.closest('.wto-announcement-bar-root, .wto-popup-backdrop, [data-ap-mode]');
+    if (root) {
+      e.preventDefault();
+      e.stopPropagation();
+      root.classList.add('wto-closed');
+      root.setAttribute('data-wto-closed', '1');
+      var reopenBtn = root.querySelector('.wto-bar-reopen-btn');
+      var barInner = root.querySelector('.wto-bar-inner');
+      if (reopenBtn) {
+        if (barInner) barInner.style.setProperty('display', 'none', 'important');
+        root.style.setProperty('height', '0px', 'important');
+        root.style.setProperty('min-height', '0px', 'important');
+        root.style.setProperty('padding', '0px', 'important');
+        root.style.setProperty('margin', '0px', 'important');
+        root.style.setProperty('pointer-events', 'none', 'important');
+        root.style.setProperty('background', 'transparent', 'important');
+        reopenBtn.style.setProperty('display', 'inline-flex', 'important');
+        reopenBtn.style.setProperty('pointer-events', 'auto', 'important');
+      } else {
+        root.style.setProperty('display', 'none', 'important');
+        root.style.setProperty('height', '0px', 'important');
+        root.style.setProperty('min-height', '0px', 'important');
+        root.style.setProperty('padding', '0px', 'important');
+        root.style.setProperty('margin', '0px', 'important');
+        root.style.setProperty('visibility', 'hidden', 'important');
+        root.style.setProperty('pointer-events', 'none', 'important');
+        if (barInner) barInner.style.setProperty('display', 'none', 'important');
+        var widgetRoot = root.closest('[data-wto-widget-root], [data-widget-id]');
+        if (widgetRoot && widgetRoot !== root) {
+          widgetRoot.style.setProperty('display', 'none', 'important');
+          widgetRoot.style.setProperty('height', '0px', 'important');
+          widgetRoot.classList.add('wto-closed');
+        }
+      }
+      document.documentElement.style.setProperty('--wto-header-top', '0px');
+    }
+  }, true);
 
   window.addEventListener('wto-preview-ready', function(){ initDynamicWidgets(); });
   window.addEventListener('wto-widget-saved', function(){ initDynamicWidgets(); });

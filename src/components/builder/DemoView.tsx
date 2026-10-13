@@ -80,6 +80,17 @@ export function DemoView({ projectId }: { projectId: string }) {
   );
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      (window as any).__wtoIsPreview = true;
+      try {
+        Object.keys(localStorage).forEach((k) => {
+          if (k.startsWith("wto_ap_seen_")) localStorage.removeItem(k);
+        });
+        Object.keys(sessionStorage).forEach((k) => {
+          if (k.startsWith("wto_ap_seen_")) sessionStorage.removeItem(k);
+        });
+      } catch (_) {}
+    }
     setMounted(true);
   }, []);
 
@@ -98,18 +109,75 @@ export function DemoView({ projectId }: { projectId: string }) {
 
     window.addEventListener("message", handleResponse);
 
-    // Cross-tab BroadcastChannel listener
+    // Cross-tab BroadcastChannel listener for project updates
     let bc: BroadcastChannel | null = null;
     try {
       bc = new BroadcastChannel("wto-builder-preview");
       bc.onmessage = (event) => {
         if (event.data?.__lovablePreviewPayload && event.data.project) {
+          lastPreviewHtmlRef.current = null;
           applyProject(event.data.project, event.data.pageId);
         }
       };
     } catch {
       // BroadcastChannel unsupported in older browser
     }
+
+    // Cross-tab BroadcastChannel listener for studio widget updates
+    let widgetBc: BroadcastChannel | null = null;
+    try {
+      widgetBc = new BroadcastChannel("wto_widgets_channel");
+      widgetBc.onmessage = () => {
+        lastPreviewHtmlRef.current = null;
+        if (projRef.current) {
+          applyProject({ ...projRef.current, updatedAt: Date.now() });
+        }
+      };
+    } catch {
+      // BroadcastChannel unsupported in older browser
+    }
+
+    // Storage event listener: whenever localStorage is updated in editor tab
+    const handleStorageChange = (e: StorageEvent) => {
+      if (!e.key) return;
+      if (
+        e.key.startsWith("wto-preview-") ||
+        e.key === "wto-builder-v2" ||
+        e.key === "wto_dynamic_widgets_v1" ||
+        e.key === "wto_widgets"
+      ) {
+        lastPreviewHtmlRef.current = null;
+        try {
+          const directRaw =
+            localStorage.getItem(`wto-preview-${actualProjectId}`) ||
+            localStorage.getItem(`wto-preview-${projectId}`) ||
+            localStorage.getItem("wto-preview-latest");
+          if (directRaw) {
+            const parsed = JSON.parse(directRaw);
+            const prj = parsed.project || parsed;
+            if (prj && prj.pages && prj.pages.length > 0) {
+              applyProject(prj, parsed.pageId);
+              return;
+            }
+          }
+          const builderRaw = localStorage.getItem("wto-builder-v2");
+          if (builderRaw) {
+            const data = JSON.parse(builderRaw);
+            if (data?.projects) {
+              const p = data.projects[actualProjectId] || data.projects[projectId];
+              if (p && p.pages && p.pages.length > 0) {
+                applyProject(p);
+                return;
+              }
+            }
+          }
+          if (projRef.current) {
+            applyProject({ ...projRef.current, updatedAt: Date.now() });
+          }
+        } catch (_) {}
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
 
     // Ping opener to request payload
     const sendReady = () => {
@@ -140,11 +208,17 @@ export function DemoView({ projectId }: { projectId: string }) {
 
     return () => {
       window.removeEventListener("message", handleResponse);
+      window.removeEventListener("storage", handleStorageChange);
       window.clearInterval(readyInterval);
       window.clearTimeout(timer);
       if (bc) {
         try {
           bc.close();
+        } catch {}
+      }
+      if (widgetBc) {
+        try {
+          widgetBc.close();
         } catch {}
       }
     };
@@ -154,31 +228,7 @@ export function DemoView({ projectId }: { projectId: string }) {
   useEffect(() => {
     if (!mounted || projRef.current) return;
 
-    // Check direct preview storage entries first
-    const directKeys = [
-      `wto-preview-${actualProjectId}`,
-      `wto-preview-${projectId}`,
-      "wto-preview-latest",
-      "wto_preview_project",
-    ];
-
-    for (const key of directKeys) {
-      try {
-        const raw = sessionStorage.getItem(key) || localStorage.getItem(key);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          const prj = parsed.project || parsed;
-          if (prj && prj.pages && prj.pages.length > 0) {
-            applyProject(prj, parsed.pageId);
-            return;
-          }
-        }
-      } catch {
-        // Storage parse failed
-      }
-    }
-
-    // Check builder project stores
+    // Check builder project stores FIRST so refresh always loads the latest saved edits
     const builderKeys = ["wto-builder-v2", "wto-builder-v1", "wto-builder-state"];
     for (const bKey of builderKeys) {
       try {
@@ -220,18 +270,34 @@ export function DemoView({ projectId }: { projectId: string }) {
               found = data.projects[data.currentProjectId];
             }
 
-            // Fallback to single existing project
-            if (!found) {
-              const allProjects = Object.values(data.projects);
-              if (allProjects.length === 1 && allProjects[0]) {
-                found = allProjects[0];
-              }
-            }
-
             if (found && found.pages && found.pages.length > 0) {
               applyProject(found);
               return;
             }
+          }
+        }
+      } catch {
+        // Storage parse failed
+      }
+    }
+
+    // Check direct preview storage entries
+    const directKeys = [
+      `wto-preview-${actualProjectId}`,
+      `wto-preview-${projectId}`,
+      "wto-preview-latest",
+      "wto_preview_project",
+    ];
+
+    for (const key of directKeys) {
+      try {
+        const raw = sessionStorage.getItem(key) || localStorage.getItem(key);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          const prj = parsed.project || parsed;
+          if (prj && prj.pages && prj.pages.length > 0) {
+            applyProject(prj, parsed.pageId);
+            return;
           }
         }
       } catch {

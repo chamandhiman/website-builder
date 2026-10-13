@@ -985,7 +985,7 @@ export const DRIVE_PRO_SHARED_HEADER: PageSection = {
   <nav class="navbar navbar-expand-lg">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
-        <img src="images/logo-drivepro.svg" alt="DrivePro" height="38">
+        <img src="/images/logo-drivepro.svg" alt="DrivePro" height="38">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -1044,7 +1044,7 @@ export const DRIVE_PRO_SHARED_FOOTER: PageSection = {
   <div class="container">
     <div class="row g-5">
       <div class="col-lg-4">
-        <img src="images/logo-drivepro.svg" alt="DrivePro" class="footer-logo" height="40">
+        <img src="/images/logo-drivepro.svg" alt="DrivePro" class="footer-logo" height="40">
         <p class="mt-3">Professional driving instruction for teens and adults. Building safe, confident, and certified drivers since 2005.</p>
         <div class="social mt-3">
           <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
