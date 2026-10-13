@@ -1061,99 +1061,151 @@ function DashboardWidgetsPage() {
       {/* ================= MAIN CATALOG & ACTIVE VIEW ================= */}
       {viewMode !== "choose_countdown" && viewMode !== "choose_google_reviews" && (
         <>
-          {/* ================= HERO BANNER ================= */}
-          <section className="relative rounded-[22px] bg-gradient-to-br from-[#17150f] via-[#141418] to-[#121215] border border-white/[0.07] p-8 overflow-hidden flex flex-col md:flex-row items-start md:items-end justify-between gap-6 shadow-2xl">
+          {/* ================= HERO BANNER WITH 2x2 STATS GRID ================= */}
+          <section className="relative rounded-[22px] bg-gradient-to-br from-[#17150f] via-[#141418] to-[#121215] border border-white/[0.07] p-6 lg:p-7 overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-2xl">
             {/* Ambient Gold & Blue Glow */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
               <div className="absolute -top-24 right-1/4 w-80 h-80 rounded-full bg-[#ffc21a]/15 blur-3xl pointer-events-none" />
               <div className="absolute -bottom-24 right-1/3 w-64 h-64 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
             </div>
 
-            <div className="relative z-10 max-w-xl">
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ffc21a]/10 border border-[#ffc21a]/25 text-[#ffc21a] text-xs font-bold mb-3.5">
+            {/* Left: Heading & Description */}
+            <div className="relative z-10 flex-1 min-w-0 max-w-xl">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ffc21a]/10 border border-[#ffc21a]/25 text-[#ffc21a] text-xs font-bold mb-3">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#ffc21a] animate-pulse" />
                 Dynamic Widgets
               </span>
-              <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight leading-tight mb-2">
+              <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight leading-tight mb-2">
                 Widget Studio <span className="text-[#ffc21a] bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] bg-clip-text text-transparent">&amp; Hub</span>
               </h1>
-              <p className="text-sm text-[#9a9aa3] leading-relaxed">
+              <p className="text-xs md:text-sm text-[#9a9aa3] leading-relaxed">
                 Choose interactive widgets to boost conversions, build social trust and embed them on any website — in under a minute.
               </p>
             </div>
 
-            {/* Sliding View Switch */}
-            <div className="relative z-10 flex items-center p-1 rounded-xl bg-black/40 border border-white/[0.08] shrink-0">
-              <button
-                type="button"
-                onClick={() => setViewMode("catalog")}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
-                  viewMode === "catalog"
-                    ? "bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black shadow-lg shadow-[#ffc21a]/25"
-                    : "text-[#9a9aa3] hover:text-white"
-                }`}
-              >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill={viewMode === "catalog" ? "currentColor" : "none"}
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  className="shrink-0"
-                >
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                </svg>
-                <span>Widget Catalog</span>
-                <span
-                  className={`text-[10px] font-black px-1.5 py-0.2 rounded-full ${
-                    viewMode === "catalog" ? "bg-black/20 text-[#1a1400]" : "bg-white/10 text-[#9a9aa3]"
-                  }`}
-                >
-                  {CATALOG_WIDGETS.length}
-                </span>
-              </button>
+            {/* Right: 2x2 Grid of Square Stats Boxes */}
+            <div className="relative z-10 shrink-0 grid grid-cols-2 gap-2.5 sm:gap-3 w-full md:w-auto">
+              {/* Stat 1: Widgets in catalog */}
+              <div className="flex flex-col justify-between p-3 sm:p-3.5 rounded-xl bg-black/40 border border-white/[0.08] backdrop-blur-md w-full sm:w-[136px] sm:h-[96px] hover:border-[#ffc21a]/40 transition group">
+                <div className="flex items-center justify-between">
+                  <span className="w-7 h-7 rounded-lg bg-[#ffc21a]/15 text-[#ffc21a] flex items-center justify-center">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                      <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                      <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                      <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                    </svg>
+                  </span>
+                  <span className="text-xl font-black text-white group-hover:text-[#ffc21a] transition">
+                    {CATALOG_WIDGETS.length}
+                  </span>
+                </div>
+                <div className="text-[11px] font-semibold text-[#9a9aa3] mt-2 truncate">In catalog</div>
+              </div>
 
-              <button
-                type="button"
-                onClick={() => setViewMode("active")}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
-                  viewMode === "active"
-                    ? "bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black shadow-lg shadow-[#ffc21a]/25"
-                    : "text-[#9a9aa3] hover:text-white"
-                }`}
-              >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  className="shrink-0"
-                >
-                  <path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                </svg>
-                <span>My Active Widgets</span>
-                <span
-                  className={`text-[10px] font-black px-1.5 py-0.2 rounded-full ${
-                    viewMode === "active" ? "bg-black/20 text-[#1a1400]" : "bg-white/10 text-[#9a9aa3]"
-                  }`}
-                >
-                  {widgets.length || 0}
-                </span>
-              </button>
+              {/* Stat 2: Ready to use */}
+              <div className="flex flex-col justify-between p-3 sm:p-3.5 rounded-xl bg-black/40 border border-white/[0.08] backdrop-blur-md w-full sm:w-[136px] sm:h-[96px] hover:border-[#22c55e]/40 transition group">
+                <div className="flex items-center justify-between">
+                  <span className="w-7 h-7 rounded-lg bg-[#22c55e]/15 text-[#22c55e] flex items-center justify-center">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </span>
+                  <span className="text-xl font-black text-white group-hover:text-[#22c55e] transition">5</span>
+                </div>
+                <div className="text-[11px] font-semibold text-[#9a9aa3] mt-2 truncate">Ready to use</div>
+              </div>
+
+              {/* Stat 3: Active on your sites */}
+              <div className="flex flex-col justify-between p-3 sm:p-3.5 rounded-xl bg-black/40 border border-white/[0.08] backdrop-blur-md w-full sm:w-[136px] sm:h-[96px] hover:border-[#60a5fa]/40 transition group">
+                <div className="flex items-center justify-between">
+                  <span className="w-7 h-7 rounded-lg bg-[#60a5fa]/15 text-[#60a5fa] flex items-center justify-center">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    </svg>
+                  </span>
+                  <span className="text-xl font-black text-white group-hover:text-[#60a5fa] transition">
+                    {widgets.length || 0}
+                  </span>
+                </div>
+                <div className="text-[11px] font-semibold text-[#9a9aa3] mt-2 truncate">Active on sites</div>
+              </div>
+
+              {/* Stat 4: Views this month */}
+              <div className="flex flex-col justify-between p-3 sm:p-3.5 rounded-xl bg-black/40 border border-white/[0.08] backdrop-blur-md w-full sm:w-[136px] sm:h-[96px] hover:border-[#a78bfa]/40 transition group">
+                <div className="flex items-center justify-between">
+                  <span className="w-7 h-7 rounded-lg bg-[#a78bfa]/15 text-[#a78bfa] flex items-center justify-center">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  </span>
+                  <div className="text-right">
+                    <span className="text-lg font-black text-white group-hover:text-[#a78bfa] transition leading-none">12.4k</span>
+                    <span className="text-[9px] font-bold text-[#22c55e] block leading-none mt-0.5">↑ 18%</span>
+                  </div>
+                </div>
+                <div className="text-[11px] font-semibold text-[#9a9aa3] mt-2 truncate">Views this month</div>
+              </div>
             </div>
           </section>
 
-          {/* ================= STATS ROW ================= */}
-          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Stat 1 */}
-            <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-[#151518] border border-white/[0.07]">
-              <div className="w-11 h-11 rounded-xl bg-[#ffc21a]/10 text-[#ffc21a] flex items-center justify-center shrink-0">
+          {/* ================= VIEW SELECTOR & SEARCH TOOLBAR ================= */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+            {/* View/Tab Buttons: All widgets & Active widgets (Green Button) */}
+            <div className="flex items-center gap-2.5 shrink-0">
+              {/* 1. All widgets */}
+              <button
+                type="button"
+                onClick={() => {
+                  setViewMode("catalog");
+                  setSelectedCategory("all");
+                }}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs transition cursor-pointer shrink-0 ${
+                  viewMode === "catalog"
+                    ? "bg-[#ffc21a] text-[#1a1400] font-black shadow-md shadow-[#ffc21a]/25"
+                    : "bg-[#151518] border border-white/[0.08] text-[#9a9aa3] hover:text-white font-semibold hover:bg-white/[0.04]"
+                }`}
+              >
                 <svg
-                  width="20"
-                  height="20"
+                  width="14"
+                  height="14"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -1166,173 +1218,107 @@ function DashboardWidgetsPage() {
                   <rect x="14" y="14" width="7" height="7" rx="1.5" />
                   <rect x="3" y="14" width="7" height="7" rx="1.5" />
                 </svg>
-              </div>
-              <div>
-                <div className="text-2xl font-black text-white leading-tight">{CATALOG_WIDGETS.length}</div>
-                <div className="text-xs text-[#9a9aa3]">Widgets in catalog</div>
-              </div>
-            </div>
+                <span>All widgets</span>
+                <span
+                  className={`text-[10px] font-black px-1.5 py-0.2 rounded-full ${
+                    viewMode === "catalog" ? "bg-black/20 text-[#1a1400]" : "bg-white/10 text-[#9a9aa3]"
+                  }`}
+                >
+                  {CATALOG_WIDGETS.length}
+                </span>
+              </button>
 
-            {/* Stat 2 */}
-            <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-[#151518] border border-white/[0.07]">
-              <div className="w-11 h-11 rounded-xl bg-[#22c55e]/10 text-[#22c55e] flex items-center justify-center shrink-0">
+              {/* 2. Active widgets (Prominent Green Button) */}
+              <button
+                type="button"
+                onClick={() => setViewMode("active")}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs transition cursor-pointer shrink-0 ${
+                  viewMode === "active"
+                    ? "bg-gradient-to-r from-[#22c55e] to-[#16a34a] text-[#052e16] font-black shadow-md shadow-[#22c55e]/30 ring-2 ring-[#22c55e]/40"
+                    : "bg-[#22c55e]/15 border border-[#22c55e]/40 text-[#4ade80] hover:bg-[#22c55e]/25 font-bold"
+                }`}
+              >
                 <svg
-                  width="20"
-                  height="20"
+                  width="14"
+                  height="14"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                  strokeWidth="2.2"
+                  className="shrink-0"
                 >
-                  <polyline points="20 6 9 17 4 12" />
+                  <path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                 </svg>
-              </div>
-              <div>
-                <div className="text-2xl font-black text-white leading-tight">5</div>
-                <div className="text-xs text-[#9a9aa3]">Ready to use</div>
-              </div>
+                <span>Active widgets</span>
+                <span
+                  className={`text-[10px] font-black px-1.5 py-0.2 rounded-full ${
+                    viewMode === "active" ? "bg-black/25 text-[#052e16]" : "bg-[#22c55e]/25 text-[#22c55e]"
+                  }`}
+                >
+                  {widgets.length || 0}
+                </span>
+              </button>
             </div>
 
-            {/* Stat 3 */}
-            <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-[#151518] border border-white/[0.07]">
-              <div className="w-11 h-11 rounded-xl bg-[#60a5fa]/10 text-[#60a5fa] flex items-center justify-center shrink-0">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-2xl font-black text-white leading-tight">{widgets.length || 0}</div>
-                <div className="text-xs text-[#9a9aa3]">Active on your sites</div>
-              </div>
-            </div>
+            {/* Right controls: Search & Layout Toggle (when in catalog view) */}
+            {viewMode === "catalog" && (
+              <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-2 bg-[#151518] border border-white/[0.08] focus-within:border-[#ffc21a]/50 rounded-xl px-3 py-1.5 w-full sm:w-[250px]">
+                  <Search className="w-3.5 h-3.5 text-[#6b6b74] shrink-0" />
+                  <input
+                    type="search"
+                    placeholder="Search widgets..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="bg-transparent border-0 outline-none text-xs text-white placeholder:text-[#6b6b74] flex-1 min-w-0"
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery("")}
+                      className="text-[#6b6b74] hover:text-white text-xs"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
 
-            {/* Stat 4 */}
-            <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-[#151518] border border-white/[0.07]">
-              <div className="w-11 h-11 rounded-xl bg-[#a78bfa]/10 text-[#a78bfa] flex items-center justify-center shrink-0">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-2xl font-black text-white leading-tight">12.4k</div>
-                <div className="text-xs text-[#9a9aa3]">
-                  Views this month <span className="text-[#22c55e] font-bold ml-1">↑ 18%</span>
+                {/* Toggle Between Row List and Card Previews */}
+                <div className="hidden sm:flex items-center p-1 rounded-xl bg-[#151518] border border-white/[0.08] shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setCatalogLayout("list")}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                      catalogLayout === "list"
+                        ? "bg-[#ffc21a] text-[#1a1400]"
+                        : "text-[#9a9aa3] hover:text-white"
+                    }`}
+                    title="Categorized List Rows"
+                  >
+                    <LayoutList className="w-3.5 h-3.5" />
+                    <span className="hidden md:inline">Rows</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCatalogLayout("cards")}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                      catalogLayout === "cards"
+                        ? "bg-[#ffc21a] text-[#1a1400]"
+                        : "text-[#9a9aa3] hover:text-white"
+                    }`}
+                    title="Interactive Live Cards"
+                  >
+                    <LayoutGrid className="w-3.5 h-3.5" />
+                    <span className="hidden md:inline">Cards</span>
+                  </button>
                 </div>
               </div>
-            </div>
-          </section>
+            )}
+          </div>
 
           {/* ================= CATALOG VIEW ================= */}
           {viewMode === "catalog" && (
             <section className="space-y-6">
-              {/* Category Filter Pills & Search Bar (Screenshot 1 Layout) */}
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-2">
-                {/* Category Pills */}
-                <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none flex-1">
-                  {CATALOG_CATEGORIES.map((cat) => {
-                    const isSelected = selectedCategory === cat.id;
-                    return (
-                      <button
-                        key={cat.id}
-                        type="button"
-                        onClick={() => setSelectedCategory(cat.id)}
-                        className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs transition cursor-pointer shrink-0 ${
-                          isSelected
-                            ? "bg-[#ffc21a] text-[#1a1400] font-black shadow-md shadow-[#ffc21a]/25"
-                            : "bg-[#151518] border border-white/[0.08] text-[#9a9aa3] hover:text-white font-semibold hover:bg-white/[0.04]"
-                        }`}
-                      >
-                        {renderCategoryPillIcon(cat.iconName)}
-                        <span>{cat.label}</span>
-                        {cat.id === "all" && (
-                          <span
-                            className={`text-[10px] font-black px-1.5 py-0.2 rounded-full ${
-                              isSelected ? "bg-black/20 text-[#1a1400]" : "text-[#6b6b74]"
-                            }`}
-                          >
-                            {CATALOG_WIDGETS.length}
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Right controls: Search & Layout Toggle */}
-                <div className="flex items-center gap-2 shrink-0">
-                  <div className="flex items-center gap-2 bg-[#151518] border border-white/[0.08] focus-within:border-[#ffc21a]/50 rounded-xl px-3 py-1.5 w-full sm:w-[250px]">
-                    <Search className="w-3.5 h-3.5 text-[#6b6b74] shrink-0" />
-                    <input
-                      type="search"
-                      placeholder="Search widgets..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="bg-transparent border-0 outline-none text-xs text-white placeholder:text-[#6b6b74] flex-1 min-w-0"
-                    />
-                    {searchQuery && (
-                      <button
-                        type="button"
-                        onClick={() => setSearchQuery("")}
-                        className="text-[#6b6b74] hover:text-white text-xs"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Toggle Between Row List (Screenshot 1) and Card Previews */}
-                  <div className="hidden sm:flex items-center p-1 rounded-xl bg-[#151518] border border-white/[0.08] shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => setCatalogLayout("list")}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
-                        catalogLayout === "list"
-                          ? "bg-[#ffc21a] text-[#1a1400]"
-                          : "text-[#9a9aa3] hover:text-white"
-                      }`}
-                      title="Categorized List Rows (Screenshot 1)"
-                    >
-                      <LayoutList className="w-3.5 h-3.5" />
-                      <span className="hidden md:inline">Rows</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setCatalogLayout("cards")}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
-                        catalogLayout === "cards"
-                          ? "bg-[#ffc21a] text-[#1a1400]"
-                          : "text-[#9a9aa3] hover:text-white"
-                      }`}
-                      title="Interactive Live Cards"
-                    >
-                      <LayoutGrid className="w-3.5 h-3.5" />
-                      <span className="hidden md:inline">Cards</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
               {/* ================= PRIMARY LIST LAYOUT (SCREENSHOT 1) ================= */}
               {catalogLayout === "list" && (
                 <div className="space-y-8">
