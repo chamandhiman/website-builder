@@ -185,14 +185,15 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
     <div className="w-full max-w-[1400px] mx-auto p-6 lg:p-8 space-y-6">
       <CreateProjectDialog open={createOpen} onOpenChange={setCreateOpen} />
 
-      {/* ================= HERO GREETING BANNER ================= */}
-      <section className="relative rounded-[22px] bg-gradient-to-br from-[#17150f] via-[#141418] to-[#121215] border border-white/[0.07] p-6 lg:p-7 overflow-hidden shadow-xl">
+      {/* ================= HERO GREETING BANNER WITH 2x2 STATS GRID ================= */}
+      <section className="relative rounded-[22px] bg-gradient-to-br from-[#17150f] via-[#141418] to-[#121215] border border-white/[0.07] p-6 lg:p-7 overflow-hidden shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute -top-24 right-1/4 w-80 h-80 rounded-full bg-[#ffc21a]/15 blur-3xl pointer-events-none" />
           <div className="absolute -bottom-24 right-1/3 w-64 h-64 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
         </div>
 
-        <div className="relative z-10 max-w-2xl">
+        {/* Left: Greeting & summary */}
+        <div className="relative z-10 flex-1 min-w-0 max-w-xl">
           <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ffc21a]/10 border border-[#ffc21a]/25 text-[#ffc21a] text-xs font-bold mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-[#ffc21a] animate-pulse" />
             Thursday, 8 October
@@ -204,53 +205,54 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
             You have 2 sites live and 2 drafts in progress. Pick up where you left off or start something new.
           </p>
         </div>
-      </section>
 
-      {/* ================= 4 STATS ROW ================= */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Total projects */}
-        <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-[#151518] border border-white/[0.07]">
-          <div className="w-11 h-11 rounded-xl bg-[#ffc21a]/10 text-[#ffc21a] flex items-center justify-center shrink-0">
-            <Folder className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="text-2xl font-black text-white leading-tight">4</div>
-            <div className="text-xs text-[#9a9aa3]">Total projects</div>
-          </div>
-        </div>
-
-        {/* Published sites */}
-        <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-[#151518] border border-white/[0.07]">
-          <div className="w-11 h-11 rounded-xl bg-[#22c55e]/10 text-[#22c55e] flex items-center justify-center shrink-0">
-            <Globe className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="text-2xl font-black text-white leading-tight">2</div>
-            <div className="text-xs text-[#9a9aa3]">Published sites</div>
-          </div>
-        </div>
-
-        {/* Active widgets */}
-        <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-[#151518] border border-white/[0.07]">
-          <div className="w-11 h-11 rounded-xl bg-[#60a5fa]/10 text-[#60a5fa] flex items-center justify-center shrink-0">
-            <Grid2x2 className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="text-2xl font-black text-white leading-tight">4</div>
-            <div className="text-xs text-[#9a9aa3]">Active widgets</div>
-          </div>
-        </div>
-
-        {/* Visitors this month */}
-        <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-[#151518] border border-white/[0.07]">
-          <div className="w-11 h-11 rounded-xl bg-[#a78bfa]/10 text-[#a78bfa] flex items-center justify-center shrink-0">
-            <Eye className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="text-2xl font-black text-white leading-tight">12.4k</div>
-            <div className="text-xs text-[#9a9aa3]">
-              Visitors this month <span className="text-[#22c55e] font-bold ml-1">↑ 18%</span>
+        {/* Right: 2x2 Grid of Square Stats Boxes */}
+        <div className="relative z-10 shrink-0 grid grid-cols-2 gap-2.5 sm:gap-3 w-full md:w-auto">
+          {/* Total projects */}
+          <div className="flex flex-col justify-between p-3 sm:p-3.5 rounded-xl bg-black/40 border border-white/[0.08] backdrop-blur-md w-full sm:w-[136px] sm:h-[96px] hover:border-[#ffc21a]/40 transition group">
+            <div className="flex items-center justify-between">
+              <span className="w-7 h-7 rounded-lg bg-[#ffc21a]/15 text-[#ffc21a] flex items-center justify-center">
+                <Folder className="w-4 h-4" />
+              </span>
+              <span className="text-xl font-black text-white group-hover:text-[#ffc21a] transition">4</span>
             </div>
+            <div className="text-[11px] font-semibold text-[#9a9aa3] mt-2 truncate">Total projects</div>
+          </div>
+
+          {/* Published sites */}
+          <div className="flex flex-col justify-between p-3 sm:p-3.5 rounded-xl bg-black/40 border border-white/[0.08] backdrop-blur-md w-full sm:w-[136px] sm:h-[96px] hover:border-[#22c55e]/40 transition group">
+            <div className="flex items-center justify-between">
+              <span className="w-7 h-7 rounded-lg bg-[#22c55e]/15 text-[#22c55e] flex items-center justify-center">
+                <Globe className="w-4 h-4" />
+              </span>
+              <span className="text-xl font-black text-white group-hover:text-[#22c55e] transition">2</span>
+            </div>
+            <div className="text-[11px] font-semibold text-[#9a9aa3] mt-2 truncate">Published sites</div>
+          </div>
+
+          {/* Active widgets */}
+          <div className="flex flex-col justify-between p-3 sm:p-3.5 rounded-xl bg-black/40 border border-white/[0.08] backdrop-blur-md w-full sm:w-[136px] sm:h-[96px] hover:border-[#60a5fa]/40 transition group">
+            <div className="flex items-center justify-between">
+              <span className="w-7 h-7 rounded-lg bg-[#60a5fa]/15 text-[#60a5fa] flex items-center justify-center">
+                <Grid2x2 className="w-4 h-4" />
+              </span>
+              <span className="text-xl font-black text-white group-hover:text-[#60a5fa] transition">4</span>
+            </div>
+            <div className="text-[11px] font-semibold text-[#9a9aa3] mt-2 truncate">Active widgets</div>
+          </div>
+
+          {/* Visitors this month */}
+          <div className="flex flex-col justify-between p-3 sm:p-3.5 rounded-xl bg-black/40 border border-white/[0.08] backdrop-blur-md w-full sm:w-[136px] sm:h-[96px] hover:border-[#a78bfa]/40 transition group">
+            <div className="flex items-center justify-between">
+              <span className="w-7 h-7 rounded-lg bg-[#a78bfa]/15 text-[#a78bfa] flex items-center justify-center">
+                <Eye className="w-4 h-4" />
+              </span>
+              <div className="text-right">
+                <span className="text-lg font-black text-white group-hover:text-[#a78bfa] transition leading-none">12.4k</span>
+                <span className="text-[9px] font-bold text-[#22c55e] block leading-none mt-0.5">↑ 18%</span>
+              </div>
+            </div>
+            <div className="text-[11px] font-semibold text-[#9a9aa3] mt-2 truncate">Visitors this month</div>
           </div>
         </div>
       </section>
