@@ -1210,8 +1210,8 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
     setDraggingSectionId(null);
   };
 
-  const frameWidth = device === "desktop" ? "100%" : device === "tablet" ? "820px" : "390px";
-  const frameMaxWidth = device === "desktop" ? "100%" : "100%";
+  const frameWidth = device === "desktop" ? "100%" : device === "tablet" ? "min(100%, 820px)" : "min(100%, 390px)";
+  const frameMaxWidth = "100%";
 
   return (
     <div className="flex h-full min-h-0 w-full flex-col">
@@ -1243,9 +1243,9 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
           handleDrop(e);
         }}
       >
-        <div className="flex h-full w-full items-center justify-center p-2">
+        <div className="flex h-full w-full items-center justify-center p-0 sm:p-1 md:p-2">
           <div
-            className="relative h-full w-full  overflow-hidden rounded-lg border border-[#2B2B2B] bg-white shadow-2xl"
+            className="relative h-full w-full overflow-hidden sm:rounded-lg sm:border sm:border-[#2B2B2B] bg-white shadow-2xl"
             style={{ width: frameWidth, maxWidth: frameMaxWidth, minWidth: 0, margin: 0 }}
           >
             {mounted ? (

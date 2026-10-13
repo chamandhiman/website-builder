@@ -22,6 +22,8 @@ import {
   Plus,
   FileText,
   Loader2,
+  Menu,
+  SlidersHorizontal,
 } from "lucide-react";
 import { SaveStatus } from "@/components/builder/SaveStatus";
 import { toast } from "sonner";
@@ -46,6 +48,9 @@ export function CanvasToolbar({
   onDuplicatePage,
   onDeletePage,
   onOpenSeo,
+  onToggleMobileMenu,
+  onToggleMobilePanel,
+  mobilePanelOpen,
 }: {
   project: any;
   pages: any[] | null;
@@ -57,6 +62,9 @@ export function CanvasToolbar({
   onDuplicatePage?: (id: string) => void;
   onDeletePage?: (id: string) => void;
   onOpenSeo?: (id: string) => void;
+  onToggleMobileMenu?: () => void;
+  onToggleMobilePanel?: () => void;
+  mobilePanelOpen?: boolean;
 }) {
   const navigate = useNavigate();
   const mounted = useMounted();
@@ -301,8 +309,20 @@ export function CanvasToolbar({
   }
 
   return (
-    <div className="flex h-12 shrink-0 items-center justify-between border-b border-[#363636] bg-[#1F1F1F] px-3">
-      <div className="flex items-center gap-2">
+    <div className="flex h-12 shrink-0 items-center justify-between border-b border-[#363636] bg-[#1F1F1F] px-2 sm:px-3 gap-1.5 sm:gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+        {/* Mobile Hamburger menu button */}
+        {onToggleMobileMenu && (
+          <button
+            type="button"
+            onClick={onToggleMobileMenu}
+            className="inline-flex md:hidden h-8 w-8 items-center justify-center rounded-lg border border-[#363636] bg-[#1F1F1F] text-[#FACC15] transition hover:bg-[#242424] shrink-0"
+            aria-label="Open navigation menu"
+            title="Open Menu"
+          >
+            <Menu className="h-4 w-4" />
+          </button>
+        )}
 
         {/* Page selector + actions grouped */}
         <div className="flex items-center rounded-lg border border-[#363636] bg-[#1F1F1F] overflow-visible" ref={selectorRef}>
@@ -456,7 +476,25 @@ export function CanvasToolbar({
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        {/* Mobile Edit (Widgets & Properties) button */}
+        {onToggleMobilePanel && (
+          <button
+            type="button"
+            onClick={onToggleMobilePanel}
+            className={`inline-flex md:hidden h-8 items-center gap-1.5 rounded-lg border px-2.5 text-xs font-medium transition shrink-0 ${
+              mobilePanelOpen
+                ? "border-[#FACC15] bg-[#FACC15]/10 text-[#FACC15]"
+                : "border-[#363636] bg-[#1F1F1F] text-[#D0D0D0] hover:border-[#FACC15] hover:text-[#FACC15]"
+            }`}
+            aria-label="Toggle Widgets & Properties panel"
+            title="Widgets & Properties"
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5 text-[#FACC15]" />
+            <span>Edit</span>
+          </button>
+        )}
+
         <button
           type="button"
           className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#363636] bg-[#1F1F1F] px-3 text-sm font-medium text-[#F5F5F5] transition hover:border-[#FACC15] hover:text-[#FACC15]"

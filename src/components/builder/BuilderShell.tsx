@@ -25,6 +25,8 @@ export function BuilderShell() {
   const hasInitialProjectRef = useRef(false);
   const mounted = useMounted();
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
 
   const handleSelectPage = (pageId: string) => {
     useBuilder.getState().selectPage(pageId);
@@ -91,12 +93,27 @@ export function BuilderShell() {
   }
 
   return (
-    <div className="builder-shell flex h-screen w-full bg-[#171717] text-[#F5F5F5]">
-      {/* LEFT SIDEBAR */}
-      <AppSidebarNav compact />
+    <div className="builder-shell relative flex h-screen w-full overflow-hidden bg-[#171717] text-[#F5F5F5]">
+      {/* DESKTOP LEFT SIDEBAR */}
+      <div className="hidden md:flex h-full shrink-0">
+        <AppSidebarNav compact />
+      </div>
+
+      {/* MOBILE LEFT MENU DRAWER (SLIDE-OVER) */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 flex md:hidden">
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div className="relative z-10 flex h-full w-[280px] max-w-[85vw] flex-col bg-[#141414] border-r border-[#262626] shadow-2xl animate-in slide-in-from-left duration-200">
+            <AppSidebarNav compact={false} onClose={() => setMobileMenuOpen(false)} />
+          </div>
+        </div>
+      )}
 
       {/* CANVAS SECTION */}
-      <div className="builder-canvas-section flex flex-1 min-w-0 flex-col">
+      <div className="builder-canvas-section flex flex-1 min-w-0 flex-col overflow-hidden">
         <CanvasToolbar
           project={project}
           pages={pages}
@@ -108,18 +125,36 @@ export function BuilderShell() {
           onDuplicatePage={handleDuplicatePage}
           onDeletePage={handleDeletePage}
           onOpenSeo={(id) => setLocalSeoModalPageId(id)}
+          onToggleMobileMenu={() => setMobileMenuOpen((prev) => !prev)}
+          onToggleMobilePanel={() => setMobilePanelOpen((prev) => !prev)}
+          mobilePanelOpen={mobilePanelOpen}
         />
-        <div className="canvas-workspace flex flex-1 min-h-0 overflow-auto">
-          <div className="flex flex-1 min-h-0 items-center justify-center p-6">
-            <div className="relative h-full w-full overflow-hidden rounded-lg border border-[#2B2B2B] bg-white shadow-2xl">
+        <div className="canvas-workspace flex flex-1 min-h-0 overflow-auto bg-[#171717]">
+          <div className="flex flex-1 min-h-0 items-center justify-center p-0 sm:p-2 md:p-6">
+            <div className="relative h-full w-full overflow-hidden sm:rounded-lg sm:border sm:border-[#2B2B2B] bg-white shadow-2xl">
               <Canvas />
             </div>
           </div>
         </div>
       </div>
 
-      {/* RIGHT PANEL */}
-      <RightContextPanel />
+      {/* DESKTOP RIGHT PANEL */}
+      <div className="hidden md:flex h-full shrink-0">
+        <RightContextPanel />
+      </div>
+
+      {/* MOBILE RIGHT PANEL DRAWER (SLIDE-OVER) */}
+      {mobilePanelOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end md:hidden">
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+            onClick={() => setMobilePanelOpen(false)}
+          />
+          <div className="relative z-10 flex h-full w-[340px] max-w-[90vw] flex-col bg-[#141414] border-l border-[#262626] shadow-2xl animate-in slide-in-from-right duration-200">
+            <RightContextPanel isMobile onClose={() => setMobilePanelOpen(false)} />
+          </div>
+        </div>
+      )}
 
       {/* DIALOGS */}
       {pages && (

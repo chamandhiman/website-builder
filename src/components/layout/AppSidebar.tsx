@@ -20,14 +20,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
-import { LogOut, User as UserIcon, Home } from "lucide-react";
+import { LogOut, User as UserIcon, Home, X } from "lucide-react";
 
 export function AppSidebarNav({
   className = "",
   compact,
+  onClose,
 }: {
   className?: string;
   compact?: boolean;
+  onClose?: () => void;
 }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -112,6 +114,7 @@ export function AppSidebarNav({
 
   const handleNav = (route: string) => {
     setShowProjectDashboard(true);
+    onClose?.();
     navigate({ to: route as never });
   };
 
@@ -310,33 +313,46 @@ export function AppSidebarNav({
             </TooltipContent>
           </Tooltip>
         ) : (
-          <button
-            type="button"
-            onClick={() => handleNav("/dashboard")}
-            className="flex items-center gap-3 px-1 py-1 text-left w-full cursor-pointer hover:opacity-90 transition"
-            aria-label="WebToolOcean home"
-          >
-            <span className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-br from-[#ffc21a] to-[#ff9f0a] shadow-[0_8px_24px_-8px_rgba(255,194,26,0.6)]">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 32 32"
-                fill="none"
-                stroke="#1a1400"
-                strokeWidth="2.4"
-                strokeLinecap="round"
-                className="w-6 h-6 animate-pulse"
+          <div className="flex items-center justify-between w-full">
+            <button
+              type="button"
+              onClick={() => handleNav("/dashboard")}
+              className="flex items-center gap-3 px-1 py-1 text-left cursor-pointer hover:opacity-90 transition flex-1 min-w-0"
+              aria-label="WebToolOcean home"
+            >
+              <span className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-br from-[#ffc21a] to-[#ff9f0a] shadow-[0_8px_24px_-8px_rgba(255,194,26,0.6)]">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 32 32"
+                  fill="none"
+                  stroke="#1a1400"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                  className="w-6 h-6 animate-pulse"
+                >
+                  <path d="M5 11c3.5-3 7-3 11 0s7.5 3 11 0M5 17c3.5-3 7-3 11 0s7.5 3 11 0M5 23c3.5-3 7-3 11 0s7.5 3 11 0" />
+                </svg>
+              </span>
+              <div className="truncate">
+                <strong className="block text-[15px] font-extrabold text-white tracking-tight leading-tight truncate">
+                  WebToolOcean
+                </strong>
+                <small className="block text-xs text-[#6b6b74] leading-tight">Website Builder</small>
+              </div>
+            </button>
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-[#888] hover:bg-white/10 hover:text-white transition shrink-0 ml-1"
+                aria-label="Close menu"
+                title="Close menu"
               >
-                <path d="M5 11c3.5-3 7-3 11 0s7.5 3 11 0M5 17c3.5-3 7-3 11 0s7.5 3 11 0M5 23c3.5-3 7-3 11 0s7.5 3 11 0" />
-              </svg>
-            </span>
-            <div>
-              <strong className="block text-[15px] font-extrabold text-white tracking-tight leading-tight">
-                WebToolOcean
-              </strong>
-              <small className="block text-xs text-[#6b6b74] leading-tight">Website Builder</small>
-            </div>
-          </button>
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
         )}
 
         {/* New Project Button */}

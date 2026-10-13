@@ -185,7 +185,13 @@ function getWidgetVisual(widget: WidgetRegistration) {
   };
 }
 
-export function RightContextPanel() {
+export function RightContextPanel({
+  isMobile = false,
+  onClose,
+}: {
+  isMobile?: boolean;
+  onClose?: () => void;
+} = {}) {
   const mounted = useMounted();
   const [activeTab, setActiveTab] = useState<TabKey>("widgets");
   const [collapsed, setCollapsed] = useState(false);
@@ -202,9 +208,11 @@ export function RightContextPanel() {
   useEffect(() => {
     if (selectedElement || selectedSectionId) {
       setActiveTab("properties");
-      setCollapsed(false);
+      if (!isMobile) {
+        setCollapsed(false);
+      }
     }
-  }, [selectedElement?.elementKey, selectedElement?.childId, selectedSectionId]);
+  }, [selectedElement?.elementKey, selectedElement?.childId, selectedSectionId, isMobile]);
 
   const widgetRegistryEntries = useMemo(() => getAllWidgetRegistrations(), []);
   const [q, setQ] = useState("");
@@ -294,9 +302,13 @@ export function RightContextPanel() {
   }
 
   return (
-    <aside className={`flex h-full flex-col border-l border-[#262626] bg-[#141414] transition-all duration-300 ease-in-out ${collapsed ? "w-[48px]" : "w-[310px]"}`}>
+    <aside
+      className={`flex h-full flex-col bg-[#141414] transition-all duration-300 ease-in-out ${
+        isMobile ? "w-full border-l-0" : `border-l border-[#262626] ${collapsed ? "w-[48px]" : "w-[310px]"}`
+      }`}
+    >
       <div className="flex h-11 shrink-0 items-center justify-between border-b border-[#262626] bg-[#141414] px-2.5">
-        {!collapsed ? (
+        {!collapsed || isMobile ? (
           <div className="flex items-center gap-1 rounded-lg border border-[#262626] bg-[#1A1A1A] p-0.5">
             {TABS.map(({ key, label, Icon }) => {
               const isActive = activeTab === key;
@@ -340,17 +352,29 @@ export function RightContextPanel() {
             </div>
           </TooltipProvider>
         )}
-        <button
-          type="button"
-          onClick={() => setCollapsed(!collapsed)}
-          className="flex h-7 w-7 items-center justify-center rounded-md text-[#71717A] transition hover:bg-[#202020] hover:text-[#F4F4F5]"
-          title={collapsed ? "Expand panel" : "Collapse panel"}
-        >
-          {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-        </button>
+        {isMobile && onClose ? (
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-7 w-7 items-center justify-center rounded-md text-[#71717A] transition hover:bg-[#202020] hover:text-[#F4F4F5]"
+            title="Close panel"
+            aria-label="Close panel"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        ) : !isMobile ? (
+          <button
+            type="button"
+            onClick={() => setCollapsed(!collapsed)}
+            className="flex h-7 w-7 items-center justify-center rounded-md text-[#71717A] transition hover:bg-[#202020] hover:text-[#F4F4F5]"
+            title={collapsed ? "Expand panel" : "Collapse panel"}
+          >
+            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          </button>
+        ) : null}
       </div>
 
-      {!collapsed && (
+      {(!collapsed || isMobile) && (
         <div className="flex-1 min-h-0 overflow-hidden">
           {activeTab === "widgets" && (
             <div className="flex h-full flex-col overflow-hidden">
