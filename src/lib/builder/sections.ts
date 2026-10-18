@@ -1129,6 +1129,19 @@ export const SECTION_LIBRARY: SectionTemplate[] = [
       html: getWidgetBootstrapExport("custom-html", inst),
     };
   })(),
+  {
+    id: "sec-youtube-video",
+    name: "YouTube Video Section",
+    category: "Advanced",
+    thumbBg: grad("#E02424", "#991B1B"),
+    html: `<section class="wto-youtube-section py-8" style="width: 100%; background: transparent;">
+  <div style="max-width: 1000px; margin: 0 auto; padding: 0 1rem;">
+    <div style="position: relative; width: 100%; padding-bottom: 56.25%; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);">
+      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube Video" style="position: absolute; inset: 0; width: 100%; height: 100%; border: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>`,
+  },
 ];
 
 export function sectionsByCategory() {

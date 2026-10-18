@@ -22,6 +22,8 @@ import {
   Star,
   Video,
   Navigation,
+  Bot,
+  LayoutTemplate,
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
@@ -33,36 +35,120 @@ import {
 import { CustomEmbedModal } from "./CustomEmbedModal";
 import { nanoid } from "nanoid";
 
-type CategoryFilter = "all" | "social" | "maps" | "media" | "tools";
+export type RenderingCategory = "floating" | "section";
+type CategoryFilter = "all" | "floating" | "section" | "social" | "maps" | "media" | "tools";
 
 interface CatalogItem {
   id: string;
   name: string;
   category: "social" | "maps" | "media" | "tools";
   categoryLabel: string;
+  renderingCategory: RenderingCategory;
   description: string;
   pluginType: string;
   iconBg: string;
-  iconType: "whatsapp" | "youtube" | "maps" | "language" | "accessibility" | "custom_html" | "contact" | "back_to_top" | "announcement" | "reviews" | "vimeo" | "store_locator";
+  iconType: "whatsapp" | "youtube" | "maps" | "language" | "accessibility" | "custom_html" | "contact" | "back_to_top" | "announcement" | "popup" | "chatbot" | "reviews" | "vimeo" | "store_locator";
 }
 
 const PLUGIN_CATALOG: CatalogItem[] = [
+  // ── FLOATING PLUGINS ─────────────────────────────────────────────
   {
     id: "whatsapp",
     name: "WhatsApp Chat",
     category: "social",
     categoryLabel: "Social",
-    description: "Add WhatsApp chat button to your website.",
+    renderingCategory: "floating",
+    description: "Add a floating WhatsApp chat button to connect with visitors instantly.",
     pluginType: "whatsapp",
     iconBg: "bg-[#25D366]",
     iconType: "whatsapp",
   },
   {
+    id: "contact",
+    name: "Floating Contact Button",
+    category: "social",
+    categoryLabel: "Social",
+    renderingCategory: "floating",
+    description: "Quick-action floating button connecting visitors directly via phone call, WhatsApp or email.",
+    pluginType: "contact",
+    iconBg: "bg-[#0284C7]",
+    iconType: "contact",
+  },
+  {
+    id: "chatbot",
+    name: "AI Chatbot",
+    category: "tools",
+    categoryLabel: "Tools",
+    renderingCategory: "floating",
+    description: "Floating AI conversational assistant for automated customer support.",
+    pluginType: "chatbot",
+    iconBg: "bg-[#2563EB]",
+    iconType: "chatbot",
+  },
+  {
+    id: "accessibility",
+    name: "Accessibility Toolbar",
+    category: "tools",
+    categoryLabel: "Tools",
+    renderingCategory: "floating",
+    description: "Improve accessibility for all visitors with contrast, font resizing and dyslexia tools.",
+    pluginType: "accessibility",
+    iconBg: "bg-[#9333EA]",
+    iconType: "accessibility",
+  },
+  {
+    id: "language",
+    name: "Language Switcher",
+    category: "tools",
+    categoryLabel: "Tools",
+    renderingCategory: "floating",
+    description: "Let visitors select and change website language with a sleek floating widget.",
+    pluginType: "language",
+    iconBg: "bg-[#2563EB]",
+    iconType: "language",
+  },
+  {
+    id: "announcement",
+    name: "Announcement Bar",
+    category: "tools",
+    categoryLabel: "Tools",
+    renderingCategory: "floating",
+    description: "Display a sticky top or bottom banner for sales, updates and alerts.",
+    pluginType: "announcement",
+    iconBg: "bg-[#D97706]",
+    iconType: "announcement",
+  },
+  {
+    id: "popup",
+    name: "Popup Modal",
+    category: "tools",
+    categoryLabel: "Tools",
+    renderingCategory: "floating",
+    description: "Engaging popup modal for announcements, special offers and lead generation.",
+    pluginType: "popup",
+    iconBg: "bg-[#EC4899]",
+    iconType: "popup",
+  },
+  {
+    id: "back_to_top",
+    name: "Back to Top",
+    category: "tools",
+    categoryLabel: "Tools",
+    renderingCategory: "floating",
+    description: "Smooth scroll-to-top floating button that appears on scroll.",
+    pluginType: "back_to_top",
+    iconBg: "bg-[#4F46E5]",
+    iconType: "back_to_top",
+  },
+
+  // ── PAGE SECTIONS ────────────────────────────────────────────────
+  {
     id: "youtube",
     name: "YouTube Video",
     category: "media",
     categoryLabel: "Media",
-    description: "Embed YouTube videos with custom settings.",
+    renderingCategory: "section",
+    description: "Embed responsive YouTube videos into any page location with custom aspect ratios.",
     pluginType: "youtube",
     iconBg: "bg-[#E02424]",
     iconType: "youtube",
@@ -72,100 +158,57 @@ const PLUGIN_CATALOG: CatalogItem[] = [
     name: "Google Maps",
     category: "maps",
     categoryLabel: "Maps",
-    description: "Add Google Map to show your location.",
+    renderingCategory: "section",
+    description: "Add an interactive Google Map section to display your physical business location.",
     pluginType: "maps",
     iconBg: "bg-[#34A853]",
     iconType: "maps",
-  },
-  {
-    id: "language",
-    name: "Language Switcher",
-    category: "tools",
-    categoryLabel: "Tools",
-    description: "Let visitors change website language.",
-    pluginType: "language",
-    iconBg: "bg-[#2563EB]",
-    iconType: "language",
-  },
-  {
-    id: "accessibility",
-    name: "Accessibility Toolbar",
-    category: "tools",
-    categoryLabel: "Tools",
-    description: "Improve website accessibility for all users.",
-    pluginType: "accessibility",
-    iconBg: "bg-[#9333EA]",
-    iconType: "accessibility",
-  },
-  {
-    id: "custom_html",
-    name: "Custom HTML",
-    category: "tools",
-    categoryLabel: "Tools",
-    description: "Add your own HTML, iframe or script.",
-    pluginType: "custom_html",
-    iconBg: "bg-[#27272A]",
-    iconType: "custom_html",
-  },
-  {
-    id: "contact",
-    name: "Floating Contact Button",
-    category: "social",
-    categoryLabel: "Social",
-    description: "Quick-action floating button connecting visitors directly.",
-    pluginType: "contact",
-    iconBg: "bg-[#0284C7]",
-    iconType: "contact",
-  },
-  {
-    id: "back_to_top",
-    name: "Back to Top",
-    category: "tools",
-    categoryLabel: "Tools",
-    description: "Smooth scroll-to-top button that appears on scroll.",
-    pluginType: "back_to_top",
-    iconBg: "bg-[#4F46E5]",
-    iconType: "back_to_top",
-  },
-  {
-    id: "announcement",
-    name: "Announcement Popup",
-    category: "tools",
-    categoryLabel: "Tools",
-    description: "Display timed or sticky announcement banners.",
-    pluginType: "announcement",
-    iconBg: "bg-[#D97706]",
-    iconType: "announcement",
-  },
-  {
-    id: "reviews",
-    name: "Google Reviews",
-    category: "social",
-    categoryLabel: "Social",
-    description: "Show real-time customer ratings and testimonials.",
-    pluginType: "reviews",
-    iconBg: "bg-[#EA4335]",
-    iconType: "reviews",
   },
   {
     id: "vimeo",
     name: "Vimeo Video",
     category: "media",
     categoryLabel: "Media",
-    description: "Embed Vimeo video player with custom controls.",
+    renderingCategory: "section",
+    description: "Embed Vimeo video player section with custom aspect ratio and layout controls.",
     pluginType: "vimeo",
     iconBg: "bg-[#1AB7EA]",
     iconType: "vimeo",
+  },
+  {
+    id: "reviews",
+    name: "Google Reviews",
+    category: "social",
+    categoryLabel: "Social",
+    renderingCategory: "section",
+    description: "Show real-time customer ratings and testimonials section on your page.",
+    pluginType: "reviews",
+    iconBg: "bg-[#EA4335]",
+    iconType: "reviews",
   },
   {
     id: "store_locator",
     name: "Store Locator",
     category: "maps",
     categoryLabel: "Maps",
-    description: "Interactive store locations and directions map.",
+    renderingCategory: "section",
+    description: "Interactive store locations and directions map section.",
     pluginType: "store_locator",
     iconBg: "bg-[#059669]",
     iconType: "store_locator",
+  },
+
+  // ── CUSTOM EMBED / HTML ──────────────────────────────────────────
+  {
+    id: "custom_html",
+    name: "Custom HTML / Embed",
+    category: "tools",
+    categoryLabel: "Tools",
+    renderingCategory: "floating",
+    description: "Add custom HTML, iframe embeds, analytics or third-party script tags.",
+    pluginType: "custom_html",
+    iconBg: "bg-[#27272A]",
+    iconType: "custom_html",
   },
 ];
 
@@ -220,6 +263,8 @@ export function CustomEmbedsPanel() {
   const catalogCounts = useMemo(() => {
     return {
       all: PLUGIN_CATALOG.length,
+      floating: PLUGIN_CATALOG.filter((p) => p.renderingCategory === "floating").length,
+      section: PLUGIN_CATALOG.filter((p) => p.renderingCategory === "section").length,
       social: PLUGIN_CATALOG.filter((p) => p.category === "social").length,
       maps: PLUGIN_CATALOG.filter((p) => p.category === "maps").length,
       media: PLUGIN_CATALOG.filter((p) => p.category === "media").length,
@@ -248,7 +293,11 @@ export function CustomEmbedsPanel() {
   // Filtered list of Add New catalog
   const filteredCatalog = useMemo(() => {
     let list = PLUGIN_CATALOG;
-    if (catalogCategory !== "all") {
+    if (catalogCategory === "floating") {
+      list = list.filter((p) => p.renderingCategory === "floating");
+    } else if (catalogCategory === "section") {
+      list = list.filter((p) => p.renderingCategory === "section");
+    } else if (catalogCategory !== "all") {
       list = list.filter((p) => p.category === catalogCategory);
     }
     const q = searchQuery.trim().toLowerCase();
@@ -257,7 +306,8 @@ export function CustomEmbedsPanel() {
       return (
         item.name.toLowerCase().includes(q) ||
         item.description.toLowerCase().includes(q) ||
-        item.categoryLabel.toLowerCase().includes(q)
+        item.categoryLabel.toLowerCase().includes(q) ||
+        (item.renderingCategory === "floating" ? "floating overlay" : "page section").includes(q)
       );
     });
   }, [catalogCategory, searchQuery]);
@@ -564,6 +614,18 @@ export function CustomEmbedsPanel() {
             <Navigation className="h-5 w-5" />
           </div>
         );
+      case "chatbot":
+        return (
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-sm">
+            <Bot className="h-6 w-6" />
+          </div>
+        );
+      case "popup":
+        return (
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EC4899] text-white shadow-sm">
+            <Megaphone className="h-5 w-5" />
+          </div>
+        );
       default:
         return (
           <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${bgClass} text-white shadow-sm border border-zinc-700/60 font-mono text-sm font-bold`}>
@@ -580,12 +642,14 @@ export function CustomEmbedsPanel() {
     const lowerHtml = item.html.toLowerCase();
     if (lowerName.includes("youtube") || lowerHtml.includes("youtube.com") || lowerHtml.includes("youtu.be")) return "youtube";
     if (lowerName.includes("whatsapp") || lowerHtml.includes("wa.me") || lowerHtml.includes("whatsapp")) return "whatsapp";
+    if (lowerName.includes("chatbot") || lowerName.includes("bot")) return "chatbot";
     if (lowerName.includes("accessibility") || lowerHtml.includes("accessibility")) return "accessibility";
     if (lowerName.includes("language") || lowerName.includes("translate")) return "language";
     if (lowerName.includes("map") || lowerHtml.includes("maps.google") || lowerHtml.includes("google.com/maps")) return "maps";
     if (lowerName.includes("contact")) return "contact";
     if (lowerName.includes("top")) return "back_to_top";
     if (lowerName.includes("announcement")) return "announcement";
+    if (lowerName.includes("popup")) return "popup";
     if (lowerName.includes("review")) return "reviews";
     return "custom_html";
   };
@@ -712,6 +776,30 @@ export function CustomEmbedsPanel() {
               }`}
             >
               All ({catalogCounts.all})
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setCatalogCategory("floating")}
+              className={`px-3 py-1 rounded-full text-xs font-semibold transition shrink-0 ${
+                catalogCategory === "floating"
+                  ? "bg-emerald-400 text-zinc-950 font-bold shadow-xs"
+                  : "bg-[#18181C] text-emerald-400 hover:text-white border border-emerald-900/50"
+              }`}
+            >
+              Floating ({catalogCounts.floating})
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setCatalogCategory("section")}
+              className={`px-3 py-1 rounded-full text-xs font-semibold transition shrink-0 ${
+                catalogCategory === "section"
+                  ? "bg-amber-400 text-zinc-950 font-bold shadow-xs"
+                  : "bg-[#18181C] text-amber-300 hover:text-white border border-amber-900/50"
+              }`}
+            >
+              Sections ({catalogCounts.section})
             </button>
 
             <button
@@ -930,9 +1018,20 @@ export function CustomEmbedsPanel() {
 
                   {/* Middle Info */}
                   <div className="min-w-0 flex-1">
-                    <h4 className="font-bold text-sm text-white truncate">
-                      {plugin.name}
-                    </h4>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <h4 className="font-bold text-sm text-white truncate">
+                        {plugin.name}
+                      </h4>
+                      {plugin.renderingCategory === "floating" ? (
+                        <span className="inline-flex items-center rounded-full bg-emerald-950/70 border border-emerald-500/40 px-2 py-0.2 text-[9px] font-semibold text-emerald-400">
+                          Floating
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center rounded-full bg-amber-950/70 border border-amber-500/40 px-2 py-0.2 text-[9px] font-semibold text-amber-300">
+                          Page Section
+                        </span>
+                      )}
+                    </div>
                     <p className="text-xs text-zinc-400 line-clamp-2 mt-0.5 leading-snug">
                       {plugin.description}
                     </p>

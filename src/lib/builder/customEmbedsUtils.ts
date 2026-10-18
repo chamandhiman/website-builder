@@ -310,3 +310,127 @@ export function createCustomHtmlSection({
     animation: { type: "fade-up", duration: 700, delay: 0 },
   };
 }
+
+/**
+ * Creates a complete PageSection representation for a YouTube Video widget.
+ */
+export function createYouTubeSection({
+  name,
+  url,
+  aspectRatio = "16/9",
+  maxWidth = "1000px",
+  autoplay = false,
+  mute = false,
+  showControls = true,
+  loop = false,
+  id,
+}: {
+  name?: string;
+  url: string;
+  aspectRatio?: string;
+  maxWidth?: string;
+  autoplay?: boolean;
+  mute?: boolean;
+  showControls?: boolean;
+  loop?: boolean;
+  id?: string;
+}): PageSection {
+  const sectionId = id || `youtube-${nanoid(8)}`;
+  let videoId = "";
+  if (url.includes("embed/")) {
+    videoId = url.split("embed/")[1]?.split("?")[0] || "";
+  } else if (url.includes("watch?v=")) {
+    videoId = url.split("watch?v=")[1]?.split("&")[0] || "";
+  } else if (url.includes("youtu.be/")) {
+    videoId = url.split("youtu.be/")[1]?.split("?")[0] || "";
+  } else {
+    videoId = url.trim();
+  }
+
+  const params = new URLSearchParams();
+  if (autoplay) params.set("autoplay", "1");
+  if (mute) params.set("mute", "1");
+  if (!showControls) params.set("controls", "0");
+  if (loop && videoId) {
+    params.set("loop", "1");
+    params.set("playlist", videoId);
+  }
+  const paramStr = params.toString() ? `?${params.toString()}` : "";
+  const embedUrl = `https://www.youtube.com/embed/${videoId}${paramStr}`;
+
+  const html = `<section class="wto-youtube-section py-8" style="width: 100%; background: transparent;">
+  <div class="container" style="max-width: ${maxWidth}; margin: 0 auto; padding: 0 16px;">
+    <div style="position: relative; width: 100%; aspect-ratio: ${aspectRatio}; border-radius: 14px; overflow: hidden; box-shadow: 0 12px 36px rgba(0,0,0,0.35);">
+      <iframe src="${embedUrl}" title="${name || 'YouTube Video'}" style="position: absolute; inset: 0; width: 100%; height: 100%; border: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>`;
+
+  return {
+    id: sectionId,
+    templateId: "custom-html-v1",
+    name: name?.trim() || "YouTube Video",
+    html,
+    widgetInstance: {
+      id: sectionId,
+      type: "custom-html",
+      variant: "youtube",
+      content: { html, youtubeUrl: url, aspectRatio, maxWidth, autoplay, mute, showControls, loop },
+      style: {},
+      layout: {},
+      responsive: {},
+      animation: {},
+      advanced: {},
+    } as any,
+    animation: { type: "fade-up", duration: 700, delay: 0 },
+  };
+}
+
+/**
+ * Creates a complete PageSection representation for a Google Maps widget.
+ */
+export function createMapSection({
+  name,
+  address,
+  height = "380px",
+  maxWidth = "100%",
+  zoom = 13,
+  id,
+}: {
+  name?: string;
+  address: string;
+  height?: string;
+  maxWidth?: string;
+  zoom?: number;
+  id?: string;
+}): PageSection {
+  const sectionId = id || `map-${nanoid(8)}`;
+  const mapEmbedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(address)}&t=&z=${zoom}&ie=UTF8&iwloc=&output=embed`;
+
+  const html = `<section class="wto-map-section py-8" style="width: 100%; background: transparent;">
+  <div class="container" style="max-width: ${maxWidth}; margin: 0 auto; padding: 0 16px;">
+    <div style="position: relative; width: 100%; height: ${height}; border-radius: 14px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.25);">
+      <iframe src="${mapEmbedUrl}" title="${name || 'Google Map'}" style="width: 100%; height: 100%; border: none;" scrolling="no"></iframe>
+    </div>
+  </div>
+</section>`;
+
+  return {
+    id: sectionId,
+    templateId: "custom-html-v1",
+    name: name?.trim() || "Google Maps",
+    html,
+    widgetInstance: {
+      id: sectionId,
+      type: "custom-html",
+      variant: "maps",
+      content: { html, address, height, maxWidth, zoom },
+      style: {},
+      layout: {},
+      responsive: {},
+      animation: {},
+      advanced: {},
+    } as any,
+    animation: { type: "fade-up", duration: 700, delay: 0 },
+  };
+}

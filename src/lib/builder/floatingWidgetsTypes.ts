@@ -2,6 +2,7 @@ import { nanoid } from "nanoid";
 
 export type FloatingWidgetType =
   | "whatsapp_chat"
+  | "chatbot"
   | "accessibility"
   | "language_switcher"
   | "back_to_top"
@@ -119,7 +120,7 @@ export function createDefaultFloatingWidget(
         showOnMobile: true,
         pageTargeting: "all",
         config: {
-          phoneNumber: "+1234567890",
+          phoneNumber: "",
           agentName: "Support Team",
           greetingText: "Hi there! How can we help you today?",
           buttonColor: "#25D366",
@@ -226,11 +227,33 @@ export function createDefaultFloatingWidget(
         pageTargeting: "all",
         config: {
           actionType: "phone",
-          actionValue: "+1234567890",
+          phoneNumber: "",
+          actionValue: "",
           label: "Call Now",
           buttonColor: "#FACC15",
           textColor: "#111111",
           iconType: "phone",
+        },
+        createdAt: now,
+        updatedAt: now,
+      };
+
+    case "chatbot":
+      return {
+        id,
+        type,
+        name: name || "AI Chatbot",
+        enabled: true,
+        position: "bottom_right",
+        offsetX: 20,
+        offsetY: 20,
+        showOnDesktop: true,
+        showOnMobile: true,
+        pageTargeting: "all",
+        config: {
+          botName: "AI Assistant",
+          welcomeMessage: "Hi there! How can I help you today?",
+          primaryColor: "#2563EB",
         },
         createdAt: now,
         updatedAt: now,
