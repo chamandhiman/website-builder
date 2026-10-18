@@ -36,7 +36,7 @@ import { CustomEmbedModal } from "./CustomEmbedModal";
 import { nanoid } from "nanoid";
 
 export type RenderingCategory = "floating" | "section";
-type CategoryFilter = "all" | "floating" | "section" | "social" | "maps" | "media" | "tools";
+type CategoryFilter = "all" | "floating" | "section";
 
 interface CatalogItem {
   id: string;
@@ -259,16 +259,12 @@ export function CustomEmbedsPanel() {
     };
   }, [allEmbeds]);
 
-  // Counts for Add New catalog filter chips
+  // Counts for Add New catalog filter chips (first three tabs only: All, Floating, Sections)
   const catalogCounts = useMemo(() => {
     return {
       all: PLUGIN_CATALOG.length,
       floating: PLUGIN_CATALOG.filter((p) => p.renderingCategory === "floating").length,
       section: PLUGIN_CATALOG.filter((p) => p.renderingCategory === "section").length,
-      social: PLUGIN_CATALOG.filter((p) => p.category === "social").length,
-      maps: PLUGIN_CATALOG.filter((p) => p.category === "maps").length,
-      media: PLUGIN_CATALOG.filter((p) => p.category === "media").length,
-      tools: PLUGIN_CATALOG.filter((p) => p.category === "tools").length,
     };
   }, []);
 
@@ -297,8 +293,6 @@ export function CustomEmbedsPanel() {
       list = list.filter((p) => p.renderingCategory === "floating");
     } else if (catalogCategory === "section") {
       list = list.filter((p) => p.renderingCategory === "section");
-    } else if (catalogCategory !== "all") {
-      list = list.filter((p) => p.category === catalogCategory);
     }
     const q = searchQuery.trim().toLowerCase();
     if (!q) return list;
@@ -800,54 +794,6 @@ export function CustomEmbedsPanel() {
               }`}
             >
               Sections ({catalogCounts.section})
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setCatalogCategory("social")}
-              className={`px-3 py-1 rounded-full text-xs font-semibold transition shrink-0 ${
-                catalogCategory === "social"
-                  ? "bg-[#FACC15] text-zinc-950 font-bold shadow-xs"
-                  : "bg-[#18181C] text-zinc-300 hover:text-white border border-zinc-800"
-              }`}
-            >
-              Social ({catalogCounts.social})
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setCatalogCategory("maps")}
-              className={`px-3 py-1 rounded-full text-xs font-semibold transition shrink-0 ${
-                catalogCategory === "maps"
-                  ? "bg-[#FACC15] text-zinc-950 font-bold shadow-xs"
-                  : "bg-[#18181C] text-zinc-300 hover:text-white border border-zinc-800"
-              }`}
-            >
-              Maps ({catalogCounts.maps})
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setCatalogCategory("media")}
-              className={`px-3 py-1 rounded-full text-xs font-semibold transition shrink-0 ${
-                catalogCategory === "media"
-                  ? "bg-[#FACC15] text-zinc-950 font-bold shadow-xs"
-                  : "bg-[#18181C] text-zinc-300 hover:text-white border border-zinc-800"
-              }`}
-            >
-              Media ({catalogCounts.media})
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setCatalogCategory("tools")}
-              className={`px-3 py-1 rounded-full text-xs font-semibold transition shrink-0 ${
-                catalogCategory === "tools"
-                  ? "bg-[#FACC15] text-zinc-950 font-bold shadow-xs"
-                  : "bg-[#18181C] text-zinc-300 hover:text-white border border-zinc-800"
-              }`}
-            >
-              Tools ({catalogCounts.tools})
             </button>
           </div>
         )}
