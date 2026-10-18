@@ -24,6 +24,7 @@ import {
   Loader2,
   Menu,
   SlidersHorizontal,
+  Code2,
 } from "lucide-react";
 import { SaveStatus } from "@/components/builder/SaveStatus";
 import { toast } from "sonner";
@@ -34,6 +35,7 @@ import { PageActionsMenu } from "@/components/builder/PageActionsMenu";
 import type { Page } from "@/lib/builder/store";
 import { PublishSuccessModal } from "@/components/builder/PublishSuccessModal";
 import { publishWebsite, type PublishResult } from "@/services/publishing";
+import { getProjectCustomEmbeds } from "@/lib/builder/customEmbedsUtils";
 
 // CanvasToolbar - builder top bar
 
@@ -82,6 +84,10 @@ export function CanvasToolbar({
   const saveStatus = useBuilder((s) => s.saveStatus);
   const saveErrorMessage = useBuilder((s) => s.saveErrorMessage);
   const setDevice = useBuilder((s) => s.setDevice);
+  const rightPanelTab = useBuilder((s) => s.rightPanelTab);
+  const setRightPanelTab = useBuilder((s) => s.setRightPanelTab);
+
+  const customEmbedsCount = project ? getProjectCustomEmbeds(project).length : 0;
 
   // Close page selector when clicking outside
   useEffect(() => {

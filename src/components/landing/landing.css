@@ -3,15 +3,50 @@
    ========================================================================== */
 
 :root {
+  --bg: #0a0a0b;
+  --bg2: #131316;
+  --card: rgba(255, 255, 255, 0.055);
+  --line: rgba(255, 255, 255, 0.12);
+  --text: #f2f0ea;
+  --muted: #9a978f;
+  --y: #FFD21F;
+  --hl: var(--hlD, #FFD21F);
+  --ink: #111;
+  --navbg: rgba(18, 18, 20, 0.76);
+  --alt: rgba(255, 255, 255, 0.025);
+  --tint: rgba(255, 255, 255, 0.04);
+  --dots: rgba(255, 255, 255, 0.12);
+  --g2: #ffa24a;
+  --g3: #ff4d8d;
+  --a1: #ffb800;
+  --a2: #ff6b3d;
+  --a3: #7a5cff;
+  --aur: 0.32;
+  --cols: 3;
+  --bld1: #1d1d21;
+  --bld2: #111113;
+  --bexp: rgba(24, 24, 28, 0.95);
+  --bpre: #0a0a0c;
+  --wbg: #fff;
+  --wfg: #111;
+  --kbg: #000;
+  --kfg: #fff;
+  --kbd: rgba(255, 255, 255, 0.2);
+  --bodybg: radial-gradient(1000px 600px at 90% -10%, rgba(255, 210, 31, 0.12), transparent 60%),
+            radial-gradient(900px 700px at 10% 30%, rgba(56, 189, 248, 0.08), transparent 60%),
+            #0a0a0b;
+  --display: 'Clash Display', system-ui, sans-serif;
+  --body: 'Satoshi', system-ui, sans-serif;
+}
+
+:root[data-theme="red"],
+.wto-landing[data-theme="red"] {
   --bg: #1b0a10;
   --bg2: #27111a;
   --card: rgba(255, 255, 255, 0.055);
   --line: rgba(255, 255, 255, 0.12);
   --text: #fff4f4;
   --muted: #d6aab3;
-  --y: #FFD21F;
-  --hl: var(--hlD, #FFD21F);
-  --ink: #111;
   --navbg: rgba(42, 12, 24, 0.74);
   --alt: rgba(22, 4, 10, 0.4);
   --tint: rgba(255, 255, 255, 0.04);
@@ -22,22 +57,14 @@
   --a2: #ff7a45;
   --a3: #ff3b8f;
   --aur: 1;
-  --cols: 3;
   --bld1: #3d1322;
   --bld2: #240a15;
   --bexp: rgba(54, 16, 32, 0.95);
   --bpre: #14060c;
-  --wbg: #fff;
-  --wfg: #111;
-  --kbg: #000;
-  --kfg: #fff;
-  --kbd: rgba(255, 255, 255, 0.2);
   --bodybg: radial-gradient(1100px 700px at 8% -5%, rgba(225, 29, 72, 0.4), transparent 60%),
             radial-gradient(900px 600px at 100% 25%, rgba(255, 122, 69, 0.2), transparent 60%),
             radial-gradient(900px 700px at 40% 100%, rgba(255, 59, 143, 0.2), transparent 60%),
             #1b0a10;
-  --display: 'Clash Display', system-ui, sans-serif;
-  --body: 'Satoshi', system-ui, sans-serif;
 }
 
 :root[data-theme="blue"],

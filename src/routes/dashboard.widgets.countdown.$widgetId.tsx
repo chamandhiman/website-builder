@@ -53,6 +53,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { toast } from "sonner";
+import { WidgetStudioHeader } from "@/components/widgets/WidgetStudioHeader";
 
 export const Route = createFileRoute("/dashboard/widgets/countdown/$widgetId")({
   component: CountdownStudioPage,
@@ -414,118 +415,21 @@ function CountdownStudioPage() {
   return (
     <div className="h-screen w-full flex flex-col bg-[#121214] text-zinc-100 overflow-hidden select-none">
       {/* Top Studio Navbar */}
-      <header className="h-14 border-b border-zinc-800/80 bg-zinc-950 px-4 flex items-center justify-between shrink-0 z-30">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/dashboard/widgets" as any })}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800/80 transition text-xs font-semibold"
-            title="Back to Widgets"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Back to Widgets</span>
-          </button>
-
-          <div className="h-4 w-px bg-zinc-800" />
-
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-amber-400/10 border border-amber-400/20 flex items-center justify-center text-amber-400">
-              <Clock className="w-3.5 h-3.5" />
-            </div>
-            <input
-              type="text"
-              value={widget.name}
-              onChange={(e) => setWidget({ ...widget, name: e.target.value })}
-              className="bg-transparent hover:bg-zinc-900/60 focus:bg-zinc-900 px-2 py-0.5 rounded text-sm font-semibold text-white focus:outline-none focus:ring-1 focus:ring-amber-400/50 max-w-[200px] truncate"
-            />
-          </div>
-
-          <span
-            className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${
-              isPublished
-                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
-            }`}
-          >
-            <span className={`w-1.5 h-1.5 rounded-full ${isPublished ? "bg-emerald-400" : "bg-amber-400"}`} />
-            {isPublished ? "Published" : "Draft"}
-          </span>
-        </div>
-
-        {/* Center Device Switcher */}
-        <div className="hidden md:flex items-center bg-zinc-900 border border-zinc-800 p-0.5 rounded-lg">
-          <button
-            type="button"
-            onClick={() => setPreviewDevice("desktop")}
-            className={`px-3 py-1 rounded text-xs font-medium flex items-center gap-1.5 transition ${
-              previewDevice === "desktop" ? "bg-zinc-800 text-white shadow-sm" : "text-zinc-400 hover:text-zinc-200"
-            }`}
-          >
-            <Monitor className="w-3.5 h-3.5" />
-            <span>Desktop</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setPreviewDevice("tablet")}
-            className={`px-3 py-1 rounded text-xs font-medium flex items-center gap-1.5 transition ${
-              previewDevice === "tablet" ? "bg-zinc-800 text-white shadow-sm" : "text-zinc-400 hover:text-zinc-200"
-            }`}
-          >
-            <Tablet className="w-3.5 h-3.5" />
-            <span>Tablet</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setPreviewDevice("mobile")}
-            className={`px-3 py-1 rounded text-xs font-medium flex items-center gap-1.5 transition ${
-              previewDevice === "mobile" ? "bg-zinc-800 text-white shadow-sm" : "text-zinc-400 hover:text-zinc-200"
-            }`}
-          >
-            <Smartphone className="w-3.5 h-3.5" />
-            <span>Mobile</span>
-          </button>
-        </div>
-
-        {/* Right Action Buttons */}
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleResetPreview}
-            className="p-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white transition"
-            title="Reset Countdown Timer"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setEmbedModalOpen(true)}
-            className="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-medium text-xs flex items-center gap-1.5 border border-zinc-800"
-          >
-            <Code2 className="w-3.5 h-3.5" />
-            <span>Embed</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleSaveDraft}
-            disabled={saving}
-            className="px-3.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-medium text-xs transition disabled:opacity-50"
-          >
-            {saving ? "Saving…" : "Save Draft"}
-          </button>
-
-          <button
-            type="button"
-            onClick={handlePublish}
-            disabled={publishing}
-            className="px-4 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs transition shadow-md shadow-amber-500/10 disabled:opacity-50 flex items-center gap-1.5"
-          >
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>{publishing ? "Publishing…" : "Publish"}</span>
-          </button>
-        </div>
-      </header>
+      <WidgetStudioHeader
+        widgetName={widget.name}
+        onWidgetNameChange={(name) => setWidget({ ...widget, name })}
+        status={widget.status}
+        icon={<Clock className="w-3.5 h-3.5" />}
+        iconBgClass="bg-amber-400/15 border-amber-400/30 text-amber-400"
+        previewDevice={previewDevice}
+        onPreviewDeviceChange={setPreviewDevice}
+        onResetPreview={handleResetPreview}
+        onOpenEmbed={() => setEmbedModalOpen(true)}
+        onSaveDraft={handleSaveDraft}
+        onPublish={handlePublish}
+        saving={saving}
+        publishing={publishing}
+      />
 
       {/* Main Studio Body: Left Controls Sidebar + Right Live Preview */}
       <div className="flex-1 flex overflow-hidden">

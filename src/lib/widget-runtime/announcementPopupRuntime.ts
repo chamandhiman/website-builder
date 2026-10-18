@@ -164,6 +164,10 @@ export function renderAnnouncementPopupHtml(
     data-ap-delay="${Number(dispRules.triggerDelaySeconds || 2)}"
     data-ap-scroll="${Number(dispRules.triggerScrollPercent || 40)}"
     data-ap-frequency="${escapeXml(dispRules.frequency)}"
+    data-ap-page-targeting="${escapeXml(dispRules.pageTargeting || "all")}"
+    data-ap-targeted-paths="${escapeXml((dispRules.targetedPaths || []).join(","))}"
+    data-ap-home-return="${dispRules.reappearOnHomeReturn || dispRules.frequency === "home_return" ? "1" : "0"}"
+    data-ap-dismiss-scope="${dispRules.dismissScope || "session"}"
     data-ap-schedule-enabled="${dispRules.scheduleEnabled ? "1" : "0"}"
     data-ap-start-time="${dispRules.scheduleStartTime || ""}"
     data-ap-end-time="${dispRules.scheduleEndTime || ""}"
@@ -575,18 +579,22 @@ export function renderAnnouncementPopupHtml(
 
     html = `
       <div class="${cls} wto-popup-backdrop wto-ap-anim-${anim.type}" ${dataAttrs} role="dialog" aria-modal="true" aria-labelledby="${cls}-title" aria-describedby="${cls}-desc" style="
-        position: ${options?.isPreview ? "absolute" : "fixed"};
-        inset: 0;
-        width: ${options?.isPreview ? "100%" : "100vw"};
-        height: ${options?.isPreview ? "100%" : "100vh"};
-        background-color: ${colors.overlayColor};
-        backdrop-filter: blur(4px);
-        -webkit-backdrop-filter: blur(4px);
+        position: ${options?.isStudioMockup ? "absolute" : "fixed"} !important;
+        inset: 0 !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: ${options?.isStudioMockup ? "100%" : "100vw"} !important;
+        height: ${options?.isStudioMockup ? "100%" : "100vh"} !important;
+        background-color: ${colors.overlayColor} !important;
+        backdrop-filter: blur(4px) !important;
+        -webkit-backdrop-filter: blur(4px) !important;
         display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 16px;
-        z-index: 999999;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 16px !important;
+        z-index: 99999999 !important;
+        box-sizing: border-box !important;
+        overflow-y: auto !important;
       ">
         <div class="wto-popup-dialog" style="
           background-color: ${colors.background};
@@ -815,56 +823,18 @@ export function renderAnnouncementPopupHtml(
  */
 export function attachAnnouncementPopupInteractivity(
   container: HTMLElement,
-  options?: { isPreview?: boolean }
+  options?: { isPreview?: boolean; isStudioMockup?: boolean }
 ): () => void {
-  const isPreview = Boolean(
-    options?.isPreview ||
-    (typeof window !== "undefined" && (
-      Boolean((window as any).__wtoIsPreview) ||
-      window.location.pathname.includes("/demo/") ||
-      window.location.pathname.includes("/editor/") ||
-      window.location.pathname.includes("/preview") ||
-      window.location.search.includes("preview=") ||
-      document.body?.getAttribute("data-builder-edit-mode") === "1" ||
-      document.body?.classList.contains("builder-editor-mode") ||
-      (function() {
-        try {
-          if (window.parent && window.parent !== window) {
-            const pp = window.parent.location.pathname || "";
-            const ps = window.parent.location.search || "";
-            if (
-              (window.parent as any).__wtoIsPreview ||
-              pp.includes("/demo/") ||
-              pp.includes("/editor/") ||
-              pp.includes("/preview") ||
-              ps.includes("preview=")
-            ) {
-              return true;
-            }
-          }
-        } catch (_) {}
-        try {
-          if (window.top && window.top !== window) {
-            const tp = window.top.location.pathname || "";
-            const ts = window.top.location.search || "";
-            if (
-              (window.top as any).__wtoIsPreview ||
-              tp.includes("/demo/") ||
-              tp.includes("/editor/") ||
-              tp.includes("/preview") ||
-              ts.includes("preview=")
-            ) {
-              return true;
-            }
-          }
-        } catch (_) {}
-        return false;
-      })()
-    ))
+  const isPreview = Boolean(options?.isPreview);
+  // Only the visual Studio Editor phone/laptop mockup frame is a studio mockup
+  const isStudioMockup = Boolean(
+    options?.isStudioMockup ||
+    (container && (container.hasAttribute("data-wto-mock-canvas") || container.querySelector("[data-wto-mock-canvas]"))) ||
+    (typeof window !== "undefined" && window.location.pathname.includes("/widgets/announcement-popup/"))
   );
-  // In preview mode or studio canvas, purge any duplicate or stale widget roots first so only ONE active widget is ever shown
-  const isStudioPreview = !!(container && (container.hasAttribute("data-wto-mock-canvas") || container.querySelector("[data-wto-mock-canvas]")));
-  if (isStudioPreview) {
+
+  // In studio canvas mockup, purge direct stale roots
+  if (isStudioMockup) {
     const directStale = container.querySelectorAll<HTMLElement>(
       ":scope > .wto-announcement-bar-root, :scope > .wto-popup-backdrop, :scope > .wto-announcement-popup-root"
     );
@@ -875,9 +845,8 @@ export function attachAnnouncementPopupInteractivity(
     ".wto-announcement-bar-root, .wto-popup-backdrop, [data-ap-mode]"
   ));
 
-  // If in preview mode, ensure only the single active widget is present:
-  if (isPreview && elements.length > 1) {
-    // Keep only the newest/last rendered element, remove any older duplicates
+  // If in studio mockup mode, ensure only the single active widget is present:
+  if (isStudioMockup && elements.length > 1) {
     while (elements.length > 1) {
       const oldEl = elements.shift();
       oldEl?.remove();
@@ -899,16 +868,51 @@ export function attachAnnouncementPopupInteractivity(
     const isCountdown = root.getAttribute("data-ap-countdown") === "1";
     const targetTimestamp = Number(root.getAttribute("data-ap-target-timestamp") || 0);
 
-    // In preview/editor, clean up any previous seen flags so refreshes never hide the widget
-    if (isPreview && widgetId) {
+    const pageTargeting = root.getAttribute("data-ap-page-targeting") || "all";
+    const targetedPathsStr = root.getAttribute("data-ap-targeted-paths") || "";
+    const homeReturnEnabled = root.getAttribute("data-ap-home-return") === "1" || freq === "home_return";
+    const dismissScope = root.getAttribute("data-ap-dismiss-scope") || "session";
+    const dismissStorage = root.getAttribute("data-ap-dismiss-storage") === "1";
+
+    const rawPath = typeof window !== "undefined" ? window.location.pathname.toLowerCase() : "/";
+    const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+    const pageParam = urlParams ? (urlParams.get("page") || "").toLowerCase().replace(/^[./]+/, "").replace(/\.html$/i, "") : "";
+    const isDemo = rawPath.includes("/demo/") || rawPath.includes("/preview");
+    const isDemoHome = isDemo && (pageParam === "home" || pageParam === "index" || !pageParam);
+    const isHome = rawPath === "/" || rawPath === "" || rawPath.endsWith("/index.html") || rawPath === "/index.php" || isDemoHome;
+    const path = isDemo ? (pageParam ? `/${pageParam}` : "/") : rawPath;
+
+    // In studio mockup, clean up any previous seen flags so refreshes never hide the widget
+    if (isStudioMockup && widgetId) {
       try {
         sessionStorage.removeItem(`wto_ap_seen_${widgetId}`);
         localStorage.removeItem(`wto_ap_seen_${widgetId}`);
+        sessionStorage.removeItem(`wto_ap_dismissed_${widgetId}`);
+        localStorage.removeItem(`wto_ap_dismissed_${widgetId}`);
       } catch (_) {}
     }
 
-    // 1. Scheduling checks (Only enforced in live production mode, NEVER in preview/editor)
-    if (!isPreview && scheduleEnabled) {
+    // 0. Page Targeting Check (live storefront & demo)
+    if (!isStudioMockup) {
+      if (pageTargeting === "homepage_only" && !isHome) {
+        root.style.display = "none";
+        return;
+      }
+      if ((pageTargeting === "custom" || pageTargeting === "include") && targetedPathsStr) {
+        const paths = targetedPathsStr.split(",").map((p) => p.trim().toLowerCase()).filter(Boolean);
+        const matches = paths.some((p) => {
+          if (p.endsWith("*")) return path.startsWith(p.slice(0, -1));
+          return path === p || path.startsWith(p);
+        });
+        if (!matches) {
+          root.style.display = "none";
+          return;
+        }
+      }
+    }
+
+    // 1. Scheduling checks (Only enforced in live production mode, NEVER in studio mockup)
+    if (!isStudioMockup && scheduleEnabled) {
       const now = Date.now();
       if (startTimeStr) {
         const startMs = new Date(startTimeStr).getTime();
@@ -926,11 +930,29 @@ export function attachAnnouncementPopupInteractivity(
       }
     }
 
-    // 2. Frequency & Persistence checks (Only for popups in live production mode, NEVER in preview/editor and NEVER for announcement bars)
-    if (!isPreview && mode === "popup" && freq !== "always") {
+    // 2. Dismissal Persistence Check
+    if (!isStudioMockup && dismissStorage && widgetId) {
+      const dismissKey = `wto_ap_dismissed_${widgetId}`;
+      const isDismissed = dismissScope === "permanent"
+        ? localStorage.getItem(dismissKey)
+        : sessionStorage.getItem(dismissKey);
+
+      // If homeReturnEnabled is on and visitor is on the Home page, show on home return!
+      if (isDismissed && !(homeReturnEnabled && isHome)) {
+        root.style.display = "none";
+        return;
+      }
+    }
+
+    // 3. Frequency & Persistence checks (Only for popups)
+    if (!isStudioMockup && mode === "popup" && freq !== "always") {
       try {
         const storageKey = `wto_ap_seen_${widgetId}`;
-        if (freq === "session") {
+
+        // Return to Home Page behavior:
+        if (homeReturnEnabled && isHome) {
+          // Allowed on home page returns!
+        } else if (freq === "session") {
           if (sessionStorage.getItem(storageKey)) {
             root.style.display = "none";
             return;
@@ -946,8 +968,11 @@ export function attachAnnouncementPopupInteractivity(
           const now = Date.now();
           const cooldownMap: Record<string, number> = {
             "1day": 24 * 3600 * 1000,
+            "daily": 24 * 3600 * 1000,
             "7days": 7 * 24 * 3600 * 1000,
+            "weekly": 7 * 24 * 3600 * 1000,
             "30days": 30 * 24 * 3600 * 1000,
+            "monthly": 30 * 24 * 3600 * 1000,
           };
           const cooldown = cooldownMap[freq] || 0;
           if (lastSeen > 0 && now - lastSeen < cooldown) {
@@ -960,9 +985,9 @@ export function attachAnnouncementPopupInteractivity(
       }
     }
 
-    // Record seen only for popups and never in preview
+    // Record seen only for popups and never in studio mockup
     const recordSeen = () => {
-      if (isPreview || mode !== "popup") return;
+      if (isStudioMockup || mode !== "popup") return;
       try {
         const storageKey = `wto_ap_seen_${widgetId}`;
         const now = String(Date.now());
@@ -971,73 +996,95 @@ export function attachAnnouncementPopupInteractivity(
       } catch (e) {}
     };
 
-    // 3. Triggers & Initial Visibility
+    // 4. Triggers & Initial Visibility
     if (root.classList.contains("wto-closed") || root.getAttribute("data-wto-closed") === "1") {
       return;
     }
-    if (mode === "bar") {
-      root.style.display = "block";
-    } else if (isPreview) {
-      // In editor or preview mode, always keep popups visible for editing/previewing
-      root.style.display = "flex";
+
+    if (isStudioMockup) {
+      // In studio mockup device canvas, keep immediately visible for visual styling
+      if (mode === "bar") {
+        root.style.display = "block";
+      } else {
+        root.style.display = "flex";
+      }
     } else {
-      // Live production popup triggering
-      if (trigger === "delay") {
-        root.style.display = "none";
-        const tid = setTimeout(() => {
+      if (mode === "bar") {
+        root.style.display = "block";
+      } else {
+        // Live production / Demo popup modal triggering
+        if (trigger === "delay") {
+          root.style.display = "none";
+          const delayMs = Math.max(0, delaySec * 1000);
+          const tid = setTimeout(() => {
+            root.style.display = "flex";
+            recordSeen();
+          }, delayMs);
+          cleanupTasks.push(() => clearTimeout(tid));
+        } else if (trigger === "scroll") {
+          root.style.display = "none";
+          let triggered = false;
+          const handleScroll = () => {
+            if (triggered) return;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            if (docHeight <= 0) return;
+            const current = (window.scrollY / docHeight) * 100;
+            if (current >= scrollPct) {
+              triggered = true;
+              root.style.display = "flex";
+              recordSeen();
+              window.removeEventListener("scroll", handleScroll);
+            }
+          };
+          window.addEventListener("scroll", handleScroll, { passive: true });
+          cleanupTasks.push(() => window.removeEventListener("scroll", handleScroll));
+        } else if (trigger === "exit_intent") {
+          root.style.display = "none";
+          let triggered = false;
+          const handleMouseLeave = (e: MouseEvent) => {
+            if (triggered) return;
+            if (e.clientY <= 10 && window.innerWidth >= 768) {
+              triggered = true;
+              root.style.display = "flex";
+              recordSeen();
+              document.removeEventListener("mouseleave", handleMouseLeave);
+            }
+          };
+          document.addEventListener("mouseleave", handleMouseLeave);
+          cleanupTasks.push(() => document.removeEventListener("mouseleave", handleMouseLeave));
+        } else {
+          // Immediate
           root.style.display = "flex";
           recordSeen();
-        }, delaySec * 1000);
-        cleanupTasks.push(() => clearTimeout(tid));
-      } else if (trigger === "scroll") {
-        root.style.display = "none";
-        let triggered = false;
-        const handleScroll = () => {
-          if (triggered) return;
-          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-          if (docHeight <= 0) return;
-          const current = (window.scrollY / docHeight) * 100;
-          if (current >= scrollPct) {
-            triggered = true;
-            root.style.display = "flex";
-            recordSeen();
-            window.removeEventListener("scroll", handleScroll);
-          }
-        };
-        window.addEventListener("scroll", handleScroll, { passive: true });
-        cleanupTasks.push(() => window.removeEventListener("scroll", handleScroll));
-      } else if (trigger === "exit_intent") {
-        root.style.display = "none";
-        let triggered = false;
-        const handleMouseLeave = (e: MouseEvent) => {
-          if (triggered) return;
-          if (e.clientY <= 10 && window.innerWidth >= 768) {
-            triggered = true;
-            root.style.display = "flex";
-            recordSeen();
-            document.removeEventListener("mouseleave", handleMouseLeave);
-          }
-        };
-        document.addEventListener("mouseleave", handleMouseLeave);
-        cleanupTasks.push(() => document.removeEventListener("mouseleave", handleMouseLeave));
-      } else {
-        // Immediate
-        root.style.display = "flex";
-        recordSeen();
+        }
       }
     }
 
-    // Hoist announcement bar to top/bottom of page body on live storefronts so position options are strictly respected.
-    // In studio preview canvas, DO NOT hoist - React manages the slot and transform: translateZ(0) contains fixed positioning.
+    // Hoist elements to document.body on live storefronts & demo pages
+    // For POPUP MODALS: ALWAYS hoist to document.body so that ancestor headers/navbars with backdrop-filter, transform, or overflow: hidden CANNOT trap or clip the modal!
     const studioPreview = root.closest<HTMLElement>("[data-wto-mock-canvas], .relative.flex-1.flex.flex-col");
-    if (!studioPreview && mode === "bar") {
+    if (!studioPreview && !isStudioMockup && mode === "popup") {
+      const hoistTarget = root.ownerDocument?.body || document.body;
+      if (hoistTarget && root.parentElement !== hoistTarget) {
+        const existingOld = hoistTarget.querySelector<HTMLElement>(`.wto-popup-backdrop[data-wto-widget="${widgetId}"]`);
+        if (existingOld && existingOld !== root) {
+          existingOld.remove();
+        }
+        hoistTarget.appendChild(root);
+        cleanupTasks.push(() => {
+          if (root.parentElement === hoistTarget) root.remove();
+        });
+      }
+    }
+
+    // For ANNOUNCEMENT BARS: Hoist to top/bottom of body
+    if (!studioPreview && !isStudioMockup && mode === "bar") {
       const barPosVal = root.getAttribute("data-ap-bar-pos") || "fixed_top";
       const isTop = barPosVal === "fixed_top" || barPosVal === "flow_top" || barPosVal === "top_fixed" || barPosVal === "top_flow";
       const isBottom = barPosVal === "fixed_bottom" || barPosVal === "flow_bottom" || barPosVal === "bottom_fixed" || barPosVal === "bottom_flow";
 
       const hoistTarget = root.ownerDocument?.body || document.body;
       if (hoistTarget) {
-        // Remove any old hoisted instance of this widget
         const existingOld = hoistTarget.querySelector<HTMLElement>(`[data-wto-widget="${widgetId}"]`);
         if (existingOld && existingOld !== root) {
           existingOld.remove();
@@ -1104,6 +1151,14 @@ export function attachAnnouncementPopupInteractivity(
 
       updateBarOffset();
       recordSeen();
+
+      if (dismissStorage && widgetId && !isPreview) {
+        const dismissKey = `wto_ap_dismissed_${widgetId}`;
+        try {
+          if (dismissScope === "permanent") localStorage.setItem(dismissKey, "1");
+          else sessionStorage.setItem(dismissKey, "1");
+        } catch (_) {}
+      }
     };
 
     const reopenWidget = (e?: Event) => {
@@ -1163,6 +1218,24 @@ export function attachAnnouncementPopupInteractivity(
     if (reopenBtn) {
       reopenBtn.addEventListener("click", reopenWidget);
       cleanupTasks.push(() => reopenBtn.removeEventListener("click", reopenWidget));
+    }
+
+    if (mode === "popup") {
+      const handleBackdropClick = (e: MouseEvent) => {
+        if (e.target === root) {
+          closeWidget(e);
+        }
+      };
+      root.addEventListener("click", handleBackdropClick);
+      cleanupTasks.push(() => root.removeEventListener("click", handleBackdropClick));
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape" && root.style.display !== "none" && !root.classList.contains("wto-closed")) {
+          closeWidget(e);
+        }
+      };
+      window.addEventListener("keydown", handleKeyDown);
+      cleanupTasks.push(() => window.removeEventListener("keydown", handleKeyDown));
     }
 
     const updateBarOffset = () => {

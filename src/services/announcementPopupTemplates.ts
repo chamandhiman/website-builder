@@ -22,10 +22,14 @@ export type PopupTriggerType =
 
 export type PopupFrequencyType =
   | "always"
+  | "home_return"
   | "session"
   | "daily"
+  | "1day"
   | "weekly"
+  | "7days"
   | "monthly"
+  | "30days"
   | "once";
 
 export interface AnnouncementPopupContent {
@@ -126,9 +130,10 @@ export interface AnnouncementPopupDisplayRules {
   trigger: "immediate" | "delay" | "scroll" | "exit_intent" | "manual";
   delaySeconds: number;
   scrollPercentage: number;
-  frequency: "always" | "session" | "daily" | "weekly" | "monthly" | "once";
-  pageTargeting: "all" | "include" | "exclude";
+  frequency: PopupFrequencyType;
+  pageTargeting: "all" | "homepage_only" | "include" | "exclude" | "custom" | string;
   targetedPaths: string[];
+  reappearOnHomeReturn?: boolean;
   deviceVisibility: "all" | "desktop_only" | "mobile_only";
   schedule: AnnouncementPopupSchedule;
 
@@ -138,6 +143,7 @@ export interface AnnouncementPopupDisplayRules {
   scheduleStartTime?: string;
   scheduleEndTime?: string;
   dismissPersistence?: boolean;
+  dismissScope?: "session" | "permanent";
   [key: string]: any;
 }
 
@@ -465,8 +471,10 @@ export function normalizeAnnouncementPopupConfig(raw: any): AnnouncementPopupCon
     frequency: raw.displayRules?.frequency ?? "always",
     pageTargeting: raw.displayRules?.pageTargeting ?? "all",
     targetedPaths: raw.displayRules?.targetedPaths ?? [],
+    reappearOnHomeReturn: raw.displayRules?.reappearOnHomeReturn ?? (raw.displayRules?.frequency === "home_return"),
     deviceVisibility: raw.displayRules?.deviceVisibility ?? "all",
     dismissPersistence: raw.displayRules?.dismissPersistence ?? true,
+    dismissScope: raw.displayRules?.dismissScope ?? "session",
     schedule: raw.displayRules?.schedule ?? { enabled: false },
     scheduleEnabled: raw.displayRules?.scheduleEnabled ?? raw.displayRules?.schedule?.enabled ?? false,
     scheduleStartTime: raw.displayRules?.scheduleStartTime ?? raw.displayRules?.schedule?.startDate ?? "",

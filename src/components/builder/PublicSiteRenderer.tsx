@@ -103,6 +103,8 @@ export function PublicSiteRenderer({ slug, initialPageSlug }: PublicSiteRenderer
       seo: page.seo,
       projectSeo: project.seo,
       customHead: project.customHead,
+      floatingWidgets: project.floatingWidgets || [],
+      currentPageId: page.id,
     });
   }, [data, activePageSlug]);
 
@@ -161,7 +163,7 @@ export function PublicSiteRenderer({ slug, initialPageSlug }: PublicSiteRenderer
         srcDoc={renderedHtml}
         title={data.name || "Published Website"}
         className="w-full h-full border-0 block"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-popups-to-escape-sandbox"
       />
 
       {/* Subtle "Made with WebToolOcean" Badge */}

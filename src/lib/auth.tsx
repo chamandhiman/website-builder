@@ -115,7 +115,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         id: firebaseUser.uid,
         name: firebaseUser.displayName || "User",
         email: firebaseUser.email || "",
-        photoURL: firebaseUser.photoURL || "",
+        photoURL: firebaseUser.photoURL || firebaseUser.providerData?.[0]?.photoURL || "",
         plan: "Free plan",
         initials:
           (firebaseUser.displayName || "U")

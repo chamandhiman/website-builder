@@ -5,6 +5,8 @@ import {
   renderCountdownHtml,
   renderAnnouncementPopupHtml,
   renderFaqHtml,
+  renderWhatsAppChatHtml,
+  renderAccessibilityHtml,
 } from "@/lib/widget-runtime/wtoWidgetRuntime";
 import {
   loadLocalWidgets,
@@ -13,6 +15,8 @@ import {
   createNewGoogleReviewsWidget,
   createNewAnnouncementPopupWidget,
   createNewFaqWidget,
+  createNewWhatsAppChatWidget,
+  createNewAccessibilityWidget,
 } from "@/services/widgetService";
 import { calculateTargetTimestamp } from "@/services/countdownTemplates";
 
@@ -60,12 +64,28 @@ function getLocalWidget(widgetId: string): any {
   return null;
 }
 
+export function getCustomHtmlRawContent(data: any): string {
+  if (!data) return "";
+  if (typeof data.content?.html === "string" && data.content.html.trim()) {
+    return data.content.html.trim();
+  }
+  if (typeof data.data?.content?.html === "string" && data.data.content.html.trim()) {
+    return data.data.content.html.trim();
+  }
+  if (typeof data.html === "string" && data.html.trim()) {
+    return data.html.trim();
+  }
+  if (typeof data.snippetHtml === "string" && data.snippetHtml.trim()) {
+    return data.snippetHtml.trim();
+  }
+  return "";
+}
+
 export function buildCustomHtmlBootstrapMarkup(
   data: WidgetData,
   context?: WidgetExportContext,
 ): string {
-  const d = isCustomHtmlWidgetData(data) ? data : defaultCustomHtmlWidgetData;
-  const rawHtml = String(d.content?.html || "").trim();
+  const rawHtml = getCustomHtmlRawContent(data);
 
   // 1. If empty: In PREVIEW / EXPORT mode, do NOT show empty placeholder at all!
   if (!rawHtml) {
@@ -78,15 +98,15 @@ export function buildCustomHtmlBootstrapMarkup(
            data-builder-selectable="false"
            data-builder-editor-only="1"
            contenteditable="false"
-           style="display:flex !important;align-items:center !important;justify-content:center !important;gap:8px !important;min-height:68px !important;width:100% !important;margin:12px 0 !important;padding:16px 20px !important;box-sizing:border-box !important;border:2px dashed rgba(245,158,11,0.4) !important;border-radius:12px !important;background-color:#18181b !important;color:#fbbf24 !important;font-size:13.5px !important;font-weight:600 !important;text-align:center !important;user-select:none !important;cursor:pointer !important;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;pointer-events:none;"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-        <span style="pointer-events:none;">Add your widget here...</span>
+           style="display:flex !important;align-items:center !important;justify-content:center !important;gap:10px !important;min-height:56px !important;width:100% !important;margin:8px 0 !important;padding:12px 18px !important;box-sizing:border-box !important;border:1.5px dashed rgba(245,158,11,0.45) !important;border-radius:10px !important;background-color:#18181b !important;color:#fbbf24 !important;font-size:13px !important;font-weight:600 !important;text-align:center !important;user-select:none !important;cursor:pointer !important;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;pointer-events:none;"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+        <span style="pointer-events:none;">Configure Custom Embed / HTML</span>
       </div>
     `.trim();
   }
 
   // 2. Check if this contains a WebToolOcean dynamic widget embed
-  const wtoWidgetMatch = rawHtml.match(/data-wto-widget=["']([^"']+)["']/);
+  const wtoWidgetMatch = rawHtml.match(/data-wto-widget=(?:["']|&quot;)?([^"'\s>&;]+)(?:["']|&quot;)?/i);
   if (wtoWidgetMatch) {
     const widgetId = wtoWidgetMatch[1];
     try {
@@ -108,6 +128,14 @@ export function buildCustomHtmlBootstrapMarkup(
           widget = createNewGoogleReviewsWidget("Google Reviews", "carousel");
           widget.id = widgetId;
           void saveWidget(widget);
+        } else if (widgetId.startsWith("wgt_wa")) {
+          widget = createNewWhatsAppChatWidget("WhatsApp Live Chat", "classic_whatsapp");
+          widget.id = widgetId;
+          void saveWidget(widget);
+        } else if (widgetId.startsWith("wgt_acc")) {
+          widget = createNewAccessibilityWidget("Accessibility Toolbar", "modern_floating");
+          widget.id = widgetId;
+          void saveWidget(widget);
         }
       }
       if (widget) {
@@ -127,11 +155,19 @@ export function buildCustomHtmlBootstrapMarkup(
           renderedHtml = res.html;
           renderedCss = res.css;
         } else if (widget.type === "announcement_popup") {
-          const res = renderAnnouncementPopupHtml(widget as any, { isPreview: !context?.editorMode });
+          const res = renderAnnouncementPopupHtml(widget as any, { isPreview: false, isStudioMockup: false });
           renderedHtml = res.html;
           renderedCss = res.css;
         } else if (widget.type === "faq_accordion") {
           const res = renderFaqHtml(widget as any);
+          renderedHtml = res.html;
+          renderedCss = res.css;
+        } else if (widget.type === "whatsapp_chat") {
+          const res = renderWhatsAppChatHtml(widget as any);
+          renderedHtml = res.html;
+          renderedCss = res.css;
+        } else if (widget.type === "accessibility") {
+          const res = renderAccessibilityHtml(widget as any, { isPreview: !context?.editorMode });
           renderedHtml = res.html;
           renderedCss = res.css;
         } else {
@@ -141,7 +177,11 @@ export function buildCustomHtmlBootstrapMarkup(
         }
         if (renderedHtml) {
           const styleTag = renderedCss ? `<style>${renderedCss}</style>\n` : "";
-          return `${styleTag}<div data-wto-widget="${widgetId}" class="wto-embedded-widget-container w-100 overflow-visible" style="display:block;width:100%;position:relative;">${renderedHtml}</div>`;
+          const isPopupModal = widget.type === "announcement_popup" && (widget as any).config?.displayMode === "popup";
+          const containerStyle = isPopupModal
+            ? "display:block;width:100%;"
+            : "display:block;width:100%;position:relative;";
+          return `${styleTag}<div data-wto-widget="${widgetId}" class="wto-embedded-widget-container w-100 overflow-visible" style="${containerStyle}">${renderedHtml}</div>`;
         }
       }
     } catch (e) {
@@ -149,17 +189,20 @@ export function buildCustomHtmlBootstrapMarkup(
     }
 
     // If widget not found in local storage, but rawHtml already contains rendered widget markup, preserve it!
-    if (/wto-countdown-root|wto-announcement-bar-root|wto-popup-backdrop|wto-google-reviews-root|wto-reviews-container|wto-faq-root|wto-faq-container|wto-dynamic-widget-root|wto-cd-inner/i.test(rawHtml)) {
+    if (/wto-countdown-root|wto-announcement-bar-root|wto-popup-backdrop|wto-google-reviews-root|wto-reviews-container|wto-faq-root|wto-faq-container|wto-wa-root|wto-a11y-root|wto-dynamic-widget-root|wto-cd-inner/i.test(rawHtml)) {
       const cleanHtml = context?.editorMode
         ? rawHtml.replace(/<script[^>]*src=["']https:\/\/widgets\.webtoolocean\.com\/widget\.js["'][^>]*>\s*<\/script>/gi, "")
         : rawHtml;
       return `<div class="wto-custom-html-wrapper w-100 overflow-visible" style="display:block;width:100%;position:relative;">${cleanHtml}</div>`;
     }
 
-    // If not found in local storage, in preview or live mode preserve the embed markup so runtime script can initialize it
+    // If not found in local storage, in preview or live mode preserve the embed markup and ensure runtime script is available
     if (!context?.editorMode) {
-      const cleanHtml = rawHtml.replace(/<script[^>]*src=["']https:\/\/widgets\.webtoolocean\.com\/widget\.js["'][^>]*>\s*<\/script>/gi, "");
-      return `<div data-wto-widget="${widgetId}" class="wto-embedded-widget-container w-100 overflow-visible" style="display:block;width:100%;position:relative;">${cleanHtml}</div>`;
+      const hasScriptTag = /widget\.js/i.test(rawHtml);
+      const scriptTag = hasScriptTag
+        ? ""
+        : `\n<script src="https://widgets.webtoolocean.com/widget.js" async></script>`;
+      return `<div data-wto-widget="${widgetId}" class="wto-embedded-widget-container w-100 overflow-visible" style="display:block;width:100%;">${rawHtml}${scriptTag}</div>`;
     }
     return `
       <div data-wto-widget="${widgetId}" class="wto-custom-html-pending"
@@ -170,11 +213,7 @@ export function buildCustomHtmlBootstrapMarkup(
     `.trim();
   }
 
-  // 3. If no widget embed is present: In PREVIEW / EXPORT mode, do NOT show it
-  if (!context?.editorMode) {
-    return "";
-  }
-
-  const cleanHtml = rawHtml.replace(/<script[^>]*src=["']https:\/\/widgets\.webtoolocean\.com\/widget\.js["'][^>]*>\s*<\/script>/gi, "");
-  return `<div class="wto-custom-html-wrapper w-100 overflow-visible" style="display:block;width:100%;position:relative;">${cleanHtml}</div>`;
+  // 3. For custom HTML, iframes, and third-party embeds (YouTube, Calendly, forms, etc.):
+  // ALWAYS return the content so it reliably displays on preview, demo, and published websites!
+  return `<div class="wto-custom-html-wrapper w-100 overflow-visible" style="display:block;width:100%;position:relative;">${rawHtml}</div>`;
 }

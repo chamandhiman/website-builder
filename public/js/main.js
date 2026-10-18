@@ -93,7 +93,12 @@
 
   // 5. Scroll Animations (IntersectionObserver)
   function initScrollAnimations() {
-    if (!('IntersectionObserver' in window)) return;
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('[data-anim], .wl-fade-in').forEach(function (el) {
+        el.classList.add('wto-in');
+      });
+      return;
+    }
 
     var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
@@ -106,9 +111,38 @@
       });
     }, { threshold: 0.15 });
 
-    document.querySelectorAll('[data-anim], .wl-fade-in').forEach(function (el) {
-      observer.observe(el);
-    });
+    function observeElements(root) {
+      (root || document).querySelectorAll('[data-anim], .wl-fade-in').forEach(function (el) {
+        try {
+          var r = el.getBoundingClientRect();
+          if (r.top < (window.innerHeight || document.documentElement.clientHeight || 800)) {
+            el.classList.add('wto-in');
+          }
+        } catch (_) {
+          el.classList.add('wto-in');
+        }
+        observer.observe(el);
+      });
+    }
+
+    observeElements(document);
+
+    if ('MutationObserver' in window && document.body) {
+      var mo = new MutationObserver(function (mutations) {
+        mutations.forEach(function (m) {
+          m.addedNodes.forEach(function (node) {
+            if (node.nodeType === 1) {
+              if (node.hasAttribute && (node.hasAttribute('data-anim') || node.classList.contains('wl-fade-in'))) {
+                node.classList.add('wto-in');
+                observer.observe(node);
+              }
+              observeElements(node);
+            }
+          });
+        });
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+    }
   }
 
   // 6. Running Counters

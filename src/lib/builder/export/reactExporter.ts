@@ -470,7 +470,7 @@ export async function buildReactExport(project: Project): Promise<ReactExportRes
 
   // In React export, override [data-anim]{ opacity: 0; } so elements are never hidden
   const reactRuntimeCss = RUNTIME_CSS.replace(
-    /\[data-anim\]\s*\{\s*opacity:\s*0;\s*\}/g,
+    /\[data-anim\][^{]*\{\s*opacity:\s*0;\s*\}/g,
     "[data-anim]{ opacity: 1; }"
   );
 

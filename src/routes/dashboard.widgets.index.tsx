@@ -7,6 +7,9 @@ import {
   createNewGoogleReviewsWidget,
   createNewCountdownWidget,
   createNewFaqWidget,
+  createNewWhatsAppChatWidget,
+  createNewAccessibilityWidget,
+  createNewLanguageSwitcherWidget,
   saveWidget,
   linkWidgetToWebsite,
   COUNTDOWN_TEMPLATE_LIST,
@@ -67,6 +70,8 @@ import {
   Table,
   Link2,
   Unlink,
+  Accessibility,
+  Languages,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -163,30 +168,66 @@ export interface CatalogWidgetItem {
 
 const CATALOG_CATEGORIES: CatalogCategory[] = [
   { id: "all", label: "All widgets", iconName: "layout_grid", headerTitle: "All Widgets", headerIcon: "layout_grid" },
+  { id: "localization", label: "Language & Localization", iconName: "languages", headerTitle: "Language & Localization", headerIcon: "languages" },
   { id: "support", label: "Support", iconName: "message", headerTitle: "Support & Communication", headerIcon: "message" },
   { id: "sales", label: "Sales & Promotions", iconName: "megaphone", headerTitle: "Sales & Promotions", headerIcon: "megaphone" },
   { id: "reviews", label: "Reviews & Trust", iconName: "star", headerTitle: "Reviews & Trust", headerIcon: "star" },
   { id: "urgency", label: "Urgency", iconName: "clock", headerTitle: "Urgency & Engagement", headerIcon: "clock" },
   { id: "social", label: "Social", iconName: "share", headerTitle: "Social Media", headerIcon: "share" },
+  { id: "accessibility", label: "Accessibility & Compliance", iconName: "accessibility", headerTitle: "Accessibility & Compliance", headerIcon: "accessibility" },
   { id: "forms", label: "Forms", iconName: "file_text", headerTitle: "Forms & Surveys", headerIcon: "file_text" },
   { id: "other", label: "Other", iconName: "boxes", headerTitle: "Other Utilities", headerIcon: "boxes" },
 ];
 
 const CATALOG_WIDGETS: CatalogWidgetItem[] = [
+  // Language & Localization
+  {
+    id: "language_switcher",
+    title: "Website Language Switcher",
+    description: "Let visitors choose their preferred website language.",
+    categoryId: "localization",
+    status: "ready",
+    iconType: "languages",
+    iconBgClass: "bg-[#0284c7] text-white",
+    features: [
+      "Zero paid API required — direct navigation to translated pages",
+      "7 distinct layout presets (Globe, Flag button, Floating, Pills, etc.)",
+      "Searchable catalog of 50+ languages with BCP 47 code validation",
+      "Browser language suggestions, client persistence & anti-loop redirect safety",
+    ],
+  },
+
+  // Accessibility & Compliance
+  {
+    id: "accessibility",
+    title: "Accessibility Widget",
+    description: "Give visitors convenient controls to customize their website viewing experience.",
+    categoryId: "accessibility",
+    status: "ready",
+    iconType: "accessibility",
+    iconBgClass: "bg-[#0284c7] text-white",
+    features: [
+      "Real text size, letter spacing, and line height adjusters",
+      "High contrast, inverted, and monochrome visual modes",
+      "Dyslexic/readable font, reading guide, and large cursor aids",
+      "100% keyboard navigable, ARIA compliant, and site-persistent",
+    ],
+  },
+
   // 1. Support & Communication
   {
     id: "whatsapp_chat",
     title: "WhatsApp Live Chat",
-    description: "Let visitors chat with you on WhatsApp.",
+    description: "Let visitors contact you instantly through WhatsApp.",
     categoryId: "support",
-    status: "coming_soon",
+    status: "ready",
     iconType: "whatsapp",
     iconBgClass: "bg-[#25d366] text-white",
     features: [
-      "Floating WhatsApp chat bubble with custom button position",
-      "Pre-filled welcome greetings and starter questions",
-      "Custom support agent avatar, name, and online badge",
-      "Direct redirection to WhatsApp Web or mobile app",
+      "Official WhatsApp Click to Chat (wa.me) URL integration",
+      "Floating buttons, greeting speech bubbles, and contact cards",
+      "Pre-filled starter messages & agent profile information",
+      "100% free — no paid WhatsApp API or backend needed",
     ],
   },
   {
@@ -550,8 +591,12 @@ const CATALOG_WIDGETS: CatalogWidgetItem[] = [
 
 function renderItemIcon(iconType: string) {
   switch (iconType) {
+    case "languages":
+      return <Languages className="w-5 h-5 text-white" />;
     case "whatsapp":
       return <WhatsAppIcon />;
+    case "accessibility":
+      return <Accessibility className="w-5 h-5 text-white" />;
     case "faq":
       return <HelpCircle className="w-5 h-5 text-white" />;
     case "live_chat":
@@ -603,10 +648,70 @@ function renderItemIcon(iconType: string) {
   }
 }
 
+function getWidgetDisplayMeta(type: string, isSmall = false, config?: any) {
+  const iconSize = isSmall ? "w-3.5 h-3.5" : "w-4 h-4";
+  switch (type) {
+    case "language_switcher":
+      return {
+        label: "Website Language Switcher",
+        icon: <Languages className={`${iconSize} text-[#38bdf8]`} />,
+        containerClass: "bg-[#38bdf8]/15 border-[#38bdf8]/30 text-[#38bdf8]",
+      };
+    case "accessibility":
+      return {
+        label: "Accessibility Toolbar",
+        icon: <Accessibility className={`${iconSize} text-[#38bdf8]`} />,
+        containerClass: "bg-[#38bdf8]/15 border-[#38bdf8]/30 text-[#38bdf8]",
+      };
+    case "whatsapp_chat":
+      return {
+        label: "WhatsApp Live Chat",
+        icon: <WhatsAppIcon className={`${iconSize} text-[#25d366]`} />,
+        containerClass: "bg-[#25d366]/15 border-[#25d366]/30 text-[#25d366]",
+      };
+    case "countdown":
+      return {
+        label: "Countdown Timer",
+        icon: <Clock className={`${iconSize} text-[#f59e0b]`} />,
+        containerClass: "bg-amber-500/15 border-amber-500/30 text-amber-400",
+      };
+    case "announcement_popup":
+      if (config?.displayMode === "popup") {
+        return {
+          label: "Popup Modal",
+          icon: <Layers className={`${iconSize} text-[#a855f7]`} />,
+          containerClass: "bg-purple-500/15 border-purple-500/30 text-purple-400",
+        };
+      }
+      return {
+        label: "Announcement Bar",
+        icon: <Megaphone className={`${iconSize} text-[#3b82f6]`} />,
+        containerClass: "bg-blue-500/15 border-blue-500/30 text-blue-400",
+      };
+    case "faq_accordion":
+      return {
+        label: "FAQ Accordion",
+        icon: <HelpCircle className={`${iconSize} text-sky-400`} />,
+        containerClass: "bg-sky-500/15 border-sky-500/30 text-sky-400",
+      };
+    case "google_reviews":
+    default:
+      return {
+        label: "Google Reviews",
+        icon: <GoogleIcon className={iconSize} />,
+        containerClass: "bg-white/[0.08] border-white/[0.15] text-white",
+      };
+  }
+}
+
 function renderCategoryPillIcon(iconName: string, className = "w-3.5 h-3.5") {
   switch (iconName) {
+    case "languages":
+      return <Languages className={className} />;
     case "layout_grid":
       return <LayoutGrid className={className} />;
+    case "accessibility":
+      return <Accessibility className={className} />;
     case "message":
       return <MessageSquare className={className} />;
     case "megaphone":
@@ -905,18 +1010,69 @@ function DashboardWidgetsPage() {
     }
   };
 
+  const handleCreateWhatsAppChat = async (templateKey: any = "classic_whatsapp") => {
+    try {
+      const newWidget = createNewWhatsAppChatWidget("WhatsApp Live Chat", templateKey);
+      await saveWidget(newWidget);
+      toast.success("WhatsApp Live Chat created! Opening Studio…");
+      navigate({
+        to: "/dashboard/widgets/whatsapp-chat/$widgetId",
+        params: { widgetId: newWidget.id },
+      } as any);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to create WhatsApp widget");
+    }
+  };
+
+  const handleCreateAccessibility = async (templateKey: any = "modern_floating") => {
+    try {
+      const newWidget = createNewAccessibilityWidget("Accessibility Widget", templateKey);
+      await saveWidget(newWidget);
+      toast.success("Accessibility Widget created! Opening Studio…");
+      navigate({
+        to: "/dashboard/widgets/accessibility/$widgetId",
+        params: { widgetId: newWidget.id },
+      } as any);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to create Accessibility widget");
+    }
+  };
+
+  const handleCreateLanguageSwitcher = async (templateKey: any = "classic_globe") => {
+    try {
+      const newWidget = createNewLanguageSwitcherWidget("Website Language Switcher", templateKey);
+      await saveWidget(newWidget);
+      toast.success("Website Language Switcher created! Opening Studio…");
+      navigate({
+        to: "/dashboard/widgets/language-switcher/$widgetId",
+        params: { widgetId: newWidget.id },
+      } as any);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to create Language Switcher widget");
+    }
+  };
+
   const handleWidgetClick = (item: CatalogWidgetItem) => {
     if (item.status === "ready") {
       if (item.id === "countdown_timer") {
         setViewMode("choose_countdown");
       } else if (item.id === "google_reviews") {
         setViewMode("choose_google_reviews");
+      } else if (item.id === "language_switcher") {
+        handleCreateLanguageSwitcher("classic_globe");
       } else if (item.id === "faq_accordion") {
         handleCreateFaq("classic_accordion");
       } else if (item.id === "announcement_bar") {
         handleCreateAnnouncement("bar");
       } else if (item.id === "popup") {
         handleCreateAnnouncement("popup");
+      } else if (item.id === "whatsapp_chat") {
+        handleCreateWhatsAppChat("classic_whatsapp");
+      } else if (item.id === "accessibility") {
+        handleCreateAccessibility("modern_floating");
       }
     } else {
       setComingSoonModalWidget(item);
@@ -1800,6 +1956,77 @@ function DashboardWidgetsPage() {
                     </article>
                   )}
 
+                  {/* WhatsApp Live Chat (Ready & Fully Functional) */}
+                  {filterMatches("support", "whatsapp live chat") && (
+                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#25d366]/40 transition overflow-hidden flex flex-col justify-between group shadow-lg">
+                      {/* Preview Box */}
+                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(37,211,102,0.15),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="p-2.5 rounded-2xl bg-white/[0.08] border border-white/10 text-xs text-zinc-200 max-w-[220px] shadow-md flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-[#25d366] shrink-0" />
+                            <span className="truncate">Hi! How can we help you today?</span>
+                          </div>
+                          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#25d366] text-zinc-950 font-bold text-xs shadow-lg shadow-[#25d366]/20">
+                            <WhatsAppIcon className="w-4 h-4 fill-current" />
+                            <span>Chat on WhatsApp</span>
+                          </div>
+                        </div>
+                        <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-0.5 rounded-full mt-3">
+                          💬 Official Click to Chat
+                        </span>
+                      </div>
+
+                      {/* Card Body */}
+                      <div className="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
+                              Ready
+                            </span>
+                            <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
+                              4 Pro presets
+                            </span>
+                          </div>
+                          <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
+                            Customer Support
+                          </p>
+                          <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
+                            <span className="w-7 h-7 rounded-lg bg-[#25d366]/15 border border-[#25d366]/30 text-[#25d366] flex items-center justify-center">
+                              <WhatsAppIcon className="w-4 h-4 fill-current" />
+                            </span>
+                            <span>WhatsApp Live Chat</span>
+                          </h3>
+                          <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
+                            Let visitors contact you instantly on WhatsApp with floating buttons, greeting bubbles, pre-filled messages, and custom team avatars.
+                          </p>
+                          <ul className="flex flex-wrap gap-1.5 mb-2">
+                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
+                              ✓ 4 presets
+                            </li>
+                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
+                              ✓ Pre-filled messages
+                            </li>
+                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
+                              ✓ Free — no paid API
+                            </li>
+                          </ul>
+                        </div>
+
+                        <div className="pt-4 mt-2 border-t border-white/[0.06]">
+                          <button
+                            type="button"
+                            onClick={() => handleCreateWhatsAppChat("classic_whatsapp")}
+                            className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#25d366] to-[#128c7e] hover:opacity-95 text-zinc-950 font-extrabold text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow-md shadow-[#25d366]/20"
+                          >
+                            <span>+ Create WhatsApp Chat</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  )}
+
                   {/* Countdown Timer (Ready) */}
                   {filterMatches("urgency", "countdown timer") && (
                     <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/30 transition overflow-hidden flex flex-col justify-between group shadow-lg">
@@ -1961,23 +2188,23 @@ function DashboardWidgetsPage() {
                     </article>
                   )}
 
-                  {/* Announcement Bar & Popup (Ready) */}
+                  {/* Announcement Bar (Ready) */}
                   {filterMatches("sales", "announcement bar") && (
-                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/30 transition overflow-hidden flex flex-col justify-between group shadow-lg">
-                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(250,204,21,0.12),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
+                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-blue-400/30 transition overflow-hidden flex flex-col justify-between group shadow-lg">
+                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(59,130,246,0.15),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
                         <div className="w-[230px] rounded-xl overflow-hidden bg-[#1f1f25] border border-white/10 shadow-xl">
-                          <div className="bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] text-[10px] font-black py-1 px-2.5 overflow-hidden whitespace-nowrap flex items-center justify-between">
+                          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-[10px] font-black py-1 px-2.5 overflow-hidden whitespace-nowrap flex items-center justify-between">
                             <span>🔥 Summer Sale — 25% OFF</span>
-                            <span className="text-[9px] bg-black/20 px-1 rounded font-mono">SAVE25</span>
+                            <span className="text-[9px] bg-black/30 px-1 rounded font-mono">SAVE25</span>
                           </div>
                           <div className="p-3 space-y-1.5 opacity-60">
                             <div className="h-1.5 bg-white/30 rounded w-3/4" />
                             <div className="h-1 bg-white/15 rounded w-1/2" />
                           </div>
                         </div>
-                        <span className="text-[11px] font-bold text-[#ffc21a] bg-[#ffc21a]/10 border border-[#ffc21a]/20 px-3 py-0.5 rounded-full mt-3 flex items-center gap-1">
+                        <span className="text-[11px] font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-3 py-0.5 rounded-full mt-3 flex items-center gap-1">
                           <Megaphone className="w-3 h-3" />
-                          <span>Bars &amp; Modal Popups</span>
+                          <span>Header &amp; Footer Bars</span>
                         </span>
                       </div>
 
@@ -1989,20 +2216,20 @@ function DashboardWidgetsPage() {
                               Ready
                             </span>
                             <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
-                              12 Pro presets
+                              6 Pro presets
                             </span>
                           </div>
                           <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
                             Promotions &amp; Conversion
                           </p>
                           <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
-                            <span className="w-7 h-7 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-400 flex items-center justify-center">
+                            <span className="w-7 h-7 rounded-lg bg-blue-500/15 border border-blue-500/30 text-blue-400 flex items-center justify-center">
                               <Megaphone className="w-4 h-4" />
                             </span>
-                            <span>Announcement &amp; Popup</span>
+                            <span>Announcement Bar</span>
                           </h3>
                           <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
-                            Sticky top/bottom notification bars and modal popups with live countdown, exit-intent triggers, discount codes and scheduling.
+                            Sticky top &amp; bottom notification banners with countdown urgency, coupon click-to-copy, and sticky scroll pinning.
                           </p>
                         </div>
 
@@ -2010,9 +2237,68 @@ function DashboardWidgetsPage() {
                           <button
                             type="button"
                             onClick={() => handleCreateAnnouncement("bar")}
-                            className="flex-1 py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md shadow-[#ffc21a]/20 hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer"
+                            className="flex-1 py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-black text-xs shadow-md shadow-blue-500/20 hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer"
                           >
-                            <span>Choose widget</span>
+                            <span>Create Announcement Bar</span>
+                            <span className="text-sm">→</span>
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  )}
+
+                  {/* Popup Modal (Ready) */}
+                  {filterMatches("sales", "popup") && (
+                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-purple-400/30 transition overflow-hidden flex flex-col justify-between group shadow-lg">
+                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(168,85,247,0.15),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
+                        <div className="w-[190px] rounded-xl overflow-hidden bg-[#1f1f25] border border-purple-500/30 shadow-2xl p-3 text-center">
+                          <span className="inline-block px-1.5 py-0.5 rounded text-[8px] font-bold bg-purple-500/20 text-purple-300 mb-1 border border-purple-500/30">
+                            SPECIAL OFFER
+                          </span>
+                          <div className="text-[11px] font-bold text-white leading-tight">Get 20% Off Today</div>
+                          <div className="text-[9px] text-zinc-400 mt-0.5">Use code: WELCOME20</div>
+                          <div className="mt-2 py-0.5 px-2 rounded-full bg-purple-500 text-white font-bold text-[9px]">
+                            Claim Discount
+                          </div>
+                        </div>
+                        <span className="text-[11px] font-bold text-purple-400 bg-purple-500/10 border border-purple-500/20 px-3 py-0.5 rounded-full mt-2 flex items-center gap-1">
+                          <Layers className="w-3 h-3" />
+                          <span>Lightbox &amp; Dialogs</span>
+                        </span>
+                      </div>
+
+                      <div className="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
+                              Ready
+                            </span>
+                            <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
+                              6 Pro presets
+                            </span>
+                          </div>
+                          <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
+                            Promotions &amp; Conversion
+                          </p>
+                          <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
+                            <span className="w-7 h-7 rounded-lg bg-purple-500/15 border border-purple-500/30 text-purple-400 flex items-center justify-center">
+                              <Layers className="w-4 h-4" />
+                            </span>
+                            <span>Popup Modal</span>
+                          </h3>
+                          <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
+                            High-converting modal popups with timed page-load delay, return-to-home trigger, exit intent, and discount coupons.
+                          </p>
+                        </div>
+
+                        <div className="pt-4 mt-2 border-t border-white/[0.06] flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleCreateAnnouncement("popup")}
+                            className="flex-1 py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-purple-500 to-fuchsia-600 text-white font-black text-xs shadow-md shadow-purple-500/20 hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer"
+                          >
+                            <span>Create Popup Modal</span>
                             <span className="text-sm">→</span>
                           </button>
                         </div>
@@ -2075,6 +2361,91 @@ function DashboardWidgetsPage() {
                             className="w-full py-2.5 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-dashed border-white/10 hover:border-[#ffc21a]/40 text-[#9a9aa3] hover:text-white font-bold text-xs transition cursor-pointer"
                           >
                             🔔 Notify me when ready
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  )}
+                  {/* Website Language Switcher (Ready & Fully Functional) */}
+                  {filterMatches("localization", "website language switcher") && (
+                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#38bdf8]/40 transition overflow-hidden flex flex-col justify-between group shadow-lg">
+                      {/* Preview Box */}
+                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(56,189,248,0.18),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
+                        <div className="w-[230px] rounded-xl overflow-hidden bg-[#1f1f25] border border-white/10 shadow-xl p-3 flex flex-col gap-2">
+                          <div className="flex items-center justify-between text-xs text-white font-bold pb-2 border-b border-white/10">
+                            <div className="flex items-center gap-1.5">
+                              <Globe className="w-3.5 h-3.5 text-[#38bdf8]" />
+                              <span>Select Language</span>
+                            </div>
+                            <span className="text-[10px] text-zinc-400">7 Presets</span>
+                          </div>
+                          <div className="flex items-center justify-between text-xs text-zinc-200">
+                            <span className="flex items-center gap-1.5">
+                              <span>🇺🇸</span>
+                              <span>English</span>
+                            </span>
+                            <span className="text-[10px] text-[#38bdf8] font-bold">✓ Active</span>
+                          </div>
+                          <div className="flex items-center justify-between text-xs text-zinc-400">
+                            <span className="flex items-center gap-1.5">
+                              <span>🇪🇸</span>
+                              <span>Español</span>
+                            </span>
+                            <span className="text-[10px] font-mono text-zinc-500">/es/</span>
+                          </div>
+                        </div>
+
+                        <span className="text-[11px] font-bold text-[#38bdf8] bg-[#38bdf8]/10 border border-[#38bdf8]/20 px-3 py-0.5 rounded-full mt-3 flex items-center gap-1">
+                          <Languages className="w-3 h-3" />
+                          <span>Mode A: No-API Page Router</span>
+                        </span>
+                      </div>
+
+                      {/* Card Body */}
+                      <div className="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
+                              Ready
+                            </span>
+                            <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
+                              50+ Languages
+                            </span>
+                          </div>
+                          <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
+                            Language &amp; Localization
+                          </p>
+                          <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
+                            <span className="w-7 h-7 rounded-lg bg-[#38bdf8]/15 border border-[#38bdf8]/30 text-[#38bdf8] flex items-center justify-center">
+                              <Languages className="w-4 h-4" />
+                            </span>
+                            <span>Website Language Switcher</span>
+                          </h3>
+                          <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
+                            Let visitors choose their preferred website language and route seamlessly to translated pages. Works without paid translation APIs.
+                          </p>
+                          <ul className="flex flex-wrap gap-1.5 mb-2">
+                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
+                              ✓ 7 Layouts
+                            </li>
+                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
+                              ✓ Browser detection
+                            </li>
+                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
+                              ✓ Zero paid API
+                            </li>
+                          </ul>
+                        </div>
+
+                        <div className="pt-4 mt-2 border-t border-white/[0.06]">
+                          <button
+                            type="button"
+                            onClick={() => handleCreateLanguageSwitcher("classic_globe")}
+                            className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#38bdf8] to-[#0284c7] hover:opacity-95 text-black font-extrabold text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow-md shadow-[#38bdf8]/20"
+                          >
+                            <span>+ Create Language Switcher</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       </div>
@@ -2203,6 +2574,8 @@ function DashboardWidgetsPage() {
                         <option value="countdown">Countdown Timer</option>
                         <option value="announcement_popup">Announcement & Popup</option>
                         <option value="faq_accordion">FAQ Accordion</option>
+                        <option value="whatsapp_chat">WhatsApp Live Chat</option>
+                        <option value="accessibility">Accessibility Toolbar</option>
                       </select>
                       <ChevronDown className="w-3.5 h-3.5 text-[#9a9aa3] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                     </div>
@@ -2337,49 +2710,49 @@ function DashboardWidgetsPage() {
                             const isCountdown = w.type === "countdown";
                             const isAnnouncement = w.type === "announcement_popup";
                             const isFaq = w.type === "faq_accordion";
+                            const isWhatsApp = w.type === "whatsapp_chat";
+                            const isAccessibility = w.type === "accessibility";
                             const isPublished = w.status === "published";
                             const isEnabled = w.enabled !== false;
                             const viewsCount = w.viewsCount ?? (1200 + ((widgets.indexOf(w) * 840) % 5000));
                             const siteInfo = getWidgetWebsiteInfo(w);
+                            const isLanguageSwitcher = w.type === "language_switcher";
                             const studioRoute = isCountdown
                               ? `/dashboard/widgets/countdown/${w.id}`
                               : isAnnouncement
                               ? `/dashboard/widgets/announcement-popup/${w.id}`
                               : isFaq
                               ? `/dashboard/widgets/faq-accordion/${w.id}`
+                              : isWhatsApp
+                              ? `/dashboard/widgets/whatsapp-chat/${w.id}`
+                              : isAccessibility
+                              ? `/dashboard/widgets/accessibility/${w.id}`
+                              : isLanguageSwitcher
+                              ? `/dashboard/widgets/language-switcher/${w.id}`
                               : `/dashboard/widgets/google-reviews/${w.id}`;
 
                             return (
                               <tr key={w.id} className="hover:bg-white/[0.02] transition">
                                 {/* 1. Widget Name & Details */}
                                 <td className="py-3.5 px-5">
-                                  <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-[#ffc21a]/10 border border-[#ffc21a]/20 flex items-center justify-center shrink-0 text-[#ffc21a]">
-                                      {isCountdown ? (
-                                        <Clock className="w-4 h-4" />
-                                      ) : isAnnouncement ? (
-                                        <Megaphone className="w-4 h-4" />
-                                      ) : isFaq ? (
-                                        <HelpCircle className="w-4 h-4 text-sky-400" />
-                                      ) : (
-                                        <GoogleIcon className="w-4 h-4" />
-                                      )}
-                                    </div>
-                                    <div>
-                                      <strong className="block text-sm font-bold text-white leading-tight">
-                                        {w.name}
-                                      </strong>
-                                      <small className="block text-[11px] text-[#6b6b74] leading-tight mt-0.5">
-                                        {isCountdown
-                                          ? "Countdown Timer"
-                                          : isAnnouncement
-                                          ? "Announcement & Popup"
-                                          : isFaq
-                                          ? "FAQ Accordion"
-                                          : "Google Reviews"}
-                                      </small>
-                                    </div>
-                                  </div>
+                                  {(() => {
+                                    const meta = getWidgetDisplayMeta(w.type, false, w.config);
+                                    return (
+                                      <div className="flex items-center gap-3">
+                                        <div className={`w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 shadow-sm ${meta.containerClass}`}>
+                                          {meta.icon}
+                                        </div>
+                                        <div>
+                                          <strong className="block text-sm font-bold text-white leading-tight">
+                                            {w.name}
+                                          </strong>
+                                          <small className="block text-[11px] text-[#8a8a93] leading-tight mt-0.5 font-medium">
+                                            {meta.label}
+                                          </small>
+                                        </div>
+                                      </div>
+                                    );
+                                  })()}
                                 </td>
 
                                 {/* 2. Proper Website Column */}
@@ -2721,48 +3094,48 @@ function DashboardWidgetsPage() {
                                     const isCountdown = w.type === "countdown";
                                     const isAnnouncement = w.type === "announcement_popup";
                                     const isFaq = w.type === "faq_accordion";
+                                    const isWhatsApp = w.type === "whatsapp_chat";
+                                    const isAccessibility = w.type === "accessibility";
                                     const isPublished = w.status === "published";
                                     const isEnabled = w.enabled !== false;
                                     const viewsCount = w.viewsCount ?? (1200 + ((widgets.indexOf(w) * 840) % 5000));
+                                    const isLanguageSwitcher = w.type === "language_switcher";
                                     const studioRoute = isCountdown
                                       ? `/dashboard/widgets/countdown/${w.id}`
                                       : isAnnouncement
                                       ? `/dashboard/widgets/announcement-popup/${w.id}`
                                       : isFaq
                                       ? `/dashboard/widgets/faq-accordion/${w.id}`
+                                      : isWhatsApp
+                                      ? `/dashboard/widgets/whatsapp-chat/${w.id}`
+                                      : isAccessibility
+                                      ? `/dashboard/widgets/accessibility/${w.id}`
+                                      : isLanguageSwitcher
+                                      ? `/dashboard/widgets/language-switcher/${w.id}`
                                       : `/dashboard/widgets/google-reviews/${w.id}`;
 
                                     return (
                                       <tr key={w.id} className="hover:bg-white/[0.02] transition">
                                         {/* Widget */}
                                         <td className="py-3 px-4">
-                                          <div className="flex items-center gap-3">
-                                            <div className="w-7 h-7 rounded-lg bg-[#ffc21a]/10 border border-[#ffc21a]/20 flex items-center justify-center shrink-0 text-[#ffc21a]">
-                                              {isCountdown ? (
-                                                <Clock className="w-3.5 h-3.5" />
-                                              ) : isAnnouncement ? (
-                                                <Megaphone className="w-3.5 h-3.5" />
-                                              ) : isFaq ? (
-                                                <HelpCircle className="w-3.5 h-3.5 text-sky-400" />
-                                              ) : (
-                                                <GoogleIcon className="w-3.5 h-3.5" />
-                                              )}
-                                            </div>
-                                            <div>
-                                              <strong className="block text-xs font-bold text-white leading-tight">
-                                                {w.name}
-                                              </strong>
-                                              <small className="block text-[10px] text-[#6b6b74] leading-tight mt-0.5">
-                                                {isCountdown
-                                                  ? "Countdown Timer"
-                                                  : isAnnouncement
-                                                  ? "Announcement & Popup"
-                                                  : isFaq
-                                                  ? "FAQ Accordion"
-                                                  : "Google Reviews"}
-                                              </small>
-                                            </div>
-                                          </div>
+                                          {(() => {
+                                            const meta = getWidgetDisplayMeta(w.type, true, w.config);
+                                            return (
+                                              <div className="flex items-center gap-3">
+                                                <div className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 shadow-sm ${meta.containerClass}`}>
+                                                  {meta.icon}
+                                                </div>
+                                                <div>
+                                                  <strong className="block text-xs font-bold text-white leading-tight">
+                                                    {w.name}
+                                                  </strong>
+                                                  <small className="block text-[10px] text-[#8a8a93] leading-tight mt-0.5 font-medium">
+                                                    {meta.label}
+                                                  </small>
+                                                </div>
+                                              </div>
+                                            );
+                                          })()}
                                         </td>
 
                                         {/* Views */}

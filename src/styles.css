@@ -217,4 +217,46 @@ overflow: auto !important;
   scrollbar-width: none !important;
 }
 
+/* Siri Voice Assistant Animations */
+@keyframes siri-spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes siri-spin-reverse-slow {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes siri-pulse-subtle {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+.animate-spin-slow {
+  animation: siri-spin-slow 6s linear infinite;
+}
+
+.animate-spin-reverse-slow {
+  animation: siri-spin-reverse-slow 8s linear infinite;
+}
+
+.animate-pulse-subtle {
+  animation: siri-pulse-subtle 2.5s ease-in-out infinite;
+}
+
 

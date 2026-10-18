@@ -20,7 +20,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
-import { LogOut, User as UserIcon, Home, X, Palette, Menu } from "lucide-react";
+import { LogOut, User as UserIcon, Home, X, Palette, Menu, Puzzle } from "lucide-react";
 import { DashboardThemeSelector, useDashboardTheme } from "@/lib/dashboard-theme";
 
 export function AppSidebarNav({
@@ -195,24 +195,9 @@ export function AppSidebarNav({
     },
     {
       key: "widgets",
-      label: "Widgets",
+      label: "Plugins",
       route: "/dashboard/widgets",
-      icon: (
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="shrink-0"
-        >
-          <rect x="3" y="3" width="18" height="18" rx="3" />
-          <path d="M3 12h18M12 3v18" />
-        </svg>
-      ),
+      icon: <Puzzle className="w-[18px] h-[18px] shrink-0" strokeWidth={1.8} />,
       count: widgetsCount,
     },
   ];

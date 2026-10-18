@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "@/lib/auth.tsx";
 import { Toaster } from "@/components/ui/sonner";
 import { GoogleAnalytics } from "@/components/layout/GoogleAnalytics";
+import { VoiceAssistant } from "@/components/voiceAssistant/VoiceAssistant";
 
 function NotFoundComponent() {
   return (
@@ -153,6 +154,13 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      (window as any).__WTO_ROUTER = router;
+    }
+  }, [router]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -160,6 +168,7 @@ function RootComponent() {
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
         <Toaster richColors position="bottom-right" />
+        <VoiceAssistant />
         <GoogleAnalytics />
       </AuthProvider>
     </QueryClientProvider>

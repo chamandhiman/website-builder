@@ -102,6 +102,11 @@ export function DashboardThemeProvider({ children }: { children: React.ReactNode
     if (typeof document !== "undefined") {
       document.documentElement.setAttribute("data-dashboard-theme", theme);
     }
+    return () => {
+      if (typeof document !== "undefined") {
+        document.documentElement.removeAttribute("data-dashboard-theme");
+      }
+    };
   }, [theme]);
 
   const currentOption = useMemo(() => {

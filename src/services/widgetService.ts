@@ -3,7 +3,45 @@ import { auth, db } from "@/firebase/firebase";
 import { doc, getDoc, setDoc, deleteDoc, collection, getDocs, serverTimestamp } from "firebase/firestore";
 import { sanitizeForFirestore } from "./firestore";
 
-export type WidgetType = "google_reviews" | "countdown" | "instagram_feed" | "whatsapp_chat" | "facebook_reviews" | "announcement_popup" | "faq_accordion";
+export type WidgetType = "google_reviews" | "countdown" | "instagram_feed" | "whatsapp_chat" | "facebook_reviews" | "announcement_popup" | "faq_accordion" | "accessibility" | "language_switcher";
+
+export type {
+  LanguageOption,
+  LanguageSwitcherAppearanceConfig,
+  LanguageSwitcherBehaviorConfig,
+  LanguageSwitcherConfig,
+  LanguageSwitcherLayout,
+  LanguageSwitcherPosition,
+  LanguageSwitcherPresetKey,
+  LanguageSwitcherTemplateItem,
+} from "./languageSwitcherTemplates";
+export {
+  COMMON_LANGUAGES_CATALOG,
+  LANGUAGE_SWITCHER_PRESETS,
+  LANGUAGE_SWITCHER_TEMPLATES,
+  LANGUAGE_SWITCHER_TEMPLATE_LIST,
+  DEFAULT_LANGUAGE_SWITCHER_CONFIG,
+  createNewLanguageSwitcherWidget,
+  findCommonLanguage,
+} from "./languageSwitcherTemplates";
+
+export type {
+  AccessibilityConfig,
+  AccessibilityAppearanceConfig,
+  AccessibilityFeaturesConfig,
+  AccessibilityBehaviorConfig,
+  AccessibilityDisplayStyle,
+  AccessibilityPosition,
+  AccessibilityTheme,
+  AccessibilityContrastMode,
+  AccessibilityTemplateItem,
+} from "./accessibilityTemplates";
+export {
+  ACCESSIBILITY_TEMPLATES,
+  ACCESSIBILITY_TEMPLATE_LIST,
+  DEFAULT_ACCESSIBILITY_CONFIG,
+  createNewAccessibilityWidget,
+} from "./accessibilityTemplates";
 
 export type {
   CountdownConfig,
@@ -51,6 +89,28 @@ export {
   FAQ_TEMPLATE_LIST,
   createNewFaqWidget,
 } from "./faqTemplates";
+
+export type {
+  WhatsAppChatConfig,
+  WhatsAppChatContentConfig,
+  WhatsAppChatAppearanceConfig,
+  WhatsAppChatBehaviorConfig,
+  WhatsAppChatTemplateKey,
+  WhatsAppChatTemplateItem,
+  WhatsAppPosition,
+  WhatsAppEntranceAnimation,
+  WhatsAppAttentionAnimation,
+  WhatsAppLayoutStyle,
+} from "./whatsappChatTemplates";
+export {
+  WHATSAPP_CHAT_TEMPLATES,
+  WHATSAPP_CHAT_TEMPLATE_LIST,
+  DEFAULT_WHATSAPP_CONFIG,
+  createNewWhatsAppChatWidget,
+  normalizeWhatsAppPhone,
+  isValidWhatsAppPhone,
+  createWhatsAppUrl,
+} from "./whatsappChatTemplates";
 
 export type WidgetStatus = "draft" | "published";
 

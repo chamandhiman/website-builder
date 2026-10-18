@@ -50,6 +50,7 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
+import { WidgetStudioHeader } from "@/components/widgets/WidgetStudioHeader";
 
 export const Route = createFileRoute("/dashboard/widgets/google-reviews/$widgetId")({
   component: GoogleReviewsStudioPage,
@@ -131,6 +132,7 @@ function GoogleReviewsStudioPage() {
 
   // Device preview state
   const [previewDevice, setPreviewDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
+  const [previewKey, setPreviewKey] = useState(0);
 
   // Source search state
   const [searchQuery, setSearchQuery] = useState("");
@@ -400,7 +402,7 @@ function GoogleReviewsStudioPage() {
     if (!previewContainerRef.current) return;
     const cleanup = attachWidgetInteractivity(previewContainerRef.current, { previewDevice });
     return cleanup;
-  }, [previewMarkup, previewDevice]);
+  }, [previewMarkup, previewDevice, previewKey]);
 
   if (loading || !widget) {
     return (
@@ -419,105 +421,21 @@ function GoogleReviewsStudioPage() {
   return (
     <div className="h-screen flex flex-col bg-[#121214] text-zinc-100 overflow-hidden">
       {/* Top Studio Navbar */}
-      <header className="h-14 border-b border-zinc-800 bg-[#18181b] px-4 flex items-center justify-between gap-4 z-20">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/dashboard/widgets" as any })}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700/80 transition text-xs font-semibold"
-            title="Back to Widgets"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Back to Widgets</span>
-          </button>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-sm text-white">{widget.name}</span>
-              <span
-                className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                  isPublished
-                    ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                    : "bg-amber-500/20 text-amber-300 border border-amber-500/30"
-                }`}
-              >
-                {isPublished ? "Published" : "Draft"}
-              </span>
-            </div>
-            <div className="text-[11px] text-zinc-400 flex items-center gap-2">
-              <span>ID: <code className="text-amber-400 font-mono">{widget.id}</code></span>
-              <span>•</span>
-              <span className="truncate max-w-[200px]">{currentSource?.businessName || "No business connected"}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Device Switcher (Desktop / Tablet / Mobile) */}
-        <div className="hidden md:flex items-center bg-zinc-900 border border-zinc-800 rounded-lg p-0.5">
-          <button
-            type="button"
-            onClick={() => setPreviewDevice("desktop")}
-            className={`p-1.5 rounded-md transition-colors ${
-              previewDevice === "desktop" ? "bg-amber-400 text-black font-bold" : "text-zinc-400 hover:text-white"
-            }`}
-            title="Desktop View"
-          >
-            <Monitor className="w-4 h-4" />
-          </button>
-          <button
-            type="button"
-            onClick={() => setPreviewDevice("tablet")}
-            className={`p-1.5 rounded-md transition-colors ${
-              previewDevice === "tablet" ? "bg-amber-400 text-black font-bold" : "text-zinc-400 hover:text-white"
-            }`}
-            title="Tablet View"
-          >
-            <Tablet className="w-4 h-4" />
-          </button>
-          <button
-            type="button"
-            onClick={() => setPreviewDevice("mobile")}
-            className={`p-1.5 rounded-md transition-colors ${
-              previewDevice === "mobile" ? "bg-amber-400 text-black font-bold" : "text-zinc-400 hover:text-white"
-            }`}
-            title="Mobile View"
-          >
-            <Smartphone className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex items-center gap-2">
-          {isPublished && (
-            <button
-              type="button"
-              onClick={() => navigate({ to: `/dashboard/widgets/${widget.id}/install` as any })}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 text-xs font-semibold transition-colors"
-            >
-              <Code2 className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Install Code</span>
-            </button>
-          )}
-
-          <button
-            type="button"
-            onClick={handleSaveDraft}
-            disabled={saving}
-            className="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-medium border border-zinc-700 transition-colors disabled:opacity-50"
-          >
-            {saving ? "Saving…" : "Save Draft"}
-          </button>
-
-          <button
-            type="button"
-            onClick={handlePublish}
-            disabled={publishing}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold transition-all shadow-md active:scale-95 disabled:opacity-50"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>{publishing ? "Publishing…" : "Publish Widget"}</span>
-          </button>
-        </div>
-      </header>
+      <WidgetStudioHeader
+        widgetName={widget.name}
+        onWidgetNameChange={(name) => setWidget({ ...widget, name })}
+        status={widget.status}
+        icon={<Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />}
+        iconBgClass="bg-amber-400/15 border-amber-400/30 text-amber-400"
+        previewDevice={previewDevice}
+        onPreviewDeviceChange={setPreviewDevice}
+        onResetPreview={() => setPreviewKey((k) => k + 1)}
+        onOpenEmbed={() => navigate({ to: `/dashboard/widgets/${widget.id}/install` as any })}
+        onSaveDraft={handleSaveDraft}
+        onPublish={handlePublish}
+        saving={saving}
+        publishing={publishing}
+      />
 
       {/* Main Studio Body: Left Sidebar + Right Live Preview */}
       <div className="flex-1 flex overflow-hidden">

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TemplatesRouteImport } from './routes/templates'
 import { Route as SuperAdminRouteImport } from './routes/super-admin'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TemplatesIndexRouteImport } from './routes/templates.index'
@@ -36,10 +37,13 @@ import { Route as DashboardWidgetsIndexRouteImport } from './routes/dashboard.wi
 import { Route as SuperAdminTemplatesCreateRouteImport } from './routes/super-admin.templates.create'
 import { Route as DashboardWidgetsCreateRouteImport } from './routes/dashboard.widgets.create'
 import { Route as SuperAdminTemplatesTemplateIdEditRouteImport } from './routes/super-admin.templates.$templateId.edit'
+import { Route as DashboardWidgetsWhatsappChatWidgetIdRouteImport } from './routes/dashboard.widgets.whatsapp-chat.$widgetId'
+import { Route as DashboardWidgetsLanguageSwitcherWidgetIdRouteImport } from './routes/dashboard.widgets.language-switcher.$widgetId'
 import { Route as DashboardWidgetsGoogleReviewsWidgetIdRouteImport } from './routes/dashboard.widgets.google-reviews.$widgetId'
 import { Route as DashboardWidgetsFaqAccordionWidgetIdRouteImport } from './routes/dashboard.widgets.faq-accordion.$widgetId'
 import { Route as DashboardWidgetsCountdownWidgetIdRouteImport } from './routes/dashboard.widgets.countdown.$widgetId'
 import { Route as DashboardWidgetsAnnouncementPopupWidgetIdRouteImport } from './routes/dashboard.widgets.announcement-popup.$widgetId'
+import { Route as DashboardWidgetsAccessibilityWidgetIdRouteImport } from './routes/dashboard.widgets.accessibility.$widgetId'
 import { Route as DashboardWidgetsWidgetIdInstallRouteImport } from './routes/dashboard.widgets.$widgetId.install'
 
 const TemplatesRoute = TemplatesRouteImport.update({
@@ -55,6 +59,11 @@ const SuperAdminRoute = SuperAdminRouteImport.update({
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -180,6 +189,18 @@ const SuperAdminTemplatesTemplateIdEditRoute =
     path: '/$templateId/edit',
     getParentRoute: () => SuperAdminTemplatesRoute,
   } as any)
+const DashboardWidgetsWhatsappChatWidgetIdRoute =
+  DashboardWidgetsWhatsappChatWidgetIdRouteImport.update({
+    id: '/whatsapp-chat/$widgetId',
+    path: '/whatsapp-chat/$widgetId',
+    getParentRoute: () => DashboardWidgetsRoute,
+  } as any)
+const DashboardWidgetsLanguageSwitcherWidgetIdRoute =
+  DashboardWidgetsLanguageSwitcherWidgetIdRouteImport.update({
+    id: '/language-switcher/$widgetId',
+    path: '/language-switcher/$widgetId',
+    getParentRoute: () => DashboardWidgetsRoute,
+  } as any)
 const DashboardWidgetsGoogleReviewsWidgetIdRoute =
   DashboardWidgetsGoogleReviewsWidgetIdRouteImport.update({
     id: '/google-reviews/$widgetId',
@@ -204,6 +225,12 @@ const DashboardWidgetsAnnouncementPopupWidgetIdRoute =
     path: '/announcement-popup/$widgetId',
     getParentRoute: () => DashboardWidgetsRoute,
   } as any)
+const DashboardWidgetsAccessibilityWidgetIdRoute =
+  DashboardWidgetsAccessibilityWidgetIdRouteImport.update({
+    id: '/accessibility/$widgetId',
+    path: '/accessibility/$widgetId',
+    getParentRoute: () => DashboardWidgetsRoute,
+  } as any)
 const DashboardWidgetsWidgetIdInstallRoute =
   DashboardWidgetsWidgetIdInstallRouteImport.update({
     id: '/$widgetId/install',
@@ -214,6 +241,7 @@ const DashboardWidgetsWidgetIdInstallRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/super-admin': typeof SuperAdminRouteWithChildren
   '/templates': typeof TemplatesRouteWithChildren
@@ -239,14 +267,18 @@ export interface FileRoutesByFullPath {
   '/dashboard/widgets/': typeof DashboardWidgetsIndexRoute
   '/super-admin/templates/': typeof SuperAdminTemplatesIndexRoute
   '/dashboard/widgets/$widgetId/install': typeof DashboardWidgetsWidgetIdInstallRoute
+  '/dashboard/widgets/accessibility/$widgetId': typeof DashboardWidgetsAccessibilityWidgetIdRoute
   '/dashboard/widgets/announcement-popup/$widgetId': typeof DashboardWidgetsAnnouncementPopupWidgetIdRoute
   '/dashboard/widgets/countdown/$widgetId': typeof DashboardWidgetsCountdownWidgetIdRoute
   '/dashboard/widgets/faq-accordion/$widgetId': typeof DashboardWidgetsFaqAccordionWidgetIdRoute
   '/dashboard/widgets/google-reviews/$widgetId': typeof DashboardWidgetsGoogleReviewsWidgetIdRoute
+  '/dashboard/widgets/language-switcher/$widgetId': typeof DashboardWidgetsLanguageSwitcherWidgetIdRoute
+  '/dashboard/widgets/whatsapp-chat/$widgetId': typeof DashboardWidgetsWhatsappChatWidgetIdRoute
   '/super-admin/templates/$templateId/edit': typeof SuperAdminTemplatesTemplateIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/dashboard/favorites': typeof DashboardFavoritesRoute
   '/dashboard/projects': typeof DashboardProjectsRoute
@@ -268,16 +300,20 @@ export interface FileRoutesByTo {
   '/dashboard/widgets': typeof DashboardWidgetsIndexRoute
   '/super-admin/templates': typeof SuperAdminTemplatesIndexRoute
   '/dashboard/widgets/$widgetId/install': typeof DashboardWidgetsWidgetIdInstallRoute
+  '/dashboard/widgets/accessibility/$widgetId': typeof DashboardWidgetsAccessibilityWidgetIdRoute
   '/dashboard/widgets/announcement-popup/$widgetId': typeof DashboardWidgetsAnnouncementPopupWidgetIdRoute
   '/dashboard/widgets/countdown/$widgetId': typeof DashboardWidgetsCountdownWidgetIdRoute
   '/dashboard/widgets/faq-accordion/$widgetId': typeof DashboardWidgetsFaqAccordionWidgetIdRoute
   '/dashboard/widgets/google-reviews/$widgetId': typeof DashboardWidgetsGoogleReviewsWidgetIdRoute
+  '/dashboard/widgets/language-switcher/$widgetId': typeof DashboardWidgetsLanguageSwitcherWidgetIdRoute
+  '/dashboard/widgets/whatsapp-chat/$widgetId': typeof DashboardWidgetsWhatsappChatWidgetIdRoute
   '/super-admin/templates/$templateId/edit': typeof SuperAdminTemplatesTemplateIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/super-admin': typeof SuperAdminRouteWithChildren
   '/templates': typeof TemplatesRouteWithChildren
@@ -303,10 +339,13 @@ export interface FileRoutesById {
   '/dashboard/widgets/': typeof DashboardWidgetsIndexRoute
   '/super-admin/templates/': typeof SuperAdminTemplatesIndexRoute
   '/dashboard/widgets/$widgetId/install': typeof DashboardWidgetsWidgetIdInstallRoute
+  '/dashboard/widgets/accessibility/$widgetId': typeof DashboardWidgetsAccessibilityWidgetIdRoute
   '/dashboard/widgets/announcement-popup/$widgetId': typeof DashboardWidgetsAnnouncementPopupWidgetIdRoute
   '/dashboard/widgets/countdown/$widgetId': typeof DashboardWidgetsCountdownWidgetIdRoute
   '/dashboard/widgets/faq-accordion/$widgetId': typeof DashboardWidgetsFaqAccordionWidgetIdRoute
   '/dashboard/widgets/google-reviews/$widgetId': typeof DashboardWidgetsGoogleReviewsWidgetIdRoute
+  '/dashboard/widgets/language-switcher/$widgetId': typeof DashboardWidgetsLanguageSwitcherWidgetIdRoute
+  '/dashboard/widgets/whatsapp-chat/$widgetId': typeof DashboardWidgetsWhatsappChatWidgetIdRoute
   '/super-admin/templates/$templateId/edit': typeof SuperAdminTemplatesTemplateIdEditRoute
 }
 export interface FileRouteTypes {
@@ -314,6 +353,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/login'
     | '/register'
     | '/super-admin'
     | '/templates'
@@ -339,14 +379,18 @@ export interface FileRouteTypes {
     | '/dashboard/widgets/'
     | '/super-admin/templates/'
     | '/dashboard/widgets/$widgetId/install'
+    | '/dashboard/widgets/accessibility/$widgetId'
     | '/dashboard/widgets/announcement-popup/$widgetId'
     | '/dashboard/widgets/countdown/$widgetId'
     | '/dashboard/widgets/faq-accordion/$widgetId'
     | '/dashboard/widgets/google-reviews/$widgetId'
+    | '/dashboard/widgets/language-switcher/$widgetId'
+    | '/dashboard/widgets/whatsapp-chat/$widgetId'
     | '/super-admin/templates/$templateId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/login'
     | '/register'
     | '/dashboard/favorites'
     | '/dashboard/projects'
@@ -368,15 +412,19 @@ export interface FileRouteTypes {
     | '/dashboard/widgets'
     | '/super-admin/templates'
     | '/dashboard/widgets/$widgetId/install'
+    | '/dashboard/widgets/accessibility/$widgetId'
     | '/dashboard/widgets/announcement-popup/$widgetId'
     | '/dashboard/widgets/countdown/$widgetId'
     | '/dashboard/widgets/faq-accordion/$widgetId'
     | '/dashboard/widgets/google-reviews/$widgetId'
+    | '/dashboard/widgets/language-switcher/$widgetId'
+    | '/dashboard/widgets/whatsapp-chat/$widgetId'
     | '/super-admin/templates/$templateId/edit'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
+    | '/login'
     | '/register'
     | '/super-admin'
     | '/templates'
@@ -402,16 +450,20 @@ export interface FileRouteTypes {
     | '/dashboard/widgets/'
     | '/super-admin/templates/'
     | '/dashboard/widgets/$widgetId/install'
+    | '/dashboard/widgets/accessibility/$widgetId'
     | '/dashboard/widgets/announcement-popup/$widgetId'
     | '/dashboard/widgets/countdown/$widgetId'
     | '/dashboard/widgets/faq-accordion/$widgetId'
     | '/dashboard/widgets/google-reviews/$widgetId'
+    | '/dashboard/widgets/language-switcher/$widgetId'
+    | '/dashboard/widgets/whatsapp-chat/$widgetId'
     | '/super-admin/templates/$templateId/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   SuperAdminRoute: typeof SuperAdminRouteWithChildren
   TemplatesRoute: typeof TemplatesRouteWithChildren
@@ -442,6 +494,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -612,6 +671,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperAdminTemplatesTemplateIdEditRouteImport
       parentRoute: typeof SuperAdminTemplatesRoute
     }
+    '/dashboard/widgets/whatsapp-chat/$widgetId': {
+      id: '/dashboard/widgets/whatsapp-chat/$widgetId'
+      path: '/whatsapp-chat/$widgetId'
+      fullPath: '/dashboard/widgets/whatsapp-chat/$widgetId'
+      preLoaderRoute: typeof DashboardWidgetsWhatsappChatWidgetIdRouteImport
+      parentRoute: typeof DashboardWidgetsRoute
+    }
+    '/dashboard/widgets/language-switcher/$widgetId': {
+      id: '/dashboard/widgets/language-switcher/$widgetId'
+      path: '/language-switcher/$widgetId'
+      fullPath: '/dashboard/widgets/language-switcher/$widgetId'
+      preLoaderRoute: typeof DashboardWidgetsLanguageSwitcherWidgetIdRouteImport
+      parentRoute: typeof DashboardWidgetsRoute
+    }
     '/dashboard/widgets/google-reviews/$widgetId': {
       id: '/dashboard/widgets/google-reviews/$widgetId'
       path: '/google-reviews/$widgetId'
@@ -640,6 +713,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardWidgetsAnnouncementPopupWidgetIdRouteImport
       parentRoute: typeof DashboardWidgetsRoute
     }
+    '/dashboard/widgets/accessibility/$widgetId': {
+      id: '/dashboard/widgets/accessibility/$widgetId'
+      path: '/accessibility/$widgetId'
+      fullPath: '/dashboard/widgets/accessibility/$widgetId'
+      preLoaderRoute: typeof DashboardWidgetsAccessibilityWidgetIdRouteImport
+      parentRoute: typeof DashboardWidgetsRoute
+    }
     '/dashboard/widgets/$widgetId/install': {
       id: '/dashboard/widgets/$widgetId/install'
       path: '/$widgetId/install'
@@ -654,16 +734,21 @@ interface DashboardWidgetsRouteChildren {
   DashboardWidgetsCreateRoute: typeof DashboardWidgetsCreateRoute
   DashboardWidgetsIndexRoute: typeof DashboardWidgetsIndexRoute
   DashboardWidgetsWidgetIdInstallRoute: typeof DashboardWidgetsWidgetIdInstallRoute
+  DashboardWidgetsAccessibilityWidgetIdRoute: typeof DashboardWidgetsAccessibilityWidgetIdRoute
   DashboardWidgetsAnnouncementPopupWidgetIdRoute: typeof DashboardWidgetsAnnouncementPopupWidgetIdRoute
   DashboardWidgetsCountdownWidgetIdRoute: typeof DashboardWidgetsCountdownWidgetIdRoute
   DashboardWidgetsFaqAccordionWidgetIdRoute: typeof DashboardWidgetsFaqAccordionWidgetIdRoute
   DashboardWidgetsGoogleReviewsWidgetIdRoute: typeof DashboardWidgetsGoogleReviewsWidgetIdRoute
+  DashboardWidgetsLanguageSwitcherWidgetIdRoute: typeof DashboardWidgetsLanguageSwitcherWidgetIdRoute
+  DashboardWidgetsWhatsappChatWidgetIdRoute: typeof DashboardWidgetsWhatsappChatWidgetIdRoute
 }
 
 const DashboardWidgetsRouteChildren: DashboardWidgetsRouteChildren = {
   DashboardWidgetsCreateRoute: DashboardWidgetsCreateRoute,
   DashboardWidgetsIndexRoute: DashboardWidgetsIndexRoute,
   DashboardWidgetsWidgetIdInstallRoute: DashboardWidgetsWidgetIdInstallRoute,
+  DashboardWidgetsAccessibilityWidgetIdRoute:
+    DashboardWidgetsAccessibilityWidgetIdRoute,
   DashboardWidgetsAnnouncementPopupWidgetIdRoute:
     DashboardWidgetsAnnouncementPopupWidgetIdRoute,
   DashboardWidgetsCountdownWidgetIdRoute:
@@ -672,6 +757,10 @@ const DashboardWidgetsRouteChildren: DashboardWidgetsRouteChildren = {
     DashboardWidgetsFaqAccordionWidgetIdRoute,
   DashboardWidgetsGoogleReviewsWidgetIdRoute:
     DashboardWidgetsGoogleReviewsWidgetIdRoute,
+  DashboardWidgetsLanguageSwitcherWidgetIdRoute:
+    DashboardWidgetsLanguageSwitcherWidgetIdRoute,
+  DashboardWidgetsWhatsappChatWidgetIdRoute:
+    DashboardWidgetsWhatsappChatWidgetIdRoute,
 }
 
 const DashboardWidgetsRouteWithChildren =
@@ -752,6 +841,7 @@ const TemplatesRouteWithChildren = TemplatesRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   SuperAdminRoute: SuperAdminRouteWithChildren,
   TemplatesRoute: TemplatesRouteWithChildren,

@@ -596,6 +596,8 @@ export function DemoView({ projectId }: { projectId: string }) {
       projectSeo: currentProj.seo,
       customHead: currentProj.customHead,
       previewCssHref: currentProj.globalCss ? undefined : APP_CSS_HREF,
+      floatingWidgets: currentProj.floatingWidgets || [],
+      currentPageId: page.id,
     });
     lastPreviewHtmlRef.current = html;
     return html;
@@ -653,7 +655,7 @@ export function DemoView({ projectId }: { projectId: string }) {
     <iframe
       title={(projRef.current || proj)?.name || "Preview"}
       srcDoc={previewHtml || undefined}
-      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-popups-to-escape-sandbox"
       style={{ width: "100vw", height: "100vh", border: 0 }}
     />
   );

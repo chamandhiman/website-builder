@@ -69,6 +69,7 @@ export const WIDGET_TYPE_EXPORT_JS: Record<string, string> = {
   faq: WTO_FAQ_RUNTIME,
   "google-reviews": WTO_STANDALONE_WIDGET_JS,
   "custom-html": WTO_STANDALONE_WIDGET_JS,
+  accessibility: WTO_STANDALONE_WIDGET_JS,
 };
 
 export const BOOTSTRAP_CSS_CDN =
@@ -104,6 +105,8 @@ export const FULL_WIDTH_EXPORT_MARKERS = [
   "wto-pricing",
   "wto-testimonials",
   "wto-google-reviews",
+  "wto-a11y",
+  "data-wto-a11y",
 ] as const;
 
 export function isFullWidthExportHtml(html: string): boolean {

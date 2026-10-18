@@ -573,6 +573,8 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
           currentPageSlug: pageOf(project)?.slug,
           previewCssHref: project.globalCss ? undefined : APP_CSS_HREF,
           device,
+          floatingWidgets: project.floatingWidgets || [],
+          currentPageId: pageOf(project)?.id,
         });
         setSrcDoc(html);
         setSrcDocVersion((v) => v + 1);
@@ -764,6 +766,25 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
             state.persist();
           }
         }
+      }
+      if (data.type === "wto-edit-embed") {
+        const embedId = String(data.payload?.embedId ?? "");
+        if (embedId) {
+          select(embedId);
+          window.dispatchEvent(new CustomEvent("wto-open-embed-editor", { detail: { embedId } }));
+        }
+      }
+      if (data.type === "wto-delete-embed") {
+        const embedId = String(data.payload?.embedId ?? "");
+        if (embedId) {
+          useBuilder.getState().removeSection(embedId);
+          useBuilder.getState().pushHistory();
+          useBuilder.getState().persist();
+          setPreviewCycle((v) => v + 1);
+        }
+      }
+      if (data.type === "wto-open-floating-manager" || data.type === "wto-open-widget-modal") {
+        window.dispatchEvent(new CustomEvent("wto-open-floating-manager", { detail: data.payload }));
       }
       if (data.type === "element-duplicate") {
         const nextSelection = {

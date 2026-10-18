@@ -18,7 +18,8 @@ import { SeoDialog } from "./SeoDialog";
 import { PageActionsMenu } from "./PageActionsMenu";
 import { SidebarBadge } from "./SidebarBadge";
 import { useCloudProjects } from "@/lib/builder/useCloudProjects";
-import { createWidgetSectionTemplate, getAllWidgetRegistrations, getWidgetBootstrapExport, createWidgetInstance, type WidgetRegistration } from "@/components/builder/widgets/widgetRegistry";
+import { createWidgetSectionTemplate, getAllWidgetRegistrations, getWidgetBootstrapExport, createWidgetInstance, getWidgetPlacementClassification, type WidgetRegistration } from "@/components/builder/widgets/widgetRegistry";
+import { nanoid } from "nanoid";
 
 function GoogleLogo(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -204,6 +205,12 @@ const activePanelKey = showProjectDashboard
   };
 
   const beginWidgetDrag = (event: DragEvent, widget: WidgetRegistration, variant?: string) => {
+    const classification = getWidgetPlacementClassification(widget.id);
+    if (classification !== "page") {
+      event.preventDefault();
+      return;
+    }
+
     const resolvedVariant = variant || widget.defaultVariant || widget.supportedVariants?.[0] || "";
     event.dataTransfer.setData("application/x-wto-widget", widget.id);
     if (resolvedVariant) event.dataTransfer.setData("application/x-wto-widget-variant", resolvedVariant);
@@ -242,6 +249,52 @@ const activePanelKey = showProjectDashboard
   }, [q, widgetRegistryEntries]);
 
   const addWidgetVariant = (widget: WidgetRegistration, variant: string) => {
+    const classification = getWidgetPlacementClassification(widget.id);
+
+    if (classification === "inline_embed") {
+      useBuilder.getState().setRightPanelTab("embeds");
+      return;
+    }
+
+    if (classification === "floating") {
+      const bState = useBuilder.getState();
+      const currentProj = bState.currentProjectId ? bState.projects[bState.currentProjectId] : null;
+      const existing = (currentProj?.floatingWidgets || []).find((f: any) => f.type === widget.type);
+      if (existing) {
+        toast.info(`"${widget.displayName}" is already active in floating overlay`);
+        return;
+      }
+      const newFw = {
+        id: `fw-${nanoid(8)}`,
+        type: widget.type as any,
+        name: widget.displayName,
+        enabled: true,
+        position: "bottom_right" as const,
+        offsetX: 20,
+        offsetY: 20,
+        showOnDesktop: true,
+        showOnMobile: true,
+        pageTargeting: "all" as const,
+        config: {},
+      };
+      useBuilder.setState((s) => {
+        const cur = s.currentProjectId ? s.projects[s.currentProjectId] : null;
+        if (!cur) return s;
+        return {
+          projects: {
+            ...s.projects,
+            [cur.id]: {
+              ...cur,
+              floatingWidgets: [...(cur.floatingWidgets || []), newFw],
+            },
+          },
+        };
+      });
+      useBuilder.getState().persistWithStatus();
+      toast.success(`Added floating "${widget.displayName}" to site overlay`);
+      return;
+    }
+
     const widgetInstance = createWidgetInstance(widget.id, { variant });
     const html = getWidgetBootstrapExport(widget.type, widgetInstance);
     const sectionTemplate: SectionTemplate = {

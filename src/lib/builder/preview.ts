@@ -2,6 +2,8 @@ import type { PageSection, Project, PageSeo, ProjectSeo } from "./store";
 import { getImageBlob, getAssetValue, type BuilderAssetEntry } from "./image-storage";
 import { getWidgetBootstrapExport, getWidgetExportContribution } from "@/components/builder/widgets/widgetRegistry";
 import { getWidgetSelectionLabel } from "@/components/builder/widgets/widgetSelectionLabels";
+import { renderFloatingWidgetsOverlay } from "./floatingWidgetsRenderer";
+import type { FloatingWidgetRecord } from "./floatingWidgetsTypes";
 import { WTO_CAROUSEL_RUNTIME } from "@/components/builder/widgets/Carousel/CarouselRuntime";
 import { WTO_FAQ_RUNTIME } from "@/components/builder/widgets/FAQ/FAQRuntime";
 import { WTO_STANDALONE_WIDGET_JS } from "@/lib/widget-runtime/wtoWidgetRuntime";
@@ -488,7 +490,38 @@ div:has(nav) { position: relative; z-index: 9999; }
   width: 100%;
 }
 
-[data-anim]{ opacity: 0; }
+/* Entrance animations - widgets and interactive roots are exempt */
+[data-anim]:not([data-wto-widget]):not([class*="wto-"]):not([data-wto-countdown]):not([data-wto-wa]):not([data-wto-ap]):not([data-wto-faq]):not([data-wto-gr]):not([data-wto-a11y]):not([data-widget-id]) { opacity: 0; }
+
+/* Widgets and custom embeds must never be hidden by entrance animation opacity */
+[data-wto-widget],
+[data-wto-widget] *,
+[data-wto-widget-root],
+[data-wto-widget-root] *,
+[data-widget-id],
+[data-widget-id] *,
+.wto-countdown-root,
+.wto-countdown-root *,
+.wto-wa-root,
+.wto-wa-root *,
+.wto-announcement-bar-root,
+.wto-announcement-bar-root *,
+.wto-popup-backdrop,
+.wto-popup-backdrop *,
+.wto-google-reviews-root,
+.wto-google-reviews-root *,
+.wto-faq-root,
+.wto-faq-root *,
+.wto-a11y-root,
+.wto-a11y-root *,
+.wto-embedded-widget-container,
+.wto-embedded-widget-container *,
+.wto-custom-html-wrapper,
+.wto-custom-html-wrapper *,
+[data-wto-embed],
+[data-wto-embed] * {
+  opacity: 1 !important;
+}
 [data-anim].wto-in { opacity: 1; animation-fill-mode: both; animation-duration: var(--wto-dur,700ms); animation-delay: var(--wto-delay,0ms); }
 [data-anim="fade-in"].wto-in { animation-name: wto-fade; }
 [data-anim="fade-up"].wto-in { animation-name: wto-fade-up; }
@@ -1213,8 +1246,13 @@ export const RUNTIME_SCRIPT = `
     const decorationParts = [computed.textDecorationLine || '', computed.textDecorationStyle || '', computed.textDecorationColor || ''].filter(Boolean);
     const isTransparentColor = (value) => {
       if (!value) return true;
-      const normalized = String(value).trim();
-      return /^transparent$/i.test(normalized) || /^rgba?\\(\\s*0\\s*,\\s*0\\s*,\\s*0\\s*,\\s*0\\s*\\)$/i.test(normalized);
+      const s = String(value).trim().toLowerCase();
+      if (s === 'transparent') return true;
+      if (s.indexOf('rgba') === 0 || s.indexOf('rgb') === 0) {
+        const nums = s.replace(/[^0-9,]/g, '').split(',');
+        if (nums.length >= 4 && nums[0] === '0' && nums[1] === '0' && nums[2] === '0' && nums[3] === '0') return true;
+      }
+      return false;
     };
     let color = computed.color;
     const fillColor = computed.webkitTextFillColor || '';
@@ -1487,6 +1525,9 @@ export const RUNTIME_SCRIPT = `
       const target = e.target instanceof Element ? e.target : (e.target && e.target.parentElement) || null;
       const a = target && target.closest ? target.closest('a') : null;
       if (!a) return;
+      if (a.getAttribute('data-wa-action') || a.closest('.wto-wa-root, [data-wto-wa="1"]')) {
+        return;
+      }
       const href = a.getAttribute('href') || '';
       e.preventDefault();
     } catch (err) {
@@ -1976,15 +2017,20 @@ export const RUNTIME_SCRIPT = `
 
   function normalizeColor(value) {
     if (!value) return '#111827';
-    if (/^transparent$/i.test(value)) return '#111827';
-    if (/^rgba?\\(\\s*0\\s*,\\s*0\\s*,\\s*0\\s*,\\s*0\\s*\\)$/i.test(value)) return '#111827';
-    if (value.startsWith('#')) return value;
-    const rgb = /^rgba?\\((\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)/i.exec(value);
-    if (rgb) {
-      const r = Number(rgb[1]).toString(16).padStart(2, '0');
-      const g = Number(rgb[2]).toString(16).padStart(2, '0');
-      const b = Number(rgb[3]).toString(16).padStart(2, '0');
-      return '#' + r + g + b;
+    var str = String(value).trim().toLowerCase();
+    if (str === 'transparent') return '#111827';
+    if (str.startsWith('#')) return value;
+    if (str.indexOf('rgb') === 0) {
+      var nums = str.replace(/[^0-9,]/g, '').split(',').map(function(n) { return Number(n) || 0; });
+      if (nums.length >= 3) {
+        if (nums[0] === 0 && nums[1] === 0 && nums[2] === 0 && (nums.length < 4 || nums[3] === 0)) {
+          return '#111827';
+        }
+        var r = nums[0].toString(16).padStart(2, '0');
+        var g = nums[1].toString(16).padStart(2, '0');
+        var b = nums[2].toString(16).padStart(2, '0');
+        return '#' + r + g + b;
+      }
     }
     return '#111827';
   }
@@ -2191,11 +2237,11 @@ export const RUNTIME_SCRIPT = `
     if (!el || !(el instanceof Element)) return false;
     if (el.closest && (el.closest('[data-wto-widget]') || el.closest('.wto-embedded-widget-container') || el.closest('.wto-custom-html-wrapper') || el.closest('.wto-custom-html-pending') || el.closest('.wto-custom-html-empty'))) return true;
     if (el.querySelector && (el.querySelector('[data-wto-widget]') || el.querySelector('.wto-embedded-widget-container') || el.querySelector('.wto-custom-html-wrapper'))) return true;
-    if (el.closest && el.closest('[data-widget="custom-html"], [data-widget="countdown"], [data-widget="google_reviews"], [data-widget="faq_accordion"], [data-widget="announcement_popup"]')) return true;
-    if (el.getAttribute && ['custom-html', 'countdown', 'google_reviews', 'faq_accordion', 'announcement_popup'].includes(el.getAttribute('data-widget'))) return true;
-    if (el.closest && el.closest('.wto-countdown-root, .wto-faq-container, .wto-announcement-root, .wto-google-reviews-root, .wto-reviews-container, .wto-dynamic-widget-root')) return true;
-    if (el.querySelector && el.querySelector('.wto-countdown-root, .wto-faq-container, .wto-announcement-root, .wto-google-reviews-root, .wto-reviews-container, .wto-dynamic-widget-root')) return true;
-    if (currentSelection && ['custom-html', 'countdown', 'google_reviews', 'faq_accordion', 'announcement_popup'].includes(currentSelection.widgetType)) return true;
+    if (el.closest && el.closest('[data-widget="custom-html"], [data-widget="countdown"], [data-widget="google_reviews"], [data-widget="faq_accordion"], [data-widget="announcement_popup"], [data-widget="accessibility"]')) return true;
+    if (el.getAttribute && ['custom-html', 'countdown', 'google_reviews', 'faq_accordion', 'announcement_popup', 'accessibility'].includes(el.getAttribute('data-widget'))) return true;
+    if (el.closest && el.closest('.wto-countdown-root, .wto-faq-container, .wto-announcement-root, .wto-google-reviews-root, .wto-reviews-container, .wto-dynamic-widget-root, .wto-a11y-root, [data-wto-a11y]')) return true;
+    if (el.querySelector && el.querySelector('.wto-countdown-root, .wto-faq-container, .wto-announcement-root, .wto-google-reviews-root, .wto-reviews-container, .wto-dynamic-widget-root, .wto-a11y-root, [data-wto-a11y]')) return true;
+    if (currentSelection && ['custom-html', 'countdown', 'google_reviews', 'faq_accordion', 'announcement_popup', 'accessibility'].includes(currentSelection.widgetType)) return true;
     return false;
   }
 
@@ -2220,7 +2266,7 @@ export const RUNTIME_SCRIPT = `
     const hasTextContent = !!(activeEl && activeEl.textContent && activeEl.textContent.trim().length > 0 && !activeEl.querySelector('section, header, footer, table'));
     const isWidgetText = !!(selection && selection.elementKind === 'widget' && selection.elementType && ['text','button','heading'].includes(selection.elementType));
     const isTextKind = !!(selection && (selection.elementKind === 'text' || selection.elementKind === 'link'));
-    const isEmbedded = isEmbeddedAdminWidget(activeEl) || (selection && ['custom-html', 'countdown', 'google_reviews', 'faq_accordion', 'announcement_popup'].includes(selection.widgetType));
+    const isEmbedded = isEmbeddedAdminWidget(activeEl) || (selection && ['custom-html', 'countdown', 'google_reviews', 'faq_accordion', 'announcement_popup', 'accessibility'].includes(selection.widgetType));
     const enabledStyleSelection = !isEmbedded && (isWidgetText || isTextKind || (selection && selection.elementKind !== 'section' && (isTextTag || hasTextContent)));
     if (enabledStyleSelection) {
       styleControlWrapper.style.display = 'inline-flex';
@@ -2918,6 +2964,19 @@ export const RUNTIME_SCRIPT = `
         }
       if (target.closest("[data-carousel-prev], [data-carousel-next], [data-carousel-dot], [data-carousel-items-prev], [data-carousel-items-next], [data-carousel-indicator], .wto-nav-btn, .wto-dot-btn, [data-wto-carousel-btn], .wto-readmore-btn")) return;
       if (target.closest('[data-grid-add-child="1"]')) return;
+      const embedActBtn = target.closest('[data-wto-embed-act]');
+      if (embedActBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const act = embedActBtn.getAttribute('data-wto-embed-act');
+        const embedId = embedActBtn.getAttribute('data-wto-embed-id');
+        if (act === 'edit') {
+          send('wto-edit-embed', { embedId });
+        } else if (act === 'delete') {
+          send('wto-delete-embed', { embedId });
+        }
+        return;
+      }
       const section = target.closest("[data-wto-section]");
       if (!section) return;
       currentSection = section;
@@ -3097,11 +3156,78 @@ export const RUNTIME_SCRIPT = `
   });
 
   // Animations
-  const io = new IntersectionObserver(entries => entries.forEach(en => {
-    if (en.isIntersecting) en.target.classList.add('wto-in');
-    else if (en.target.getAttribute('data-anim-repeat')==='1') en.target.classList.remove('wto-in');
-  }), { threshold: 0.15 });
-  document.querySelectorAll('[data-anim]').forEach(el => io.observe(el));
+  try {
+    const isEditMode = document.body && document.body.getAttribute('data-builder-edit-mode') === '1';
+    let io = null;
+    if (typeof IntersectionObserver !== 'undefined') {
+      io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) {
+            en.target.classList.add('wto-in');
+          } else if (en.target.getAttribute('data-anim-repeat') === '1') {
+            en.target.classList.remove('wto-in');
+          }
+        });
+      }, { threshold: 0.15 });
+    }
+
+    const observeAnimElements = (scope) => {
+      const root = scope || document;
+      if (!root.querySelectorAll) return;
+      root.querySelectorAll('[data-anim]').forEach((el) => {
+        if (isEditMode) {
+          el.classList.add('wto-in');
+          el.style.opacity = '1';
+          return;
+        }
+        try {
+          const r = el.getBoundingClientRect();
+          const vh = window.innerHeight || (document.documentElement && document.documentElement.clientHeight) || 800;
+          if (r.top < vh) {
+            el.classList.add('wto-in');
+          }
+        } catch (_) {
+          el.classList.add('wto-in');
+        }
+        if (io) {
+          io.observe(el);
+        } else {
+          el.classList.add('wto-in');
+        }
+      });
+    };
+
+    observeAnimElements(document);
+
+    if (typeof MutationObserver !== 'undefined' && document.body) {
+      const animMo = new MutationObserver((mutations) => {
+        mutations.forEach((m) => {
+          m.addedNodes.forEach((node) => {
+            if (node.nodeType === 1) {
+              if (node.hasAttribute && node.hasAttribute('data-anim')) {
+                if (isEditMode) {
+                  node.classList.add('wto-in');
+                  node.style.opacity = '1';
+                } else {
+                  node.classList.add('wto-in');
+                  if (io) io.observe(node);
+                }
+              }
+              observeAnimElements(node);
+            }
+          });
+        });
+      });
+      animMo.observe(document.body, { childList: true, subtree: true });
+    }
+  } catch (animErr) {
+    try {
+      document.querySelectorAll('[data-anim]').forEach((el) => {
+        el.classList.add('wto-in');
+        el.style.opacity = '1';
+      });
+    } catch (_) {}
+  }
 
   // Responsive nav
   document.querySelectorAll('[data-wto-nav]').forEach(nav => {
@@ -3220,17 +3346,47 @@ send('navigate-page', { slug });
 const EXPORT_RUNTIME_BASE = `
 (function(){
   try {
-  var io = new IntersectionObserver(function(es){es.forEach(function(e){
-    if(e.isIntersecting){ e.target.classList.add('wto-in'); }
-    else if(e.target.getAttribute('data-anim-repeat')==='1'){ e.target.classList.remove('wto-in'); }
-  });},{threshold:.15});
-  document.querySelectorAll('[data-anim]').forEach(function(el){
-    var r = el.getBoundingClientRect();
-    if (r.top < (window.innerHeight || document.documentElement.clientHeight)) {
-      el.classList.add('wto-in');
-    }
-    io.observe(el);
-  });
+  var io;
+  if (typeof IntersectionObserver !== 'undefined') {
+    io = new IntersectionObserver(function(es){es.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('wto-in'); }
+      else if(e.target.getAttribute('data-anim-repeat')==='1'){ e.target.classList.remove('wto-in'); }
+    });},{threshold:.15});
+  }
+  var observeAnims = function(scope){
+    var root = scope || document;
+    if (!root.querySelectorAll) return;
+    root.querySelectorAll('[data-anim]').forEach(function(el){
+      try {
+        var r = el.getBoundingClientRect();
+        var vh = window.innerHeight || (document.documentElement && document.documentElement.clientHeight) || 800;
+        if (r.top < vh) {
+          el.classList.add('wto-in');
+        }
+      } catch (_) {
+        el.classList.add('wto-in');
+      }
+      if (io) { io.observe(el); }
+      else { el.classList.add('wto-in'); }
+    });
+  };
+  observeAnims(document);
+  if (typeof MutationObserver !== 'undefined' && document.body) {
+    var animMo = new MutationObserver(function(muts){
+      muts.forEach(function(m){
+        m.addedNodes.forEach(function(node){
+          if (node.nodeType === 1) {
+            if (node.hasAttribute && node.hasAttribute('data-anim')) {
+              node.classList.add('wto-in');
+              if (io) io.observe(node);
+            }
+            observeAnims(node);
+          }
+        });
+      });
+    });
+    animMo.observe(document.body, { childList: true, subtree: true });
+  }
   
   var getPageSlug=function(){
     var path=window.location.pathname;
@@ -3590,6 +3746,8 @@ export function buildPreviewHTML(opts: {
   previewCss?: string;
   previewCssHref?: string;
   device?: "desktop" | "tablet" | "mobile";
+  currentPageId?: string;
+  floatingWidgets?: FloatingWidgetRecord[];
 }) {
   const {
     sections,
@@ -3609,6 +3767,8 @@ export function buildPreviewHTML(opts: {
     previewCss,
     previewCssHref,
     device = "desktop",
+    currentPageId,
+    floatingWidgets = [],
   } = opts;
 
   const htmlLang = seo?.language ?? projectSeo?.language ?? "en";
@@ -3618,14 +3778,27 @@ export function buildPreviewHTML(opts: {
     ? ` data-builder-edit-mode="1" data-builder-device="${device}"`
     : "";
 
+  const floatingResult = renderFloatingWidgetsOverlay(floatingWidgets, {
+    editorMode: Boolean(editable),
+    currentPageId,
+  });
+
   const sectionHTML = sections
     .filter((s) => editable || !s.hidden)
+    .filter((s) => {
+      const wType = s.widgetInstance?.type;
+      if (wType === "whatsapp_chat" || wType === "accessibility" || wType === "language_switcher") return false;
+      if ((s as any).displayType === "floating" || (s.widgetInstance as any)?.data?.displayType === "floating") return false;
+      return true;
+    })
     .map((s) => {
       if (s.collapsed) return "";
       const styleStr = styleToString(s.style);
       const selectedClass = editable && selectedId === s.id ? " wto-selected" : "";
       const rawHtml = s.widgetInstance ? getWidgetBootstrapExport(s.widgetInstance.type, s.widgetInstance, { editorMode: !!editable }) || s.html : s.html;
-      const cleanRawHtml = rawHtml.replace(/<script[^>]*src=["']https:\/\/widgets\.webtoolocean\.com\/widget\.js["'][^>]*>\s*<\/script>/gi, "");
+      const cleanRawHtml = rawHtml
+        .replace(/<script[^>]*src=["']https?:\/\/widgets\.webtoolocean\.com\/widget\.js["'][^>]*>\s*<\/script>/gi, "")
+        .replace(/https?:\/\/widgets\.webtoolocean\.com\/widget\.js/gi, "/widget.js");
       const gridColumnCount = s.widgetInstance?.type === "grid" ? getGridColumnCount(s.widgetInstance as any) : null;
       const canvasLabel = editable ? sectionLabelForCanvas(s) : null;
       const widgetLabel = canvasLabel || (s.widgetInstance ? getWidgetSelectionLabel(s.widgetInstance.type) : "");
@@ -3640,12 +3813,45 @@ export function buildPreviewHTML(opts: {
       const linked = pages ? resolvePageLinks(visibleHtml, pages) : visibleHtml;
       const extra = sectionAttrs(s);
       const hiddenAttr = s.hidden && editable ? ' data-wto-hidden="1"' : "";
-      return `<div data-wto-section="${s.id}" class="wto-section${selectedClass}" ${extra}${hiddenAttr}>${resolveAssetPaths(linked, assets)}</div>`;
+      const isEmbedSection = s.widgetInstance?.type === "custom-html" || (s.id && s.id.startsWith("custom-html")) || (s.templateId && s.templateId.includes("custom-html")) || /custom-html/i.test(s.name || "");
+      let embedCanvasBadge = "";
+      if (editable && isEmbedSection) {
+        const lowerName = (s.name || "").toLowerCase();
+        const lowerHtml = (s.html || "").toLowerCase();
+        let embedTitle = "Custom Embed";
+        if (lowerName.includes("youtube") || lowerHtml.includes("youtube.com") || lowerHtml.includes("youtu.be")) embedTitle = "YouTube Video";
+        else if (lowerName.includes("map") || lowerHtml.includes("google.com/maps")) embedTitle = "Google Map";
+        else if (lowerName.includes("form") || lowerHtml.includes("<form") || lowerHtml.includes("typeform")) embedTitle = "Contact Form";
+        else if (s.name) embedTitle = s.name;
+
+        const placementText = s.shared === "header" ? "Global Header" : s.shared === "footer" ? "Global Footer" : "Inline Page";
+
+        embedCanvasBadge = `
+          <div class="wto-embed-canvas-badge" data-wto-embed-badge="1" style="display: flex; align-items: center; justify-content: space-between; padding: 5px 12px; background: rgba(18, 18, 22, 0.96); border: 1.5px solid rgba(250, 204, 21, 0.6); border-bottom: none; border-radius: 8px 8px 0 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 11px; font-weight: 600; color: #FACC15; pointer-events: auto; user-select: none; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              <span style="font-weight: 700; color: #ffffff;">${escapeAttribute(embedTitle)}</span>
+              <span style="font-size: 10px; padding: 2px 7px; border-radius: 999px; background: rgba(250,204,21,0.18); color: #FDE047; font-weight: 700; border: 1px solid rgba(250,204,21,0.3);">${placementText}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <button type="button" data-wto-embed-act="edit" data-wto-embed-id="${s.id}" style="all: unset; cursor: pointer; padding: 3px 9px; border-radius: 5px; background: #27272A; color: #ffffff; font-size: 11px; font-weight: 600; transition: background 0.15s ease; border: 1px solid #3F3F46;">Edit</button>
+              <button type="button" data-wto-embed-act="delete" data-wto-embed-id="${s.id}" style="all: unset; cursor: pointer; padding: 3px 9px; border-radius: 5px; background: rgba(239,68,68,0.22); color: #fca5a5; font-size: 11px; font-weight: 600; transition: background 0.15s ease; border: 1px solid rgba(239,68,68,0.4);">Delete</button>
+            </div>
+          </div>
+        `;
+      }
+      return `<div data-wto-section="${s.id}" class="wto-section${selectedClass}" ${extra}${hiddenAttr}>${embedCanvasBadge}${resolveAssetPaths(linked, assets)}</div>`;
     })
     .join("\n");
 
   const editableStyles = editable
     ? `
+    /* In visual editor, animations must never hide elements */
+    [data-anim] {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+    }
     .wto-section { position: relative; transition: outline .15s ease; }
     .wto-section:hover:not(:has(.wto-sel-selected)):not(:has(.wto-sel-parent)) {
       outline: 1px dotted rgba(250, 204, 21, 0.5);
@@ -3762,7 +3968,7 @@ export function buildPreviewHTML(opts: {
   });
   const importStyles = importRules.length ? `<style>${importRules.join("\n")}</style>` : "";
 
-  return `<!DOCTYPE html>
+  const finalHtml = `<!DOCTYPE html>
 <html lang="${escapeHtml(htmlLang)}">
 <head>
 <meta charset="${escapeHtml(projectSeo?.charset ?? "utf-8")}" />
@@ -3802,6 +4008,9 @@ ${previewStyles}
  <div class="wto-page-shell">
  ${sectionHTML || (editable ? '<div style="padding:80px;text-align:center;color:#94a3b8;font-family:system-ui">Drag sections from the left to start building →</div>' : "")}
  </div>
+ ${floatingResult.html}
+ <style>${floatingResult.css}</style>
+ <script>${floatingResult.js}</script>
  <script>window.__wtoCurrentPageSlug = ${JSON.stringify(currentPageSlug ?? "index")}; window.__wtoIsPreview = true;</script>
  ${bootstrapScript}
  <script>${editable ? RUNTIME_SCRIPT : EXPORT_RUNTIME}</script>
@@ -3809,7 +4018,11 @@ ${previewStyles}
  ${editable ? "" : previewNavScript(pages, currentPageSlug)}
  </body>
  </html>`;
- }
+
+  return finalHtml
+    .replace(/<script[^>]*src=["']https?:\/\/widgets\.webtoolocean\.com\/widget\.js["'][^>]*>\s*<\/script>/gi, "")
+    .replace(/https?:\/\/widgets\.webtoolocean\.com\/widget\.js/gi, "/widget.js");
+}
 
 export function buildExportBundle(opts: {
   sections: PageSection[];
@@ -3825,6 +4038,8 @@ export function buildExportBundle(opts: {
   inlineAssets?: boolean;
   pages?: { id: string; slug: string }[];
   standalone?: boolean;
+  currentPageId?: string;
+  floatingWidgets?: FloatingWidgetRecord[];
 }) {
   const {
     sections,
@@ -3840,6 +4055,8 @@ export function buildExportBundle(opts: {
     inlineAssets,
     pages,
     standalone = false,
+    currentPageId,
+    floatingWidgets = [],
   } = opts;
   const pageTitle = seo?.title || title;
   const metaTags = renderSeoTags({ title: pageTitle, description, keywords, seo, projectSeo });
@@ -3848,8 +4065,19 @@ export function buildExportBundle(opts: {
   const widgetJsBlocks: string[] = [];
   const usedWidgetTypes = new Set<string>();
 
+  const floatingResult = renderFloatingWidgetsOverlay(floatingWidgets, {
+    editorMode: false,
+    currentPageId,
+  });
+
   const body = sections
     .filter((s) => !s.hidden)
+    .filter((s) => {
+      const wType = s.widgetInstance?.type;
+      if (wType === "whatsapp_chat" || wType === "accessibility") return false;
+      if ((s as any).displayType === "floating" || (s.widgetInstance as any)?.data?.displayType === "floating") return false;
+      return true;
+    })
     .map((s) => {
       const styleStr = styleToString(s.style);
       let rawHtml = s.html;
@@ -3911,6 +4139,7 @@ ${exportHead}
 </head>
 <body>
 ${body}
+${floatingResult.html}
 ${vendorJs}
 <script src="./js/carousel.js" defer></script>
 <script src="./js/main.js" defer></script>
@@ -3921,6 +4150,7 @@ ${vendorJs}
     ...(standalone ? [] : [`@import url("${FONT_AWESOME_HREF}");`, `@import url("${GOOGLE_FONTS_HREF}");`]),
     RUNTIME_CSS,
     `header, .site-header, .wl-header, .wto-shared-header, [data-wto-shared="header"] { position: sticky !important; top: 0 !important; z-index: 1000 !important; width: 100% !important; }`,
+    floatingResult.css,
     ...widgetCssBlocks,
     globalCss || "",
   ]);
@@ -3934,6 +4164,7 @@ ${vendorJs}
     WTO_CAROUSEL_RUNTIME,
     WTO_FAQ_RUNTIME,
     WTO_STANDALONE_WIDGET_JS,
+    floatingResult.js,
     ...typedRuntimeJs,
     ...widgetJsBlocks,
     globalJs || "",
@@ -4133,6 +4364,8 @@ export async function buildSiteExport(project: Project) {
       inlineAssets: false,
       pages: pageMeta,
       standalone: true,
+      currentPageId: page.id,
+      floatingWidgets: project.floatingWidgets || [],
     });
     if (bundle.widgetCss) cssBlocks.push(bundle.widgetCss);
     if (bundle.js) jsBlocks.push(bundle.js);

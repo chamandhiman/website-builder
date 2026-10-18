@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearch, Link } from "@tanstack/react-router";
+import { useNavigate, useSearch, Link, createFileRoute } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import {
@@ -9,7 +9,11 @@ import {
 } from "@/services/templates";
 import { WtoAuthBackdrop, WtoAuthCard } from "@/components/auth/WtoAuthCard";
 
-export function LoginPage() {
+export const Route = createFileRoute("/login")({
+  component: LoginPage,
+});
+
+function LoginPage() {
   const navigate = useNavigate();
   const search = useSearch({ strict: false }) as {
     redirect?: string;
@@ -131,4 +135,3 @@ export function LoginPage() {
     </div>
   );
 }
-export default LoginPage;

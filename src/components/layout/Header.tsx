@@ -109,7 +109,7 @@ export function Header({ hideBranding, hideProfile }: { hideBranding?: boolean; 
                     >
                       <Avatar className="h-8 w-8">
                         {user.photoURL ? (
-                          <AvatarImage src={user.photoURL} alt={user.name} />
+                          <AvatarImage src={user.photoURL} alt={user.name} referrerPolicy="no-referrer" />
                         ) : (
                           <AvatarFallback>{user.initials}</AvatarFallback>
                         )}

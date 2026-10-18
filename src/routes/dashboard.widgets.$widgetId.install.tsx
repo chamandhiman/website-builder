@@ -101,6 +101,10 @@ function WidgetInstallPage() {
                     ? `Announcement & Popup • Mode: ${(widget.config as any)?.displayMode === "popup" ? "Popup Modal" : "Announcement Bar"}`
                     : widget.type === "faq_accordion"
                     ? `FAQ Accordion • Template: ${(widget.config as any)?.template || "classic_accordion"}`
+                    : widget.type === "whatsapp_chat"
+                    ? `WhatsApp Live Chat • Phone: ${(widget.config as any)?.content?.phoneNumber || "Not configured"}`
+                    : widget.type === "accessibility"
+                    ? `Accessibility Toolbar • Style: ${(widget.config as any)?.appearance?.displayStyle || "floating_icon"}`
                     : `Business: ${widget.source?.businessName || "Connected Source"}`}
                 </span>
               </div>
@@ -177,6 +181,10 @@ function WidgetInstallPage() {
                 ? `/dashboard/widgets/announcement-popup/${widget.id}`
                 : widget.type === "faq_accordion"
                 ? `/dashboard/widgets/faq-accordion/${widget.id}`
+                : widget.type === "whatsapp_chat"
+                ? `/dashboard/widgets/whatsapp-chat/${widget.id}`
+                : widget.type === "accessibility"
+                ? `/dashboard/widgets/accessibility/${widget.id}`
                 : `/dashboard/widgets/google-reviews/${widget.id}`;
               navigate({ to: route as any });
             }}

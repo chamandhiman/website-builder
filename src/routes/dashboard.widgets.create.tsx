@@ -5,13 +5,17 @@ import {
   createNewCountdownWidget,
   createNewAnnouncementPopupWidget,
   createNewFaqWidget,
+  createNewAccessibilityWidget,
+  createNewLanguageSwitcherWidget,
   saveWidget,
   COUNTDOWN_TEMPLATE_LIST,
   ANNOUNCEMENT_POPUP_TEMPLATE_LIST,
   FAQ_TEMPLATE_LIST,
+  LANGUAGE_SWITCHER_TEMPLATE_LIST,
   type CountdownTemplateItem,
   type AnnouncementPopupTemplateItem,
   type FaqTemplateItem,
+  type LanguageSwitcherTemplateItem,
 } from "@/services/widgetService";
 import {
   ArrowLeft,
@@ -30,6 +34,9 @@ import {
   Megaphone,
   Layers,
   HelpCircle,
+  Accessibility,
+  Languages,
+  Globe,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -208,30 +215,41 @@ function TemplateCardPreview({ tpl }: { tpl: CountdownTemplateItem }) {
 function CreateWidgetTypePage() {
   const navigate = useNavigate();
 
-  // Check if URL specifies ?type=countdown or ?type=google_reviews or ?type=announcement_popup
+  // Check if URL specifies ?type=countdown or ?type=announcement_bar or ?type=popup
   const searchParamType =
     typeof window !== "undefined"
       ? new URLSearchParams(window.location.search).get("type")
+      : null;
+  const searchParamMode =
+    typeof window !== "undefined"
+      ? new URLSearchParams(window.location.search).get("mode")
       : null;
 
   const initialView =
     searchParamType === "countdown"
       ? "countdown_templates"
-      : searchParamType === "announcement_popup"
+      : searchParamType === "announcement_popup" || searchParamType === "announcement_bar" || searchParamType === "popup"
       ? "announcement_templates"
       : searchParamType === "faq_accordion"
       ? "faq_templates"
       : "choose";
 
+  const initialFilter: "all" | "bar" | "popup" =
+    searchParamType === "announcement_bar" || searchParamMode === "bar"
+      ? "bar"
+      : searchParamType === "popup" || searchParamMode === "popup"
+      ? "popup"
+      : "all";
+
   const [view, setView] = useState<
     "choose" | "countdown_templates" | "google_reviews" | "announcement_templates" | "faq_templates"
   >(initialView);
   const [selectedType, setSelectedType] = useState<
-    "google_reviews" | "countdown" | "announcement_popup" | "faq_accordion" | "instagram"
+    "google_reviews" | "countdown" | "announcement_popup" | "announcement_bar" | "popup" | "faq_accordion" | "instagram"
   >("faq_accordion");
   const [widgetName, setWidgetName] = useState("My Google Reviews");
   const [creatingId, setCreatingId] = useState<string | null>(null);
-  const [announcementFilter, setAnnouncementFilter] = useState<"all" | "bar" | "popup">("all");
+  const [announcementFilter, setAnnouncementFilter] = useState<"all" | "bar" | "popup">(initialFilter);
 
   // Create Google Reviews
   const handleCreateGoogleReviews = async () => {
@@ -394,13 +412,23 @@ function CreateWidgetTypePage() {
                 </button>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h1 className="text-2xl font-bold text-white tracking-tight">Select Announcement &amp; Popup Template</h1>
+                    <h1 className="text-2xl font-bold text-white tracking-tight">
+                      {announcementFilter === "bar"
+                        ? "Select Announcement Bar Template"
+                        : announcementFilter === "popup"
+                        ? "Select Popup Modal Template"
+                        : "Select Announcement Bar or Popup Template"}
+                    </h1>
                     <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                      12 Pro Presets
+                      {announcementFilter === "all" ? "12 Pro Presets" : "6 Pro Presets"}
                     </span>
                   </div>
                   <p className="text-sm text-zinc-400 mt-0.5">
-                    Choose a ready-made Announcement Bar or Popup Modal template to customize in the visual Studio.
+                    {announcementFilter === "bar"
+                      ? "Choose a ready-made top or bottom notification banner to customize in the visual Studio."
+                      : announcementFilter === "popup"
+                      ? "Choose a high-converting lightbox modal or promotional popup to customize in the visual Studio."
+                      : "Choose a ready-made Announcement Bar or Popup Modal template to customize in the visual Studio."}
                   </p>
                 </div>
               </div>
@@ -420,19 +448,19 @@ function CreateWidgetTypePage() {
                   type="button"
                   onClick={() => setAnnouncementFilter("bar")}
                   className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
-                    announcementFilter === "bar" ? "bg-zinc-800 text-amber-300 shadow" : "text-zinc-400 hover:text-zinc-200"
+                    announcementFilter === "bar" ? "bg-blue-500/20 text-blue-300 border border-blue-500/40 shadow" : "text-zinc-400 hover:text-zinc-200"
                   }`}
                 >
-                  Bars (6)
+                  Announcement Bars (6)
                 </button>
                 <button
                   type="button"
                   onClick={() => setAnnouncementFilter("popup")}
                   className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
-                    announcementFilter === "popup" ? "bg-zinc-800 text-amber-300 shadow" : "text-zinc-400 hover:text-zinc-200"
+                    announcementFilter === "popup" ? "bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow" : "text-zinc-400 hover:text-zinc-200"
                   }`}
                 >
-                  Popups (6)
+                  Popup Modals (6)
                 </button>
               </div>
             </div>
@@ -670,21 +698,22 @@ function CreateWidgetTypePage() {
                 </div>
               </div>
 
-              {/* 1. Announcement & Popup Card */}
+              {/* 1. Announcement Bar Card */}
               <div
                 onClick={() => {
-                  setSelectedType("announcement_popup");
+                  setSelectedType("announcement_bar" as any);
+                  setAnnouncementFilter("bar");
                   setView("announcement_templates");
                 }}
                 className={`p-6 rounded-2xl border cursor-pointer transition-all relative flex flex-col justify-between ${
-                  selectedType === "announcement_popup"
-                    ? "bg-zinc-900 border-amber-400 ring-2 ring-amber-400/20 shadow-xl shadow-amber-500/5"
+                  selectedType === "announcement_bar"
+                    ? "bg-zinc-900 border-blue-400 ring-2 ring-blue-400/20 shadow-xl shadow-blue-500/5"
                     : "bg-zinc-900/50 border-zinc-800 hover:border-zinc-700"
                 }`}
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-400 to-yellow-500 p-2 shadow-md flex items-center justify-center text-black">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-blue-500 to-indigo-600 p-2 shadow-md flex items-center justify-center text-white">
                       <Megaphone className="w-6 h-6" />
                     </div>
 
@@ -695,18 +724,59 @@ function CreateWidgetTypePage() {
 
                   <div>
                     <h3 className="text-lg font-bold text-white flex items-center gap-1.5">
-                      Announcement &amp; Popup
-                      <Sparkles className="w-4 h-4 text-amber-400" />
+                      Announcement Bar
+                      <Sparkles className="w-4 h-4 text-blue-400" />
                     </h3>
                     <p className="text-sm text-zinc-400 mt-1.5 leading-relaxed">
-                      Elfsight-style notification bars and modal popups. Top/bottom sticky bars, exit-intent modals, promo discount offers, countdown tickers, and customizable trigger rules.
+                      Header and footer notification bars. Announce flash sales, free shipping milestones, coupons, and important store updates without blocking page content.
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-5 mt-5 border-t border-zinc-800 flex items-center justify-between text-xs text-amber-300 font-semibold">
-                  <span>12 Pro Templates &amp; Studio</span>
-                  <ArrowRight className="w-4 h-4 text-amber-400" />
+                <div className="pt-5 mt-5 border-t border-zinc-800 flex items-center justify-between text-xs text-blue-300 font-semibold">
+                  <span>6 Bar Presets &amp; Studio</span>
+                  <ArrowRight className="w-4 h-4 text-blue-400" />
+                </div>
+              </div>
+
+              {/* 2. Popup Modal Card */}
+              <div
+                onClick={() => {
+                  setSelectedType("popup" as any);
+                  setAnnouncementFilter("popup");
+                  setView("announcement_templates");
+                }}
+                className={`p-6 rounded-2xl border cursor-pointer transition-all relative flex flex-col justify-between ${
+                  selectedType === "popup"
+                    ? "bg-zinc-900 border-purple-400 ring-2 ring-purple-400/20 shadow-xl shadow-purple-500/5"
+                    : "bg-zinc-900/50 border-zinc-800 hover:border-zinc-700"
+                }`}
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-purple-500 to-fuchsia-600 p-2 shadow-md flex items-center justify-center text-white">
+                      <Layers className="w-6 h-6" />
+                    </div>
+
+                    <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                      Ready to Deploy
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-bold text-white flex items-center gap-1.5">
+                      Popup Modal
+                      <Sparkles className="w-4 h-4 text-purple-400" />
+                    </h3>
+                    <p className="text-sm text-zinc-400 mt-1.5 leading-relaxed">
+                      High-converting modal popups and centered lightboxes. Timed page-load delays, return-to-home triggers, exit intent, discount promo cards, and newsletter opt-ins.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-5 mt-5 border-t border-zinc-800 flex items-center justify-between text-xs text-purple-300 font-semibold">
+                  <span>6 Popup Presets &amp; Studio</span>
+                  <ArrowRight className="w-4 h-4 text-purple-400" />
                 </div>
               </div>
 
@@ -795,7 +865,97 @@ function CreateWidgetTypePage() {
                 </div>
               </div>
 
-              {/* 3. Instagram Feed (Coming Soon) */}
+              {/* 3. Accessibility Toolbar (Ready) */}
+              <div
+                onClick={async () => {
+                  try {
+                    const newWidget = createNewAccessibilityWidget("Accessibility Widget", "modern_floating");
+                    await saveWidget(newWidget);
+                    toast.success("Accessibility Widget created! Opening Studio…");
+                    navigate({
+                      to: "/dashboard/widgets/accessibility/$widgetId",
+                      params: { widgetId: newWidget.id },
+                    } as any);
+                  } catch (err) {
+                    toast.error("Failed to create Accessibility Widget");
+                  }
+                }}
+                className="p-6 rounded-2xl border cursor-pointer transition-all relative flex flex-col justify-between bg-zinc-900/50 border-zinc-800 hover:border-[#38bdf8] hover:shadow-xl hover:shadow-sky-500/5 group"
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-sky-500 to-blue-600 p-2 shadow-md flex items-center justify-center text-white">
+                      <Accessibility className="w-7 h-7" />
+                    </div>
+
+                    <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                      Ready to Deploy
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-bold text-white flex items-center gap-1.5 group-hover:text-[#38bdf8] transition-colors">
+                      Accessibility Toolbar
+                      <Sparkles className="w-4 h-4 text-sky-400" />
+                    </h3>
+                    <p className="text-sm text-zinc-400 mt-1.5 leading-relaxed">
+                      Give visitors convenient visual, reading, and motor controls. Features text resizing, high contrast, dyslexic font, reading guide, enlarged cursor, and site-persistent preferences.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-5 mt-5 border-t border-zinc-800 flex items-center justify-between text-xs text-sky-300 font-semibold">
+                  <span>Interactive Studio &amp; Universal Embed</span>
+                  <ArrowRight className="w-4 h-4 text-sky-400 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+
+              {/* 4. Website Language Switcher (Ready) */}
+              <div
+                onClick={async () => {
+                  try {
+                    const newWidget = createNewLanguageSwitcherWidget("Website Language Switcher", "classic_globe");
+                    await saveWidget(newWidget);
+                    toast.success("Website Language Switcher created! Opening Studio…");
+                    navigate({
+                      to: "/dashboard/widgets/language-switcher/$widgetId",
+                      params: { widgetId: newWidget.id },
+                    } as any);
+                  } catch (err) {
+                    toast.error("Failed to create Language Switcher Widget");
+                  }
+                }}
+                className="p-6 rounded-2xl border cursor-pointer transition-all relative flex flex-col justify-between bg-zinc-900/50 border-zinc-800 hover:border-[#38bdf8] hover:shadow-xl hover:shadow-sky-500/5 group"
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-[#38bdf8] to-[#0284c7] p-2 shadow-md flex items-center justify-center text-black">
+                      <Languages className="w-7 h-7" />
+                    </div>
+
+                    <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                      Ready to Deploy
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-bold text-white flex items-center gap-1.5 group-hover:text-[#38bdf8] transition-colors">
+                      Website Language Switcher
+                      <Sparkles className="w-4 h-4 text-[#38bdf8]" />
+                    </h3>
+                    <p className="text-sm text-zinc-400 mt-1.5 leading-relaxed">
+                      Let visitors choose their preferred language and navigate seamlessly to translated pages. Includes 7 layouts, browser language detection, remembered preferences, and zero paid translation API requirement.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-5 mt-5 border-t border-zinc-800 flex items-center justify-between text-xs text-[#38bdf8] font-semibold">
+                  <span>7 Layouts &amp; Interactive Studio</span>
+                  <ArrowRight className="w-4 h-4 text-[#38bdf8] group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+
+              {/* 5. Instagram Feed (Coming Soon) */}
               <div
                 onClick={() => toast.info("Instagram Feed is in development and coming soon!")}
                 className="p-6 rounded-2xl border border-zinc-800 bg-zinc-900/40 opacity-70 hover:opacity-90 cursor-not-allowed flex flex-col justify-between"

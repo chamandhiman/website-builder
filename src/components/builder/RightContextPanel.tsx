@@ -32,15 +32,27 @@ import {
   MessageSquareQuote,
   Layers,
   Star,
+  Code2,
+  Puzzle,
 } from "lucide-react";
 import { useMounted } from "@/hooks/use-mounted";
-import { getAllWidgetRegistrations, createWidgetInstance, type WidgetRegistration } from "./widgets/widgetRegistry";
+import {
+  getAllWidgetRegistrations,
+  createWidgetInstance,
+  getWidgetPlacementClassification,
+  type WidgetRegistration,
+} from "./widgets/widgetRegistry";
 import { useNavigate } from "@tanstack/react-router";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/lib/auth";
+import { CustomEmbedsPanel } from "./CustomEmbedsPanel";
+import { getProjectCustomEmbeds } from "@/lib/builder/customEmbedsUtils";
+import { toast } from "sonner";
+import { nanoid } from "nanoid";
 
 const TABS = [
-  { key: "widgets", label: "Widgets", Icon: Grid2x2 },
+  { key: "widgets", label: "Sections", Icon: Grid2x2 },
+  { key: "embeds", label: "Plugins", Icon: Puzzle },
   { key: "properties", label: "Properties", Icon: Settings },
 ] as const;
 
@@ -193,7 +205,11 @@ export function RightContextPanel({
   onClose?: () => void;
 } = {}) {
   const mounted = useMounted();
-  const [activeTab, setActiveTab] = useState<TabKey>("widgets");
+  const rightPanelTab = useBuilder((s) => s.rightPanelTab);
+  const setRightPanelTab = useBuilder((s) => s.setRightPanelTab);
+  const activeTab = rightPanelTab;
+  const setActiveTab = setRightPanelTab;
+
   const [collapsed, setCollapsed] = useState(false);
   const project = useBuilder((s) => (s.currentProjectId ? s.projects[s.currentProjectId] : null));
   const selectedElement = useBuilder((s) => s.selectedElement);
@@ -204,6 +220,10 @@ export function RightContextPanel({
   const navigate = useNavigate();
 
   const currentProjectId = useBuilder((s) => s.currentProjectId);
+
+  const customEmbedsCount = useMemo(() => {
+    return getProjectCustomEmbeds(project).length;
+  }, [project]);
 
   useEffect(() => {
     if (selectedElement || selectedSectionId) {
@@ -223,6 +243,8 @@ export function RightContextPanel({
     const hiddenElementTypes = new Set(["heading", "text", "button", "image", "container"]);
     return widgetRegistryEntries.filter((widget) => {
       if (hiddenElementTypes.has(widget.type)) return false;
+      // Exclude custom-html from regular widgets list as it now has a dedicated panel & top control
+      if (widget.type === "custom-html") return false;
       if (widget.id.toLowerCase().includes("container") || widget.displayName.toLowerCase() === "container") return false;
       if (!normalized) return true;
       const values = [
@@ -241,6 +263,50 @@ export function RightContextPanel({
   }, [q, widgetRegistryEntries]);
 
   const addWidgetVariant = (widget: WidgetRegistration, variant: string) => {
+    const classification = getWidgetPlacementClassification(widget.id);
+
+    if (classification === "inline_embed") {
+      setActiveTab("embeds");
+      return;
+    }
+
+    if (classification === "floating") {
+      const existing = (project?.floatingWidgets || []).find((f) => f.type === widget.type);
+      if (existing) {
+        toast.info(`"${widget.displayName}" is already active in floating overlay`);
+        return;
+      }
+      const newFw = {
+        id: `fw-${nanoid(8)}`,
+        type: widget.type as any,
+        name: widget.displayName,
+        enabled: true,
+        position: "bottom_right" as const,
+        offsetX: 20,
+        offsetY: 20,
+        showOnDesktop: true,
+        showOnMobile: true,
+        pageTargeting: "all" as const,
+        config: {},
+      };
+      useBuilder.setState((s) => {
+        const cur = s.currentProjectId ? s.projects[s.currentProjectId] : null;
+        if (!cur) return s;
+        return {
+          projects: {
+            ...s.projects,
+            [cur.id]: {
+              ...cur,
+              floatingWidgets: [...(cur.floatingWidgets || []), newFw],
+            },
+          },
+        };
+      });
+      useBuilder.getState().persistWithStatus();
+      toast.success(`Added floating "${widget.displayName}" to site overlay`);
+      return;
+    }
+
     const widgetInstance = createWidgetInstance(widget.id, { variant });
     const sectionTemplate = {
       id: `${widget.id}-${widgetInstance.id}`,
@@ -265,6 +331,12 @@ export function RightContextPanel({
   };
 
   const beginWidgetDrag = (event: React.DragEvent, widget: WidgetRegistration, variant?: string) => {
+    const classification = getWidgetPlacementClassification(widget.id);
+    if (classification !== "page") {
+      event.preventDefault();
+      return;
+    }
+
     const resolvedVariant = variant || widget.defaultVariant || widget.supportedVariants?.[0] || "";
     event.dataTransfer.setData("application/x-wto-widget", widget.id);
     if (resolvedVariant) event.dataTransfer.setData("application/x-wto-widget-variant", resolvedVariant);
@@ -309,7 +381,7 @@ export function RightContextPanel({
     >
       <div className="flex h-11 shrink-0 items-center justify-between border-b border-[#262626] bg-[#141414] px-2.5">
         {!collapsed || isMobile ? (
-          <div className="flex items-center gap-1 rounded-lg border border-[#262626] bg-[#1A1A1A] p-0.5">
+          <div className="flex items-center gap-1 rounded-lg border border-[#262626] bg-[#171717] p-1">
             {TABS.map(({ key, label, Icon }) => {
               const isActive = activeTab === key;
               return (
@@ -317,12 +389,25 @@ export function RightContextPanel({
                   key={key}
                   type="button"
                   onClick={() => setActiveTab(key)}
-                  className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-all ${
-                    isActive ? "bg-[#27272A] text-[#FACC15] shadow-xs" : "text-[#94A3B8] hover:bg-[#202020] hover:text-[#F4F4F5]"
+                  className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold transition-all ${
+                    isActive
+                      ? "border border-[#FACC15] bg-[#1E1E1E] text-[#FACC15] shadow-xs"
+                      : "border border-transparent text-[#94A3B8] hover:bg-[#202020] hover:text-[#F4F4F5]"
                   }`}
                 >
                   <Icon className="h-3.5 w-3.5" />
-                  {label}
+                  <span className="truncate">{label}</span>
+                  {key === "embeds" && (
+                    <span
+                      className={`ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                        isActive
+                          ? "bg-amber-400/25 text-amber-300"
+                          : "bg-zinc-800 text-zinc-400"
+                      }`}
+                    >
+                      {customEmbedsCount}
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -338,14 +423,19 @@ export function RightContextPanel({
                       <button
                         type="button"
                         onClick={() => { setActiveTab(key); setCollapsed(false); }}
-                        className={`flex h-8 w-8 items-center justify-center rounded-lg transition ${
+                        className={`relative flex h-8 w-8 items-center justify-center rounded-lg transition ${
                           isActive ? "bg-[#27272A] text-[#FACC15]" : "text-[#94A3B8] hover:bg-[#202020] hover:text-[#F4F4F5]"
                         }`}
                       >
                         <Icon className="h-4 w-4" />
+                        {key === "embeds" && customEmbedsCount > 0 && (
+                          <span className="absolute top-0.5 right-0.5 flex h-2 w-2 rounded-full bg-amber-400 ring-2 ring-[#141414]" />
+                        )}
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="left">{key.charAt(0).toUpperCase() + key.slice(1)}</TooltipContent>
+                    <TooltipContent side="left">
+                      {key === "embeds" ? `Plugins (${customEmbedsCount})` : key === "widgets" ? "Sections" : "Properties"}
+                    </TooltipContent>
                   </Tooltip>
                 );
               })}
@@ -384,7 +474,7 @@ export function RightContextPanel({
                   <input
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
-                    placeholder="Search widgets & styles..."
+                    placeholder="Search sections & styles..."
                     className="h-9 w-full rounded-lg border border-[#2B2B2B] bg-[#1A1A1C] pl-8 pr-8 text-[12px] text-[#F5F5F5] placeholder-[#71717A] outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
                   />
                   {q.trim() ? (
@@ -399,20 +489,47 @@ export function RightContextPanel({
                   ) : null}
                 </div>
                 <div className="mt-2 flex items-center justify-between px-1 text-[11px] text-[#71717A]">
-                  <span>Available widgets</span>
+                  <span>Available sections</span>
                   <span className="font-medium text-[#A1A1AA]">{visibleWidgets.length} items</span>
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto">
+              <div className="flex-1 overflow-y-auto p-2.5 space-y-2">
+                {/* Shortcut to Plugins Panel */}
+                <div
+                  onClick={() => setActiveTab("embeds")}
+                  className="flex items-center justify-between rounded-xl border border-amber-400/25 bg-amber-400/5 p-2.5 transition hover:border-amber-400/50 hover:bg-amber-400/10 cursor-pointer shadow-xs group"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-400/15 border border-amber-400/30 text-amber-400">
+                      <Puzzle className="h-4 w-4" />
+                    </span>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[12px] font-bold text-white truncate">Plugins & Tools</span>
+                        <span className="rounded-full bg-amber-400/20 px-1.5 py-0.2 text-[9px] font-bold text-amber-400">
+                          {customEmbedsCount}
+                        </span>
+                      </div>
+                      <span className="block text-[10.5px] text-[#A1A1AA] truncate">
+                        Add & manage plugins, embeds and tools
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-[11px] font-bold text-amber-400 flex items-center gap-0.5 shrink-0 ml-2 group-hover:translate-x-0.5 transition-transform">
+                    <span>Manage</span>
+                    <span>→</span>
+                  </span>
+                </div>
+
                 {visibleWidgets.length === 0 ? (
-                  <div className="m-3 rounded-xl border border-dashed border-[#2B2B2B] bg-[#18181A] p-6 text-center">
+                  <div className="rounded-xl border border-dashed border-[#2B2B2B] bg-[#18181A] p-6 text-center">
                     <Boxes className="mx-auto h-6 w-6 text-[#71717A] mb-2" />
-                    <p className="text-xs font-medium text-[#D4D4D8]">No widgets found</p>
+                    <p className="text-xs font-medium text-[#D4D4D8]">No other widgets found</p>
                     <p className="mt-1 text-[11px] text-[#71717A]">Try searching for something else</p>
                   </div>
                 ) : (
-                  <div className="space-y-2 p-2.5">
+                  <div className="space-y-2">
                     {visibleWidgets.map((widget) => {
                       const open = q.trim() ? true : openWidgetId === widget.id;
                       const visual = getWidgetVisual(widget);
@@ -542,6 +659,12 @@ export function RightContextPanel({
           {activeTab === "properties" && (
             <div className="flex h-full flex-col overflow-hidden">
               <InspectorPanel />
+            </div>
+          )}
+
+          {activeTab === "embeds" && (
+            <div className="flex h-full flex-col overflow-hidden">
+              <CustomEmbedsPanel />
             </div>
           )}
         </div>

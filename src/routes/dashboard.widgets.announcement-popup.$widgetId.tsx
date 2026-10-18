@@ -52,8 +52,13 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
+  Globe,
+  Timer,
+  RefreshCw,
+  Home,
 } from "lucide-react";
 import { toast } from "sonner";
+import { WidgetStudioHeader } from "@/components/widgets/WidgetStudioHeader";
 
 export const Route = createFileRoute("/dashboard/widgets/announcement-popup/$widgetId")({
   component: AnnouncementPopupStudioPage,
@@ -161,8 +166,10 @@ function AnnouncementPopupStudioPage() {
         if (mounted && data) {
           setWidget(data as WidgetInstanceRecord<AnnouncementPopupConfig>);
           const rawCfg = data.config || ANNOUNCEMENT_POPUP_TEMPLATES.sale_bar.config;
-          setConfig(normalizeAnnouncementPopupConfig(rawCfg));
-          setWidgetName(data.name || "Announcement & Popup");
+          const normalized = normalizeAnnouncementPopupConfig(rawCfg);
+          setConfig(normalized);
+          setTemplateFilter(normalized.displayMode === "bar" ? "bar" : "popup");
+          setWidgetName(data.name || (normalized.displayMode === "bar" ? "Announcement Bar" : "Popup Modal"));
         } else if (mounted) {
           toast.error("Widget not found");
           navigate({ to: "/dashboard/widgets" as any });
@@ -205,6 +212,7 @@ function AnnouncementPopupStudioPage() {
     return renderAnnouncementPopupHtml(mockWidget, {
       device: previewDevice,
       isPreview: true,
+      isStudioMockup: true,
     });
   }, [widget, config, previewDevice, previewKey]);
 
@@ -226,6 +234,7 @@ function AnnouncementPopupStudioPage() {
 
     const cleanup = attachAnnouncementPopupInteractivity(previewEl, {
       isPreview: true,
+      isStudioMockup: true,
     });
     return cleanup;
   }, [renderedOutput]);
@@ -325,121 +334,25 @@ function AnnouncementPopupStudioPage() {
       {/* =========================================================================
           TOP TOOLBAR
          ========================================================================= */}
-      <header className="h-14 border-b border-zinc-800 bg-zinc-900/90 backdrop-blur px-4 flex items-center justify-between shrink-0 z-30">
-        {/* Left: Back & Name */}
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/dashboard/widgets" as any })}
-            className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition"
-            title="Back to widgets"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              value={widgetName}
-              onChange={(e) => {
-                setWidgetName(e.target.value);
-                setHasUnsavedChanges(true);
-              }}
-              className="bg-transparent text-sm font-bold text-white border-b border-transparent hover:border-zinc-700 focus:border-amber-400 focus:outline-none px-1 py-0.5 max-w-[220px] md:max-w-[320px] truncate"
-              placeholder="Widget Name"
-            />
-
-            <span
-              className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase flex items-center gap-1 ${
-                widget.status === "published"
-                  ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
-                  : "bg-zinc-800 text-zinc-400 border border-zinc-700"
-              }`}
-            >
-              <span
-                className={`w-1.5 h-1.5 rounded-full ${
-                  widget.status === "published" ? "bg-emerald-400" : "bg-zinc-500"
-                }`}
-              ></span>
-              {widget.status === "published" ? "Published" : "Draft"}
-            </span>
-
-            {hasUnsavedChanges && (
-              <span className="text-[11px] text-amber-400 font-medium hidden sm:inline">
-                • Unsaved changes
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Center: Device Switcher */}
-        <div className="hidden md:flex items-center bg-zinc-950 p-1 rounded-lg border border-zinc-800">
-          <button
-            type="button"
-            onClick={() => setPreviewDevice("desktop")}
-            className={`px-3 py-1 rounded-md text-xs font-semibold flex items-center gap-1.5 transition ${
-              previewDevice === "desktop"
-                ? "bg-zinc-800 text-amber-300 shadow-sm"
-                : "text-zinc-400 hover:text-zinc-200"
-            }`}
-          >
-            <Monitor className="w-3.5 h-3.5" />
-            <span>Desktop</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setPreviewDevice("mobile")}
-            className={`px-3 py-1 rounded-md text-xs font-semibold flex items-center gap-1.5 transition ${
-              previewDevice === "mobile"
-                ? "bg-zinc-800 text-amber-300 shadow-sm"
-                : "text-zinc-400 hover:text-zinc-200"
-            }`}
-          >
-            <Smartphone className="w-3.5 h-3.5" />
-            <span>Mobile</span>
-          </button>
-        </div>
-
-        {/* Right: Actions */}
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setPreviewKey((k) => k + 1)}
-            className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition"
-            title="Reset Preview"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleSave(false)}
-            disabled={isSaving}
-            className="px-3.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold border border-zinc-700 transition active:scale-95 disabled:opacity-50"
-          >
-            {isSaving ? "Saving…" : "Save Draft"}
-          </button>
-
-          <button
-            type="button"
-            onClick={handlePublish}
-            disabled={isPublishing}
-            className="px-4 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold transition shadow-md shadow-amber-500/10 active:scale-95 disabled:opacity-50 flex items-center gap-1.5"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>{isPublishing ? "Publishing…" : "Publish"}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setShowEmbedModal(true)}
-            className="px-3 py-1.5 rounded-lg bg-zinc-800/80 hover:bg-zinc-750 text-zinc-300 hover:text-white text-xs font-semibold border border-zinc-700 flex items-center gap-1.5 transition"
-          >
-            <Code2 className="w-3.5 h-3.5 text-amber-400" />
-            <span className="hidden sm:inline">Install</span>
-          </button>
-        </div>
-      </header>
+      <WidgetStudioHeader
+        widgetName={widgetName}
+        onWidgetNameChange={(name) => {
+          setWidgetName(name);
+          setHasUnsavedChanges(true);
+        }}
+        status={widget.status}
+        icon={<Megaphone className="w-3.5 h-3.5" />}
+        iconBgClass="bg-purple-500/15 border-purple-500/30 text-purple-400"
+        previewDevice={previewDevice}
+        onPreviewDeviceChange={setPreviewDevice}
+        onResetPreview={() => setPreviewKey((k) => k + 1)}
+        onOpenEmbed={() => setShowEmbedModal(true)}
+        onSaveDraft={() => handleSave(false)}
+        onPublish={handlePublish}
+        saving={isSaving}
+        publishing={isPublishing}
+        hasUnsavedChanges={hasUnsavedChanges}
+      />
 
       {/* =========================================================================
           STUDIO BODY (SIDEBAR + PREVIEW CANVAS)
@@ -447,6 +360,60 @@ function AnnouncementPopupStudioPage() {
       <div className="flex-1 flex overflow-hidden">
         {/* Left Settings Sidebar */}
         <div className="w-full md:w-[420px] lg:w-[460px] border-r border-zinc-800 bg-[#18181b] flex flex-col shrink-0 overflow-hidden">
+          {/* Widget Mode Switcher (Bar vs Popup) */}
+          <div className="p-3 border-b border-zinc-800 bg-zinc-900/90 flex items-center justify-between gap-3 shrink-0">
+            <div className="flex flex-col">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">Widget Type</span>
+              <span className="text-xs font-bold text-white flex items-center gap-1.5 mt-0.5">
+                {isBar ? (
+                  <>
+                    <span className="w-2 h-2 rounded-full bg-blue-400"></span>
+                    Announcement Bar
+                  </>
+                ) : (
+                  <>
+                    <span className="w-2 h-2 rounded-full bg-purple-400"></span>
+                    Popup Modal
+                  </>
+                )}
+              </span>
+            </div>
+            <div className="flex bg-zinc-950 p-1 rounded-xl border border-zinc-800/80 gap-1">
+              <button
+                type="button"
+                onClick={() => {
+                  updateConfig((p) => ({ ...p, displayMode: "bar" }));
+                  setTemplateFilter("bar");
+                }}
+                className={`py-1 px-3 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  isBar
+                    ? "bg-blue-500/20 text-blue-300 border border-blue-500/40 shadow-sm"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+                title="Switch to Announcement Bar"
+              >
+                <Megaphone className="w-3.5 h-3.5" />
+                <span>Bar</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  updateConfig((p) => ({ ...p, displayMode: "popup" }));
+                  setTemplateFilter("popup");
+                }}
+                className={`py-1 px-3 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  !isBar
+                    ? "bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-sm"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+                title="Switch to Popup Modal"
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span>Popup</span>
+              </button>
+            </div>
+          </div>
+
           {/* Tabs Navigation */}
           <div className="grid grid-cols-5 border-b border-zinc-800 bg-zinc-900/60 shrink-0 select-none overflow-hidden">
             {[
@@ -494,10 +461,18 @@ function AnnouncementPopupStudioPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-                      Ready-Made Templates
+                      {templateFilter === "bar"
+                        ? "Announcement Bar Presets"
+                        : templateFilter === "popup"
+                        ? "Popup Modal Presets"
+                        : "Ready-Made Presets"}
                     </h3>
                     <p className="text-[11px] text-zinc-400 mt-0.5">
-                      Select one of 12 production templates.
+                      {templateFilter === "bar"
+                        ? "6 pre-styled header & footer notification bars"
+                        : templateFilter === "popup"
+                        ? "6 high-converting modal lightboxes & popups"
+                        : "Select one of 12 production templates"}
                     </p>
                   </div>
                   <div className="flex items-center gap-1 bg-zinc-900 p-1 rounded-lg border border-zinc-800">
@@ -505,28 +480,28 @@ function AnnouncementPopupStudioPage() {
                       type="button"
                       onClick={() => setTemplateFilter("all")}
                       className={`px-2 py-0.5 rounded text-[10px] font-bold transition ${
-                        templateFilter === "all" ? "bg-zinc-800 text-amber-300" : "text-zinc-400"
+                        templateFilter === "all" ? "bg-zinc-800 text-amber-300" : "text-zinc-400 hover:text-zinc-200"
                       }`}
                     >
-                      All
+                      All (12)
                     </button>
                     <button
                       type="button"
                       onClick={() => setTemplateFilter("bar")}
                       className={`px-2 py-0.5 rounded text-[10px] font-bold transition ${
-                        templateFilter === "bar" ? "bg-zinc-800 text-amber-300" : "text-zinc-400"
+                        templateFilter === "bar" ? "bg-blue-500/20 text-blue-300 border border-blue-500/40" : "text-zinc-400 hover:text-zinc-200"
                       }`}
                     >
-                      Bars
+                      Bars (6)
                     </button>
                     <button
                       type="button"
                       onClick={() => setTemplateFilter("popup")}
                       className={`px-2 py-0.5 rounded text-[10px] font-bold transition ${
-                        templateFilter === "popup" ? "bg-zinc-800 text-amber-300" : "text-zinc-400"
+                        templateFilter === "popup" ? "bg-purple-500/20 text-purple-300 border border-purple-500/40" : "text-zinc-400 hover:text-zinc-200"
                       }`}
                     >
-                      Popups
+                      Popups (6)
                     </button>
                   </div>
                 </div>
@@ -1674,21 +1649,27 @@ function AnnouncementPopupStudioPage() {
               </div>
             )}
 
-            {/* ---------------- 5. DISPLAY RULES & SCHEDULING TAB ---------------- */}
+            {/* ---------------- 5. DISPLAY RULES & TARGETING TAB ---------------- */}
             {activeTab === "rules" && (
               <div className="space-y-5">
-                {/* Trigger Section */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-                    Activation Triggers
-                  </h4>
+                {/* 1. Activation Trigger & Time Delay */}
+                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-4">
+                  <div>
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                      <Timer className="w-3.5 h-3.5 text-amber-400" />
+                      Activation Trigger
+                    </h4>
+                    <p className="text-[11px] text-zinc-400 mt-0.5">
+                      Choose when the {isBar ? "announcement bar" : "popup modal"} appears to visitors.
+                    </p>
+                  </div>
 
-                  <div className="space-y-2">
+                  <div className="grid grid-cols-1 gap-2">
                     {[
-                      { id: "immediate", label: "Immediately on Page Load", desc: "Shows as soon as page mounts" },
-                      { id: "delay", label: "Time Delay", desc: "Shows after visitor spends X seconds on page" },
-                      { id: "scroll", label: "Scroll Percentage", desc: "Shows after visitor scrolls down X%" },
-                      { id: "exit_intent", label: "Exit Intent", desc: "Desktop: triggers when mouse moves towards browser top" },
+                      { id: "immediate", label: "Immediate on Page Load", desc: "Shows instantly as soon as visitor arrives" },
+                      { id: "delay", label: "Timed Delay (After Page Load)", desc: "Wait a few seconds after page load before displaying" },
+                      { id: "scroll", label: "Scroll Percentage", desc: "Shows after visitor scrolls down part of the page" },
+                      { id: "exit_intent", label: "Exit Intent", desc: "Desktop: Triggers when mouse moves towards browser top to leave" },
                     ].map((trig) => (
                       <div
                         key={trig.id}
@@ -1726,35 +1707,117 @@ function AnnouncementPopupStudioPage() {
                     ))}
                   </div>
 
+                  {/* Convenient Time Delay Controls */}
                   {config.displayRules.trigger === "delay" && (
-                    <div className="pt-2 border-t border-zinc-800">
-                      <label className="text-[11px] text-zinc-400 block mb-1">
-                        Delay: {config.displayRules.triggerDelaySeconds} seconds
-                      </label>
-                      <input
-                        type="range"
-                        min={1}
-                        max={30}
-                        value={config.displayRules.triggerDelaySeconds}
-                        onChange={(e) =>
-                          updateConfig((p) => ({
-                            ...p,
-                            displayRules: {
-                              ...p.displayRules,
-                              triggerDelaySeconds: Number(e.target.value),
-                            },
-                          }))
-                        }
-                        className="w-full accent-amber-400"
-                      />
+                    <div className="pt-3 border-t border-zinc-800 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-semibold text-zinc-200">
+                          Delay time before showing
+                        </label>
+                        <span className="text-xs font-mono font-bold text-amber-400 px-2 py-0.5 rounded bg-amber-400/10 border border-amber-400/30">
+                          {config.displayRules.triggerDelaySeconds ?? 3}s
+                        </span>
+                      </div>
+
+                      {/* Quick preset buttons for convenience */}
+                      <div>
+                        <div className="text-[10px] uppercase font-bold text-zinc-400 mb-1.5">Quick Presets:</div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {[
+                            { sec: 0, label: "0s (Instant)" },
+                            { sec: 2, label: "2s" },
+                            { sec: 3, label: "3s" },
+                            { sec: 5, label: "5s (Popular)" },
+                            { sec: 10, label: "10s" },
+                            { sec: 15, label: "15s" },
+                            { sec: 30, label: "30s" },
+                          ].map((pill) => (
+                            <button
+                              key={pill.sec}
+                              type="button"
+                              onClick={() =>
+                                updateConfig((p) => ({
+                                  ...p,
+                                  displayRules: {
+                                    ...p.displayRules,
+                                    triggerDelaySeconds: pill.sec,
+                                  },
+                                }))
+                              }
+                              className={`py-1 px-2.5 rounded-lg text-xs font-semibold transition border ${
+                                config.displayRules.triggerDelaySeconds === pill.sec
+                                  ? "bg-amber-400 text-black border-amber-400 font-bold shadow"
+                                  : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700"
+                              }`}
+                            >
+                              {pill.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Precision Slider */}
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between text-[11px] text-zinc-400">
+                          <span>0s (Instant)</span>
+                          <span>Custom: {config.displayRules.triggerDelaySeconds ?? 3} seconds</span>
+                          <span>60s</span>
+                        </div>
+                        <input
+                          type="range"
+                          min={0}
+                          max={60}
+                          step={1}
+                          value={config.displayRules.triggerDelaySeconds ?? 3}
+                          onChange={(e) =>
+                            updateConfig((p) => ({
+                              ...p,
+                              displayRules: {
+                                ...p.displayRules,
+                                triggerDelaySeconds: Number(e.target.value),
+                              },
+                            }))
+                          }
+                          className="w-full accent-amber-400 cursor-pointer"
+                        />
+                      </div>
                     </div>
                   )}
 
                   {config.displayRules.trigger === "scroll" && (
-                    <div className="pt-2 border-t border-zinc-800">
-                      <label className="text-[11px] text-zinc-400 block mb-1">
-                        Scroll Threshold: {config.displayRules.triggerScrollPercent}%
-                      </label>
+                    <div className="pt-3 border-t border-zinc-800 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-semibold text-zinc-200">
+                          Scroll Depth Threshold
+                        </label>
+                        <span className="text-xs font-mono font-bold text-amber-400 px-2 py-0.5 rounded bg-amber-400/10 border border-amber-400/30">
+                          {config.displayRules.triggerScrollPercent}%
+                        </span>
+                      </div>
+                      <div className="flex gap-1.5">
+                        {[25, 40, 50, 75].map((pct) => (
+                          <button
+                            key={pct}
+                            type="button"
+                            onClick={() =>
+                              updateConfig((p) => ({
+                                ...p,
+                                displayRules: {
+                                  ...p.displayRules,
+                                  triggerScrollPercent: pct,
+                                },
+                              }))
+                            }
+                            className={`flex-1 py-1 px-2 rounded-lg text-xs font-semibold border transition ${
+                              config.displayRules.triggerScrollPercent === pct
+                                ? "bg-amber-400 text-black border-amber-400 font-bold"
+                                : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white"
+                            }`}
+                          >
+                            {pct}%
+                          </button>
+                        ))}
+                      </div>
                       <input
                         type="range"
                         min={10}
@@ -1769,20 +1832,109 @@ function AnnouncementPopupStudioPage() {
                             },
                           }))
                         }
-                        className="w-full accent-amber-400"
+                        className="w-full accent-amber-400 cursor-pointer"
                       />
                     </div>
                   )}
                 </div>
 
-                {/* Frequency & Dismissal */}
+                {/* 2. Page Targeting & Return to Home Page Behavior */}
                 <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-                    Display Frequency
-                  </h4>
+                  <div>
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                      <Globe className="w-3.5 h-3.5 text-cyan-400" />
+                      Page Targeting &amp; Return Behavior
+                    </h4>
+                    <p className="text-[11px] text-zinc-400 mt-0.5">
+                      Control which pages display this widget and how returning visitors are greeted.
+                    </p>
+                  </div>
 
                   <div>
-                    <label className="text-xs text-zinc-400 block mb-1">How often to show</label>
+                    <label className="text-xs text-zinc-400 block mb-1">Target Pages</label>
+                    <div className="grid grid-cols-3 gap-1.5">
+                      {[
+                        { id: "all", label: "All Pages" },
+                        { id: "homepage_only", label: "Homepage Only" },
+                        { id: "custom", label: "Custom Paths" },
+                      ].map((t) => (
+                        <button
+                          key={t.id}
+                          type="button"
+                          onClick={() =>
+                            updateConfig((p) => ({
+                              ...p,
+                              displayRules: {
+                                ...p.displayRules,
+                                pageTargeting: t.id as any,
+                              },
+                            }))
+                          }
+                          className={`py-1.5 px-2 rounded-lg text-xs font-semibold border transition text-center cursor-pointer ${
+                            (config.displayRules.pageTargeting || "all") === t.id
+                              ? "bg-amber-400 text-black border-amber-400 font-bold shadow"
+                              : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white"
+                          }`}
+                        >
+                          {t.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {config.displayRules.pageTargeting === "custom" && (
+                    <div>
+                      <label className="text-[11px] text-zinc-400 block mb-1">
+                        URL Paths (comma separated, use * for wildcards)
+                      </label>
+                      <input
+                        type="text"
+                        value={Array.isArray(config.displayRules.targetedPaths) ? config.displayRules.targetedPaths.join(", ") : (config.displayRules.targetedPaths || "")}
+                        onChange={(e) =>
+                          updateConfig((p) => ({
+                            ...p,
+                            displayRules: {
+                              ...p.displayRules,
+                              targetedPaths: e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
+                            },
+                          }))
+                        }
+                        placeholder="/pricing, /products/*, /cart"
+                        className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded text-xs text-white focus:outline-none focus:border-amber-400 font-mono"
+                      />
+                    </div>
+                  )}
+
+                  {/* Return to Home Page Switch */}
+                  <div className="pt-2 border-t border-zinc-800">
+                    <SettingSwitch
+                      checked={Boolean(config.displayRules.reappearOnHomeReturn)}
+                      onChange={(val) =>
+                        updateConfig((p) => ({
+                          ...p,
+                          displayRules: { ...p.displayRules, reappearOnHomeReturn: val },
+                        }))
+                      }
+                      label="Always Show When Returning to Home Page"
+                      description="When a visitor navigates back or lands on the Home Page (/), always show the popup even if closed on other pages."
+                    />
+                  </div>
+                </div>
+
+                {/* 3. Frequency & Recurrence Cadence */}
+                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
+                  <div>
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                      <RefreshCw className="w-3.5 h-3.5 text-emerald-400" />
+                      Display Frequency
+                    </h4>
+                    <p className="text-[11px] text-zinc-400 mt-0.5">
+                      How frequently returning visitors see this {isBar ? "bar" : "popup"}.
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-xs text-zinc-400 block mb-1">Frequency Rule</label>
                     <select
                       value={config.displayRules.frequency}
                       onChange={(e) =>
@@ -1796,12 +1948,13 @@ function AnnouncementPopupStudioPage() {
                       }
                       className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer"
                     >
-                      <option value="always">Every page load</option>
-                      <option value="session">Once per browser session</option>
-                      <option value="1day">Once per day</option>
-                      <option value="7days">Once every 7 days</option>
-                      <option value="30days">Once every 30 days</option>
-                      <option value="once">Only once per visitor</option>
+                      <option value="always">Every page load (Always show)</option>
+                      <option value="home_return">Always on Home Page / Return to Home</option>
+                      <option value="session">Once per browser session (Until window closed)</option>
+                      <option value="1day">Once every 24 hours (Daily)</option>
+                      <option value="7days">Once every 7 days (Weekly)</option>
+                      <option value="30days">Once every 30 days (Monthly)</option>
+                      <option value="once">Only once per visitor (Never repeat)</option>
                     </select>
                   </div>
 
@@ -1814,11 +1967,44 @@ function AnnouncementPopupStudioPage() {
                       }))
                     }
                     label="Remember Visitor Dismissal"
-                    description="Prevents annoying visitors after they click Close (X)"
+                    description="Prevents showing again after visitor clicks the close (X) button"
                   />
+
+                  {config.displayRules.dismissPersistence && (
+                    <div>
+                      <label className="text-[11px] text-zinc-400 block mb-1">Dismissal Memory Scope</label>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {[
+                          { id: "session", label: "For current session" },
+                          { id: "permanent", label: "Permanent cooldown" },
+                        ].map((scope) => (
+                          <button
+                            key={scope.id}
+                            type="button"
+                            onClick={() =>
+                              updateConfig((p) => ({
+                                ...p,
+                                displayRules: {
+                                  ...p.displayRules,
+                                  dismissScope: scope.id as any,
+                                },
+                              }))
+                            }
+                            className={`py-1.5 px-2 rounded-lg text-xs font-semibold border transition text-center cursor-pointer ${
+                              (config.displayRules.dismissScope || "permanent") === scope.id
+                                ? "bg-amber-400 text-black border-amber-400 font-bold shadow"
+                                : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white"
+                            }`}
+                          >
+                            {scope.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                {/* Scheduling */}
+                {/* 4. Date & Time Scheduling */}
                 <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
                   <SettingSwitch
                     checked={Boolean(config.displayRules.scheduleEnabled)}

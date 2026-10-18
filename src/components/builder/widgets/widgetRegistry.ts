@@ -120,12 +120,15 @@ export interface WidgetData {
   advanced: Record<string, unknown>;
 }
 
+export type WidgetPlacementClassification = "page" | "floating" | "inline_embed" | "site_setting";
+
 export interface WidgetDefinition<TData extends WidgetData = WidgetData> {
   id: string;
   type: string;
   displayName: string;
   icon: IconDefinition;
   category: WidgetCategory;
+  placementClassification?: WidgetPlacementClassification;
   preview?: string;
   description?: string;
   component: ComponentType<{ data: WidgetData }>;
@@ -179,6 +182,15 @@ export function registerWidget<TData extends WidgetData>(registration: WidgetDef
 
 export function getWidgetRegistration(typeOrId: string) {
   return widgetRegistryById.get(typeOrId) ?? widgetRegistryByType.get(typeOrId);
+}
+
+export function getWidgetPlacementClassification(typeOrId: string): WidgetPlacementClassification {
+  const reg = getWidgetRegistration(typeOrId);
+  if (reg?.placementClassification) return reg.placementClassification;
+  const t = (reg?.type || typeOrId || "").toLowerCase();
+  if (t === "custom-html" || t === "custom-html-v1") return "inline_embed";
+  if (t === "whatsapp_chat" || t === "accessibility" || t === "language_switcher") return "floating";
+  return "page";
 }
 
 export const WIDGET_SORT_ORDER: string[] = [
@@ -935,6 +947,7 @@ registerWidget({
   displayName: "Custom HTML / Embed",
   icon: faCode,
   category: "Advanced",
+  placementClassification: "inline_embed",
   preview: "Embed studio widgets (Google Reviews, Countdown Timer, etc.), third-party iframes, or custom HTML.",
   description: "Generic embed container for studio widgets, third-party code snippets, and custom HTML.",
   component: CustomHtml,

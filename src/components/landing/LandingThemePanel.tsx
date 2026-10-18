@@ -11,14 +11,14 @@ const ACCENTS: Record<string, [string, string, string]> = {
 
 export function LandingThemePanel() {
   const [isOpen, setIsOpen] = useState(false);
-  const [theme, setTheme] = useState<string>("red");
+  const [theme, setTheme] = useState<string>("black");
   const [accent, setAccent] = useState<string>("yellow");
 
   // Load saved theme preference on mount
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem("wto-theme2") || "{}");
-      if (saved.t) setTheme(saved.t);
+      if (saved.t && saved.t !== "red") setTheme(saved.t);
       if (saved.a && ACCENTS[saved.a]) setAccent(saved.a);
     } catch {
       // Ignore json errors
@@ -32,7 +32,7 @@ export function LandingThemePanel() {
     const [c1, c2, c3] = ACCENTS[accent] || ACCENTS.yellow;
 
     // Set on documentElement & scoped landing element
-    if (theme === "red") {
+    if (theme === "black") {
       delete root.dataset.theme;
       if (landingEl) delete landingEl.dataset.theme;
     } else {
@@ -66,7 +66,7 @@ export function LandingThemePanel() {
   }, [theme, accent]);
 
   const handleReset = () => {
-    setTheme("red");
+    setTheme("black");
     setAccent("yellow");
   };
 

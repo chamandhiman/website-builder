@@ -515,7 +515,7 @@ export function renderCountdownHtml(
          data-show-hours="${cfg.showHours !== false ? "1" : "0"}"
          data-show-minutes="${cfg.showMinutes !== false ? "1" : "0"}"
          data-show-seconds="${cfg.showSeconds !== false ? "1" : "0"}"
-         data-anim="${cfg.animation || "slide"}"
+         data-cd-anim="${cfg.animation || "slide"}"
          data-expiry-action="${cfg.expiryAction || "message"}"
          data-expiry-msg="${escapeXml(cfg.expiryMessage || "Offer has ended.")}"
          data-expiry-url="${escapeXml(cfg.expiryRedirectUrl || "")}"
@@ -586,7 +586,7 @@ export function attachCountdownInteractivity(
     const showHours = root.getAttribute("data-show-hours") !== "0";
     const showMinutes = root.getAttribute("data-show-minutes") !== "0";
     const showSeconds = root.getAttribute("data-show-seconds") !== "0";
-    const animType = root.getAttribute("data-anim") || "none";
+    const animType = root.getAttribute("data-cd-anim") || root.getAttribute("data-anim") || "none";
     const expiryAction = root.getAttribute("data-expiry-action") || "message";
     const expiryMsg = root.getAttribute("data-expiry-msg") || "Offer has ended.";
     const expiryUrl = root.getAttribute("data-expiry-url") || "";

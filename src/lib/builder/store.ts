@@ -32,6 +32,7 @@ import { FLOW_YOGA_SHARED_HEADER, FLOW_YOGA_SHARED_FOOTER } from "@/services/tem
 import { NEXORA_SHARED_HEADER, NEXORA_SHARED_FOOTER } from "@/services/templateSeedsAgency";
 import { DRIVE_PRO_SHARED_HEADER, DRIVE_PRO_SHARED_FOOTER } from "@/services/templateSeedsDrivingSchool";
 import { CUSTOM_WEBSITE_CHROME_MAP } from "@/services/templateSeedsWebsites";
+import type { FloatingWidgetRecord } from "./floatingWidgetsTypes";
 
 export interface PageSection {
   id: string;
@@ -154,6 +155,7 @@ export interface Project {
   description?: string;
   keywords?: string;
   isTemplate?: boolean;
+  floatingWidgets?: FloatingWidgetRecord[];
 }
 
 interface HistoryEntry {
@@ -163,6 +165,7 @@ interface HistoryEntry {
   sharedHeader?: PageSection | null;
   sharedFooter?: PageSection | null;
   pagesChrome?: Array<Pick<Page, "id" | "useGlobalHeader" | "useGlobalFooter" | "hideHeader" | "hideFooter">>;
+  floatingWidgets?: FloatingWidgetRecord[];
   globalCss: string;
   globalJs: string;
 }
@@ -212,9 +215,12 @@ interface BuilderState {
   | "trash"
 
   showProjectDashboard: boolean;
+  rightPanelTab: "widgets" | "properties" | "embeds";
   saveStatus: "idle" | "saving" | "saved" | "failed";
   saveErrorMessage: string | null;
   breadcrumb: string[];
+
+  setRightPanelTab: (tab: "widgets" | "properties" | "embeds") => void;
 
   setLeftPanelOpen: (v: "widgets" | "pages" | "layers" | null) => void;
   toggleLeftPanel: () => void;
@@ -236,6 +242,10 @@ interface BuilderState {
   setBreadcrumb: (v: string[]) => void;
   persistWithStatus: () => boolean;
   saveProjectToCloud: () => Promise<boolean>;
+  selectedFloatingWidgetId: string | null;
+  selectFloatingWidget: (id: string | null) => void;
+  addOrUpdateFloatingWidget: (widget: FloatingWidgetRecord) => void;
+  removeFloatingWidget: (id: string) => void;
   setSelectedWidgetId: (id: string | null | undefined) => void;
   setClipboard: (clipboard: { items: WidgetInstance[]; type: "copy" | "cut"; sourceSectionId?: string } | null) => void;
   setSelectedElementStyle: (style: Record<string, string> | null | undefined) => void;
@@ -577,6 +587,7 @@ function emptyProject(name = "Untitled Project"): Project {
     globalCss: "/* Global CSS */\n",
     globalJs: "// Global JS\n",
     customHead: "",
+    floatingWidgets: [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
     thumbnail: "",
@@ -696,9 +707,47 @@ export const useBuilder = create<BuilderState>((set, get) => ({
   clipboard: null,
   hydrated: false,
   showProjectDashboard: false,
+  rightPanelTab: "widgets",
   saveStatus: "idle",
   saveErrorMessage: null,
   breadcrumb: [],
+  selectedFloatingWidgetId: null,
+
+  selectFloatingWidget: (id) => {
+    set({ selectedFloatingWidgetId: id, selectedSectionId: null, selectedElement: null });
+  },
+
+  addOrUpdateFloatingWidget: (widget) => {
+    const cur = get().currentProject();
+    if (!cur) return;
+    const existing = cur.floatingWidgets || [];
+    const idx = existing.findIndex((w) => w.id === widget.id);
+    let nextList: FloatingWidgetRecord[];
+    if (idx >= 0) {
+      nextList = [...existing];
+      nextList[idx] = { ...widget, updatedAt: Date.now() };
+    } else {
+      nextList = [...existing, { ...widget, createdAt: Date.now(), updatedAt: Date.now() }];
+    }
+    updateCurrent(set, get, { floatingWidgets: nextList });
+    get().persistWithStatus();
+  },
+
+  removeFloatingWidget: (id) => {
+    const cur = get().currentProject();
+    if (!cur) return;
+    const existing = cur.floatingWidgets || [];
+    const nextList = existing.filter((w) => w.id !== id);
+    updateCurrent(set, get, { floatingWidgets: nextList });
+    if (get().selectedFloatingWidgetId === id) {
+      set({ selectedFloatingWidgetId: null });
+    }
+    get().persistWithStatus();
+  },
+
+  setRightPanelTab: (tab) => {
+    set({ rightPanelTab: tab });
+  },
 
   setShowProjectDashboard: (show) => {
     set({ showProjectDashboard: show });

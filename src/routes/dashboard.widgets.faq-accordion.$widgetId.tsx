@@ -50,6 +50,7 @@ import {
   Maximize2,
 } from "lucide-react";
 import { toast } from "sonner";
+import { WidgetStudioHeader } from "@/components/widgets/WidgetStudioHeader";
 
 export const Route = createFileRoute("/dashboard/widgets/faq-accordion/$widgetId")({
   component: FaqAccordionStudioPage,
@@ -179,6 +180,7 @@ function FaqAccordionStudioPage() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [activeTab, setActiveTab] = useState<"templates" | "content" | "layout" | "behavior" | "appearance" | "advanced">("content");
   const [previewDevice, setPreviewDevice] = useState<"desktop" | "mobile">("desktop");
+  const [previewKey, setPreviewKey] = useState(0);
   const [embedModalOpen, setEmbedModalOpen] = useState(false);
   const [copiedEmbed, setCopiedEmbed] = useState(false);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
@@ -411,7 +413,7 @@ function FaqAccordionStudioPage() {
     if (!previewContainerRef.current) return;
     const cleanup = attachFaqInteractivity(previewContainerRef.current);
     return cleanup;
-  }, [previewMarkup, previewDevice]);
+  }, [previewMarkup, previewDevice, previewKey]);
 
   // Embed Snippet
   const embedSnippet = `<div data-wto-widget="${widgetId}"></div>\n<script src="https://widgets.webtoolocean.com/widget.js" async></script>`;
@@ -435,110 +437,25 @@ function FaqAccordionStudioPage() {
   return (
     <div className="min-h-screen bg-[#0e0e11] text-zinc-100 flex flex-col overflow-hidden font-sans select-none">
       {/* ================= TOP STUDIO APP BAR ================= */}
-      <header className="h-14 border-b border-zinc-800 bg-[#16161a] px-4 flex items-center justify-between shrink-0 z-30">
-        <div className="flex items-center gap-3 min-w-0">
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/dashboard/widgets" as any })}
-            className="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition cursor-pointer shrink-0"
-            title="Back to Widgets Hub"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-sky-500 to-indigo-500 p-1.5 flex items-center justify-center text-white shrink-0 shadow-sm">
-              <HelpCircle className="w-4 h-4" />
-            </div>
-            <div className="min-w-0">
-              <input
-                type="text"
-                value={widgetName}
-                onChange={(e) => {
-                  setWidgetName(e.target.value);
-                  setHasUnsavedChanges(true);
-                }}
-                className="bg-transparent text-sm font-bold text-white hover:bg-zinc-800/60 focus:bg-zinc-900 border border-transparent hover:border-zinc-700 focus:border-amber-400 rounded px-2 py-0.5 outline-none transition w-44 md:w-64 truncate"
-                title="Click to rename widget"
-              />
-              <div className="text-[10px] text-zinc-500 flex items-center gap-2 pl-2">
-                <span>FAQ Accordion</span>
-                <span>•</span>
-                <span className="font-mono">{widgetId}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Center: Device Switcher & Unsaved Indicator */}
-        <div className="flex items-center gap-3">
-          {hasUnsavedChanges && (
-            <span className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[11px] font-semibold animate-pulse">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-              Unsaved changes
-            </span>
-          )}
-
-          <div className="flex items-center bg-zinc-900 p-0.5 rounded-lg border border-zinc-800">
-            <button
-              type="button"
-              onClick={() => setPreviewDevice("desktop")}
-              className={`p-1.5 rounded-md text-xs font-semibold flex items-center gap-1.5 transition ${
-                previewDevice === "desktop"
-                  ? "bg-zinc-800 text-amber-400 shadow-sm"
-                  : "text-zinc-400 hover:text-white"
-              }`}
-              title="Desktop View"
-            >
-              <Monitor className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline text-[11px]">Desktop</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setPreviewDevice("mobile")}
-              className={`p-1.5 rounded-md text-xs font-semibold flex items-center gap-1.5 transition ${
-                previewDevice === "mobile"
-                  ? "bg-zinc-800 text-amber-400 shadow-sm"
-                  : "text-zinc-400 hover:text-white"
-              }`}
-              title="Mobile View"
-            >
-              <Smartphone className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline text-[11px]">Mobile</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Right: Actions */}
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setEmbedModalOpen(true)}
-            className="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-bold text-xs transition flex items-center gap-1.5 border border-zinc-700/80 cursor-pointer"
-          >
-            <Code2 className="w-3.5 h-3.5 text-amber-400" />
-            <span className="hidden sm:inline">Embed Code</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleSaveDraft}
-            disabled={isSaving}
-            className="px-3.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-xs transition border border-zinc-700 cursor-pointer disabled:opacity-50"
-          >
-            {isSaving ? "Saving…" : "Save Draft"}
-          </button>
-
-          <button
-            type="button"
-            onClick={handlePublish}
-            disabled={isPublishing}
-            className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-black font-extrabold text-xs transition shadow-md shadow-amber-500/10 cursor-pointer disabled:opacity-50"
-          >
-            {isPublishing ? "Publishing…" : "Publish Live"}
-          </button>
-        </div>
-      </header>
+      <WidgetStudioHeader
+        widgetName={widgetName}
+        onWidgetNameChange={(name) => {
+          setWidgetName(name);
+          setHasUnsavedChanges(true);
+        }}
+        status={widget?.status || "draft"}
+        icon={<HelpCircle className="w-3.5 h-3.5" />}
+        iconBgClass="bg-sky-500/15 border-sky-500/30 text-sky-400"
+        previewDevice={previewDevice}
+        onPreviewDeviceChange={setPreviewDevice}
+        onResetPreview={() => setPreviewKey((k) => k + 1)}
+        onOpenEmbed={() => setEmbedModalOpen(true)}
+        onSaveDraft={handleSaveDraft}
+        onPublish={handlePublish}
+        saving={isSaving}
+        publishing={isPublishing}
+        hasUnsavedChanges={hasUnsavedChanges}
+      />
 
       {/* ================= MAIN SPLIT VIEW (SETTINGS LEFT | PREVIEW RIGHT) ================= */}
       <div className="flex-1 flex overflow-hidden">
