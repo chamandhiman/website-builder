@@ -36,7 +36,7 @@ import { CustomEmbedModal } from "./CustomEmbedModal";
 import { nanoid } from "nanoid";
 
 export type RenderingCategory = "floating" | "section";
-type CategoryFilter = "all" | "floating" | "section";
+type CategoryFilter = "floating" | "section";
 
 interface CatalogItem {
   id: string;
@@ -232,7 +232,7 @@ export function CustomEmbedsPanel() {
   const [placementFilter, setPlacementFilter] = useState<"all" | EmbedPlacementScope>("all");
 
   // Filters for Add New
-  const [catalogCategory, setCatalogCategory] = useState<CategoryFilter>("all");
+  const [catalogCategory, setCatalogCategory] = useState<CategoryFilter>("floating");
 
   // Modal State
   const [modalOpen, setModalOpen] = useState(false);
@@ -259,10 +259,9 @@ export function CustomEmbedsPanel() {
     };
   }, [allEmbeds]);
 
-  // Counts for Add New catalog filter chips (first three tabs only: All, Floating, Sections)
+  // Counts for Add New catalog filter chips (two tabs only: Floating and Sections)
   const catalogCounts = useMemo(() => {
     return {
-      all: PLUGIN_CATALOG.length,
       floating: PLUGIN_CATALOG.filter((p) => p.renderingCategory === "floating").length,
       section: PLUGIN_CATALOG.filter((p) => p.renderingCategory === "section").length,
     };
@@ -288,20 +287,14 @@ export function CustomEmbedsPanel() {
 
   // Filtered list of Add New catalog
   const filteredCatalog = useMemo(() => {
-    let list = PLUGIN_CATALOG;
-    if (catalogCategory === "floating") {
-      list = list.filter((p) => p.renderingCategory === "floating");
-    } else if (catalogCategory === "section") {
-      list = list.filter((p) => p.renderingCategory === "section");
-    }
+    const list = PLUGIN_CATALOG.filter((p) => p.renderingCategory === catalogCategory);
     const q = searchQuery.trim().toLowerCase();
     if (!q) return list;
     return list.filter((item) => {
       return (
         item.name.toLowerCase().includes(q) ||
         item.description.toLowerCase().includes(q) ||
-        item.categoryLabel.toLowerCase().includes(q) ||
-        (item.renderingCategory === "floating" ? "floating overlay" : "page section").includes(q)
+        item.categoryLabel.toLowerCase().includes(q)
       );
     });
   }, [catalogCategory, searchQuery]);
@@ -762,23 +755,11 @@ export function CustomEmbedsPanel() {
           <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none">
             <button
               type="button"
-              onClick={() => setCatalogCategory("all")}
-              className={`px-3 py-1 rounded-full text-xs font-bold transition shrink-0 ${
-                catalogCategory === "all"
-                  ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                  : "bg-[#18181C] text-zinc-300 hover:text-white border border-zinc-800"
-              }`}
-            >
-              All ({catalogCounts.all})
-            </button>
-
-            <button
-              type="button"
               onClick={() => setCatalogCategory("floating")}
-              className={`px-3 py-1 rounded-full text-xs font-semibold transition shrink-0 ${
+              className={`px-3.5 py-1 rounded-full text-xs font-bold transition shrink-0 ${
                 catalogCategory === "floating"
-                  ? "bg-emerald-400 text-zinc-950 font-bold shadow-xs"
-                  : "bg-[#18181C] text-emerald-400 hover:text-white border border-emerald-900/50"
+                  ? "bg-[#FACC15] text-zinc-950 shadow-xs"
+                  : "bg-[#18181C] text-emerald-400 hover:text-white border border-emerald-900/50 font-semibold"
               }`}
             >
               Floating ({catalogCounts.floating})
@@ -787,10 +768,10 @@ export function CustomEmbedsPanel() {
             <button
               type="button"
               onClick={() => setCatalogCategory("section")}
-              className={`px-3 py-1 rounded-full text-xs font-semibold transition shrink-0 ${
+              className={`px-3.5 py-1 rounded-full text-xs font-bold transition shrink-0 ${
                 catalogCategory === "section"
-                  ? "bg-amber-400 text-zinc-950 font-bold shadow-xs"
-                  : "bg-[#18181C] text-amber-300 hover:text-white border border-amber-900/50"
+                  ? "bg-[#FACC15] text-zinc-950 shadow-xs"
+                  : "bg-[#18181C] text-amber-300 hover:text-white border border-amber-900/50 font-semibold"
               }`}
             >
               Sections ({catalogCounts.section})
