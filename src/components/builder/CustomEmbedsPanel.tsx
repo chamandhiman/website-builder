@@ -179,8 +179,8 @@ export function CustomEmbedsPanel() {
   const updateSection = useBuilder((s) => s.updateSection);
   const persistWithStatus = useBuilder((s) => s.persistWithStatus);
 
-  // Top Tabs: "My Plugins" vs "Add New"
-  const [internalTab, setInternalTab] = useState<"my_plugins" | "add_new">("my_plugins");
+  // Top Tabs: "My Plugins" vs "Add New" (Add New is active by default)
+  const [internalTab, setInternalTab] = useState<"my_plugins" | "add_new">("add_new");
 
   // Search
   const [searchQuery, setSearchQuery] = useState("");
