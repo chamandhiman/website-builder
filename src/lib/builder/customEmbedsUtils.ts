@@ -9,6 +9,7 @@ export type EmbedPlacementScope = "site_wide" | "page_specific" | "floating";
 export interface CustomEmbedItem {
   id: string;
   name: string;
+  pluginType?: string;
   html: string;
   hidden: boolean;
   displayType: EmbedDisplayType;
@@ -29,13 +30,24 @@ export interface CustomEmbedItem {
 }
 
 /**
- * Checks if a section is a Custom HTML / Embed widget.
+ * Checks if a section is a Custom HTML / Embed / Plugin widget.
  */
 export function isCustomHtmlSection(sec: PageSection | null | undefined): boolean {
   if (!sec) return false;
   if (sec.widgetInstance?.type === "custom-html") return true;
-  if (sec.templateId && sec.templateId.toLowerCase().includes("custom-html")) return true;
-  if (sec.name && (sec.name.toLowerCase().includes("custom html") || sec.name.toLowerCase().includes("custom embed"))) return true;
+  if (sec.widgetInstance?.type === "google-reviews") return true;
+  if (sec.widgetInstance?.type === "map") return true;
+  if (sec.templateId && (
+    sec.templateId.toLowerCase().includes("custom-html") ||
+    sec.templateId.toLowerCase().includes("google-review") ||
+    sec.templateId.toLowerCase().includes("map")
+  )) return true;
+  if (sec.name && (
+    sec.name.toLowerCase().includes("custom html") ||
+    sec.name.toLowerCase().includes("custom embed") ||
+    sec.name.toLowerCase().includes("youtube") ||
+    sec.name.toLowerCase().includes("google map")
+  )) return true;
   return false;
 }
 
@@ -100,10 +112,28 @@ export function detectWtoWidgetId(html: string): string | null {
   return match ? match[1] : null;
 }
 
+function resolvePluginTypeFromSection(name: string, html: string): string {
+  const lowerName = name.toLowerCase();
+  const lowerHtml = html.toLowerCase();
+  if (lowerName.includes("youtube") || lowerHtml.includes("youtube.com") || lowerHtml.includes("youtu.be")) {
+    return "youtube";
+  }
+  if (lowerName.includes("map") || lowerHtml.includes("maps.google") || lowerHtml.includes("google.com/maps")) {
+    return "maps";
+  }
+  if (lowerName.includes("whatsapp") || lowerHtml.includes("wa.me") || lowerHtml.includes("whatsapp")) {
+    return "whatsapp";
+  }
+  if (lowerName.includes("review") || lowerHtml.includes("google-review")) {
+    return "reviews";
+  }
+  return "custom_html";
+}
+
 /**
- * Retrieves all Custom HTML / Embed widgets belonging strictly to the specified project.
+ * Retrieves all plugins and custom embeds belonging strictly to the specified project.
  * Scoped 100% to this project ID / site.
- * Covers: Site-wide embeds (Header/Footer), Inline page embeds, and Floating embeds.
+ * Covers: Site-wide embeds (Header/Footer), Inline page embeds, and Floating widgets.
  */
 export function getProjectCustomEmbeds(project: Project | null | undefined): CustomEmbedItem[] {
   if (!project) return [];
@@ -113,10 +143,12 @@ export function getProjectCustomEmbeds(project: Project | null | undefined): Cus
   if (project.sharedHeader && isCustomHtmlSection(project.sharedHeader)) {
     const sec = project.sharedHeader;
     const html = getSectionEmbedHtml(sec);
+    const pType = resolvePluginTypeFromSection(sec.name || "", html);
     items.push({
       id: sec.id,
       sectionId: sec.id,
-      name: sec.name || "Custom HTML (Header)",
+      name: sec.name || (pType === "youtube" ? "YouTube Video" : pType === "maps" ? "Google Maps" : "Custom HTML (Header)"),
+      pluginType: pType,
       html,
       hidden: Boolean(sec.hidden),
       displayType: "site_wide",
@@ -138,10 +170,12 @@ export function getProjectCustomEmbeds(project: Project | null | undefined): Cus
     (page.sections || []).forEach((sec: PageSection) => {
       if (isCustomHtmlSection(sec)) {
         const html = getSectionEmbedHtml(sec);
+        const pType = resolvePluginTypeFromSection(sec.name || "", html);
         items.push({
           id: sec.id,
           sectionId: sec.id,
-          name: sec.name || "Custom HTML / Embed",
+          name: sec.name || (pType === "youtube" ? "YouTube Video" : pType === "maps" ? "Google Maps" : "Custom HTML / Embed"),
+          pluginType: pType,
           html,
           hidden: Boolean(sec.hidden),
           displayType: "inline",
@@ -163,10 +197,12 @@ export function getProjectCustomEmbeds(project: Project | null | undefined): Cus
   if (project.sharedFooter && isCustomHtmlSection(project.sharedFooter)) {
     const sec = project.sharedFooter;
     const html = getSectionEmbedHtml(sec);
+    const pType = resolvePluginTypeFromSection(sec.name || "", html);
     items.push({
       id: sec.id,
       sectionId: sec.id,
-      name: sec.name || "Custom HTML (Footer)",
+      name: sec.name || (pType === "youtube" ? "YouTube Video" : pType === "maps" ? "Google Maps" : "Custom HTML (Footer)"),
+      pluginType: pType,
       html,
       hidden: Boolean(sec.hidden),
       displayType: "site_wide",
@@ -183,29 +219,55 @@ export function getProjectCustomEmbeds(project: Project | null | undefined): Cus
     });
   }
 
-  // 4. Floating Embeds
+  // 4. Floating Widgets (All active / configured floating widgets)
   (project.floatingWidgets || []).forEach((fw: FloatingWidgetRecord) => {
-    if (fw.type === "custom_embed" || fw.snippetHtml) {
-      const html = String(fw.snippetHtml || fw.config?.html || "");
-      items.push({
-        id: fw.id,
-        floatingId: fw.id,
-        name: fw.name || "Floating Custom Embed",
-        html,
-        hidden: !fw.enabled,
-        displayType: "floating",
-        placementScope: "floating",
-        placementLabel: formatFloatingPositionLabel(fw.position),
-        pageId: "floating",
-        pageName: "Floating Overlay",
-        pageSlug: "floating",
-        isShared: true,
-        floatingPosition: fw.position,
-        floatingRecord: fw,
-        detectedWidgetId: detectWtoWidgetId(html),
-        snippetType: detectSnippetType(html),
-      });
+    let defaultName = "Floating Widget";
+    let pType = fw.type as string;
+
+    if (fw.type === "whatsapp_chat") {
+      defaultName = "WhatsApp Chat";
+      pType = "whatsapp";
+    } else if (fw.type === "language_switcher") {
+      defaultName = "Language Switcher";
+      pType = "language";
+    } else if (fw.type === "accessibility") {
+      defaultName = "Accessibility Toolbar";
+      pType = "accessibility";
+    } else if (fw.type === "back_to_top") {
+      defaultName = "Back to Top";
+      pType = "back_to_top";
+    } else if (fw.type === "floating_contact") {
+      defaultName = "Floating Contact";
+      pType = "contact";
+    } else if (fw.type === "announcement_popup") {
+      defaultName = "Announcement Popup";
+      pType = "announcement";
+    } else if (fw.type === "custom_embed") {
+      defaultName = "Custom HTML";
+      pType = "custom_html";
     }
+
+    const html = String(fw.snippetHtml || fw.config?.html || "");
+
+    items.push({
+      id: fw.id,
+      floatingId: fw.id,
+      name: fw.name || defaultName,
+      pluginType: pType,
+      html,
+      hidden: !fw.enabled,
+      displayType: "floating",
+      placementScope: "floating",
+      placementLabel: formatFloatingPositionLabel(fw.position),
+      pageId: "floating",
+      pageName: "Floating Overlay",
+      pageSlug: "floating",
+      isShared: true,
+      floatingPosition: fw.position,
+      floatingRecord: fw,
+      detectedWidgetId: detectWtoWidgetId(html),
+      snippetType: detectSnippetType(html),
+    });
   });
 
   return items;

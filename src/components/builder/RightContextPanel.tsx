@@ -399,9 +399,9 @@ export function RightContextPanel({
                   <span className="truncate">{label}</span>
                   {key === "embeds" && (
                     <span
-                      className={`ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                      className={`ml-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
                         isActive
-                          ? "bg-amber-400/25 text-amber-300"
+                          ? "bg-[#FACC15] text-zinc-950 shadow-xs"
                           : "bg-zinc-800 text-zinc-400"
                       }`}
                     >
