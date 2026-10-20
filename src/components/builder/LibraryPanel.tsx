@@ -229,7 +229,19 @@ const activePanelKey = showProjectDashboard
 
   const visibleWidgets = useMemo(() => {
     const normalized = q.trim().toLowerCase();
-    const hiddenElementTypes = new Set(["heading", "text", "button", "image"]);
+    const hiddenElementTypes = new Set([
+      "heading",
+      "text",
+      "button",
+      "image",
+      "container",
+      "youtube",
+      "vimeo",
+      "map",
+      "google-reviews",
+      "store_locator",
+      "custom-html",
+    ]);
     return widgetRegistryEntries.filter((widget) => {
       if (hiddenElementTypes.has(widget.type)) return false;
       if (!normalized) return true;

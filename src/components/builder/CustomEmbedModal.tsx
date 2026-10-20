@@ -13,6 +13,7 @@ import {
   Monitor,
   Smartphone,
   ArrowRight,
+  ArrowLeft,
   MessageCircle,
   Accessibility,
   MapPin,
@@ -25,7 +26,18 @@ import {
   Bot,
   Layers,
   Sparkles,
+  Palette,
+  Bell,
+  Link as LinkIcon,
+  Eye,
+  Compass,
+  Gift,
+  Percent,
+  Info,
+  Shield,
+  CircleOff,
 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import {
   type CustomEmbedItem,
@@ -35,6 +47,9 @@ import {
 } from "@/lib/builder/customEmbedsUtils";
 import type { FloatingPosition, FloatingWidgetRecord } from "@/lib/builder/floatingWidgetsTypes";
 import { nanoid } from "nanoid";
+import { WhatsAppChatModal } from "./WhatsAppChatModal";
+import { AccessibilityToolbarModal } from "./AccessibilityToolbarModal";
+import { AnnouncementBarModal } from "./AnnouncementBarModal";
 
 export interface CustomEmbedModalProps {
   isOpen: boolean;
@@ -55,7 +70,272 @@ type PlacementChoice =
   | "floating_top_left"
   | "inline_page";
 
-export function CustomEmbedModal({
+// ── ANNOUNCEMENT BAR DESIGNS (Matching Mockup 1) ─────────────────────────
+export interface AnnouncementTemplateItem {
+  key: string;
+  name: string;
+  label: string;
+  bgColor: string;
+  textColor: string;
+  icon: string;
+  iconColor: string;
+  text: string;
+  btnText: string;
+  btnBg: string;
+  btnTextColor: string;
+  showButton: boolean;
+  border?: string;
+}
+
+export const ANNOUNCEMENT_TEMPLATES: AnnouncementTemplateItem[] = [
+  {
+    key: "classic",
+    name: "Classic",
+    label: "Style 1 - Classic",
+    bgColor: "#4A1525", // Dark burgundy / deep wine
+    textColor: "#FFFFFF",
+    icon: "megaphone",
+    iconColor: "#FFFFFF",
+    text: "2027 Winter and Spring Schedules are now open!",
+    btnText: "",
+    btnBg: "#FACC15",
+    btnTextColor: "#18181B",
+    showButton: false,
+  },
+  {
+    key: "with_button",
+    name: "With Button",
+    label: "Style 2 - With Button",
+    bgColor: "#522121", // Dark rust / red-brown
+    textColor: "#FFFFFF",
+    icon: "none",
+    iconColor: "#FFFFFF",
+    text: "New Student Discount — Save 20% on Enrollment!",
+    btnText: "Learn More",
+    btnBg: "#FACC15",
+    btnTextColor: "#18181B",
+    showButton: true,
+  },
+  {
+    key: "info",
+    name: "Info",
+    label: "Style 3 - Info",
+    bgColor: "#1D64D8", // Vibrant blue
+    textColor: "#FFFFFF",
+    icon: "info",
+    iconColor: "#93C5FD",
+    text: "Important Update — New office hours from Jan 1, 2027",
+    btnText: "",
+    btnBg: "#FFFFFF",
+    btnTextColor: "#1D64D8",
+    showButton: false,
+  },
+  {
+    key: "success",
+    name: "Success",
+    label: "Style 4 - Success",
+    bgColor: "#16803C", // Emerald green
+    textColor: "#FFFFFF",
+    icon: "check",
+    iconColor: "#86EFAC",
+    text: "Enroll Now for Spring 2027 — Limited Seats Available!",
+    btnText: "",
+    btnBg: "#FFFFFF",
+    btnTextColor: "#16803C",
+    showButton: false,
+  },
+  {
+    key: "seasonal",
+    name: "Seasonal",
+    label: "Style 5 - Seasonal",
+    bgColor: "#EA580C", // Bright orange
+    textColor: "#FFFFFF",
+    icon: "gift",
+    iconColor: "#FED7AA",
+    text: "Halloween Special — Get 15% off on all courses!",
+    btnText: "View Offers",
+    btnBg: "#FFFFFF",
+    btnTextColor: "#C2410C",
+    showButton: true,
+  },
+  {
+    key: "minimal",
+    name: "Minimal",
+    label: "Style 6 - Minimal",
+    bgColor: "#18181B", // Dark zinc / charcoal
+    textColor: "#F4F4F5",
+    icon: "shield",
+    iconColor: "#A1A1AA",
+    text: "COVID-19 Safety Measures — Learn about our safety guidelines.",
+    btnText: "Read More",
+    btnBg: "#FFFFFF",
+    btnTextColor: "#18181B",
+    showButton: true,
+    border: "1px solid #27272A",
+  },
+];
+
+// Helper to render icon component inside template card
+function renderTemplateIcon(icon: string, className = "h-4 w-4") {
+  switch (icon) {
+    case "megaphone":
+      return <Megaphone className={className} />;
+    case "bell":
+      return <Bell className={className} />;
+    case "star":
+      return <Star className={`${className} fill-current`} />;
+    case "gift":
+      return <Gift className={className} />;
+    case "percent":
+      return <Percent className={className} />;
+    case "info":
+      return <Info className={className} />;
+    case "check":
+      return <Check className={className} />;
+    case "sparkles":
+      return <Sparkles className={className} />;
+    case "shield":
+      return <Shield className={className} />;
+    default:
+      return null;
+  }
+}
+
+// ── POPUP DESIGNS ────────────────────────────────────────────────────────
+interface PopupTemplateItem {
+  key: string;
+  name: string;
+  label: string;
+  bgColor: string;
+  textColor: string;
+  headline: string;
+  message: string;
+  btnText: string;
+  btnBg: string;
+  btnTextColor: string;
+}
+
+const POPUP_TEMPLATES: PopupTemplateItem[] = [
+  {
+    key: "discount",
+    name: "Discount Offer",
+    label: "Special Discount",
+    bgColor: "#1A1A1E",
+    textColor: "#F4F4F5",
+    headline: "Get 20% Off Today!",
+    message: "Subscribe now and receive an instant discount code on your next purchase.",
+    btnText: "Claim Coupon",
+    btnBg: "#FACC15",
+    btnTextColor: "#18181B",
+  },
+  {
+    key: "newsletter",
+    name: "Newsletter",
+    label: "Join Newsletter",
+    bgColor: "#161B26",
+    textColor: "#F4F4F5",
+    headline: "Stay in the Loop",
+    message: "Get weekly insights, product updates, and special tips delivered to your inbox.",
+    btnText: "Subscribe Free",
+    btnBg: "#3B82F6",
+    btnTextColor: "#FFFFFF",
+  },
+  {
+    key: "flash_sale",
+    name: "Flash Sale",
+    label: "Flash Sale Alert",
+    bgColor: "#2A1414",
+    textColor: "#F4F4F5",
+    headline: "Flash Sale Ends Soon!",
+    message: "Save up to 40% on all premium plans. Offer valid for the next 24 hours.",
+    btnText: "Shop Sale",
+    btnBg: "#EF4444",
+    btnTextColor: "#FFFFFF",
+  },
+  {
+    key: "minimal",
+    name: "Minimal Notice",
+    label: "Clean Notification",
+    bgColor: "#18181B",
+    textColor: "#F4F4F5",
+    headline: "Important Announcement",
+    message: "We have upgraded our platform with new features. Check out what is new.",
+    btnText: "Learn More",
+    btnBg: "#FFFFFF",
+    btnTextColor: "#18181B",
+  },
+];
+
+export function CustomEmbedModal(props: CustomEmbedModalProps) {
+  const isWhatsApp = useMemo(() => {
+    if (props.embedToEdit) {
+      if (props.embedToEdit.pluginType === "whatsapp") return true;
+      const lower = (props.embedToEdit.name || "").toLowerCase();
+      if (lower.includes("whatsapp")) return true;
+      if (props.embedToEdit.floatingRecord?.type === "whatsapp_chat") return true;
+      if (props.embedToEdit.html && (props.embedToEdit.html.includes("wa.me") || props.embedToEdit.html.includes("whatsapp"))) return true;
+    }
+    return props.initialPluginType === "whatsapp";
+  }, [props.embedToEdit, props.initialPluginType]);
+
+  const isAccessibility = useMemo(() => {
+    if (props.embedToEdit) {
+      if (props.embedToEdit.pluginType === "accessibility") return true;
+      const lower = (props.embedToEdit.name || "").toLowerCase();
+      if (lower.includes("accessibility") || lower.includes("a11y")) return true;
+      if (props.embedToEdit.floatingRecord?.type === "accessibility") return true;
+    }
+    return props.initialPluginType === "accessibility";
+  }, [props.embedToEdit, props.initialPluginType]);
+
+  const isAnnouncement = useMemo(() => {
+    if (props.embedToEdit) {
+      if (props.embedToEdit.pluginType === "announcement") return true;
+      const lower = (props.embedToEdit.name || "").toLowerCase();
+      if (lower.includes("announcement")) return true;
+      if (props.embedToEdit.floatingRecord?.type === "announcement_popup") return true;
+      if (props.embedToEdit.floatingId && props.embedToEdit.floatingId.startsWith("fw-ann")) return true;
+    }
+    return props.initialPluginType === "announcement";
+  }, [props.embedToEdit, props.initialPluginType]);
+
+  if (props.isOpen && isWhatsApp) {
+    return (
+      <WhatsAppChatModal
+        isOpen={props.isOpen}
+        onClose={props.onClose}
+        embedToEdit={props.embedToEdit}
+        onSaved={props.onSaved}
+      />
+    );
+  }
+
+  if (props.isOpen && isAccessibility) {
+    return (
+      <AccessibilityToolbarModal
+        isOpen={props.isOpen}
+        onClose={props.onClose}
+        embedToEdit={props.embedToEdit}
+        onSaved={props.onSaved}
+      />
+    );
+  }
+
+  if (props.isOpen && isAnnouncement) {
+    return (
+      <AnnouncementBarModal
+        isOpen={props.isOpen}
+        onClose={props.onClose}
+        embedToEdit={props.embedToEdit}
+        onSaved={props.onSaved}
+      />
+    );
+  }
+
+  return <CustomEmbedModalInner {...props} />;
+}
+
+function CustomEmbedModalInner({
   isOpen,
   onClose,
   embedToEdit,
@@ -90,12 +370,49 @@ export function CustomEmbedModal({
     return initialPluginType || "custom_html";
   }, [embedToEdit, initialPluginType]);
 
+  // Modal Step State: 1 = Choose Design, 2 = Configure Settings, 3 = Preview & Save
+  const [step, setStep] = useState<1 | 2 | 3>(1);
+
   // Common Form State
   const [name, setName] = useState("");
   const [previewDevice, setPreviewDevice] = useState<"desktop" | "mobile">("desktop");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Floating Contact Button specific state (Strictly user-provided, NO demo defaults)
+  // Settings Vertical Sub-tab in Step 2
+  const [activeSettingsTab, setActiveSettingsTab] = useState<
+    "content" | "style" | "icon" | "link" | "visibility" | "position" | "animation"
+  >("content");
+
+  // Announcement Bar specific state
+  const [selectedAnnouncementTemplate, setSelectedAnnouncementTemplate] = useState<string>("classic");
+  const [announcementText, setAnnouncementText] = useState("2027 Winter and Spring Schedules are now open for enrollment!");
+  const [announcementIcon, setAnnouncementIcon] = useState<string>("megaphone");
+  const [announcementIconColor, setAnnouncementIconColor] = useState<string>("#FFFFFF");
+  const [announcementLink, setAnnouncementLink] = useState("");
+  const [announcementLinkNewTab, setAnnouncementLinkNewTab] = useState(true);
+  const [announcementBtnLabel, setAnnouncementBtnLabel] = useState("");
+  const [announcementBg, setAnnouncementBg] = useState("#4A1525");
+  const [announcementTextColor, setAnnouncementTextColor] = useState("#FFFFFF");
+  const [announcementBtnBg, setAnnouncementBtnBg] = useState("#FACC15");
+  const [announcementBtnTextColor, setAnnouncementBtnTextColor] = useState("#18181B");
+  const [announcementPosition, setAnnouncementPosition] = useState<FloatingPosition>("top_fixed");
+  const [announcementShowDesktop, setAnnouncementShowDesktop] = useState(true);
+  const [announcementShowMobile, setAnnouncementShowMobile] = useState(true);
+  const [announcementShowClose, setAnnouncementShowClose] = useState(true);
+  const [announcementAnimation, setAnnouncementAnimation] = useState<"none" | "slide_down" | "fade_in">("slide_down");
+  const [announcementPageTargeting, setAnnouncementPageTargeting] = useState<"all" | "custom">("all");
+
+  // Popup specific state
+  const [selectedPopupTemplate, setSelectedPopupTemplate] = useState<string>("discount");
+  const [popupHeadline, setPopupHeadline] = useState("Get 20% Off Today!");
+  const [popupMessage, setPopupMessage] = useState("Subscribe now and receive an instant discount code on your next purchase.");
+  const [popupBtnLabel, setPopupBtnLabel] = useState("Claim Coupon");
+  const [popupBg, setPopupBg] = useState("#1A1A1E");
+  const [popupTextColor, setPopupTextColor] = useState("#F4F4F5");
+  const [popupBtnBg, setPopupBtnBg] = useState("#FACC15");
+  const [popupBtnTextColor, setPopupBtnTextColor] = useState("#18181B");
+
+  // Floating Contact Button specific state
   const [contactPhone, setContactPhone] = useState("");
   const [contactAction, setContactAction] = useState<"phone" | "whatsapp" | "email">("phone");
   const [contactLabel, setContactLabel] = useState("Call Us");
@@ -105,11 +422,11 @@ export function CustomEmbedModal({
   const [contactShowDesktop, setContactShowDesktop] = useState(true);
   const [contactShowMobile, setContactShowMobile] = useState(true);
 
-  // WhatsApp specific state (Strictly user-provided, NO demo defaults)
+  // WhatsApp specific state
   const [waPhone, setWaPhone] = useState("");
   const [waMessage, setWaMessage] = useState("");
   const [waAgent, setWaAgent] = useState("Customer Support");
-  const [waGreeting, setWaGreeting] = useState("");
+  const [waGreeting, setWaGreeting] = useState("Hi! How can we help you today?");
   const [waPosition, setWaPosition] = useState<FloatingPosition>("bottom_right");
   const [waColor, setWaColor] = useState("#25D366");
 
@@ -127,21 +444,13 @@ export function CustomEmbedModal({
   const [langPosition, setLangPosition] = useState<FloatingPosition>("bottom_left");
   const [langTheme, setLangTheme] = useState<"dark" | "light" | "glass">("dark");
 
-  // Announcement Bar & Popup state
-  const [announcementText, setAnnouncementText] = useState("");
-  const [announcementLink, setAnnouncementLink] = useState("");
-  const [announcementBtnLabel, setAnnouncementBtnLabel] = useState("Learn More");
-  const [announcementPosition, setAnnouncementPosition] = useState<FloatingPosition>("top_fixed");
-  const [announcementBg, setAnnouncementBg] = useState("#1E1E24");
-  const [announcementTextColor, setAnnouncementTextColor] = useState("#FFFFFF");
-
   // Chatbot state
   const [botName, setBotName] = useState("AI Assistant");
   const [botWelcome, setBotWelcome] = useState("Hi there! How can I help you today?");
   const [botPosition, setBotPosition] = useState<FloatingPosition>("bottom_right");
   const [botColor, setBotColor] = useState("#2563EB");
 
-  // YouTube Video Page Section specific state
+  // YouTube Video state
   const [ytUrl, setYtUrl] = useState("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
   const [ytAspectRatio, setYtAspectRatio] = useState("16/9");
   const [ytMaxWidth, setYtMaxWidth] = useState("1000px");
@@ -149,7 +458,7 @@ export function CustomEmbedModal({
   const [ytMute, setYtMute] = useState(false);
   const [ytControls, setYtControls] = useState(true);
 
-  // Google Maps Page Section specific state
+  // Google Maps state
   const [mapAddress, setMapAddress] = useState("");
   const [mapHeight, setMapHeight] = useState("380px");
   const [mapMaxWidth, setMapMaxWidth] = useState("1000px");
@@ -159,18 +468,45 @@ export function CustomEmbedModal({
   const [customPlacement, setCustomPlacement] = useState<PlacementChoice>("site_wide_header");
   const [customHtml, setCustomHtml] = useState("");
 
-  // Populate form values from existing record or defaults
+  // Initialize or populate form
   useEffect(() => {
     if (!isOpen) return;
 
     if (embedToEdit) {
+      // Editing existing plugin -> open directly at Step 2 (Configure Settings)
+      setStep(2);
       setName(embedToEdit.name);
 
       if (embedToEdit.floatingRecord) {
         const fw = embedToEdit.floatingRecord;
         const cfg = fw.config || {};
 
-        if (pluginType === "contact" || fw.type === "floating_contact") {
+        if (pluginType === "announcement" || fw.type === "announcement_popup") {
+          setSelectedAnnouncementTemplate(cfg.template || "classic");
+          setAnnouncementText(cfg.text || cfg.message || cfg.headline || "Special Announcement");
+          setAnnouncementIcon(cfg.icon || "megaphone");
+          setAnnouncementIconColor(cfg.iconColor || cfg.textColor || "#FFFFFF");
+          setAnnouncementLink(cfg.linkUrl || cfg.ctaUrl || "");
+          setAnnouncementLinkNewTab(cfg.linkNewTab !== false);
+          setAnnouncementBtnLabel(cfg.ctaLabel || cfg.buttonLabel || cfg.buttonText || "");
+          setAnnouncementBg(cfg.backgroundColor || "#4A1525");
+          setAnnouncementTextColor(cfg.textColor || "#FFFFFF");
+          setAnnouncementBtnBg(cfg.btnBgColor || cfg.buttonBgColor || "#FACC15");
+          setAnnouncementBtnTextColor(cfg.btnTextColor || cfg.buttonTextColor || "#18181B");
+          setAnnouncementPosition(fw.position || "top_fixed");
+          setAnnouncementShowDesktop(fw.showOnDesktop ?? true);
+          setAnnouncementShowMobile(fw.showOnMobile ?? true);
+          setAnnouncementShowClose(cfg.showCloseButton !== false);
+          setAnnouncementAnimation(cfg.animation || "slide_down");
+          setAnnouncementPageTargeting(fw.pageTargeting === "custom" ? "custom" : "all");
+        } else if (pluginType === "popup") {
+          setSelectedPopupTemplate(cfg.template || "discount");
+          setPopupHeadline(cfg.headline || "Special Offer");
+          setPopupMessage(cfg.message || cfg.text || "");
+          setPopupBtnLabel(cfg.ctaLabel || cfg.buttonLabel || "Learn More");
+          setPopupBg(cfg.backgroundColor || "#1A1A1E");
+          setPopupTextColor(cfg.textColor || "#F4F4F5");
+        } else if (pluginType === "contact" || fw.type === "floating_contact") {
           setContactPhone(cfg.phoneNumber || cfg.actionValue || "");
           setContactAction(cfg.actionType || "phone");
           setContactLabel(cfg.label || "Call Us");
@@ -198,13 +534,6 @@ export function CustomEmbedModal({
           setLangSupported(cfg.supportedLanguages || ["en", "es", "fr", "de"]);
           setLangPosition(fw.position || "bottom_left");
           setLangTheme(cfg.theme || "dark");
-        } else if (pluginType === "announcement" || pluginType === "popup" || fw.type === "announcement_popup") {
-          setAnnouncementText(cfg.text || cfg.message || "");
-          setAnnouncementLink(cfg.linkUrl || cfg.ctaUrl || "");
-          setAnnouncementBtnLabel(cfg.ctaLabel || cfg.buttonLabel || "Learn More");
-          setAnnouncementPosition(fw.position || "top_fixed");
-          setAnnouncementBg(cfg.backgroundColor || "#1E1E24");
-          setAnnouncementTextColor(cfg.textColor || "#FFFFFF");
         } else if (pluginType === "chatbot" || fw.type === "chatbot") {
           setBotName(cfg.botName || "AI Assistant");
           setBotWelcome(cfg.welcomeMessage || "Hi there! How can I help you today?");
@@ -227,8 +556,23 @@ export function CustomEmbedModal({
         }
       }
     } else {
-      // Default creation state
+      // Creation mode -> start at Step 1 (Choose Design) for announcement, popup, etc.
+      // For YouTube, Maps, Custom HTML which have no template gallery, start at Step 2
+      if (["youtube", "maps", "custom_html"].includes(pluginType)) {
+        setStep(2);
+      } else {
+        setStep(1);
+      }
+
       switch (pluginType) {
+        case "announcement":
+          setName("Announcement Bar");
+          applyAnnouncementTemplate(ANNOUNCEMENT_TEMPLATES[0]);
+          break;
+        case "popup":
+          setName("Announcement Popup");
+          applyPopupTemplate(POPUP_TEMPLATES[0]);
+          break;
         case "contact":
           setName("Floating Contact Button");
           setContactPhone("");
@@ -251,27 +595,15 @@ export function CustomEmbedModal({
           setName("Language Switcher");
           setLangPosition("bottom_left");
           break;
-        case "announcement":
-          setName("Announcement Bar");
-          setAnnouncementText("Special promotion this week! Use code SAVE20 at checkout.");
-          setAnnouncementPosition("top_fixed");
-          break;
-        case "popup":
-          setName("Announcement Popup");
-          setAnnouncementText("Subscribe to our newsletter for exclusive updates.");
-          setAnnouncementPosition("bottom_right");
-          break;
         case "chatbot":
           setName("AI Chatbot");
           setBotPosition("bottom_right");
           break;
         case "youtube":
           setName("YouTube Video");
-          setYtUrl("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
           break;
         case "maps":
           setName("Google Maps");
-          setMapAddress("1600 Amphitheatre Parkway, Mountain View, CA");
           break;
         default:
           setName("Custom HTML / Embed");
@@ -281,60 +613,197 @@ export function CustomEmbedModal({
       }
     }
     setPreviewDevice("desktop");
+    setActiveSettingsTab("content");
   }, [isOpen, embedToEdit, pluginType]);
+
+  // Apply chosen template to form fields
+  const applyAnnouncementTemplate = (tpl: AnnouncementTemplateItem) => {
+    setSelectedAnnouncementTemplate(tpl.key);
+    setAnnouncementBg(tpl.bgColor);
+    setAnnouncementTextColor(tpl.textColor);
+    setAnnouncementIcon(tpl.icon);
+    setAnnouncementIconColor(tpl.iconColor);
+    setAnnouncementText(tpl.text);
+    setAnnouncementBtnLabel(tpl.btnText);
+    setAnnouncementBtnBg(tpl.btnBg);
+    setAnnouncementBtnTextColor(tpl.btnTextColor);
+  };
+
+  const applyPopupTemplate = (tpl: PopupTemplateItem) => {
+    setSelectedPopupTemplate(tpl.key);
+    setPopupBg(tpl.bgColor);
+    setPopupTextColor(tpl.textColor);
+    setPopupHeadline(tpl.headline);
+    setPopupMessage(tpl.message);
+    setPopupBtnLabel(tpl.btnText);
+    setPopupBtnBg(tpl.btnBg);
+    setPopupBtnTextColor(tpl.btnTextColor);
+  };
 
   if (!isOpen || !project) return null;
 
   const pages = project.pages || [];
   const targetPageId = defaultPageId || currentPageId || pages[0]?.id;
 
-  // Helper for YouTube embed link in preview
-  const getCleanYtEmbedUrl = (raw: string) => {
-    let videoId = "";
-    if (raw.includes("embed/")) {
-      videoId = raw.split("embed/")[1]?.split("?")[0] || "";
-    } else if (raw.includes("watch?v=")) {
-      videoId = raw.split("watch?v=")[1]?.split("&")[0] || "";
-    } else if (raw.includes("youtu.be/")) {
-      videoId = raw.split("youtu.be/")[1]?.split("?")[0] || "";
-    } else {
-      videoId = raw.trim();
+  // Validation before advancing to Step 3
+  const handleValidateStep2 = () => {
+    if (pluginType === "announcement") {
+      if (!announcementText.trim()) {
+        toast.error("Please enter announcement text");
+        return false;
+      }
+    } else if (pluginType === "popup") {
+      if (!popupHeadline.trim() && !popupMessage.trim()) {
+        toast.error("Please enter popup headline or message");
+        return false;
+      }
+    } else if (pluginType === "contact") {
+      if (!contactPhone.trim()) {
+        toast.error("Please enter a phone number or target");
+        return false;
+      }
+    } else if (pluginType === "whatsapp") {
+      if (!waPhone.trim()) {
+        toast.error("Please enter a WhatsApp phone number");
+        return false;
+      }
+    } else if (pluginType === "youtube") {
+      if (!ytUrl.trim()) {
+        toast.error("Please enter a YouTube video URL");
+        return false;
+      }
+    } else if (pluginType === "maps") {
+      if (!mapAddress.trim()) {
+        toast.error("Please enter a location or address");
+        return false;
+      }
+    } else if (pluginType === "custom_html") {
+      if (!customHtml.trim()) {
+        toast.error("Please enter HTML or script code");
+        return false;
+      }
     }
-    const params = new URLSearchParams();
-    if (ytAutoplay) params.set("autoplay", "1");
-    if (ytMute) params.set("mute", "1");
-    if (!ytControls) params.set("controls", "0");
-    const paramStr = params.toString() ? `?${params.toString()}` : "";
-    return `https://www.youtube.com/embed/${videoId}${paramStr}`;
+    return true;
   };
 
-  // Helper for Google Maps embed URL in preview
-  const getMapsEmbedUrl = (query: string) => {
-    if (!query) return "";
-    return `https://maps.google.com/maps?q=${encodeURIComponent(query)}&t=&z=${mapZoom}&ie=UTF8&iwloc=&output=embed`;
-  };
-
-  // Save handler
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  // Save handler (Step 3 Save Plugin button)
+  const handleSave = () => {
     if (isSubmitting) return;
+
+    if (!handleValidateStep2()) {
+      setStep(2);
+      return;
+    }
 
     const finalName = name.trim() || "Plugin";
     setIsSubmitting(true);
 
     try {
-      // ══════════════════════════════════════════════════════════════
-      // CATEGORY 1: FLOATING PLUGINS (Rendered in Floating Overlay)
-      // ══════════════════════════════════════════════════════════════
+      // 1. ANNOUNCEMENT BAR
+      if (pluginType === "announcement") {
+        const fwRec: FloatingWidgetRecord = {
+          id: embedToEdit?.floatingId || `fw-ann-${nanoid(8)}`,
+          type: "announcement_popup",
+          name: finalName,
+          enabled: true,
+          position: announcementPosition,
+          offsetX: 0,
+          offsetY: 0,
+          showOnDesktop: announcementShowDesktop,
+          showOnMobile: announcementShowMobile,
+          pageTargeting: announcementPageTargeting,
+          targetedPages: announcementPageTargeting === "custom" && targetPageId ? [targetPageId] : undefined,
+          config: {
+            template: selectedAnnouncementTemplate,
+            text: announcementText.trim(),
+            icon: announcementIcon,
+            iconColor: announcementIconColor,
+            linkUrl: announcementLink.trim(),
+            linkNewTab: announcementLinkNewTab,
+            ctaLabel: announcementBtnLabel.trim(),
+            buttonText: announcementBtnLabel.trim(),
+            backgroundColor: announcementBg,
+            textColor: announcementTextColor,
+            btnBgColor: announcementBtnBg,
+            btnTextColor: announcementBtnTextColor,
+            showCloseButton: announcementShowClose,
+            animation: announcementAnimation,
+            layout: "banner",
+          },
+          createdAt: embedToEdit?.floatingRecord?.createdAt || Date.now(),
+          updatedAt: Date.now(),
+        };
 
-      // 1. Floating Contact Button
+        useBuilder.setState((s) => {
+          const cur = s.currentProjectId ? s.projects[s.currentProjectId] : null;
+          if (!cur) return s;
+          const existing = cur.floatingWidgets || [];
+          const idx = existing.findIndex((w) => w.id === fwRec.id);
+          const next = idx >= 0 ? existing.map((w, i) => (i === idx ? fwRec : w)) : [...existing, fwRec];
+          return {
+            projects: {
+              ...s.projects,
+              [cur.id]: { ...cur, floatingWidgets: next },
+            },
+          };
+        });
+        persistWithStatus();
+        toast.success(`Saved Announcement Bar`);
+        onSaved?.();
+        onClose();
+        return;
+      }
+
+      // 2. POPUP
+      if (pluginType === "popup") {
+        const fwRec: FloatingWidgetRecord = {
+          id: embedToEdit?.floatingId || `fw-pop-${nanoid(8)}`,
+          type: "announcement_popup",
+          name: finalName,
+          enabled: true,
+          position: "bottom_right",
+          offsetX: 24,
+          offsetY: 24,
+          showOnDesktop: true,
+          showOnMobile: true,
+          pageTargeting: "all",
+          config: {
+            template: selectedPopupTemplate,
+            headline: popupHeadline.trim(),
+            text: popupMessage.trim(),
+            ctaLabel: popupBtnLabel.trim(),
+            backgroundColor: popupBg,
+            textColor: popupTextColor,
+            btnBgColor: popupBtnBg,
+            btnTextColor: popupBtnTextColor,
+            layout: "modal",
+          },
+          createdAt: embedToEdit?.floatingRecord?.createdAt || Date.now(),
+          updatedAt: Date.now(),
+        };
+
+        useBuilder.setState((s) => {
+          const cur = s.currentProjectId ? s.projects[s.currentProjectId] : null;
+          if (!cur) return s;
+          const existing = cur.floatingWidgets || [];
+          const idx = existing.findIndex((w) => w.id === fwRec.id);
+          const next = idx >= 0 ? existing.map((w, i) => (i === idx ? fwRec : w)) : [...existing, fwRec];
+          return {
+            projects: {
+              ...s.projects,
+              [cur.id]: { ...cur, floatingWidgets: next },
+            },
+          };
+        });
+        persistWithStatus();
+        toast.success(`Saved Popup`);
+        onSaved?.();
+        onClose();
+        return;
+      }
+
+      // 3. CONTACT BUTTON
       if (pluginType === "contact") {
-        if (!contactPhone.trim()) {
-          toast.error("Please enter a phone number or contact target");
-          setIsSubmitting(false);
-          return;
-        }
-
         const fwRec: FloatingWidgetRecord = {
           id: embedToEdit?.floatingId || `fw-contact-${nanoid(8)}`,
           type: "floating_contact",
@@ -348,12 +817,13 @@ export function CustomEmbedModal({
           pageTargeting: "all",
           config: {
             actionType: contactAction,
-            phoneNumber: contactPhone.trim(),
             actionValue: contactPhone.trim(),
-            label: contactLabel.trim() || "Call Us",
+            phoneNumber: contactPhone.trim(),
+            label: contactLabel.trim(),
             buttonColor: contactColor,
             textColor: contactTextColor,
-            iconType: contactAction,
+            showDesktop: contactShowDesktop,
+            showMobile: contactShowMobile,
           },
           createdAt: embedToEdit?.floatingRecord?.createdAt || Date.now(),
           updatedAt: Date.now(),
@@ -363,7 +833,7 @@ export function CustomEmbedModal({
           const cur = s.currentProjectId ? s.projects[s.currentProjectId] : null;
           if (!cur) return s;
           const existing = cur.floatingWidgets || [];
-          const idx = existing.findIndex((w) => w.id === fwRec.id || w.type === "floating_contact");
+          const idx = existing.findIndex((w) => w.id === fwRec.id);
           const next = idx >= 0 ? existing.map((w, i) => (i === idx ? fwRec : w)) : [...existing, fwRec];
           return {
             projects: {
@@ -379,15 +849,8 @@ export function CustomEmbedModal({
         return;
       }
 
-      // 2. WhatsApp Live Chat
+      // 4. WHATSAPP
       if (pluginType === "whatsapp") {
-        if (!waPhone.trim()) {
-          toast.error("Please enter your WhatsApp phone number with country code");
-          setIsSubmitting(false);
-          return;
-        }
-
-        const cleanPhone = waPhone.replace(/[^\d+]/g, "");
         const fwRec: FloatingWidgetRecord = {
           id: embedToEdit?.floatingId || `fw-wa-${nanoid(8)}`,
           type: "whatsapp_chat",
@@ -400,11 +863,10 @@ export function CustomEmbedModal({
           showOnMobile: true,
           pageTargeting: "all",
           config: {
-            phoneNumber: cleanPhone,
+            phoneNumber: waPhone.trim(),
             prefilledMessage: waMessage.trim(),
-            agentName: waAgent.trim() || "Support Team",
+            agentName: waAgent.trim(),
             greetingText: waGreeting.trim(),
-            buttonLabel: "Chat with us",
             buttonColor: waColor,
           },
           createdAt: embedToEdit?.floatingRecord?.createdAt || Date.now(),
@@ -415,7 +877,7 @@ export function CustomEmbedModal({
           const cur = s.currentProjectId ? s.projects[s.currentProjectId] : null;
           if (!cur) return s;
           const existing = cur.floatingWidgets || [];
-          const idx = existing.findIndex((w) => w.id === fwRec.id || w.type === "whatsapp_chat");
+          const idx = existing.findIndex((w) => w.id === fwRec.id);
           const next = idx >= 0 ? existing.map((w, i) => (i === idx ? fwRec : w)) : [...existing, fwRec];
           return {
             projects: {
@@ -425,13 +887,13 @@ export function CustomEmbedModal({
           };
         });
         persistWithStatus();
-        toast.success(`Saved WhatsApp Chat`);
+        toast.success(`Saved WhatsApp Live Chat`);
         onSaved?.();
         onClose();
         return;
       }
 
-      // 3. Accessibility Toolbar
+      // 5. ACCESSIBILITY
       if (pluginType === "accessibility") {
         const fwRec: FloatingWidgetRecord = {
           id: embedToEdit?.floatingId || `fw-a11y-${nanoid(8)}`,
@@ -461,7 +923,7 @@ export function CustomEmbedModal({
           const cur = s.currentProjectId ? s.projects[s.currentProjectId] : null;
           if (!cur) return s;
           const existing = cur.floatingWidgets || [];
-          const idx = existing.findIndex((w) => w.id === fwRec.id || w.type === "accessibility");
+          const idx = existing.findIndex((w) => w.id === fwRec.id);
           const next = idx >= 0 ? existing.map((w, i) => (i === idx ? fwRec : w)) : [...existing, fwRec];
           return {
             projects: {
@@ -477,7 +939,7 @@ export function CustomEmbedModal({
         return;
       }
 
-      // 4. Language Switcher
+      // 6. LANGUAGE SWITCHER
       if (pluginType === "language") {
         const fwRec: FloatingWidgetRecord = {
           id: embedToEdit?.floatingId || `fw-lang-${nanoid(8)}`,
@@ -504,7 +966,7 @@ export function CustomEmbedModal({
           const cur = s.currentProjectId ? s.projects[s.currentProjectId] : null;
           if (!cur) return s;
           const existing = cur.floatingWidgets || [];
-          const idx = existing.findIndex((w) => w.id === fwRec.id || w.type === "language_switcher");
+          const idx = existing.findIndex((w) => w.id === fwRec.id);
           const next = idx >= 0 ? existing.map((w, i) => (i === idx ? fwRec : w)) : [...existing, fwRec];
           return {
             projects: {
@@ -520,58 +982,7 @@ export function CustomEmbedModal({
         return;
       }
 
-      // 5. Announcement Bar & Popup
-      if (pluginType === "announcement" || pluginType === "popup") {
-        if (!announcementText.trim()) {
-          toast.error("Please enter announcement text");
-          setIsSubmitting(false);
-          return;
-        }
-
-        const fwRec: FloatingWidgetRecord = {
-          id: embedToEdit?.floatingId || `fw-ann-${nanoid(8)}`,
-          type: "announcement_popup",
-          name: finalName,
-          enabled: true,
-          position: announcementPosition,
-          offsetX: 20,
-          offsetY: 20,
-          showOnDesktop: true,
-          showOnMobile: true,
-          pageTargeting: "all",
-          config: {
-            text: announcementText.trim(),
-            linkUrl: announcementLink.trim(),
-            ctaLabel: announcementBtnLabel.trim(),
-            backgroundColor: announcementBg,
-            textColor: announcementTextColor,
-            layout: pluginType === "popup" ? "modal" : "banner",
-          },
-          createdAt: embedToEdit?.floatingRecord?.createdAt || Date.now(),
-          updatedAt: Date.now(),
-        };
-
-        useBuilder.setState((s) => {
-          const cur = s.currentProjectId ? s.projects[s.currentProjectId] : null;
-          if (!cur) return s;
-          const existing = cur.floatingWidgets || [];
-          const idx = existing.findIndex((w) => w.id === fwRec.id || w.type === "announcement_popup");
-          const next = idx >= 0 ? existing.map((w, i) => (i === idx ? fwRec : w)) : [...existing, fwRec];
-          return {
-            projects: {
-              ...s.projects,
-              [cur.id]: { ...cur, floatingWidgets: next },
-            },
-          };
-        });
-        persistWithStatus();
-        toast.success(`Saved ${pluginType === "popup" ? "Popup" : "Announcement Bar"}`);
-        onSaved?.();
-        onClose();
-        return;
-      }
-
-      // 6. Chatbot
+      // 7. CHATBOT
       if (pluginType === "chatbot") {
         const fwRec: FloatingWidgetRecord = {
           id: embedToEdit?.floatingId || `fw-bot-${nanoid(8)}`,
@@ -597,7 +1008,7 @@ export function CustomEmbedModal({
           const cur = s.currentProjectId ? s.projects[s.currentProjectId] : null;
           if (!cur) return s;
           const existing = cur.floatingWidgets || [];
-          const idx = existing.findIndex((w) => w.id === fwRec.id || w.type === "chatbot");
+          const idx = existing.findIndex((w) => w.id === fwRec.id);
           const next = idx >= 0 ? existing.map((w, i) => (i === idx ? fwRec : w)) : [...existing, fwRec];
           return {
             projects: {
@@ -607,36 +1018,25 @@ export function CustomEmbedModal({
           };
         });
         persistWithStatus();
-        toast.success(`Saved Chatbot`);
+        toast.success(`Saved AI Chatbot`);
         onSaved?.();
         onClose();
         return;
       }
 
-      // ══════════════════════════════════════════════════════════════
-      // CATEGORY 2: PAGE SECTIONS (Draggable Page Sections)
-      // ══════════════════════════════════════════════════════════════
-
-      // 7. YouTube Video Page Section
+      // 8. YOUTUBE VIDEO
       if (pluginType === "youtube") {
-        if (!ytUrl.trim()) {
-          toast.error("Please enter a YouTube video URL");
-          setIsSubmitting(false);
-          return;
-        }
-
         const sec = createYouTubeSection({
           id: embedToEdit?.sectionId,
           name: finalName,
-          url: ytUrl.trim(),
+          videoUrl: ytUrl.trim(),
           aspectRatio: ytAspectRatio,
           maxWidth: ytMaxWidth,
           autoplay: ytAutoplay,
           mute: ytMute,
-          showControls: ytControls,
+          controls: ytControls,
         });
 
-        // If editing existing section
         if (embedToEdit?.sectionId) {
           updateSection(embedToEdit.sectionId, {
             name: sec.name,
@@ -644,7 +1044,6 @@ export function CustomEmbedModal({
             widgetInstance: sec.widgetInstance,
           });
         } else {
-          // Insert into current page sections
           useBuilder.setState((s) => {
             const cur = s.currentProjectId ? s.projects[s.currentProjectId] : null;
             if (!cur) return s;
@@ -666,20 +1065,14 @@ export function CustomEmbedModal({
         }
 
         persistWithStatus();
-        toast.success(`Added YouTube Video section to page`);
+        toast.success(`Added YouTube Video to page`);
         onSaved?.();
         onClose();
         return;
       }
 
-      // 8. Google Maps Page Section
+      // 9. GOOGLE MAPS
       if (pluginType === "maps") {
-        if (!mapAddress.trim()) {
-          toast.error("Please enter a location address or Google Maps embed link");
-          setIsSubmitting(false);
-          return;
-        }
-
         const sec = createMapSection({
           id: embedToEdit?.sectionId,
           name: finalName,
@@ -717,114 +1110,89 @@ export function CustomEmbedModal({
         }
 
         persistWithStatus();
-        toast.success(`Added Google Maps section to page`);
+        toast.success(`Added Google Maps to page`);
         onSaved?.();
         onClose();
         return;
       }
 
-      // 9. Custom HTML / Script
-      if (!customHtml.trim()) {
-        toast.error("Please enter custom HTML or embed code");
-        setIsSubmitting(false);
+      // 10. CUSTOM HTML
+      if (pluginType === "custom_html") {
+        const isFloating = customPlacement.startsWith("floating_");
+        if (isFloating) {
+          const targetPos: FloatingPosition =
+            customPlacement === "floating_bottom_left"
+              ? "bottom_left"
+              : customPlacement === "floating_top_right"
+              ? "top_right"
+              : customPlacement === "floating_top_left"
+              ? "top_left"
+              : "bottom_right";
+
+          const fwRec: FloatingWidgetRecord = {
+            id: embedToEdit?.floatingId || `fw-custom-${nanoid(8)}`,
+            type: "custom_embed",
+            name: finalName,
+            enabled: true,
+            position: targetPos,
+            offsetX: 20,
+            offsetY: 20,
+            showOnDesktop: true,
+            showOnMobile: true,
+            pageTargeting: "all",
+            snippetHtml: customHtml.trim(),
+            config: { html: customHtml.trim() },
+            createdAt: embedToEdit?.floatingRecord?.createdAt || Date.now(),
+            updatedAt: Date.now(),
+          };
+
+          useBuilder.setState((s) => {
+            const cur = s.currentProjectId ? s.projects[s.currentProjectId] : null;
+            if (!cur) return s;
+            const existing = cur.floatingWidgets || [];
+            const idx = existing.findIndex((w) => w.id === fwRec.id);
+            const next = idx >= 0 ? existing.map((w, i) => (i === idx ? fwRec : w)) : [...existing, fwRec];
+            return {
+              projects: {
+                ...s.projects,
+                [cur.id]: { ...cur, floatingWidgets: next },
+              },
+            };
+          });
+        } else {
+          // Page section
+          const secId = embedToEdit?.sectionId || `sec-${nanoid(8)}`;
+          const newSec = createCustomHtmlSection({
+            id: secId,
+            name: finalName,
+            html: customHtml.trim(),
+          });
+          useBuilder.setState((s) => {
+            const cur = s.currentProjectId ? s.projects[s.currentProjectId] : null;
+            if (!cur) return s;
+            const updatedPages = (cur.pages || []).map((p) => {
+              if (p.id === targetPageId) {
+                return { ...p, sections: [...(p.sections || []), newSec] };
+              }
+              return p;
+            });
+            return {
+              projects: {
+                ...s.projects,
+                [cur.id]: { ...cur, pages: updatedPages },
+              },
+            };
+          });
+          if (targetPageId) selectPage(targetPageId);
+          selectSection(secId);
+        }
+
+        persistWithStatus();
+        toast.success(`Saved "${finalName}"`);
+        onSaved?.();
+        onClose();
         return;
       }
-
-      const isSiteWide = customPlacement === "site_wide_header" || customPlacement === "site_wide_footer";
-      const isFloating = customPlacement.startsWith("floating_");
-
-      if (isFloating) {
-        const targetPos: FloatingPosition =
-          customPlacement === "floating_bottom_left"
-            ? "bottom_left"
-            : customPlacement === "floating_top_right"
-            ? "top_right"
-            : customPlacement === "floating_top_left"
-            ? "top_left"
-            : "bottom_right";
-
-        const fwRec: FloatingWidgetRecord = {
-          id: embedToEdit?.floatingId || `fw-custom-${nanoid(8)}`,
-          type: "custom_embed",
-          name: finalName,
-          enabled: true,
-          position: targetPos,
-          offsetX: 20,
-          offsetY: 20,
-          showOnDesktop: true,
-          showOnMobile: true,
-          pageTargeting: "all",
-          snippetHtml: customHtml.trim(),
-          config: { html: customHtml.trim() },
-          createdAt: Date.now(),
-          updatedAt: Date.now(),
-        };
-
-        useBuilder.setState((s) => {
-          const cur = s.currentProjectId ? s.projects[s.currentProjectId] : null;
-          if (!cur) return s;
-          const filtered = (cur.floatingWidgets || []).filter((w) => w.id !== fwRec.id);
-          return {
-            projects: {
-              ...s.projects,
-              [cur.id]: { ...cur, floatingWidgets: [...filtered, fwRec] },
-            },
-          };
-        });
-      } else if (isSiteWide) {
-        const isHeader = customPlacement === "site_wide_header";
-        const secId = isHeader ? SHARED_HEADER_SECTION_ID : SHARED_FOOTER_SECTION_ID;
-        const newSec = createCustomHtmlSection({
-          id: secId,
-          name: finalName,
-          html: customHtml.trim(),
-        });
-        newSec.shared = isHeader ? "header" : "footer";
-
-        useBuilder.setState((s) => {
-          const cur = s.currentProjectId ? s.projects[s.currentProjectId] : null;
-          if (!cur) return s;
-          return {
-            projects: {
-              ...s.projects,
-              [cur.id]: {
-                ...cur,
-                ...(isHeader ? { sharedHeader: newSec } : { sharedFooter: newSec }),
-              },
-            },
-          };
-        });
-      } else {
-        const secId = embedToEdit?.sectionId || `custom-${nanoid(8)}`;
-        const newSec = createCustomHtmlSection({
-          id: secId,
-          name: finalName,
-          html: customHtml.trim(),
-        });
-        useBuilder.setState((s) => {
-          const cur = s.currentProjectId ? s.projects[s.currentProjectId] : null;
-          if (!cur) return s;
-          const updatedPages = (cur.pages || []).map((p) => {
-            if (p.id === targetPageId) {
-              return { ...p, sections: [...(p.sections || []), newSec] };
-            }
-            return p;
-          });
-          return {
-            projects: {
-              ...s.projects,
-              [cur.id]: { ...cur, pages: updatedPages },
-            },
-          };
-        });
-        if (targetPageId) selectPage(targetPageId);
-        selectSection(secId);
-      }
-
-      persistWithStatus();
-      toast.success(`Saved "${finalName}"`);
-      onSaved?.();
-      onClose();
     } catch (err: any) {
       console.error("[CustomEmbedModal] Save error:", err);
       toast.error(err?.message || "Failed to save plugin");
@@ -833,1024 +1201,1175 @@ export function CustomEmbedModal({
     }
   };
 
+  // Header Title & Subtitle helper
+  const getHeaderInfo = () => {
+    const pluginTitle =
+      pluginType === "announcement"
+        ? "Announcement Bar"
+        : pluginType === "popup"
+        ? "Popup"
+        : pluginType === "whatsapp"
+        ? "WhatsApp Chat"
+        : pluginType === "contact"
+        ? "Floating Contact"
+        : pluginType === "accessibility"
+        ? "Accessibility Toolbar"
+        : pluginType === "language"
+        ? "Language Switcher"
+        : pluginType === "chatbot"
+        ? "AI Chatbot"
+        : pluginType === "youtube"
+        ? "YouTube Video"
+        : pluginType === "maps"
+        ? "Google Maps"
+        : "Custom Plugin";
+
+    if (step === 1) {
+      return {
+        title: `Add ${pluginTitle}`,
+        subtitle: `Choose a design for your ${pluginTitle.toLowerCase()}.`,
+      };
+    } else if (step === 2) {
+      return {
+        title: `Add ${pluginTitle}`,
+        subtitle: `Customize your ${pluginTitle.toLowerCase()} settings.`,
+      };
+    } else {
+      return {
+        title: `Add ${pluginTitle}`,
+        subtitle: `Preview your ${pluginTitle.toLowerCase()} and save.`,
+      };
+    }
+  };
+
+  const headerInfo = getHeaderInfo();
+
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-150">
       <div className="relative flex max-h-[92vh] w-full max-w-4xl flex-col rounded-2xl border border-[#2B2B30] bg-[#121214] text-[#F5F5F5] shadow-2xl overflow-hidden">
-        {/* Top Header */}
+        {/* ── TOP HEADER (Matching Mockups 1, 2, 3) ───────────────────── */}
         <div className="flex shrink-0 items-center justify-between border-b border-[#222225] bg-[#161619] px-6 py-4">
-          <div className="flex items-center gap-3">
-            {pluginType === "contact" ? (
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FACC15] text-zinc-950 shadow-sm">
-                <Phone className="h-5 w-5" />
-              </span>
-            ) : pluginType === "whatsapp" ? (
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#25D366] text-white shadow-sm">
-                <MessageCircle className="h-5 w-5" />
-              </span>
-            ) : pluginType === "youtube" ? (
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#E02424] text-white shadow-sm">
-                <Youtube className="h-5 w-5" />
-              </span>
-            ) : pluginType === "maps" ? (
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#34A853] text-white shadow-sm">
-                <MapPin className="h-5 w-5" />
-              </span>
-            ) : pluginType === "language" ? (
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-sm">
-                <Globe className="h-5 w-5" />
-              </span>
-            ) : pluginType === "accessibility" ? (
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#9333EA] text-white shadow-sm">
-                <Accessibility className="h-5 w-5" />
-              </span>
-            ) : pluginType === "announcement" || pluginType === "popup" ? (
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#D97706] text-white shadow-sm">
+          <div className="flex items-center gap-3.5">
+            {/* Top Left Plugin Icon */}
+            {pluginType === "announcement" ? (
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#D97706]/15 border border-[#D97706]/30 text-[#FACC15] shadow-xs">
                 <Megaphone className="h-5 w-5" />
               </span>
-            ) : pluginType === "chatbot" ? (
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-sm">
-                <Bot className="h-5 w-5" />
+            ) : pluginType === "popup" ? (
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-400 shadow-xs">
+                <Layers className="h-5 w-5" />
+              </span>
+            ) : pluginType === "whatsapp" ? (
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#25D366]/15 border border-[#25D366]/30 text-[#25D366] shadow-xs">
+                <MessageCircle className="h-5 w-5" />
+              </span>
+            ) : pluginType === "contact" ? (
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0284C7]/15 border border-[#0284C7]/30 text-[#38BDF8] shadow-xs">
+                <Phone className="h-5 w-5" />
+              </span>
+            ) : pluginType === "accessibility" ? (
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-600/15 border border-purple-600/30 text-purple-300 shadow-xs">
+                <Accessibility className="h-5 w-5" />
+              </span>
+            ) : pluginType === "language" ? (
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600/15 border border-blue-600/30 text-blue-300 shadow-xs">
+                <Globe className="h-5 w-5" />
               </span>
             ) : (
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#27272A] border border-zinc-700 text-[#FACC15] font-mono text-base font-bold shadow-xs">
-                &lt;/&gt;
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-800 border border-zinc-700 text-[#FACC15] shadow-xs">
+                <Code2 className="h-5 w-5" />
               </span>
             )}
 
             <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-base font-bold text-white tracking-wide">
-                  {embedToEdit ? `Configure ${embedToEdit.name}` : `Add ${name || "Component"}`}
-                </h2>
-                {["youtube", "maps"].includes(pluginType) ? (
-                  <span className="rounded-full bg-blue-500/20 px-2 py-0.5 text-[10px] font-bold text-blue-400 border border-blue-500/30">
-                    Page Section
-                  </span>
-                ) : (
-                  <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-400 border border-emerald-500/30">
-                    Floating Plugin
-                  </span>
-                )}
-              </div>
+              <h2 className="text-base font-bold text-white tracking-wide">
+                {headerInfo.title}
+              </h2>
               <p className="text-xs text-zinc-400 mt-0.5">
-                {pluginType === "contact"
-                  ? "Floating button linking visitors to your phone, WhatsApp, or email."
-                  : pluginType === "whatsapp"
-                  ? "Floating WhatsApp button with customizable greeting bubble and number."
-                  : pluginType === "youtube"
-                  ? "Draggable page section embedding a responsive YouTube video player."
-                  : pluginType === "maps"
-                  ? "Draggable page section displaying an interactive Google Map location."
-                  : pluginType === "language"
-                  ? "Floating language selector for website localization."
-                  : pluginType === "accessibility"
-                  ? "WCAG & ADA compliant accessibility controls toolbar."
-                  : pluginType === "announcement"
-                  ? "Fixed top or bottom announcement banner across pages."
-                  : pluginType === "popup"
-                  ? "Modal announcement popup for promotions and alerts."
-                  : pluginType === "chatbot"
-                  ? "Floating interactive AI chatbot assistant."
-                  : "Embed custom HTML, iframe, or scripts into your website."}
+                {headerInfo.subtitle}
               </p>
             </div>
           </div>
 
+          {/* Close X Button */}
           <button
             type="button"
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-800 hover:text-white transition"
+            className="flex h-8 w-8 items-center justify-center rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
+            title="Close modal"
           >
-            <X className="h-4 w-4" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* Modal Body / 2-Column Form & Preview */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-            {/* ── LEFT COLUMN: Configuration Form ── */}
-            <div className="space-y-4">
-              {/* Plugin / Section Name */}
-              <div>
-                <label className="block text-xs font-semibold text-white mb-1.5">
-                  {["youtube", "maps"].includes(pluginType) ? "Section Name" : "Plugin Name"}
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Floating Contact, YouTube Video, Google Maps"
-                  className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3.5 text-xs text-white placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
-                />
+        {/* ── STEP 1: CHOOSE A DESIGN (Matching Mockup 1) ─────────────── */}
+        {step === 1 && (
+          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            {pluginType === "announcement" ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {ANNOUNCEMENT_TEMPLATES.map((tpl) => {
+                  const isSelected = selectedAnnouncementTemplate === tpl.key;
+                  return (
+                    <div
+                      key={tpl.key}
+                      onClick={() => applyAnnouncementTemplate(tpl)}
+                      className={`group relative flex flex-col justify-between rounded-2xl border p-4 cursor-pointer transition-all ${
+                        isSelected
+                          ? "border-2 border-[#FACC15] bg-[#1A1A1E] shadow-xl shadow-[#FACC15]/5"
+                          : "border-zinc-800 bg-[#161619] hover:border-zinc-700 hover:bg-[#19191D]"
+                      }`}
+                    >
+                      {/* Checkmark Badge for Selected Card */}
+                      {isSelected && (
+                        <div className="absolute top-3 right-3 flex h-5 w-5 items-center justify-center rounded-full bg-[#FACC15] text-zinc-950 shadow-md z-10">
+                          <Check className="h-3.5 w-3.5 stroke-[3]" />
+                        </div>
+                      )}
+
+                      {/* Miniature Announcement Bar Preview */}
+                      <div
+                        style={{
+                          backgroundColor: tpl.bgColor,
+                          color: tpl.textColor,
+                          border: tpl.border,
+                        }}
+                        className="flex min-h-[58px] items-center justify-between gap-3 rounded-xl px-4 py-3 shadow-md"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                          {tpl.icon !== "none" && (
+                            <span
+                              className="shrink-0 flex items-center justify-center"
+                              style={{ color: tpl.iconColor }}
+                            >
+                              {renderTemplateIcon(tpl.icon, "h-4 w-4")}
+                            </span>
+                          )}
+                          <span className="text-xs font-semibold truncate leading-tight">
+                            {tpl.text}
+                          </span>
+                        </div>
+                        {tpl.showButton && tpl.btnText && (
+                          <span
+                            style={{
+                              backgroundColor: tpl.btnBg,
+                              color: tpl.btnTextColor,
+                            }}
+                            className="shrink-0 rounded-md px-2.5 py-1 text-[11px] font-bold shadow-xs whitespace-nowrap"
+                          >
+                            {tpl.btnText}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Card Label */}
+                      <span className="mt-3 text-xs font-bold text-zinc-300 group-hover:text-white transition">
+                        {tpl.label}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
-
-              {/* 1. FLOATING CONTACT BUTTON (Plugin-specific, NO iframe) */}
-              {pluginType === "contact" && (
-                <>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Contact Action
-                      </label>
-                      <select
-                        value={contactAction}
-                        onChange={(e) => setContactAction(e.target.value as any)}
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
+            ) : pluginType === "popup" ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {POPUP_TEMPLATES.map((tpl) => {
+                  const isSelected = selectedPopupTemplate === tpl.key;
+                  return (
+                    <div
+                      key={tpl.key}
+                      onClick={() => applyPopupTemplate(tpl)}
+                      className={`group relative flex flex-col justify-between rounded-2xl border p-4 cursor-pointer transition-all ${
+                        isSelected
+                          ? "border-2 border-[#FACC15] bg-[#1A1A1E] shadow-xl shadow-[#FACC15]/5"
+                          : "border-zinc-800 bg-[#161619] hover:border-zinc-700 hover:bg-[#19191D]"
+                      }`}
+                    >
+                      {isSelected && (
+                        <div className="absolute top-3 right-3 flex h-5 w-5 items-center justify-center rounded-full bg-[#FACC15] text-zinc-950 shadow-md z-10">
+                          <Check className="h-3.5 w-3.5 stroke-[3]" />
+                        </div>
+                      )}
+                      <div
+                        style={{
+                          backgroundColor: tpl.bgColor,
+                          color: tpl.textColor,
+                        }}
+                        className="rounded-xl p-4 border border-zinc-700/60 shadow-md space-y-2"
                       >
-                        <option value="phone">📞 Phone Call (tel:)</option>
-                        <option value="whatsapp">💬 WhatsApp Message</option>
-                        <option value="email">✉️ Send Email (mailto:)</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        {contactAction === "email" ? "Email Address" : "Phone Number"}
-                      </label>
-                      <input
-                        type={contactAction === "email" ? "email" : "tel"}
-                        value={contactPhone}
-                        onChange={(e) => setContactPhone(e.target.value)}
-                        placeholder={contactAction === "email" ? "contact@yourdomain.com" : "+1 234 567 8900"}
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3.5 text-xs text-white placeholder-zinc-500 outline-none transition focus:border-[#FACC15]"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Button Label
-                      </label>
-                      <input
-                        type="text"
-                        value={contactLabel}
-                        onChange={(e) => setContactLabel(e.target.value)}
-                        placeholder="Call Us"
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3.5 text-xs text-white outline-none focus:border-[#FACC15]"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Floating Position
-                      </label>
-                      <select
-                        value={contactPosition}
-                        onChange={(e) => setContactPosition(e.target.value as FloatingPosition)}
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
-                      >
-                        <option value="bottom_right">Bottom Right</option>
-                        <option value="bottom_left">Bottom Left</option>
-                        <option value="top_right">Top Right</option>
-                        <option value="top_left">Top Left</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-white mb-1.5">
-                      Theme Color Preset
-                    </label>
-                    <div className="flex items-center gap-2">
-                      {[
-                        { bg: "#FACC15", text: "#111111", label: "Yellow Accent" },
-                        { bg: "#25D366", text: "#FFFFFF", label: "WhatsApp Green" },
-                        { bg: "#2563EB", text: "#FFFFFF", label: "Royal Blue" },
-                        { bg: "#18181B", text: "#FACC15", label: "Dark Amber" },
-                      ].map((preset) => (
-                        <button
-                          key={preset.bg + preset.text}
-                          type="button"
-                          onClick={() => {
-                            setContactColor(preset.bg);
-                            setContactTextColor(preset.text);
+                        <h4 className="text-xs font-bold">{tpl.headline}</h4>
+                        <p className="text-[11px] text-zinc-400 line-clamp-2 leading-relaxed">
+                          {tpl.message}
+                        </p>
+                        <span
+                          style={{
+                            backgroundColor: tpl.btnBg,
+                            color: tpl.btnTextColor,
                           }}
-                          className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-bold transition ${
-                            contactColor === preset.bg
-                              ? "border-[#FACC15] bg-[#18181B] text-[#FACC15]"
-                              : "border-zinc-800 bg-[#18181B] text-zinc-400 hover:text-white"
+                          className="inline-block rounded-md px-2.5 py-1 text-[10px] font-bold shadow-xs mt-1"
+                        >
+                          {tpl.btnText}
+                        </span>
+                      </div>
+                      <span className="mt-3 text-xs font-bold text-zinc-300 group-hover:text-white transition">
+                        {tpl.label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="py-8 text-center text-zinc-400 text-sm">
+                Click Next to configure settings for {name || "this plugin"}.
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── STEP 2: CONFIGURE SETTINGS (Matching Mockup 2) ──────────── */}
+        {step === 2 && (
+          <div className="flex flex-1 overflow-hidden">
+            {/* Left Vertical Sub-Tabs */}
+            <div className="w-44 shrink-0 border-r border-[#222225] bg-[#141416] p-3 space-y-1 overflow-y-auto">
+              <button
+                type="button"
+                onClick={() => setActiveSettingsTab("content")}
+                className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
+                  activeSettingsTab === "content"
+                    ? "bg-[#FACC15] text-zinc-950 shadow-xs"
+                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
+                }`}
+              >
+                <Megaphone className="h-4 w-4" />
+                <span>Content</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveSettingsTab("style")}
+                className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
+                  activeSettingsTab === "style"
+                    ? "bg-[#FACC15] text-zinc-950 shadow-xs"
+                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
+                }`}
+              >
+                <Palette className="h-4 w-4" />
+                <span>Style</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveSettingsTab("icon")}
+                className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
+                  activeSettingsTab === "icon"
+                    ? "bg-[#FACC15] text-zinc-950 shadow-xs"
+                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
+                }`}
+              >
+                <Bell className="h-4 w-4" />
+                <span>Icon</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveSettingsTab("link")}
+                className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
+                  activeSettingsTab === "link"
+                    ? "bg-[#FACC15] text-zinc-950 shadow-xs"
+                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
+                }`}
+              >
+                <LinkIcon className="h-4 w-4" />
+                <span>Link</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveSettingsTab("visibility")}
+                className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
+                  activeSettingsTab === "visibility"
+                    ? "bg-[#FACC15] text-zinc-950 shadow-xs"
+                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
+                }`}
+              >
+                <Eye className="h-4 w-4" />
+                <span>Visibility</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveSettingsTab("position")}
+                className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
+                  activeSettingsTab === "position"
+                    ? "bg-[#FACC15] text-zinc-950 shadow-xs"
+                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
+                }`}
+              >
+                <Compass className="h-4 w-4" />
+                <span>Position</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveSettingsTab("animation")}
+                className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
+                  activeSettingsTab === "animation"
+                    ? "bg-[#FACC15] text-zinc-950 shadow-xs"
+                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
+                }`}
+              >
+                <Sparkles className="h-4 w-4" />
+                <span>Animation</span>
+              </button>
+            </div>
+
+            {/* Right Settings Area */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-5 bg-[#121214]">
+              {pluginType === "announcement" ? (
+                <>
+                  {/* TAB: CONTENT */}
+                  {activeSettingsTab === "content" && (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                          Announcement Text
+                        </label>
+                        <textarea
+                          rows={3}
+                          value={announcementText}
+                          onChange={(e) => setAnnouncementText(e.target.value)}
+                          placeholder="2027 Winter and Spring Schedules are now open for enrollment!"
+                          className="w-full rounded-xl border border-zinc-800 bg-[#17171A] p-3 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20 leading-relaxed"
+                        />
+                      </div>
+
+                      {/* Icon selector pills */}
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                          Icon
+                        </label>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {[
+                            { id: "none", label: "None", icon: CircleOff },
+                            { id: "megaphone", label: "Megaphone", icon: Megaphone },
+                            { id: "bell", label: "Bell", icon: Bell },
+                            { id: "star", label: "Star", icon: Star },
+                            { id: "gift", label: "Gift", icon: Gift },
+                            { id: "percent", label: "Percent", icon: Percent },
+                            { id: "info", label: "Info", icon: Info },
+                            { id: "check", label: "Check", icon: Check },
+                            { id: "shield", label: "Shield", icon: Shield },
+                          ].map((ic) => {
+                            const isSelected = announcementIcon === ic.id;
+                            const IconCmp = ic.icon;
+                            return (
+                              <button
+                                key={ic.id}
+                                type="button"
+                                onClick={() => setAnnouncementIcon(ic.id)}
+                                title={ic.label}
+                                className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all ${
+                                  isSelected
+                                    ? "border-[#FACC15] bg-[#FACC15]/15 text-[#FACC15] shadow-sm"
+                                    : "border-zinc-800 bg-[#17171A] text-zinc-400 hover:text-white hover:border-zinc-700"
+                                }`}
+                              >
+                                <IconCmp className="h-4 w-4" />
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Link URL (Optional) */}
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                          Link (Optional)
+                        </label>
+                        <div className="space-y-2">
+                          <input
+                            type="url"
+                            value={announcementLink}
+                            onChange={(e) => setAnnouncementLink(e.target.value)}
+                            placeholder="https://"
+                            className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
+                          />
+                          <label className="flex items-center gap-2 text-xs text-zinc-400 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={announcementLinkNewTab}
+                              onChange={(e) => setAnnouncementLinkNewTab(e.target.checked)}
+                              className="rounded border-zinc-700 text-[#FACC15] focus:ring-0"
+                            />
+                            <span>Open in new tab</span>
+                          </label>
+                        </div>
+                      </div>
+
+                      {/* Button Text (Optional) */}
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                          Button Text (Optional)
+                        </label>
+                        <input
+                          type="text"
+                          value={announcementBtnLabel}
+                          onChange={(e) => setAnnouncementBtnLabel(e.target.value)}
+                          placeholder="Learn More"
+                          className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB: STYLE */}
+                  {activeSettingsTab === "style" && (
+                    <div className="space-y-4">
+                      {/* Background Color */}
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                          Background Color
+                        </label>
+                        <div className="flex items-center gap-2.5">
+                          <input
+                            type="color"
+                            value={announcementBg}
+                            onChange={(e) => setAnnouncementBg(e.target.value)}
+                            className="h-9 w-12 rounded-lg border border-zinc-800 bg-transparent cursor-pointer p-0.5"
+                          />
+                          <input
+                            type="text"
+                            value={announcementBg}
+                            onChange={(e) => setAnnouncementBg(e.target.value)}
+                            className="h-9 w-28 rounded-xl border border-zinc-800 bg-[#17171A] px-3 font-mono text-xs text-zinc-100"
+                          />
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            {[
+                              "#4A1525",
+                              "#522121",
+                              "#1D64D8",
+                              "#16803C",
+                              "#EA580C",
+                              "#18181B",
+                              "#09090B",
+                              "#D97706",
+                            ].map((c) => (
+                              <button
+                                key={c}
+                                type="button"
+                                onClick={() => setAnnouncementBg(c)}
+                                style={{ backgroundColor: c }}
+                                className="h-6 w-6 rounded-full border border-white/20 transition hover:scale-110"
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Text Color */}
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                          Text Color
+                        </label>
+                        <div className="flex items-center gap-2.5">
+                          <input
+                            type="color"
+                            value={announcementTextColor}
+                            onChange={(e) => setAnnouncementTextColor(e.target.value)}
+                            className="h-9 w-12 rounded-lg border border-zinc-800 bg-transparent cursor-pointer p-0.5"
+                          />
+                          <input
+                            type="text"
+                            value={announcementTextColor}
+                            onChange={(e) => setAnnouncementTextColor(e.target.value)}
+                            className="h-9 w-28 rounded-xl border border-zinc-800 bg-[#17171A] px-3 font-mono text-xs text-zinc-100"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Icon Color */}
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                          Icon Color
+                        </label>
+                        <div className="flex items-center gap-2.5">
+                          <input
+                            type="color"
+                            value={announcementIconColor}
+                            onChange={(e) => setAnnouncementIconColor(e.target.value)}
+                            className="h-9 w-12 rounded-lg border border-zinc-800 bg-transparent cursor-pointer p-0.5"
+                          />
+                          <input
+                            type="text"
+                            value={announcementIconColor}
+                            onChange={(e) => setAnnouncementIconColor(e.target.value)}
+                            className="h-9 w-28 rounded-xl border border-zinc-800 bg-[#17171A] px-3 font-mono text-xs text-zinc-100"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Button Colors */}
+                      <div className="rounded-xl border border-zinc-800 bg-[#161619] p-3.5 space-y-3">
+                        <span className="text-xs font-bold text-zinc-300">
+                          Button Appearance
+                        </span>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-[11px] text-zinc-400 mb-1">
+                              Button Background
+                            </label>
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="color"
+                                value={announcementBtnBg}
+                                onChange={(e) => setAnnouncementBtnBg(e.target.value)}
+                                className="h-8 w-10 rounded border border-zinc-700 bg-transparent cursor-pointer"
+                              />
+                              <input
+                                type="text"
+                                value={announcementBtnBg}
+                                onChange={(e) => setAnnouncementBtnBg(e.target.value)}
+                                className="h-8 w-24 rounded-lg border border-zinc-800 bg-[#17171A] px-2 font-mono text-xs text-zinc-200"
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-[11px] text-zinc-400 mb-1">
+                              Button Text Color
+                            </label>
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="color"
+                                value={announcementBtnTextColor}
+                                onChange={(e) => setAnnouncementBtnTextColor(e.target.value)}
+                                className="h-8 w-10 rounded border border-zinc-700 bg-transparent cursor-pointer"
+                              />
+                              <input
+                                type="text"
+                                value={announcementBtnTextColor}
+                                onChange={(e) => setAnnouncementBtnTextColor(e.target.value)}
+                                className="h-8 w-24 rounded-lg border border-zinc-800 bg-[#17171A] px-2 font-mono text-xs text-zinc-200"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB: ICON */}
+                  {activeSettingsTab === "icon" && (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">
+                          Select Icon
+                        </label>
+                        <div className="grid grid-cols-3 gap-2.5">
+                          {[
+                            { id: "none", label: "No Icon", icon: CircleOff },
+                            { id: "megaphone", label: "Megaphone", icon: Megaphone },
+                            { id: "bell", label: "Bell", icon: Bell },
+                            { id: "star", label: "Star", icon: Star },
+                            { id: "gift", label: "Gift", icon: Gift },
+                            { id: "percent", label: "Percent", icon: Percent },
+                            { id: "info", label: "Information", icon: Info },
+                            { id: "check", label: "Checkmark", icon: Check },
+                            { id: "shield", label: "Shield / Security", icon: Shield },
+                          ].map((ic) => {
+                            const isSelected = announcementIcon === ic.id;
+                            const IconCmp = ic.icon;
+                            return (
+                              <button
+                                key={ic.id}
+                                type="button"
+                                onClick={() => setAnnouncementIcon(ic.id)}
+                                className={`flex items-center gap-2.5 rounded-xl border p-3 text-left transition-all ${
+                                  isSelected
+                                    ? "border-[#FACC15] bg-[#FACC15]/10 text-white"
+                                    : "border-zinc-800 bg-[#17171A] text-zinc-400 hover:text-white hover:border-zinc-700"
+                                }`}
+                              >
+                                <IconCmp className="h-4 w-4 shrink-0 text-[#FACC15]" />
+                                <span className="text-xs font-semibold truncate">{ic.label}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB: LINK */}
+                  {activeSettingsTab === "link" && (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                          Call-to-Action Link URL
+                        </label>
+                        <input
+                          type="url"
+                          value={announcementLink}
+                          onChange={(e) => setAnnouncementLink(e.target.value)}
+                          placeholder="https://example.com/special-offer"
+                          className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between rounded-xl border border-zinc-800 bg-[#161619] p-3.5">
+                        <div>
+                          <p className="text-xs font-bold text-white">Open in New Tab</p>
+                          <p className="text-[11px] text-zinc-400">Target _blank for external URLs</p>
+                        </div>
+                        <Switch
+                          checked={announcementLinkNewTab}
+                          onCheckedChange={setAnnouncementLinkNewTab}
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                          Button Text Label
+                        </label>
+                        <input
+                          type="text"
+                          value={announcementBtnLabel}
+                          onChange={(e) => setAnnouncementBtnLabel(e.target.value)}
+                          placeholder="Learn More"
+                          className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB: VISIBILITY */}
+                  {activeSettingsTab === "visibility" && (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between rounded-xl border border-zinc-800 bg-[#161619] p-3.5">
+                        <div>
+                          <p className="text-xs font-bold text-white">Show on Desktop</p>
+                          <p className="text-[11px] text-zinc-400">Display on screens larger than 768px</p>
+                        </div>
+                        <Switch
+                          checked={announcementShowDesktop}
+                          onCheckedChange={setAnnouncementShowDesktop}
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between rounded-xl border border-zinc-800 bg-[#161619] p-3.5">
+                        <div>
+                          <p className="text-xs font-bold text-white">Show on Mobile</p>
+                          <p className="text-[11px] text-zinc-400">Display on smartphones and compact screens</p>
+                        </div>
+                        <Switch
+                          checked={announcementShowMobile}
+                          onCheckedChange={setAnnouncementShowMobile}
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between rounded-xl border border-zinc-800 bg-[#161619] p-3.5">
+                        <div>
+                          <p className="text-xs font-bold text-white">Dismiss / Close Button</p>
+                          <p className="text-[11px] text-zinc-400">Allow visitors to close the announcement bar (✕)</p>
+                        </div>
+                        <Switch
+                          checked={announcementShowClose}
+                          onCheckedChange={setAnnouncementShowClose}
+                        />
+                      </div>
+
+                      <div className="rounded-xl border border-zinc-800 bg-[#161619] p-3.5 space-y-2">
+                        <p className="text-xs font-bold text-white">Page Targeting</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setAnnouncementPageTargeting("all")}
+                            className={`rounded-lg py-2 text-xs font-bold transition ${
+                              announcementPageTargeting === "all"
+                                ? "bg-[#FACC15] text-zinc-950 shadow-xs"
+                                : "bg-[#18181C] text-zinc-400 hover:text-white"
+                            }`}
+                          >
+                            All Pages
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setAnnouncementPageTargeting("custom")}
+                            className={`rounded-lg py-2 text-xs font-bold transition ${
+                              announcementPageTargeting === "custom"
+                                ? "bg-[#FACC15] text-zinc-950 shadow-xs"
+                                : "bg-[#18181C] text-zinc-400 hover:text-white"
+                            }`}
+                          >
+                            Current Page Only
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB: POSITION */}
+                  {activeSettingsTab === "position" && (
+                    <div className="space-y-4">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">
+                        Announcement Bar Placement
+                      </label>
+                      <div className="grid grid-cols-2 gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setAnnouncementPosition("top_fixed")}
+                          className={`flex flex-col items-center gap-2 rounded-2xl border p-5 text-center transition-all ${
+                            announcementPosition === "top_fixed"
+                              ? "border-2 border-[#FACC15] bg-[#1A1A1E] text-white shadow-md"
+                              : "border-zinc-800 bg-[#161619] text-zinc-400 hover:text-white hover:border-zinc-700"
                           }`}
                         >
-                          <span
-                            className="h-3 w-3 rounded-full border border-black/20"
-                            style={{ background: preset.bg }}
-                          />
-                          <span>{preset.label}</span>
+                          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-800 text-[#FACC15]">
+                            <ArrowUp className="h-5 w-5" />
+                          </span>
+                          <span className="text-xs font-bold text-white">Top of Website</span>
+                          <span className="text-[11px] text-zinc-400">
+                            Sticks to the very top above the navbar
+                          </span>
                         </button>
-                      ))}
+
+                        <button
+                          type="button"
+                          onClick={() => setAnnouncementPosition("bottom_fixed")}
+                          className={`flex flex-col items-center gap-2 rounded-2xl border p-5 text-center transition-all ${
+                            announcementPosition === "bottom_fixed"
+                              ? "border-2 border-[#FACC15] bg-[#1A1A1E] text-white shadow-md"
+                              : "border-zinc-800 bg-[#161619] text-zinc-400 hover:text-white hover:border-zinc-700"
+                          }`}
+                        >
+                          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-800 text-[#FACC15]">
+                            <Compass className="h-5 w-5" />
+                          </span>
+                          <span className="text-xs font-bold text-white">Bottom of Website</span>
+                          <span className="text-[11px] text-zinc-400">
+                            Fixed banner floating along bottom edge
+                          </span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
-                  <div className="flex items-center gap-6 pt-1">
-                    <label className="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={contactShowDesktop}
-                        onChange={(e) => setContactShowDesktop(e.target.checked)}
-                        className="rounded border-zinc-700 text-[#FACC15]"
-                      />
-                      <span>Show on Desktop</span>
-                    </label>
-                    <label className="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={contactShowMobile}
-                        onChange={(e) => setContactShowMobile(e.target.checked)}
-                        className="rounded border-zinc-700 text-[#FACC15]"
-                      />
-                      <span>Show on Mobile</span>
-                    </label>
-                  </div>
+                  {/* TAB: ANIMATION */}
+                  {activeSettingsTab === "animation" && (
+                    <div className="space-y-4">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">
+                        Entrance Animation
+                      </label>
+                      <div className="grid grid-cols-3 gap-3">
+                        {[
+                          { id: "none", label: "None", desc: "Shows immediately" },
+                          { id: "slide_down", label: "Slide Down", desc: "Smooth entrance from top" },
+                          { id: "fade_in", label: "Fade In", desc: "Gradual opacity fade" },
+                        ].map((a) => {
+                          const isSelected = announcementAnimation === a.id;
+                          return (
+                            <button
+                              key={a.id}
+                              type="button"
+                              onClick={() => setAnnouncementAnimation(a.id as any)}
+                              className={`rounded-2xl border p-4 text-left transition-all ${
+                                isSelected
+                                  ? "border-2 border-[#FACC15] bg-[#1A1A1E] shadow-sm text-white"
+                                  : "border-zinc-800 bg-[#161619] text-zinc-400 hover:text-white hover:border-zinc-700"
+                              }`}
+                            >
+                              <span className="text-xs font-bold block text-white mb-0.5">{a.label}</span>
+                              <span className="text-[11px] text-zinc-400">{a.desc}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </>
-              )}
-
-              {/* 2. WHATSAPP LIVE CHAT */}
-              {pluginType === "whatsapp" && (
-                <>
+              ) : pluginType === "contact" ? (
+                /* CONTACT SETTINGS */
+                <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-white mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                      Phone Number or Target
+                    </label>
+                    <input
+                      type="text"
+                      value={contactPhone}
+                      onChange={(e) => setContactPhone(e.target.value)}
+                      placeholder="+1 (555) 000-0000"
+                      className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                      Button Label
+                    </label>
+                    <input
+                      type="text"
+                      value={contactLabel}
+                      onChange={(e) => setContactLabel(e.target.value)}
+                      placeholder="Call Us"
+                      className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                      Button Color
+                    </label>
+                    <input
+                      type="color"
+                      value={contactColor}
+                      onChange={(e) => setContactColor(e.target.value)}
+                      className="h-9 w-12 rounded-lg border border-zinc-800 bg-transparent cursor-pointer"
+                    />
+                  </div>
+                </div>
+              ) : pluginType === "whatsapp" ? (
+                /* WHATSAPP SETTINGS */
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
                       WhatsApp Phone Number (with Country Code)
                     </label>
                     <input
-                      type="tel"
+                      type="text"
                       value={waPhone}
                       onChange={(e) => setWaPhone(e.target.value)}
-                      placeholder="+1 234 567 8900"
-                      className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3.5 text-xs text-white placeholder-zinc-500 outline-none transition focus:border-[#FACC15]"
+                      placeholder="+1234567890"
+                      className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15]"
                     />
                   </div>
-
                   <div>
-                    <label className="block text-xs font-semibold text-white mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                      Support Agent Name
+                    </label>
+                    <input
+                      type="text"
+                      value={waAgent}
+                      onChange={(e) => setWaAgent(e.target.value)}
+                      placeholder="Customer Support"
+                      className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
                       Pre-filled Message
                     </label>
                     <input
                       type="text"
                       value={waMessage}
                       onChange={(e) => setWaMessage(e.target.value)}
-                      placeholder="Hello! I have a question regarding your services."
-                      className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3.5 text-xs text-white placeholder-zinc-500 outline-none transition focus:border-[#FACC15]"
+                      placeholder="Hello, I have a question about your services."
+                      className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 outline-none"
                     />
                   </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Agent Name
-                      </label>
-                      <input
-                        type="text"
-                        value={waAgent}
-                        onChange={(e) => setWaAgent(e.target.value)}
-                        placeholder="Support Team"
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3.5 text-xs text-white outline-none focus:border-[#FACC15]"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Floating Position
-                      </label>
-                      <select
-                        value={waPosition}
-                        onChange={(e) => setWaPosition(e.target.value as FloatingPosition)}
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
-                      >
-                        <option value="bottom_right">Bottom Right</option>
-                        <option value="bottom_left">Bottom Left</option>
-                        <option value="top_right">Top Right</option>
-                        <option value="top_left">Top Left</option>
-                      </select>
-                    </div>
-                  </div>
-
+                </div>
+              ) : pluginType === "youtube" ? (
+                /* YOUTUBE SETTINGS */
+                <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-white mb-1.5">
-                      Greeting Bubble Message
-                    </label>
-                    <input
-                      type="text"
-                      value={waGreeting}
-                      onChange={(e) => setWaGreeting(e.target.value)}
-                      placeholder="Hi there! How can we help you today?"
-                      className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3.5 text-xs text-white outline-none focus:border-[#FACC15]"
-                    />
-                  </div>
-                </>
-              )}
-
-              {/* 3. ACCESSIBILITY TOOLBAR */}
-              {pluginType === "accessibility" && (
-                <>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Floating Position
-                      </label>
-                      <select
-                        value={a11yPosition}
-                        onChange={(e) => setA11yPosition(e.target.value as FloatingPosition)}
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
-                      >
-                        <option value="bottom_left">Bottom Left</option>
-                        <option value="bottom_right">Bottom Right</option>
-                        <option value="top_left">Top Left</option>
-                        <option value="top_right">Top Right</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Button Accent Color
-                      </label>
-                      <select
-                        value={a11yColor}
-                        onChange={(e) => setA11yColor(e.target.value)}
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
-                      >
-                        <option value="#9333EA">Purple (#9333EA)</option>
-                        <option value="#3B82F6">Blue (#3B82F6)</option>
-                        <option value="#FACC15">Yellow (#FACC15)</option>
-                        <option value="#18181B">Dark (#18181B)</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2.5 pt-1">
-                    <span className="block text-xs font-semibold text-white">Supported Features</span>
-                    <label className="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={a11yContrast}
-                        onChange={(e) => setA11yContrast(e.target.checked)}
-                        className="rounded border-zinc-700 text-[#FACC15]"
-                      />
-                      <span>High Contrast Mode</span>
-                    </label>
-                    <label className="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={a11yFontSize}
-                        onChange={(e) => setA11yFontSize(e.target.checked)}
-                        className="rounded border-zinc-700 text-[#FACC15]"
-                      />
-                      <span>Text Resizing Controls</span>
-                    </label>
-                    <label className="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={a11yDyslexia}
-                        onChange={(e) => setA11yDyslexia(e.target.checked)}
-                        className="rounded border-zinc-700 text-[#FACC15]"
-                      />
-                      <span>Dyslexia-Friendly Typography</span>
-                    </label>
-                    <label className="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={a11yInvert}
-                        onChange={(e) => setA11yInvert(e.target.checked)}
-                        className="rounded border-zinc-700 text-[#FACC15]"
-                      />
-                      <span>Invert Colors</span>
-                    </label>
-                  </div>
-                </>
-              )}
-
-              {/* 4. LANGUAGE SWITCHER */}
-              {pluginType === "language" && (
-                <>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Default Language
-                      </label>
-                      <select
-                        value={langDefault}
-                        onChange={(e) => setLangDefault(e.target.value)}
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
-                      >
-                        <option value="en">English (US)</option>
-                        <option value="es">Spanish (Español)</option>
-                        <option value="fr">French (Français)</option>
-                        <option value="de">German (Deutsch)</option>
-                        <option value="it">Italian (Italiano)</option>
-                        <option value="pt">Portuguese (Português)</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Floating Position
-                      </label>
-                      <select
-                        value={langPosition}
-                        onChange={(e) => setLangPosition(e.target.value as FloatingPosition)}
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
-                      >
-                        <option value="bottom_left">Bottom Left</option>
-                        <option value="bottom_right">Bottom Right</option>
-                        <option value="top_right">Top Right</option>
-                        <option value="top_left">Top Left</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-white mb-1.5">
-                      Theme Style
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {(["dark", "light", "glass"] as const).map((t) => (
-                        <button
-                          key={t}
-                          type="button"
-                          onClick={() => setLangTheme(t)}
-                          className={`rounded-lg border py-2 text-xs font-bold capitalize transition ${
-                            langTheme === t
-                              ? "border-[#FACC15] bg-[#FACC15]/10 text-[#FACC15]"
-                              : "border-zinc-800 bg-[#18181B] text-zinc-400 hover:text-white"
-                          }`}
-                        >
-                          {t}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <p className="text-[11px] text-zinc-400 leading-normal pt-1 bg-zinc-900/60 p-2.5 rounded-lg border border-zinc-800">
-                    ℹ️ Language Switcher enables visitors to change language. Page routing or custom localized content maps to each language choice.
-                  </p>
-                </>
-              )}
-
-              {/* 5. ANNOUNCEMENT BAR & POPUP */}
-              {(pluginType === "announcement" || pluginType === "popup") && (
-                <>
-                  <div>
-                    <label className="block text-xs font-semibold text-white mb-1.5">
-                      Announcement Text
-                    </label>
-                    <textarea
-                      value={announcementText}
-                      onChange={(e) => setAnnouncementText(e.target.value)}
-                      placeholder="e.g. Special offer this week! Get 20% off all plans with code SAVE20."
-                      className="h-20 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] p-3 text-xs text-white outline-none focus:border-[#FACC15] resize-none"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Button Label (Optional)
-                      </label>
-                      <input
-                        type="text"
-                        value={announcementBtnLabel}
-                        onChange={(e) => setAnnouncementBtnLabel(e.target.value)}
-                        placeholder="Claim Offer"
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Link URL
-                      </label>
-                      <input
-                        type="text"
-                        value={announcementLink}
-                        onChange={(e) => setAnnouncementLink(e.target.value)}
-                        placeholder="https://..."
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Display Placement
-                      </label>
-                      <select
-                        value={announcementPosition}
-                        onChange={(e) => setAnnouncementPosition(e.target.value as FloatingPosition)}
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
-                      >
-                        <option value="top_fixed">Top Fixed Banner</option>
-                        <option value="bottom_fixed">Bottom Fixed Banner</option>
-                        <option value="bottom_right">Floating Bottom Right</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Banner Background
-                      </label>
-                      <select
-                        value={announcementBg}
-                        onChange={(e) => setAnnouncementBg(e.target.value)}
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
-                      >
-                        <option value="#1E1E24">Dark Slate (#1E1E24)</option>
-                        <option value="#FACC15">Vibrant Yellow (#FACC15)</option>
-                        <option value="#2563EB">Royal Blue (#2563EB)</option>
-                        <option value="#DC2626">Crimson Red (#DC2626)</option>
-                      </select>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {/* 6. CHATBOT */}
-              {pluginType === "chatbot" && (
-                <>
-                  <div>
-                    <label className="block text-xs font-semibold text-white mb-1.5">
-                      Bot Name
-                    </label>
-                    <input
-                      type="text"
-                      value={botName}
-                      onChange={(e) => setBotName(e.target.value)}
-                      placeholder="AI Assistant"
-                      className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3.5 text-xs text-white outline-none focus:border-[#FACC15]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-white mb-1.5">
-                      Welcome Greeting Message
-                    </label>
-                    <input
-                      type="text"
-                      value={botWelcome}
-                      onChange={(e) => setBotWelcome(e.target.value)}
-                      placeholder="Hi there! How can I help you today?"
-                      className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3.5 text-xs text-white outline-none focus:border-[#FACC15]"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Floating Position
-                      </label>
-                      <select
-                        value={botPosition}
-                        onChange={(e) => setBotPosition(e.target.value as FloatingPosition)}
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
-                      >
-                        <option value="bottom_right">Bottom Right</option>
-                        <option value="bottom_left">Bottom Left</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Primary Color
-                      </label>
-                      <select
-                        value={botColor}
-                        onChange={(e) => setBotColor(e.target.value)}
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
-                      >
-                        <option value="#2563EB">Blue (#2563EB)</option>
-                        <option value="#9333EA">Purple (#9333EA)</option>
-                        <option value="#FACC15">Yellow (#FACC15)</option>
-                      </select>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {/* 7. YOUTUBE VIDEO (PAGE SECTION) */}
-              {pluginType === "youtube" && (
-                <>
-                  <div>
-                    <label className="block text-xs font-semibold text-white mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
                       YouTube Video URL
                     </label>
                     <input
-                      type="text"
+                      type="url"
                       value={ytUrl}
                       onChange={(e) => setYtUrl(e.target.value)}
-                      placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-                      className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3.5 text-xs text-white placeholder-zinc-500 outline-none transition focus:border-[#FACC15]"
+                      placeholder="https://www.youtube.com/watch?v=..."
+                      className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 outline-none focus:border-[#FACC15]"
                     />
                   </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Aspect Ratio
-                      </label>
-                      <select
-                        value={ytAspectRatio}
-                        onChange={(e) => setYtAspectRatio(e.target.value)}
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
-                      >
-                        <option value="16/9">16:9 (Standard Widescreen)</option>
-                        <option value="4/3">4:3 (Classic)</option>
-                        <option value="1/1">1:1 (Square)</option>
-                        <option value="9/16">9:16 (Shorts / Vertical)</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Section Layout Width
-                      </label>
-                      <select
-                        value={ytMaxWidth}
-                        onChange={(e) => setYtMaxWidth(e.target.value)}
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
-                      >
-                        <option value="1000px">Contained (1000px)</option>
-                        <option value="1280px">Wide (1280px)</option>
-                        <option value="100%">Full Width</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-6 pt-1">
-                    <label className="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={ytAutoplay}
-                        onChange={(e) => setYtAutoplay(e.target.checked)}
-                        className="rounded border-zinc-700 text-[#FACC15]"
-                      />
-                      <span>Autoplay</span>
-                    </label>
-                    <label className="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={ytMute}
-                        onChange={(e) => setYtMute(e.target.checked)}
-                        className="rounded border-zinc-700 text-[#FACC15]"
-                      />
-                      <span>Mute Audio</span>
-                    </label>
-                    <label className="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={ytControls}
-                        onChange={(e) => setYtControls(e.target.checked)}
-                        className="rounded border-zinc-700 text-[#FACC15]"
-                      />
-                      <span>Player Controls</span>
-                    </label>
-                  </div>
-
-                  <p className="text-[11px] text-zinc-400 bg-zinc-900/60 p-2.5 rounded-lg border border-zinc-800">
-                    📌 <strong>Page Section:</strong> YouTube Video inserts into the page canvas where it can be dragged, reordered, and selected like any other section.
-                  </p>
-                </>
-              )}
-
-              {/* 8. GOOGLE MAPS (PAGE SECTION) */}
-              {pluginType === "maps" && (
-                <>
+                </div>
+              ) : pluginType === "maps" ? (
+                /* MAPS SETTINGS */
+                <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-white mb-1.5">
-                      Location Address or Place
+                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                      Location Address or Place Name
                     </label>
                     <input
                       type="text"
                       value={mapAddress}
                       onChange={(e) => setMapAddress(e.target.value)}
-                      placeholder="e.g. 1600 Amphitheatre Pkwy, Mountain View, CA"
-                      className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3.5 text-xs text-white placeholder-zinc-500 outline-none transition focus:border-[#FACC15]"
+                      placeholder="1600 Amphitheatre Parkway, Mountain View, CA"
+                      className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 outline-none focus:border-[#FACC15]"
                     />
                   </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Map Height
-                      </label>
-                      <select
-                        value={mapHeight}
-                        onChange={(e) => setMapHeight(e.target.value)}
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
-                      >
-                        <option value="300px">Compact (300px)</option>
-                        <option value="380px">Medium (380px)</option>
-                        <option value="480px">Large (480px)</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">
-                        Zoom Level
-                      </label>
-                      <select
-                        value={mapZoom}
-                        onChange={(e) => setMapZoom(Number(e.target.value))}
-                        className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
-                      >
-                        <option value={11}>City Level (11)</option>
-                        <option value={13}>Neighborhood Level (13)</option>
-                        <option value={15}>Street Level (15)</option>
-                        <option value={17}>Building Level (17)</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <p className="text-[11px] text-zinc-400 bg-zinc-900/60 p-2.5 rounded-lg border border-zinc-800">
-                    📌 <strong>Page Section:</strong> Google Maps inserts into your page layout as an interactive section that visitors can browse.
-                  </p>
-                </>
-              )}
-
-              {/* 9. CUSTOM HTML / EMBED CODE */}
-              {pluginType === "custom_html" && (
-                <>
+                </div>
+              ) : (
+                /* CUSTOM HTML */
+                <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-white mb-1.5">
-                      Where to Place
-                    </label>
-                    <select
-                      value={customPlacement}
-                      onChange={(e) => setCustomPlacement(e.target.value as PlacementChoice)}
-                      className="h-10 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
-                    >
-                      <option value="site_wide_header">🌐 Global Header (Site-wide)</option>
-                      <option value="site_wide_footer">🌐 Global Footer (Site-wide)</option>
-                      <option value="inline_page">📄 Inline on Current Page</option>
-                      <option value="floating_bottom_right">💬 Floating Overlay - Bottom Right</option>
-                      <option value="floating_bottom_left">💬 Floating Overlay - Bottom Left</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-white mb-1.5">
-                      Custom HTML, iframe or Script Code
+                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                      HTML / Script Code
                     </label>
                     <textarea
+                      rows={6}
                       value={customHtml}
                       onChange={(e) => setCustomHtml(e.target.value)}
-                      placeholder={`<iframe width="100%" height="400" src="https://..." frameborder="0"></iframe>`}
-                      className="h-44 w-full rounded-lg border border-[#2F2F33] bg-[#18181B] p-3 text-xs font-mono text-zinc-200 outline-none focus:border-[#FACC15] resize-none"
+                      placeholder="<script>...</script> or <div>...</div>"
+                      className="w-full rounded-xl border border-zinc-800 bg-[#17171A] p-3 font-mono text-xs text-zinc-100 outline-none focus:border-[#FACC15]"
                     />
                   </div>
-                </>
+                </div>
               )}
             </div>
+          </div>
+        )}
 
-            {/* ── RIGHT COLUMN: Live Interactive Preview Frame ── */}
-            <div className="flex flex-col h-full space-y-2">
-              <div className="flex items-center justify-between pb-1">
-                <span className="text-xs font-bold text-white">Live Preview</span>
-                <div className="flex items-center gap-1 rounded-lg border border-[#2A2A2E] bg-[#18181B] p-0.5">
-                  <button
-                    type="button"
-                    onClick={() => setPreviewDevice("desktop")}
-                    className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[11px] font-bold transition ${
-                      previewDevice === "desktop"
-                        ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                        : "text-zinc-400 hover:text-white"
-                    }`}
-                  >
-                    <Monitor className="h-3 w-3" />
-                    <span>Desktop</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPreviewDevice("mobile")}
-                    className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[11px] font-bold transition ${
-                      previewDevice === "mobile"
-                        ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                        : "text-zinc-400 hover:text-white"
-                    }`}
-                  >
-                    <Smartphone className="h-3 w-3" />
-                    <span>Mobile</span>
-                  </button>
-                </div>
+        {/* ── STEP 3: PREVIEW & SAVE (Matching Mockup 3) ──────────────── */}
+        {step === 3 && (
+          <div className="flex-1 overflow-y-auto p-6 space-y-5 bg-[#121214]">
+            {/* Device Switcher Controls */}
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold text-white">Device Preview</p>
+                <p className="text-[11px] text-zinc-400">See how your plugin renders on sample devices</p>
               </div>
 
-              {/* Simulated Device Frame */}
-              <div
-                className={`relative flex-1 rounded-xl border border-[#28282C] bg-[#0E0E10] overflow-hidden flex flex-col shadow-inner min-h-[340px] transition-all duration-200 mx-auto w-full ${
-                  previewDevice === "mobile" ? "max-w-[280px]" : "max-w-full"
-                }`}
-              >
-                {/* Browser Navbar Mock */}
-                <div className="flex items-center justify-between border-b border-zinc-800 bg-[#161619] px-3 py-2 shrink-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-extrabold text-white tracking-wider">PREVIEW</span>
-                    {previewDevice === "desktop" && (
-                      <div className="flex items-center gap-2 text-[9px] text-zinc-400 ml-2">
-                        <span>Home</span>
-                        <span>About</span>
-                        <span>Services</span>
-                        <span>Contact</span>
-                      </div>
+              <div className="flex items-center rounded-xl bg-[#1A1A1E] border border-zinc-800 p-1">
+                <button
+                  type="button"
+                  onClick={() => setPreviewDevice("desktop")}
+                  className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition ${
+                    previewDevice === "desktop"
+                      ? "bg-[#FACC15] text-zinc-950 shadow-xs"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  <Monitor className="h-3.5 w-3.5" />
+                  <span>Desktop</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPreviewDevice("mobile")}
+                  className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition ${
+                    previewDevice === "mobile"
+                      ? "bg-[#FACC15] text-zinc-950 shadow-xs"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  <Smartphone className="h-3.5 w-3.5" />
+                  <span>Mobile</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Realistic Browser Window Frame (Mockup 3) */}
+            <div
+              className={`mx-auto rounded-2xl border border-zinc-800 bg-[#17171A] shadow-2xl overflow-hidden transition-all duration-300 ${
+                previewDevice === "mobile" ? "max-w-[340px]" : "max-w-2xl"
+              }`}
+            >
+              {/* Browser Window Header */}
+              <div className="flex items-center justify-between border-b border-zinc-800/80 bg-[#1E1E22] px-3.5 py-2">
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-full bg-rose-500/80" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-amber-500/80" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80" />
+                </div>
+                <div className="rounded-full bg-[#141416] px-4 py-0.5 text-[10px] font-mono text-zinc-400 border border-zinc-800">
+                  https://mywebsite.com
+                </div>
+                <div className="w-8" />
+              </div>
+
+              {/* Browser Viewport with Announcement Bar + Website Skeleton */}
+              <div className="relative min-h-[300px] flex flex-col bg-[#0F0F11]">
+                {/* Announcement Bar at Top */}
+                {pluginType === "announcement" && announcementPosition === "top_fixed" && (
+                  <div
+                    style={{
+                      backgroundColor: announcementBg,
+                      color: announcementTextColor,
+                    }}
+                    className="flex items-center justify-between gap-3 px-4 py-2.5 text-center shadow-md animate-in fade-in duration-200"
+                  >
+                    <div className="flex items-center justify-center gap-2 flex-1 min-w-0">
+                      {announcementIcon !== "none" && (
+                        <span style={{ color: announcementIconColor }} className="shrink-0">
+                          {renderTemplateIcon(announcementIcon, "h-4 w-4")}
+                        </span>
+                      )}
+                      <span className="text-xs font-semibold truncate leading-tight">
+                        {announcementText}
+                      </span>
+                    </div>
+
+                    {announcementBtnLabel && (
+                      <span
+                        style={{
+                          backgroundColor: announcementBtnBg,
+                          color: announcementBtnTextColor,
+                        }}
+                        className="shrink-0 rounded-md px-3 py-1 text-[11px] font-bold shadow-xs whitespace-nowrap"
+                      >
+                        {announcementBtnLabel}
+                      </span>
+                    )}
+
+                    {announcementShowClose && (
+                      <span className="shrink-0 text-xs opacity-70 hover:opacity-100 cursor-pointer ml-1">
+                        ✕
+                      </span>
                     )}
                   </div>
-                  <span className="rounded bg-[#FACC15] px-2 py-0.5 text-[9px] font-bold text-zinc-950">
-                    Live
-                  </span>
+                )}
+
+                {/* Sample Website Content Skeleton (Matching Mockup 3) */}
+                <div className="p-5 space-y-4 flex-1">
+                  {/* Mock Navbar */}
+                  <div className="flex items-center justify-between border-b border-zinc-800/60 pb-3">
+                    <div className="h-4 w-20 rounded-md bg-zinc-700/60" />
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-8 rounded-full bg-zinc-800" />
+                      <div className="h-2 w-8 rounded-full bg-zinc-800" />
+                      <div className="h-2 w-8 rounded-full bg-zinc-800" />
+                      <div className="h-4 w-12 rounded-md bg-[#FACC15]/40" />
+                    </div>
+                  </div>
+
+                  {/* Mock Hero Banner */}
+                  <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/60 p-4 space-y-2.5">
+                    <div className="h-4 w-3/4 rounded-md bg-zinc-700/80" />
+                    <div className="h-2.5 w-1/2 rounded-full bg-zinc-800" />
+                    <div className="h-6 w-20 rounded-lg bg-[#FACC15] mt-2" />
+                  </div>
+
+                  {/* Mock Grid Cards */}
+                  <div className="grid grid-cols-3 gap-2.5 pt-1">
+                    <div className="h-16 rounded-xl border border-zinc-800/60 bg-zinc-900/40 p-2 space-y-1.5">
+                      <div className="h-3 w-3 rounded-full bg-blue-500/50" />
+                      <div className="h-2 w-10 rounded-full bg-zinc-800" />
+                    </div>
+                    <div className="h-16 rounded-xl border border-zinc-800/60 bg-zinc-900/40 p-2 space-y-1.5">
+                      <div className="h-3 w-3 rounded-full bg-emerald-500/50" />
+                      <div className="h-2 w-10 rounded-full bg-zinc-800" />
+                    </div>
+                    <div className="h-16 rounded-xl border border-zinc-800/60 bg-zinc-900/40 p-2 space-y-1.5">
+                      <div className="h-3 w-3 rounded-full bg-purple-500/50" />
+                      <div className="h-2 w-10 rounded-full bg-zinc-800" />
+                    </div>
+                  </div>
                 </div>
 
-                {/* Simulated Content Area */}
-                <div className="relative flex-1 p-3 flex flex-col overflow-y-auto bg-[#0A0A0C]">
-                  {/* Floating Contact Preview */}
-                  {pluginType === "contact" && (
-                    <div className="relative h-full min-h-[240px] flex flex-col justify-end">
-                      <div
-                        className={`absolute ${
-                          contactPosition.includes("left") ? "left-3" : "right-3"
-                        } ${contactPosition.includes("top") ? "top-3" : "bottom-3"}`}
-                      >
-                        <div
-                          className="flex items-center gap-2 rounded-full px-4 py-2 font-bold shadow-xl text-xs cursor-pointer hover:scale-105 transition-transform"
-                          style={{ background: contactColor, color: contactTextColor }}
-                        >
-                          <Phone className="h-4 w-4" />
-                          <span>{contactLabel || "Call Us"}</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* WhatsApp Preview */}
-                  {pluginType === "whatsapp" && (
-                    <div className="relative h-full min-h-[240px] flex flex-col justify-end">
-                      <div
-                        className={`absolute ${
-                          waPosition.includes("left") ? "left-3" : "right-3"
-                        } ${waPosition.includes("top") ? "top-3" : "bottom-3"} flex flex-col items-${
-                          waPosition.includes("left") ? "start" : "end"
-                        } gap-2`}
-                      >
-                        {waGreeting && (
-                          <div className="rounded-2xl bg-[#1F2C34] text-white p-3 border border-emerald-500/30 shadow-xl max-w-[210px] text-left">
-                            <p className="text-[11px] font-bold text-emerald-400">{waAgent}</p>
-                            <p className="text-[10px] text-zinc-200 mt-0.5">{waGreeting}</p>
-                          </div>
-                        )}
-                        <div
-                          className="flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg cursor-pointer hover:scale-105 transition-transform"
-                          style={{ background: waColor }}
-                        >
-                          <MessageCircle className="h-6 w-6" />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* YouTube Page Section Preview */}
-                  {pluginType === "youtube" && (
-                    <div className="w-full flex-1 flex flex-col justify-center">
-                      <div className="w-full rounded-xl overflow-hidden border border-zinc-800 bg-black aspect-video shadow-2xl flex items-center justify-center">
-                        <iframe
-                          src={getCleanYtEmbedUrl(ytUrl)}
-                          title="YouTube Preview"
-                          className="w-full h-full border-none"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Google Maps Page Section Preview */}
-                  {pluginType === "maps" && (
-                    <div className="w-full flex-1 flex flex-col justify-center">
-                      <div className="w-full rounded-xl overflow-hidden border border-zinc-800 bg-black h-48 shadow-2xl flex items-center justify-center">
-                        {mapAddress.trim() ? (
-                          <iframe
-                            src={getMapsEmbedUrl(mapAddress)}
-                            title="Google Maps Preview"
-                            className="w-full h-full border-none"
-                          />
-                        ) : (
-                          <div className="flex flex-col items-center justify-center text-center text-zinc-500 p-4">
-                            <MapPin className="h-8 w-8 text-zinc-600 mb-2 opacity-60" />
-                            <p className="text-xs">Enter a location to preview map</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Accessibility Preview */}
-                  {pluginType === "accessibility" && (
-                    <div className="relative h-full min-h-[220px] flex items-center justify-center">
-                      <div
-                        className={`absolute ${
-                          a11yPosition.includes("left") ? "left-3" : "right-3"
-                        } ${a11yPosition.includes("top") ? "top-3" : "bottom-3"}`}
-                      >
-                        <div
-                          className="flex h-11 w-11 items-center justify-center rounded-full text-white shadow-lg cursor-pointer"
-                          style={{ background: a11yColor }}
-                        >
-                          <Accessibility className="h-6 w-6" />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Language Switcher Preview */}
-                  {pluginType === "language" && (
-                    <div className="relative h-full min-h-[220px] flex items-center justify-center">
-                      <div
-                        className={`absolute ${
-                          langPosition.includes("left") ? "left-3" : "right-3"
-                        } ${langPosition.includes("top") ? "top-3" : "bottom-3"}`}
-                      >
-                        <div className="flex items-center gap-2 rounded-full border border-zinc-700 bg-[#18181B] px-3.5 py-1.5 text-xs font-semibold text-white shadow-lg">
-                          <Globe className="h-4 w-4 text-blue-400" />
-                          <span>English</span>
-                          <span className="text-[10px] text-zinc-400">▼</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Announcement Bar Preview */}
-                  {(pluginType === "announcement" || pluginType === "popup") && (
-                    <div className="w-full flex-1 flex flex-col justify-start pt-2">
-                      <div
-                        className="w-full rounded-lg p-2.5 shadow-md flex items-center justify-between text-xs"
-                        style={{ background: announcementBg, color: announcementTextColor }}
-                      >
-                        <span className="truncate">{announcementText || "Announcement text here"}</span>
-                        {announcementBtnLabel && (
-                          <span className="rounded bg-[#FACC15] px-2 py-0.5 text-[10px] font-bold text-zinc-950 shrink-0 ml-2">
-                            {announcementBtnLabel}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Chatbot Preview */}
-                  {pluginType === "chatbot" && (
-                    <div className="relative h-full min-h-[240px] flex flex-col justify-end">
-                      <div
-                        className={`absolute ${
-                          botPosition.includes("left") ? "left-3" : "right-3"
-                        } bottom-3 flex flex-col items-end gap-2`}
-                      >
-                        <div className="rounded-2xl bg-[#1E1E22] text-white p-3 border border-zinc-700 shadow-xl max-w-[200px] text-left">
-                          <p className="text-[11px] font-bold text-blue-400">{botName}</p>
-                          <p className="text-[10px] text-zinc-200 mt-0.5">{botWelcome}</p>
-                        </div>
-                        <div
-                          className="flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg cursor-pointer"
-                          style={{ background: botColor }}
-                        >
-                          <Bot className="h-6 w-6" />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Custom HTML Preview */}
-                  {pluginType === "custom_html" && (
-                    <div className="w-full flex-1 flex flex-col justify-center">
-                      {customHtml.trim() ? (
-                        <div
-                          className="w-full rounded-lg overflow-hidden border border-zinc-800 bg-black/60 p-3 text-xs text-white"
-                          dangerouslySetInnerHTML={{ __html: customHtml }}
-                        />
-                      ) : (
-                        <div className="flex flex-col items-center justify-center text-center text-zinc-500 py-8">
-                          <Code2 className="h-8 w-8 text-zinc-600 mb-2 opacity-50" />
-                          <p className="text-xs">Paste HTML or embed code to preview</p>
-                        </div>
+                {/* Announcement Bar at Bottom */}
+                {pluginType === "announcement" && announcementPosition === "bottom_fixed" && (
+                  <div
+                    style={{
+                      backgroundColor: announcementBg,
+                      color: announcementTextColor,
+                    }}
+                    className="flex items-center justify-between gap-3 px-4 py-2.5 text-center shadow-md animate-in fade-in duration-200 mt-auto"
+                  >
+                    <div className="flex items-center justify-center gap-2 flex-1 min-w-0">
+                      {announcementIcon !== "none" && (
+                        <span style={{ color: announcementIconColor }} className="shrink-0">
+                          {renderTemplateIcon(announcementIcon, "h-4 w-4")}
+                        </span>
                       )}
+                      <span className="text-xs font-semibold truncate leading-tight">
+                        {announcementText}
+                      </span>
                     </div>
-                  )}
-                </div>
+
+                    {announcementBtnLabel && (
+                      <span
+                        style={{
+                          backgroundColor: announcementBtnBg,
+                          color: announcementBtnTextColor,
+                        }}
+                        className="shrink-0 rounded-md px-3 py-1 text-[11px] font-bold shadow-xs whitespace-nowrap"
+                      >
+                        {announcementBtnLabel}
+                      </span>
+                    )}
+
+                    {announcementShowClose && (
+                      <span className="shrink-0 text-xs opacity-70 hover:opacity-100 cursor-pointer ml-1">
+                        ✕
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
+        )}
 
-          {/* Modal Footer */}
-          <div className="mt-6 flex items-center justify-between border-t border-[#222225] pt-4">
+        {/* ── MODAL FOOTER BUTTONS ─────────────────────────────────────── */}
+        <div className="flex shrink-0 items-center justify-between border-t border-[#222225] bg-[#161619] px-6 py-4">
+          {/* Left Action Button */}
+          {step === 1 ? (
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-[#333338] bg-[#18181B] px-4 py-2 text-xs font-semibold text-zinc-300 transition hover:bg-zinc-800 hover:text-white"
+              className="rounded-xl border border-zinc-800 bg-[#1A1A1E] px-5 py-2 text-xs font-bold text-zinc-300 hover:text-white hover:bg-zinc-800 transition"
             >
               Cancel
             </button>
-
+          ) : (
             <button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex items-center gap-2 rounded-lg bg-[#FACC15] px-5 py-2 text-xs font-bold text-zinc-950 transition hover:bg-[#FDE047] shadow-sm active:scale-95 disabled:opacity-50"
+              type="button"
+              onClick={() => {
+                if (step === 2) {
+                  // If editing existing, Cancel/close or go to Step 1 if supported
+                  if (["youtube", "maps", "custom_html"].includes(pluginType)) {
+                    onClose();
+                  } else {
+                    setStep(1);
+                  }
+                } else if (step === 3) {
+                  setStep(2);
+                }
+              }}
+              className="flex items-center gap-1.5 rounded-xl border border-zinc-800 bg-[#1A1A1E] px-5 py-2 text-xs font-bold text-zinc-300 hover:text-white hover:bg-zinc-800 transition"
             >
-              <span>{embedToEdit ? "Save Changes" : ["youtube", "maps"].includes(pluginType) ? "Insert Section" : "Save Plugin"}</span>
-              <ArrowRight className="h-3.5 w-3.5 stroke-[2.5]" />
+              <ArrowLeft className="h-3.5 w-3.5" />
+              <span>Back</span>
             </button>
-          </div>
-        </form>
+          )}
+
+          {/* Right Action Button */}
+          {step === 1 ? (
+            <button
+              type="button"
+              onClick={() => setStep(2)}
+              className="flex items-center gap-1.5 rounded-xl bg-[#FACC15] px-6 py-2 text-xs font-bold text-zinc-950 transition hover:bg-[#FDE047] shadow-md shadow-[#FACC15]/20 active:scale-95"
+            >
+              <span>Next</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+          ) : step === 2 ? (
+            <button
+              type="button"
+              onClick={() => {
+                if (handleValidateStep2()) {
+                  setStep(3);
+                }
+              }}
+              className="flex items-center gap-1.5 rounded-xl bg-[#FACC15] px-6 py-2 text-xs font-bold text-zinc-950 transition hover:bg-[#FDE047] shadow-md shadow-[#FACC15]/20 active:scale-95"
+            >
+              <span>Next</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={isSubmitting}
+              className="flex items-center gap-1.5 rounded-xl bg-[#FACC15] px-6 py-2 text-xs font-bold text-zinc-950 transition hover:bg-[#FDE047] shadow-md shadow-[#FACC15]/20 active:scale-95 disabled:opacity-50"
+            >
+              {isSubmitting ? (
+                <span>Saving...</span>
+              ) : (
+                <>
+                  <Check className="h-3.5 w-3.5 stroke-[3]" />
+                  <span>Save Plugin</span>
+                </>
+              )}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

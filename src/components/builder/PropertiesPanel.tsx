@@ -13,7 +13,7 @@ import { useBuilder, pageOf } from "@/lib/builder/store";
 import { findSectionInProject } from "@/lib/builder/sharedChrome";
 import { nanoid } from "nanoid";
 import { Plus, Trash2, Copy, Eye, EyeOff, UploadCloud, Facebook, Twitter, Instagram, Linkedin, ChevronUp, ChevronDown, Save } from "lucide-react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import type { ContainerChildItem } from "@/components/builder/widgets/Container/ContainerTypes";
 import { useAuth } from "@/lib/auth";
@@ -573,8 +573,113 @@ export function PropertiesPanel() {
   const section = selectedId
     ? findSectionInProject(project, selectedId, pageOf(project))
     : null;
-  const widgetInstance = section?.widgetInstance;
-  
+
+  const resolvedWidgetInstance = useMemo(() => {
+    if (!section) return null;
+    const inst = section.widgetInstance;
+    if (inst) {
+      if (inst.type === "custom-html") {
+        const c = inst.content || {};
+        if (inst.variant === "youtube" || c.youtubeUrl || /wto-youtube/i.test(section.html)) {
+          return createWidgetInstance("youtube", {
+            id: inst.id || section.id,
+            content: {
+              videoUrl: (c.youtubeUrl as string) || (c.videoUrl as string) || "",
+              widthMode: (c.maxWidth as string) === "100%" ? "full" : "fixed",
+              maxWidth: (c.maxWidth as string) || "1000px",
+              aspectRatio: (c.aspectRatio as string) || "16/9",
+              borderRadius: 14,
+              paddingTop: 32,
+              paddingBottom: 32,
+              marginTop: 0,
+              marginBottom: 0,
+              alignment: "center",
+              autoplay: !!c.autoplay,
+              mute: !!c.mute,
+              showControls: c.showControls !== false,
+              loop: !!c.loop,
+            },
+          });
+        }
+        if (inst.variant === "vimeo" || c.vimeoUrl || /wto-vimeo/i.test(section.html)) {
+          return createWidgetInstance("vimeo", {
+            id: inst.id || section.id,
+            content: {
+              videoUrl: (c.vimeoUrl as string) || (c.videoUrl as string) || "",
+              widthMode: (c.maxWidth as string) === "100%" ? "full" : "custom",
+              maxWidth: (c.maxWidth as string) || "1000px",
+              aspectRatio: (c.aspectRatio as string) || "16/9",
+              borderRadius: 14,
+              paddingTop: 32,
+              paddingBottom: 32,
+              marginTop: 0,
+              marginBottom: 0,
+              alignment: "center",
+              autoplay: !!c.autoplay,
+              loop: !!c.loop,
+            },
+          });
+        }
+        if (inst.variant === "maps" || c.address || /wto-map/i.test(section.html)) {
+          return createWidgetInstance("map", {
+            id: inst.id || section.id,
+            content: {
+              embedCode: (c.embedCode as string) || "",
+              mapUrl: (c.mapUrl as string) || (c.address ? `https://maps.google.com/maps?q=${encodeURIComponent(String(c.address))}&output=embed` : ""),
+              height: (c.height as string) || "480px",
+              cardAddress: (c.address as string) || "",
+              showCard: true,
+              cardTitle: section.name || "Our Location",
+            },
+            layout: {
+              containerMode: (c.maxWidth as string) === "100%" ? "fluid" : "container",
+              maxWidth: (c.maxWidth as string) || "1200px",
+            },
+          });
+        }
+      }
+      return inst;
+    }
+
+    // If widgetInstance is not attached, infer from html / name / templateId
+    const lowerHtml = (section.html || "").toLowerCase();
+    const lowerName = (section.name || "").toLowerCase();
+    const tId = section.templateId || "";
+
+    if (lowerHtml.includes("wto-youtube") || lowerName.includes("youtube") || tId.includes("youtube")) {
+      const srcMatch = section.html.match(/src=["']([^"']*(?:youtube|youtu\.be)[^"']*)["']/i);
+      return createWidgetInstance("youtube", {
+        id: section.id,
+        content: { videoUrl: srcMatch ? srcMatch[1] : "" },
+      });
+    }
+    if (lowerHtml.includes("wto-vimeo") || lowerName.includes("vimeo") || tId.includes("vimeo")) {
+      const srcMatch = section.html.match(/src=["']([^"']*(?:vimeo)[^"']*)["']/i);
+      return createWidgetInstance("vimeo", {
+        id: section.id,
+        content: { videoUrl: srcMatch ? srcMatch[1] : "" },
+      });
+    }
+    if (lowerHtml.includes("wto-map") || lowerName.includes("google map") || tId.includes("map")) {
+      const srcMatch = section.html.match(/src=["']([^"']*(?:google\.com\/maps)[^"']*)["']/i);
+      return createWidgetInstance("map", {
+        id: section.id,
+        content: { mapUrl: srcMatch ? srcMatch[1] : "" },
+      });
+    }
+    if (lowerHtml.includes("wto-google-reviews") || lowerName.includes("google review")) {
+      return createWidgetInstance("google-reviews", { id: section.id });
+    }
+    if (lowerHtml.includes("wto-store-locator") || lowerName.includes("store locator")) {
+      return createWidgetInstance("store_locator", { id: section.id });
+    }
+    if (lowerHtml.includes("wto-custom-html") || lowerName.includes("custom html") || tId.includes("custom-html")) {
+      return createWidgetInstance("custom-html", { id: section.id, content: { html: section.html } });
+    }
+    return null;
+  }, [section]);
+
+  const widgetInstance = resolvedWidgetInstance;
   const WidgetPropertiesComponent = widgetInstance ? getWidgetPropertiesComponent(widgetInstance.type) : null;
   const selectedChildWidget = (() => {
     const selectedChildId = selectedElement?.childId || selectedElement?.elementKey;
@@ -691,6 +796,11 @@ export function PropertiesPanel() {
             value={widgetInstance}
             onClose={clearSelection}
             onChange={(nextValue) => {
+              if (section && (!section.widgetInstance || section.widgetInstance.type !== nextValue.type)) {
+                updateSection(section.id, {
+                  widgetInstance: nextValue as any,
+                });
+              }
               updateWidgetInstance(widgetInstance.id, nextValue);
               pushHistory();
             }}

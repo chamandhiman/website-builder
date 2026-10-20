@@ -2538,7 +2538,7 @@ export const WTO_STANDALONE_WIDGET_JS = `
       '.' + cls + ' .wto-lang-item { display: flex !important; align-items: center !important; justify-content: space-between !important; padding: 8px 12px !important; border-radius: 8px !important; color: ' + (app.dropdownTextColor || '#f4f4f5') + ' !important; cursor: pointer !important; font-size: ' + (app.fontSize || 13) + 'px !important; text-decoration: none !important; transition: background 0.15s ease !important; }',
       '.' + cls + ' .wto-lang-item:hover { background-color: ' + (app.hoverBackgroundColor || '#27272a') + ' !important; color: ' + (app.hoverTextColor || '#ffffff') + ' !important; }',
       '.' + cls + ' .wto-lang-item.wto-active { background-color: ' + (app.activeItemBackgroundColor || 'rgba(59,130,246,0.15)') + ' !important; color: ' + (app.activeItemTextColor || '#60a5fa') + ' !important; font-weight: 600 !important; }'
-    ].join('\n');
+    ].join('');
     document.head.appendChild(styleEl);
 
     var rootEl = document.createElement('div');

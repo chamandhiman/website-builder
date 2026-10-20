@@ -131,6 +131,33 @@ export function CustomHtmlProperties({ value, onChange, widgetId }: CustomHtmlPr
 
   const persistWithStatus = useBuilder((s) => s.persistWithStatus);
 
+  const updateContentConfig = (updates: Record<string, any>) => {
+    const updated: CustomHtmlWidgetData = {
+      ...resolvedWidget,
+      content: {
+        ...resolvedWidget.content,
+        ...updates,
+      },
+      ...updates,
+    };
+    if (onChange) {
+      onChange(updated);
+    }
+    if (widgetId) {
+      updateWidgetInstance(widgetId, updated as any);
+    }
+    if (selectedSectionId) {
+      updateSection(selectedSectionId, {
+        widgetInstance: {
+          ...updated,
+          id: selectedSectionId,
+          variant: "default",
+        } as any,
+      });
+      persistWithStatus();
+    }
+  };
+
   const handleSave = (newHtml: string) => {
     const updated: CustomHtmlWidgetData = {
       ...resolvedWidget,
@@ -354,6 +381,157 @@ export function CustomHtmlProperties({ value, onChange, widgetId }: CustomHtmlPr
               <span>Clear</span>
             </button>
           )}
+        </div>
+      </div>
+
+      {/* Sizing & Spacing */}
+      <div className="space-y-3 pt-3 border-t border-zinc-800">
+        <div className="flex items-center justify-between">
+          <label className="text-[11px] font-semibold text-zinc-300 uppercase tracking-wide">
+            Width
+          </label>
+          <div className="flex items-center bg-zinc-900 p-0.5 rounded-lg border border-zinc-800 text-[10px]">
+            <button
+              type="button"
+              onClick={() => updateContentConfig({ widthMode: "full" })}
+              className={`px-2 py-1 rounded font-medium ${
+                ((resolvedWidget.content as any)?.widthMode || "full") === "full"
+                  ? "bg-amber-400 text-zinc-950 font-bold"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              Full Width
+            </button>
+            <button
+              type="button"
+              onClick={() => updateContentConfig({ widthMode: "custom" })}
+              className={`px-2 py-1 rounded font-medium ${
+                (resolvedWidget.content as any)?.widthMode === "custom"
+                  ? "bg-amber-400 text-zinc-950 font-bold"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              Custom
+            </button>
+          </div>
+        </div>
+
+        {(resolvedWidget.content as any)?.widthMode === "custom" && (
+          <div className="space-y-1">
+            <div className="flex justify-between text-[11px] text-zinc-400">
+              <span>Max Width</span>
+              <span className="font-mono text-white">{(resolvedWidget.content as any)?.maxWidth || 1000}px</span>
+            </div>
+            <input
+              type="range"
+              min="320"
+              max="1440"
+              step="20"
+              value={(resolvedWidget.content as any)?.maxWidth || 1000}
+              onChange={(e) => updateContentConfig({ maxWidth: parseInt(e.target.value, 10) })}
+              className="w-full accent-amber-400 cursor-pointer"
+            />
+          </div>
+        )}
+
+        {/* Height Mode */}
+        <div className="flex items-center justify-between pt-1">
+          <label className="text-[11px] font-semibold text-zinc-300 uppercase tracking-wide">
+            Height
+          </label>
+          <div className="flex items-center bg-zinc-900 p-0.5 rounded-lg border border-zinc-800 text-[10px]">
+            <button
+              type="button"
+              onClick={() => updateContentConfig({ heightMode: "auto" })}
+              className={`px-2 py-1 rounded font-medium ${
+                ((resolvedWidget.content as any)?.heightMode || "auto") === "auto"
+                  ? "bg-amber-400 text-zinc-950 font-bold"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              Auto
+            </button>
+            <button
+              type="button"
+              onClick={() => updateContentConfig({ heightMode: "custom" })}
+              className={`px-2 py-1 rounded font-medium ${
+                (resolvedWidget.content as any)?.heightMode === "custom"
+                  ? "bg-amber-400 text-zinc-950 font-bold"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              Custom (px)
+            </button>
+          </div>
+        </div>
+
+        {(resolvedWidget.content as any)?.heightMode === "custom" && (
+          <div className="space-y-1">
+            <div className="flex justify-between text-[11px] text-zinc-400">
+              <span>Pixel Height</span>
+              <span className="font-mono text-white">{(resolvedWidget.content as any)?.customHeight || 450}px</span>
+            </div>
+            <input
+              type="range"
+              min="150"
+              max="1200"
+              step="25"
+              value={(resolvedWidget.content as any)?.customHeight || 450}
+              onChange={(e) => updateContentConfig({ customHeight: parseInt(e.target.value, 10) })}
+              className="w-full accent-amber-400 cursor-pointer"
+            />
+          </div>
+        )}
+
+        {/* Border Radius */}
+        <div className="space-y-1 pt-1">
+          <div className="flex justify-between text-[11px] text-zinc-400">
+            <span>Border Radius</span>
+            <span className="font-mono text-white">{(resolvedWidget.content as any)?.borderRadius || 0}px</span>
+          </div>
+          <input
+            type="range"
+            min="0"
+            max="40"
+            step="2"
+            value={(resolvedWidget.content as any)?.borderRadius || 0}
+            onChange={(e) => updateContentConfig({ borderRadius: parseInt(e.target.value, 10) })}
+            className="w-full accent-amber-400 cursor-pointer"
+          />
+        </div>
+
+        {/* Vertical Spacing */}
+        <div className="grid grid-cols-2 gap-3 pt-1">
+          <div className="space-y-1">
+            <div className="flex justify-between text-[11px] text-zinc-400">
+              <span>Padding Top</span>
+              <span className="font-mono text-white">{(resolvedWidget.content as any)?.paddingTop ?? 24}px</span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="120"
+              step="4"
+              value={(resolvedWidget.content as any)?.paddingTop ?? 24}
+              onChange={(e) => updateContentConfig({ paddingTop: parseInt(e.target.value, 10) })}
+              className="w-full accent-amber-400 cursor-pointer"
+            />
+          </div>
+          <div className="space-y-1">
+            <div className="flex justify-between text-[11px] text-zinc-400">
+              <span>Padding Bottom</span>
+              <span className="font-mono text-white">{(resolvedWidget.content as any)?.paddingBottom ?? 24}px</span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="120"
+              step="4"
+              value={(resolvedWidget.content as any)?.paddingBottom ?? 24}
+              onChange={(e) => updateContentConfig({ paddingBottom: parseInt(e.target.value, 10) })}
+              className="w-full accent-amber-400 cursor-pointer"
+            />
+          </div>
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useBuilder } from "@/lib/builder/store";
 import {
   Code2,
@@ -36,7 +36,6 @@ import { CustomEmbedModal } from "./CustomEmbedModal";
 import { nanoid } from "nanoid";
 
 export type RenderingCategory = "floating" | "section";
-type CategoryFilter = "floating" | "section";
 
 interface CatalogItem {
   id: string;
@@ -93,7 +92,7 @@ const PLUGIN_CATALOG: CatalogItem[] = [
     renderingCategory: "floating",
     description: "Improve accessibility for all visitors with contrast, font resizing and dyslexia tools.",
     pluginType: "accessibility",
-    iconBg: "bg-[#9333EA]",
+    iconBg: "bg-[#2563EB]",
     iconType: "accessibility",
   },
   {
@@ -140,76 +139,6 @@ const PLUGIN_CATALOG: CatalogItem[] = [
     iconBg: "bg-[#4F46E5]",
     iconType: "back_to_top",
   },
-
-  // ── PAGE SECTIONS ────────────────────────────────────────────────
-  {
-    id: "youtube",
-    name: "YouTube Video",
-    category: "media",
-    categoryLabel: "Media",
-    renderingCategory: "section",
-    description: "Embed responsive YouTube videos into any page location with custom aspect ratios.",
-    pluginType: "youtube",
-    iconBg: "bg-[#E02424]",
-    iconType: "youtube",
-  },
-  {
-    id: "maps",
-    name: "Google Maps",
-    category: "maps",
-    categoryLabel: "Maps",
-    renderingCategory: "section",
-    description: "Add an interactive Google Map section to display your physical business location.",
-    pluginType: "maps",
-    iconBg: "bg-[#34A853]",
-    iconType: "maps",
-  },
-  {
-    id: "vimeo",
-    name: "Vimeo Video",
-    category: "media",
-    categoryLabel: "Media",
-    renderingCategory: "section",
-    description: "Embed Vimeo video player section with custom aspect ratio and layout controls.",
-    pluginType: "vimeo",
-    iconBg: "bg-[#1AB7EA]",
-    iconType: "vimeo",
-  },
-  {
-    id: "reviews",
-    name: "Google Reviews",
-    category: "social",
-    categoryLabel: "Social",
-    renderingCategory: "section",
-    description: "Show real-time customer ratings and testimonials section on your page.",
-    pluginType: "reviews",
-    iconBg: "bg-[#EA4335]",
-    iconType: "reviews",
-  },
-  {
-    id: "store_locator",
-    name: "Store Locator",
-    category: "maps",
-    categoryLabel: "Maps",
-    renderingCategory: "section",
-    description: "Interactive store locations and directions map section.",
-    pluginType: "store_locator",
-    iconBg: "bg-[#059669]",
-    iconType: "store_locator",
-  },
-
-  // ── CUSTOM EMBED / HTML ──────────────────────────────────────────
-  {
-    id: "custom_html",
-    name: "Custom HTML / Embed",
-    category: "tools",
-    categoryLabel: "Tools",
-    renderingCategory: "floating",
-    description: "Add custom HTML, iframe embeds, analytics or third-party script tags.",
-    pluginType: "custom_html",
-    iconBg: "bg-[#27272A]",
-    iconType: "custom_html",
-  },
 ];
 
 export function CustomEmbedsPanel() {
@@ -227,12 +156,19 @@ export function CustomEmbedsPanel() {
 
   // Search
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (searchOpen) {
+      searchInputRef.current?.focus();
+    }
+  }, [searchOpen]);
 
   // Filters for My Plugins
   const [placementFilter, setPlacementFilter] = useState<"all" | EmbedPlacementScope>("all");
 
-  // Filters for Add New
-  const [catalogCategory, setCatalogCategory] = useState<CategoryFilter>("floating");
+  // Filters for Add New (floating-only catalog now)
 
   // Modal State
   const [modalOpen, setModalOpen] = useState(false);
@@ -259,13 +195,8 @@ export function CustomEmbedsPanel() {
     };
   }, [allEmbeds]);
 
-  // Counts for Add New catalog filter chips (two tabs only: Floating and Sections)
-  const catalogCounts = useMemo(() => {
-    return {
-      floating: PLUGIN_CATALOG.filter((p) => p.renderingCategory === "floating").length,
-      section: PLUGIN_CATALOG.filter((p) => p.renderingCategory === "section").length,
-    };
-  }, []);
+  // All catalog items are now floating-only
+  const catalogCount = PLUGIN_CATALOG.length;
 
   // Filtered list of My Plugins
   const filteredMyPlugins = useMemo(() => {
@@ -285,19 +216,18 @@ export function CustomEmbedsPanel() {
     });
   }, [allEmbeds, placementFilter, searchQuery]);
 
-  // Filtered list of Add New catalog
+  // Filtered list of Add New catalog (all floating)
   const filteredCatalog = useMemo(() => {
-    const list = PLUGIN_CATALOG.filter((p) => p.renderingCategory === catalogCategory);
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return list;
-    return list.filter((item) => {
+    if (!q) return PLUGIN_CATALOG;
+    return PLUGIN_CATALOG.filter((item) => {
       return (
         item.name.toLowerCase().includes(q) ||
         item.description.toLowerCase().includes(q) ||
         item.categoryLabel.toLowerCase().includes(q)
       );
     });
-  }, [catalogCategory, searchQuery]);
+  }, [searchQuery]);
 
   // Listen for external open event
   useEffect(() => {
@@ -561,7 +491,7 @@ export function CustomEmbedsPanel() {
         );
       case "accessibility":
         return (
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#9333EA] text-white shadow-sm">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-sm">
             <Accessibility className="h-6 w-6" />
           </div>
         );
@@ -643,65 +573,102 @@ export function CustomEmbedsPanel() {
 
   return (
     <div className="flex h-full flex-col overflow-hidden bg-[#121214] text-[#F5F5F5]">
-      {/* ── HEADER (Plugins [N] + 2 Segmented Tabs) ───────────────────────── */}
+      {/* ── HEADER (Tabs + Search & Filters) ───────────────────────── */}
       <div className="shrink-0 p-3.5 space-y-3 border-b border-[#222225] bg-[#141416]">
-        {/* Title + Pill Badge */}
+        {/* Top Controls: Active Plugins | Add New + Search Icon Toggle */}
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-bold tracking-tight text-white">Plugins</h2>
-          <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#FACC15] px-1.5 text-xs font-bold text-zinc-950 shadow-xs">
-            {allEmbeds.length}
-          </span>
-        </div>
-
-        {/* 2 Segmented Tabs: My Plugins | Add New */}
-        <div className="grid grid-cols-2 p-1 rounded-xl bg-[#1A1A1E] border border-zinc-800/80">
-          <button
-            type="button"
-            onClick={() => setInternalTab("my_plugins")}
-            className={`py-2 text-xs font-bold rounded-lg transition-all ${
-              internalTab === "my_plugins"
-                ? "bg-[#FACC15] text-zinc-950 shadow-sm"
-                : "bg-transparent text-zinc-400 hover:text-white"
-            }`}
-          >
-            My Plugins
-          </button>
-          <button
-            type="button"
-            onClick={() => setInternalTab("add_new")}
-            className={`py-2 text-xs font-bold rounded-lg transition-all ${
-              internalTab === "add_new"
-                ? "bg-[#FACC15] text-zinc-950 shadow-sm"
-                : "bg-transparent text-zinc-400 hover:text-white"
-            }`}
-          >
-            Add New
-          </button>
-        </div>
-
-        {/* Search Field */}
-        <div className="relative flex items-center">
-          <Search className="pointer-events-none absolute left-3.5 h-3.5 w-3.5 text-zinc-500" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search plugins.."
-            className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] pl-9 pr-8 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
-          />
-          {searchQuery && (
+          <div className="grid flex-1 grid-cols-2 p-1 rounded-xl bg-[#1A1A1E] border border-zinc-800/80">
             <button
               type="button"
-              onClick={() => setSearchQuery("")}
-              className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-full text-zinc-500 hover:text-white"
+              onClick={() => setInternalTab("my_plugins")}
+              className={`py-2 text-xs font-bold rounded-lg transition-all ${
+                internalTab === "my_plugins"
+                  ? "bg-[#FACC15] text-zinc-950 shadow-sm"
+                  : "bg-transparent text-zinc-400 hover:text-white"
+              }`}
             >
-              <X className="h-3 w-3" />
+              Active Plugins
             </button>
-          )}
+            <button
+              type="button"
+              onClick={() => setInternalTab("add_new")}
+              className={`py-2 text-xs font-bold rounded-lg transition-all ${
+                internalTab === "add_new"
+                  ? "bg-[#FACC15] text-zinc-950 shadow-sm"
+                  : "bg-transparent text-zinc-400 hover:text-white"
+              }`}
+            >
+              Add New
+            </button>
+          </div>
+
+          {/* Search Icon next to Add Plugin */}
+          <button
+            type="button"
+            onClick={() => {
+              setSearchOpen((prev) => {
+                const next = !prev;
+                if (!next) setSearchQuery("");
+                return next;
+              });
+            }}
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition-all ${
+              searchOpen || searchQuery
+                ? "bg-[#FACC15] text-zinc-950 border-[#FACC15] shadow-xs"
+                : "bg-[#1A1A1E] text-zinc-400 hover:text-white border-zinc-800/80 hover:border-zinc-700"
+            }`}
+            title={searchOpen ? "Close search" : "Search plugins"}
+            aria-label="Search plugins"
+          >
+            <Search className="h-4 w-4" />
+          </button>
         </div>
 
-        {/* Filter Pills */}
-        {internalTab === "my_plugins" ? (
+        {/* Expandable Full Search Field */}
+        {searchOpen && (
+          <div className="relative flex items-center animate-in fade-in slide-in-from-top-1 duration-150">
+            <Search className="pointer-events-none absolute left-3.5 h-3.5 w-3.5 text-zinc-500" />
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") {
+                  setSearchOpen(false);
+                  setSearchQuery("");
+                }
+              }}
+              placeholder={internalTab === "my_plugins" ? "Search active plugins..." : "Search plugins catalog..."}
+              className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] pl-9 pr-8 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
+            />
+            {searchQuery ? (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-full text-zinc-500 hover:text-white"
+                title="Clear search text"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchOpen(false);
+                  setSearchQuery("");
+                }}
+                className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-full text-zinc-500 hover:text-white"
+                title="Close search"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Filter Pills — Active Plugins only */}
+        {internalTab === "my_plugins" && (
           <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none">
             <button
               type="button"
@@ -751,32 +718,9 @@ export function CustomEmbedsPanel() {
               Page ({filterCounts.page_specific})
             </button>
           </div>
-        ) : (
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none">
-            <button
-              type="button"
-              onClick={() => setCatalogCategory("floating")}
-              className={`px-3.5 py-1 rounded-full text-xs font-bold transition shrink-0 ${
-                catalogCategory === "floating"
-                  ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                  : "bg-[#18181C] text-emerald-400 hover:text-white border border-emerald-900/50 font-semibold"
-              }`}
-            >
-              Floating ({catalogCounts.floating})
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setCatalogCategory("section")}
-              className={`px-3.5 py-1 rounded-full text-xs font-bold transition shrink-0 ${
-                catalogCategory === "section"
-                  ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                  : "bg-[#18181C] text-amber-300 hover:text-white border border-amber-900/50 font-semibold"
-              }`}
-            >
-              Sections ({catalogCounts.section})
-            </button>
-          </div>
+        )}
+        {internalTab === "add_new" && (
+          <p className="text-[11px] text-zinc-500">{catalogCount} floating plugins available</p>
         )}
       </div>
 

@@ -81,6 +81,27 @@ export function getCustomHtmlRawContent(data: any): string {
   return "";
 }
 
+export function getCustomHtmlConfig(data: any): {
+  widthMode: "full" | "custom";
+  maxWidth: number;
+  heightMode: "auto" | "custom";
+  customHeight: number;
+  borderRadius: number;
+  paddingTop: number;
+  paddingBottom: number;
+} {
+  const c = data?.content || data?.data?.content || data || {};
+  return {
+    widthMode: c.widthMode === "custom" ? "custom" : "full",
+    maxWidth: typeof c.maxWidth === "number" ? c.maxWidth : (parseInt(c.maxWidth, 10) || 1000),
+    heightMode: c.heightMode === "custom" ? "custom" : "auto",
+    customHeight: typeof c.customHeight === "number" ? c.customHeight : (parseInt(c.customHeight, 10) || 450),
+    borderRadius: typeof c.borderRadius === "number" ? c.borderRadius : (parseInt(c.borderRadius, 10) || 0),
+    paddingTop: typeof c.paddingTop === "number" ? c.paddingTop : (parseInt(c.paddingTop, 10) || 24),
+    paddingBottom: typeof c.paddingBottom === "number" ? c.paddingBottom : (parseInt(c.paddingBottom, 10) || 24),
+  };
+}
+
 export function buildCustomHtmlBootstrapMarkup(
   data: WidgetData,
   context?: WidgetExportContext,
@@ -104,6 +125,16 @@ export function buildCustomHtmlBootstrapMarkup(
       </div>
     `.trim();
   }
+
+  const cfg = getCustomHtmlConfig(data);
+  const maxWidthStyle = cfg.widthMode === "custom" ? `max-width:${cfg.maxWidth}px;margin-left:auto;margin-right:auto;` : `width:100%;`;
+  const heightStyle = cfg.heightMode === "custom" ? `height:${cfg.customHeight}px;overflow:auto;` : ``;
+  const radiusStyle = cfg.borderRadius > 0 ? `border-radius:${cfg.borderRadius}px;overflow:hidden;` : ``;
+  const paddingStyle = `padding-top:${cfg.paddingTop}px;padding-bottom:${cfg.paddingBottom}px;`;
+
+  const wrapResult = (inner: string) => {
+    return `<div class="wto-custom-html-outer" style="${maxWidthStyle}${paddingStyle}${heightStyle}${radiusStyle}"><div class="wto-custom-html-wrapper w-100 overflow-visible" style="display:block;width:100%;position:relative;">${inner}</div></div>`;
+  };
 
   // 2. Check if this contains a WebToolOcean dynamic widget embed
   const wtoWidgetMatch = rawHtml.match(/data-wto-widget=(?:["']|&quot;)?([^"'\s>&;]+)(?:["']|&quot;)?/i);
@@ -181,7 +212,7 @@ export function buildCustomHtmlBootstrapMarkup(
           const containerStyle = isPopupModal
             ? "display:block;width:100%;"
             : "display:block;width:100%;position:relative;";
-          return `${styleTag}<div data-wto-widget="${widgetId}" class="wto-embedded-widget-container w-100 overflow-visible" style="${containerStyle}">${renderedHtml}</div>`;
+          return wrapResult(`${styleTag}<div data-wto-widget="${widgetId}" class="wto-embedded-widget-container w-100 overflow-visible" style="${containerStyle}">${renderedHtml}</div>`);
         }
       }
     } catch (e) {
@@ -193,7 +224,7 @@ export function buildCustomHtmlBootstrapMarkup(
       const cleanHtml = context?.editorMode
         ? rawHtml.replace(/<script[^>]*src=["']https:\/\/widgets\.webtoolocean\.com\/widget\.js["'][^>]*>\s*<\/script>/gi, "")
         : rawHtml;
-      return `<div class="wto-custom-html-wrapper w-100 overflow-visible" style="display:block;width:100%;position:relative;">${cleanHtml}</div>`;
+      return wrapResult(`<div class="wto-custom-html-wrapper w-100 overflow-visible" style="display:block;width:100%;position:relative;">${cleanHtml}</div>`);
     }
 
     // If not found in local storage, in preview or live mode preserve the embed markup and ensure runtime script is available
@@ -202,7 +233,7 @@ export function buildCustomHtmlBootstrapMarkup(
       const scriptTag = hasScriptTag
         ? ""
         : `\n<script src="https://widgets.webtoolocean.com/widget.js" async></script>`;
-      return `<div data-wto-widget="${widgetId}" class="wto-embedded-widget-container w-100 overflow-visible" style="display:block;width:100%;">${rawHtml}${scriptTag}</div>`;
+      return wrapResult(`<div data-wto-widget="${widgetId}" class="wto-embedded-widget-container w-100 overflow-visible" style="display:block;width:100%;">${rawHtml}${scriptTag}</div>`);
     }
     return `
       <div data-wto-widget="${widgetId}" class="wto-custom-html-pending"
@@ -214,6 +245,5 @@ export function buildCustomHtmlBootstrapMarkup(
   }
 
   // 3. For custom HTML, iframes, and third-party embeds (YouTube, Calendly, forms, etc.):
-  // ALWAYS return the content so it reliably displays on preview, demo, and published websites!
-  return `<div class="wto-custom-html-wrapper w-100 overflow-visible" style="display:block;width:100%;position:relative;">${rawHtml}</div>`;
+  return wrapResult(rawHtml);
 }

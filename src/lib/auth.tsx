@@ -212,9 +212,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+const defaultAuthValue: AuthContextValue = {
+  user: null,
+  signingIn: false,
+  authReady: false,
+  login: async () => {},
+  register: async () => {},
+  loginWithGoogle: async () => {},
+  logout: async () => {},
+  requireSuperAdmin: () => {},
+};
+
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
+    if (typeof window === "undefined") {
+      return defaultAuthValue;
+    }
     throw new Error("useAuth must be used within an AuthProvider.");
   }
 

@@ -22,6 +22,11 @@ const VARIANT_OPTIONS = [
   { label: "Rounded Boxed", value: "Rounded Boxed" },
 ];
 
+const CONTAINER_MODE_OPTIONS = [
+  { label: "Full Width (100%)", value: "fluid" },
+  { label: "Boxed Container", value: "container" },
+];
+
 const FILTER_OPTIONS = [
   { label: "Standard / Default", value: "none" },
   { label: "Modern Grayscale", value: "grayscale" },
@@ -115,6 +120,22 @@ export function MapProperties({
       {/* ── Map Dimensions & Style ── */}
       <div className={`${sectionClass} px-3`}>
         <div className={labelClass}>Map Display</div>
+        <SelectControl
+          label="Container Width"
+          value={d.layout.containerMode || (d.variant === "Rounded Boxed" || d.variant === "Split with Card" ? "container" : "fluid")}
+          options={CONTAINER_MODE_OPTIONS}
+          onChange={(v) => setLayout({ containerMode: v as MapWidgetData["layout"]["containerMode"] })}
+        />
+        {(d.layout.containerMode === "container" || (!d.layout.containerMode && (d.variant === "Rounded Boxed" || d.variant === "Split with Card"))) && (
+          <NumberControl
+            label="Max Width (px)"
+            value={toPx(d.layout.maxWidth, 1200)}
+            onChange={(v) => setLayout({ maxWidth: `${v}px` })}
+            min={480}
+            max={1600}
+            step={20}
+          />
+        )}
         <NumberControl
           label="Map Height (px)"
           value={toPx(d.content.height, 480)}
@@ -127,6 +148,22 @@ export function MapProperties({
           value={String(d.style.filter ?? "none")}
           options={FILTER_OPTIONS}
           onChange={(v) => setStyle({ filter: v as MapWidgetData["style"]["filter"] })}
+        />
+        <NumberControl
+          label="Top Spacing / Padding (px)"
+          value={toPx(d.layout.paddingTop, 0)}
+          onChange={(v) => setLayout({ paddingTop: `${v}px` })}
+          min={0}
+          max={120}
+          step={4}
+        />
+        <NumberControl
+          label="Bottom Spacing / Padding (px)"
+          value={toPx(d.layout.paddingBottom, 0)}
+          onChange={(v) => setLayout({ paddingBottom: `${v}px` })}
+          min={0}
+          max={120}
+          step={4}
         />
       </div>
 

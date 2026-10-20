@@ -2,6 +2,13 @@ import type { WidgetData } from "../widgetRegistry";
 
 export interface CustomHtmlContent extends Record<string, unknown> {
   html: string;
+  widthMode?: "full" | "custom";
+  maxWidth?: string;
+  heightMode?: "auto" | "custom";
+  customHeight?: string;
+  borderRadius?: number;
+  paddingTop?: number;
+  paddingBottom?: number;
 }
 
 export interface CustomHtmlWidgetData extends WidgetData {
@@ -16,6 +23,13 @@ export const defaultCustomHtmlWidgetData: CustomHtmlWidgetData = {
   variant: "default",
   content: {
     html: "",
+    widthMode: "full",
+    maxWidth: "1000px",
+    heightMode: "auto",
+    customHeight: "400px",
+    borderRadius: 0,
+    paddingTop: 24,
+    paddingBottom: 24,
   },
   style: {},
   layout: {},

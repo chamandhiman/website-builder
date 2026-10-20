@@ -18,7 +18,9 @@ export type FloatingPosition =
   | "top_left"
   | "top_center"
   | "top_fixed"
-  | "bottom_fixed";
+  | "bottom_fixed"
+  | "middle_right"
+  | "middle_left";
 
 export interface FloatingWidgetRecord {
   id: string;
@@ -121,13 +123,16 @@ export function createDefaultFloatingWidget(
         pageTargeting: "all",
         config: {
           phoneNumber: "",
-          agentName: "Support Team",
-          greetingText: "Hi there! How can we help you today?",
+          countryCode: "+91",
+          rawPhone: "",
+          agentName: "Customer Support",
+          prefilledMessage: "Hello! I have a question about your services.",
+          buttonStyle: "whatsapp_standard",
           buttonColor: "#25D366",
           buttonLabel: "Chat with us",
-          prefilledMessage: "Hello! I am interested in your services.",
-          showWorkingHoursNotice: false,
-          workingHoursNotice: "Available Mon-Fri 9am-6pm",
+          labelPosition: "hover",
+          showTooltip: true,
+          tooltipText: "Chat with us 👋",
         },
         createdAt: now,
         updatedAt: now,
@@ -139,22 +144,26 @@ export function createDefaultFloatingWidget(
         type,
         name: name || "Accessibility Toolbar",
         enabled: true,
-        position: "bottom_left",
+        position: "bottom_right",
         offsetX: 20,
         offsetY: 20,
         showOnDesktop: true,
         showOnMobile: true,
         pageTargeting: "all",
         config: {
-          accentColor: "#3B82F6",
+          toolbarStyle: "circle",
+          toolbarColor: "#2563EB",
+          accentColor: "#2563EB",
           buttonSize: 52,
-          displayStyle: "modern_floating",
+          showByDefault: false,
+          initialOpen: false,
           features: {
             textResize: true,
             highContrast: true,
             readableFont: true,
-            highlightLinks: true,
-            readingGuide: true,
+            keyboardNav: true,
+            stopAnimations: true,
+            reset: true,
           },
         },
         createdAt: now,
@@ -254,6 +263,35 @@ export function createDefaultFloatingWidget(
           botName: "AI Assistant",
           welcomeMessage: "Hi there! How can I help you today?",
           primaryColor: "#2563EB",
+        },
+        createdAt: now,
+        updatedAt: now,
+      };
+
+    case "announcement_popup":
+      return {
+        id,
+        type,
+        name: name || "Announcement Bar",
+        enabled: true,
+        position: "top_fixed",
+        offsetX: 0,
+        offsetY: 0,
+        showOnDesktop: true,
+        showOnMobile: true,
+        pageTargeting: "all",
+        config: {
+          template: "classic",
+          text: "2027 Winter and Spring Schedules are now open for enrollment!",
+          icon: "megaphone",
+          backgroundColor: "#4A1525",
+          textColor: "#FFFFFF",
+          btnBgColor: "#FACC15",
+          btnTextColor: "#18181B",
+          showCloseButton: true,
+          allowDismiss: true,
+          animation: "slide_down",
+          layout: "banner",
         },
         createdAt: now,
         updatedAt: now,

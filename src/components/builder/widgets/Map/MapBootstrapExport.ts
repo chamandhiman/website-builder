@@ -211,7 +211,7 @@ export function buildMapBootstrapMarkup(data: WidgetData, context?: WidgetExport
   const filterStyle = getFilterStyle(s.filter);
   const iframeId = `wto-map-iframe-${d.id}`;
 
-  const isFluid = l.containerMode === "fluid" || variant === "Full Width Clean" || variant === "Dark Mode Map";
+  const isFluid = l.containerMode ? l.containerMode === "fluid" : (variant === "Full Width Clean" || variant === "Dark Mode Map");
   const maxWidth = isFluid ? "100%" : (l.maxWidth || "1200px");
   const containerPadding = isFluid ? "0" : (l.paddingX || "24px");
   const sectionBorderRadius = variant === "Rounded Boxed" ? (s.borderRadius || "18px") : (s.borderRadius || "0px");
@@ -246,7 +246,7 @@ export function buildMapBootstrapMarkup(data: WidgetData, context?: WidgetExport
             src="${escapeAttr(mapSrc)}"
             width="100%"
             height="100%"
-            style="border: 0; width: 100%; height: 100%; display: block; ${filterStyle}"
+            style="border: 0; width: 100%; height: 100%; display: block; ${filterStyle} ${isEditor ? "pointer-events: none;" : ""}"
             allowfullscreen=""
             loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"

@@ -26,7 +26,7 @@ import {
 } from "@/lib/widget-runtime/wtoWidgetRuntime";
 import { Code2, Sparkles, MessageCircle, Accessibility } from "lucide-react";
 import { useBuilder } from "@/lib/builder/store";
-import { getCustomHtmlRawContent } from "./CustomHtmlBootstrapExport";
+import { getCustomHtmlRawContent, getCustomHtmlConfig } from "./CustomHtmlBootstrapExport";
 
 export function CustomHtml({ data = defaultCustomHtmlWidgetData }: { data: WidgetData }) {
   const d = isCustomHtmlWidgetData(data) ? data : defaultCustomHtmlWidgetData;
@@ -343,6 +343,8 @@ export function CustomHtml({ data = defaultCustomHtmlWidgetData }: { data: Widge
   if (d.advanced?.visibility === false) return null;
   if (detectedWidgetId && isWidgetDisabled) return null;
 
+  const cfg = getCustomHtmlConfig(d);
+
   return (
     <BaseWidget
       data={d}
@@ -354,7 +356,20 @@ export function CustomHtml({ data = defaultCustomHtmlWidgetData }: { data: Widge
       disableSectionWidthStyle={true}
       as="div"
     >
-      <div ref={containerRef} className="w-full">
+      <div
+        className="w-full transition-all"
+        style={{
+          maxWidth: cfg.widthMode === "custom" ? `${cfg.maxWidth}px` : "100%",
+          marginLeft: "auto",
+          marginRight: "auto",
+          paddingTop: `${cfg.paddingTop}px`,
+          paddingBottom: `${cfg.paddingBottom}px`,
+          height: cfg.heightMode === "custom" ? `${cfg.customHeight}px` : "auto",
+          borderRadius: cfg.borderRadius > 0 ? `${cfg.borderRadius}px` : undefined,
+          overflow: cfg.heightMode === "custom" || cfg.borderRadius > 0 ? "hidden" : "visible",
+        }}
+      >
+        <div ref={containerRef} className="w-full h-full">
         {!rawHtml ? (
           <div
             onClick={() => useBuilder.getState().setRightPanelTab("embeds")}
@@ -412,6 +427,7 @@ export function CustomHtml({ data = defaultCustomHtmlWidgetData }: { data: Widge
             />
           </div>
         )}
+        </div>
       </div>
     </BaseWidget>
   );

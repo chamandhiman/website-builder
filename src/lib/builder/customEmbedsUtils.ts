@@ -82,6 +82,10 @@ export function formatFloatingPositionLabel(pos?: string): string {
       return "Top Left";
     case "top_center":
       return "Top Center";
+    case "middle_right":
+      return "Middle Right";
+    case "middle_left":
+      return "Middle Left";
     case "top_fixed":
       return "Top Fixed";
     case "bottom_fixed":
@@ -139,87 +143,10 @@ export function getProjectCustomEmbeds(project: Project | null | undefined): Cus
   if (!project) return [];
   const items: CustomEmbedItem[] = [];
 
-  // 1. Shared Global Header
-  if (project.sharedHeader && isCustomHtmlSection(project.sharedHeader)) {
-    const sec = project.sharedHeader;
-    const html = getSectionEmbedHtml(sec);
-    const pType = resolvePluginTypeFromSection(sec.name || "", html);
-    items.push({
-      id: sec.id,
-      sectionId: sec.id,
-      name: sec.name || (pType === "youtube" ? "YouTube Video" : pType === "maps" ? "Google Maps" : "Custom HTML (Header)"),
-      pluginType: pType,
-      html,
-      hidden: Boolean(sec.hidden),
-      displayType: "site_wide",
-      placementScope: "site_wide",
-      placementLabel: "Global Header",
-      pageId: "shared-header",
-      pageName: "Global Header",
-      pageSlug: "global",
-      isShared: true,
-      sharedType: "header",
-      widgetInstanceId: sec.widgetInstance?.id,
-      detectedWidgetId: detectWtoWidgetId(html),
-      snippetType: detectSnippetType(html),
-    });
-  }
+  // Page sections (YouTube, Vimeo, Google Map, Reviews, Store Locator, Custom HTML)
+  // are normal draggable sections and belong strictly to the Sections system, not My Plugins.
 
-  // 2. Page Sections (Inline Embeds)
-  (project.pages || []).forEach((page: Page) => {
-    (page.sections || []).forEach((sec: PageSection) => {
-      if (isCustomHtmlSection(sec)) {
-        const html = getSectionEmbedHtml(sec);
-        const pType = resolvePluginTypeFromSection(sec.name || "", html);
-        items.push({
-          id: sec.id,
-          sectionId: sec.id,
-          name: sec.name || (pType === "youtube" ? "YouTube Video" : pType === "maps" ? "Google Maps" : "Custom HTML / Embed"),
-          pluginType: pType,
-          html,
-          hidden: Boolean(sec.hidden),
-          displayType: "inline",
-          placementScope: "page_specific",
-          placementLabel: page.name || page.slug || "Page",
-          pageId: page.id,
-          pageName: page.name || page.slug || "Untitled Page",
-          pageSlug: page.slug || "page",
-          isShared: false,
-          widgetInstanceId: sec.widgetInstance?.id,
-          detectedWidgetId: detectWtoWidgetId(html),
-          snippetType: detectSnippetType(html),
-        });
-      }
-    });
-  });
-
-  // 3. Shared Global Footer
-  if (project.sharedFooter && isCustomHtmlSection(project.sharedFooter)) {
-    const sec = project.sharedFooter;
-    const html = getSectionEmbedHtml(sec);
-    const pType = resolvePluginTypeFromSection(sec.name || "", html);
-    items.push({
-      id: sec.id,
-      sectionId: sec.id,
-      name: sec.name || (pType === "youtube" ? "YouTube Video" : pType === "maps" ? "Google Maps" : "Custom HTML (Footer)"),
-      pluginType: pType,
-      html,
-      hidden: Boolean(sec.hidden),
-      displayType: "site_wide",
-      placementScope: "site_wide",
-      placementLabel: "Global Footer",
-      pageId: "shared-footer",
-      pageName: "Global Footer",
-      pageSlug: "global",
-      isShared: true,
-      sharedType: "footer",
-      widgetInstanceId: sec.widgetInstance?.id,
-      detectedWidgetId: detectWtoWidgetId(html),
-      snippetType: detectSnippetType(html),
-    });
-  }
-
-  // 4. Floating Widgets (All active / configured floating widgets)
+  // Floating Widgets (All active / configured floating widgets)
   (project.floatingWidgets || []).forEach((fw: FloatingWidgetRecord) => {
     let defaultName = "Floating Widget";
     let pType = fw.type as string;
@@ -368,20 +295,28 @@ export function createYouTubeSection({
 
   return {
     id: sectionId,
-    templateId: "custom-html-v1",
+    templateId: "youtube-v1",
     name: name?.trim() || "YouTube Video",
     html,
-    widgetInstance: {
+    widgetInstance: createWidgetInstance("youtube", {
       id: sectionId,
-      type: "custom-html",
-      variant: "youtube",
-      content: { html, youtubeUrl: url, aspectRatio, maxWidth, autoplay, mute, showControls, loop },
-      style: {},
-      layout: {},
-      responsive: {},
-      animation: {},
-      advanced: {},
-    } as any,
+      content: {
+        videoUrl: url,
+        widthMode: maxWidth === "100%" ? "full" : "fixed",
+        maxWidth: maxWidth || "1000px",
+        aspectRatio: aspectRatio || "16/9",
+        borderRadius: 14,
+        paddingTop: 32,
+        paddingBottom: 32,
+        marginTop: 0,
+        marginBottom: 0,
+        alignment: "center",
+        autoplay: !!autoplay,
+        mute: !!mute,
+        showControls: showControls !== false,
+        loop: !!loop,
+      },
+    }),
     animation: { type: "fade-up", duration: 700, delay: 0 },
   };
 }
@@ -417,20 +352,24 @@ export function createMapSection({
 
   return {
     id: sectionId,
-    templateId: "custom-html-v1",
-    name: name?.trim() || "Google Maps",
+    templateId: "map-v1",
+    name: name?.trim() || "Google Map",
     html,
-    widgetInstance: {
+    widgetInstance: createWidgetInstance("map", {
       id: sectionId,
-      type: "custom-html",
-      variant: "maps",
-      content: { html, address, height, maxWidth, zoom },
-      style: {},
-      layout: {},
-      responsive: {},
-      animation: {},
-      advanced: {},
-    } as any,
+      content: {
+        embedCode: "",
+        mapUrl: mapEmbedUrl,
+        height: height || "380px",
+        cardAddress: address,
+        showCard: true,
+        cardTitle: name || "Our Location",
+      },
+      layout: {
+        containerMode: maxWidth === "100%" ? "fluid" : "container",
+        maxWidth: maxWidth || "1200px",
+      },
+    }),
     animation: { type: "fade-up", duration: 700, delay: 0 },
   };
 }

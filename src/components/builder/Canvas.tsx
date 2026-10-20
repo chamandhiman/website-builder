@@ -931,10 +931,31 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
         }
         const isSharedChrome = sid === SHARED_HEADER_SECTION_ID || sid === SHARED_FOOTER_SECTION_ID;
         if (!isSharedChrome) {
-          if ((act === "up" || act === "move-up") && fromIdx > 0) state.moveSection(fromIdx, fromIdx - 1);
-          if ((act === "down" || act === "move-down") && fromIdx >= 0 && fromIdx < secs.length - 1) state.moveSection(fromIdx, fromIdx + 1);
-          if (act === "top" && fromIdx > 0) state.moveSection(fromIdx, 0);
-          if (act === "bottom" && fromIdx >= 0) state.moveSection(fromIdx, secs.length - 1);
+          const hasHeader = secs.length > 0 && (secs[0].id === SHARED_HEADER_SECTION_ID || secs[0].shared === "header");
+          const hasFooter = secs.length > 0 && (secs[secs.length - 1].id === SHARED_FOOTER_SECTION_ID || secs[secs.length - 1].shared === "footer");
+          const minIdx = hasHeader ? 1 : 0;
+          const maxIdx = hasFooter ? secs.length - 2 : secs.length - 1;
+
+          if ((act === "up" || act === "move-up") && fromIdx > minIdx) {
+            state.moveSection(fromIdx, fromIdx - 1);
+            state.selectSection(sid);
+            scrollSectionIntoView(sid);
+          }
+          if ((act === "down" || act === "move-down") && fromIdx >= 0 && fromIdx < maxIdx) {
+            state.moveSection(fromIdx, fromIdx + 1);
+            state.selectSection(sid);
+            scrollSectionIntoView(sid);
+          }
+          if (act === "top" && fromIdx > minIdx) {
+            state.moveSection(fromIdx, minIdx);
+            state.selectSection(sid);
+            scrollSectionIntoView(sid);
+          }
+          if (act === "bottom" && fromIdx >= 0 && fromIdx < maxIdx) {
+            state.moveSection(fromIdx, maxIdx);
+            state.selectSection(sid);
+            scrollSectionIntoView(sid);
+          }
           if (act === "dup") state.duplicateSection(sid);
           if (act === "del") state.removeSection(sid);
         }
@@ -1010,6 +1031,7 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
         if (fromIdx < 0 || toIdx < 0) return;
         const target = before ? toIdx : toIdx + 1;
         state.moveSection(fromIdx, target > fromIdx ? target - 1 : target);
+        state.selectSection(fromId);
       }
       if (data.type === 'placeholder-update') {
         const idx = data.payload?.insertIndex;

@@ -34,6 +34,10 @@ import {
   Star,
   Code2,
   Puzzle,
+  Youtube,
+  Video,
+  MapPin,
+  Navigation,
 } from "lucide-react";
 import { useMounted } from "@/hooks/use-mounted";
 import {
@@ -46,9 +50,63 @@ import { useNavigate } from "@tanstack/react-router";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/lib/auth";
 import { CustomEmbedsPanel } from "./CustomEmbedsPanel";
+import { CustomEmbedModal } from "./CustomEmbedModal";
 import { getProjectCustomEmbeds } from "@/lib/builder/customEmbedsUtils";
 import { toast } from "sonner";
 import { nanoid } from "nanoid";
+
+// Media & Embeds items shown in Sections tab — these are page sections, not floating plugins
+const MEDIA_EMBED_SECTIONS = [
+  {
+    id: "youtube",
+    label: "YouTube Video",
+    subtitle: "Embed a YouTube video into the page",
+    widgetType: "youtube",
+    Icon: Youtube,
+    iconBg: "bg-[#E02424]",
+  },
+  {
+    id: "vimeo",
+    label: "Vimeo Video",
+    subtitle: "Embed a Vimeo video into the page",
+    widgetType: "vimeo",
+    Icon: Video,
+    iconBg: "bg-[#1AB7EA]",
+  },
+  {
+    id: "map",
+    label: "Google Map",
+    subtitle: "Interactive map with location card",
+    widgetType: "map",
+    Icon: MapPin,
+    iconBg: "bg-[#34A853]",
+  },
+  {
+    id: "google-reviews",
+    label: "Google Reviews",
+    subtitle: "Live customer reviews section",
+    widgetType: "google-reviews",
+    Icon: Star,
+    iconBg: "bg-[#EA4335]",
+  },
+  {
+    id: "store_locator",
+    label: "Store Locator",
+    subtitle: "Interactive store locations map",
+    widgetType: "store_locator",
+    Icon: Navigation,
+    iconBg: "bg-[#059669]",
+  },
+  {
+    id: "custom-html",
+    label: "Custom HTML / Embed",
+    subtitle: "Paste HTML, iframe or embed code",
+    widgetType: "custom-html",
+    Icon: Code2,
+    iconBg: "bg-[#27272A]",
+  },
+] as const;
+
 
 const TABS = [
   { key: "widgets", label: "Sections", Icon: Grid2x2 },
@@ -221,6 +279,10 @@ export function RightContextPanel({
 
   const currentProjectId = useBuilder((s) => s.currentProjectId);
 
+  // Embed modal state for Media & Embeds section items
+  const [embedModalOpen, setEmbedModalOpen] = useState(false);
+  const [embedModalPluginType, setEmbedModalPluginType] = useState<string | null>(null);
+
   const customEmbedsCount = useMemo(() => {
     return getProjectCustomEmbeds(project).length;
   }, [project]);
@@ -240,11 +302,22 @@ export function RightContextPanel({
 
   const visibleWidgets = useMemo(() => {
     const normalized = q.trim().toLowerCase();
-    const hiddenElementTypes = new Set(["heading", "text", "button", "image", "container"]);
+    const hiddenElementTypes = new Set([
+      "heading",
+      "text",
+      "button",
+      "image",
+      "container",
+      // Exclude media embed sections from regular widgets list as they have their authoritative colored-icon category
+      "youtube",
+      "vimeo",
+      "map",
+      "google-reviews",
+      "store_locator",
+      "custom-html",
+    ]);
     return widgetRegistryEntries.filter((widget) => {
       if (hiddenElementTypes.has(widget.type)) return false;
-      // Exclude custom-html from regular widgets list as it now has a dedicated panel & top control
-      if (widget.type === "custom-html") return false;
       if (widget.id.toLowerCase().includes("container") || widget.displayName.toLowerCase() === "container") return false;
       if (!normalized) return true;
       const values = [
@@ -259,6 +332,29 @@ export function RightContextPanel({
         .filter(Boolean)
         .map((value) => String(value).toLowerCase());
       return values.some((value) => value.includes(normalized));
+    });
+  }, [q, widgetRegistryEntries]);
+
+  const visibleMediaEmbedSections = useMemo(() => {
+    const normalized = q.trim().toLowerCase();
+    if (!normalized) return MEDIA_EMBED_SECTIONS;
+    return MEDIA_EMBED_SECTIONS.filter((item) => {
+      const reg = widgetRegistryEntries.find(
+        (w) => w.type === item.widgetType || w.id === item.widgetType || w.id === `${item.widgetType}-v1`
+      );
+      const values = [
+        item.label,
+        item.subtitle,
+        item.widgetType,
+        reg?.displayName,
+        reg?.description,
+        reg?.preview,
+        reg?.category,
+        ...(reg?.supportedVariants ?? []),
+      ]
+        .filter(Boolean)
+        .map((v) => String(v).toLowerCase());
+      return values.some((v) => v.includes(normalized));
     });
   }, [q, widgetRegistryEntries]);
 
@@ -521,135 +617,202 @@ export function RightContextPanel({
                     <span>→</span>
                   </span>
                 </div>
-
-                {visibleWidgets.length === 0 ? (
+                {visibleWidgets.length === 0 && visibleMediaEmbedSections.length === 0 ? (
                   <div className="rounded-xl border border-dashed border-[#2B2B2B] bg-[#18181A] p-6 text-center">
                     <Boxes className="mx-auto h-6 w-6 text-[#71717A] mb-2" />
-                    <p className="text-xs font-medium text-[#D4D4D8]">No other widgets found</p>
+                    <p className="text-xs font-medium text-[#D4D4D8]">No sections found</p>
                     <p className="mt-1 text-[11px] text-[#71717A]">Try searching for something else</p>
                   </div>
                 ) : (
-                  <div className="space-y-2">
-                    {visibleWidgets.map((widget) => {
-                      const open = q.trim() ? true : openWidgetId === widget.id;
-                      const visual = getWidgetVisual(widget);
-                      const IconComponent = visual.Icon;
-                      return (
-                        <div
-                          key={widget.id}
-                          className={`overflow-hidden rounded-xl border transition-all duration-200 ${
-                            open
-                              ? "border-[#3F3F46] bg-[#18181B] shadow-sm"
-                              : "border-[#262626] bg-[#161618] hover:border-[#38383D] hover:bg-[#1A1A1D]"
-                          }`}
-                        >
-                          <div
-                            role="button"
-                            tabIndex={0}
-                            className="flex h-[52px] w-full cursor-grab items-center gap-3 px-3 text-left transition select-none active:cursor-grabbing"
-                            draggable
-                            onDragStart={(event) => beginWidgetDrag(event, widget)}
-                            onDragEnd={endLibraryDrag}
-                            onClick={() => {
-                              if (q.trim()) return;
-                              setOpenWidgetId((prev) => (prev === widget.id ? null : widget.id));
-                            }}
-                            onKeyDown={(event) => {
-                              if (event.key !== "Enter" && event.key !== " ") return;
-                              event.preventDefault();
-                              if (q.trim()) return;
-                              setOpenWidgetId((prev) => (prev === widget.id ? null : widget.id));
-                            }}
-                          >
-                            <span className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${visual.badgeBg}`}>
-                              <IconComponent className={`h-4 w-4 ${visual.accentColor}`} />
-                            </span>
-                            <div className="min-w-0 flex-1">
-                              <span className="block truncate text-[13px] font-semibold text-[#F4F4F5]">
-                                {widget.displayName}
-                              </span>
-                              <span className="block truncate text-[10.5px] text-[#71717A] mt-0.5 leading-tight">
-                                {visual.subtitle}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2 shrink-0">
-                              <span
-                                className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#202024] px-1.5 text-[10px] font-medium text-[#A1A1AA] border border-[#2F2F36]"
-                                title={`${widget.supportedVariants.length} styles available`}
+                  <>
+                    {visibleWidgets.length > 0 && (
+                      <div className="space-y-2">
+                        {visibleWidgets.map((widget) => {
+                          const open = q.trim() ? true : openWidgetId === widget.id;
+                          const visual = getWidgetVisual(widget);
+                          const IconComponent = visual.Icon;
+                          return (
+                            <div
+                              key={widget.id}
+                              className={`overflow-hidden rounded-xl border transition-all duration-200 ${
+                                open
+                                  ? "border-[#3F3F46] bg-[#18181B] shadow-sm"
+                                  : "border-[#262626] bg-[#161618] hover:border-[#38383D] hover:bg-[#1A1A1D]"
+                              }`}
+                            >
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                className="flex h-[52px] w-full cursor-grab items-center gap-3 px-3 text-left transition select-none active:cursor-grabbing"
+                                draggable
+                                onDragStart={(event) => beginWidgetDrag(event, widget)}
+                                onDragEnd={endLibraryDrag}
+                                onClick={() => {
+                                  if (q.trim()) return;
+                                  setOpenWidgetId((prev) => (prev === widget.id ? null : widget.id));
+                                }}
+                                onKeyDown={(event) => {
+                                  if (event.key !== "Enter" && event.key !== " ") return;
+                                  event.preventDefault();
+                                  if (q.trim()) return;
+                                  setOpenWidgetId((prev) => (prev === widget.id ? null : widget.id));
+                                }}
                               >
-                                {widget.supportedVariants.length}
-                              </span>
-                              <span className={`flex h-5 w-5 items-center justify-center text-[#71717A] transition-transform duration-200 ${
-                                open ? "rotate-90 text-[#FACC15]" : ""
-                              }`}>
-                                <ChevronRight className="h-3.5 w-3.5" />
-                              </span>
-                            </div>
-                          </div>
+                                <span className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${visual.badgeBg}`}>
+                                  <IconComponent className={`h-4 w-4 ${visual.accentColor}`} />
+                                </span>
+                                <div className="min-w-0 flex-1">
+                                  <span className="block truncate text-[13px] font-semibold text-[#F4F4F5]">
+                                    {widget.displayName}
+                                  </span>
+                                  <span className="block truncate text-[10.5px] text-[#71717A] mt-0.5 leading-tight">
+                                    {visual.subtitle}
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <span
+                                    className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#202024] px-1.5 text-[10px] font-medium text-[#A1A1AA] border border-[#2F2F36]"
+                                    title={`${widget.supportedVariants.length} styles available`}
+                                  >
+                                    {widget.supportedVariants.length}
+                                  </span>
+                                  <span className={`flex h-5 w-5 items-center justify-center text-[#71717A] transition-transform duration-200 ${
+                                    open ? "rotate-90 text-[#FACC15]" : ""
+                                  }`}>
+                                    <ChevronRight className="h-3.5 w-3.5" />
+                                  </span>
+                                </div>
+                              </div>
 
-                          {open ? (
-                            <div className="border-t border-[#26262B] bg-[#111113] p-2.5">
-                              <div className="mb-2 flex items-center justify-between px-0.5">
-                                <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717A]">
-                                  Styles & Variants ({widget.supportedVariants.length})
-                                </span>
-                                <span className="flex items-center gap-1 text-[10px] text-[#71717A]">
-                                  <GripVertical className="h-3 w-3 text-[#52525B]" />
-                                  Click or drag
-                                </span>
-                              </div>
-                              <div className="grid grid-cols-2 gap-1.5">
-                                {widget.supportedVariants.map((variant) => {
-                                  const variantKey = `${widget.id}-${variant}`;
-                                  return (
-                                    <div
-                                      key={variantKey}
-                                      role="button"
-                                      tabIndex={0}
-                                      draggable
-                                      onDragStart={(event) => {
-                                        event.stopPropagation();
-                                        beginWidgetDrag(event, widget, variant);
-                                      }}
-                                      onDragEnd={(event) => {
-                                        event.stopPropagation();
-                                        endLibraryDrag();
-                                      }}
-                                      onClick={() => addWidgetVariant(widget, variant)}
-                                      onKeyDown={(event) => {
-                                        if (event.key === "Enter" || event.key === " ") {
-                                          event.preventDefault();
-                                          addWidgetVariant(widget, variant);
-                                        }
-                                      }}
-                                      className="group relative flex flex-col justify-between rounded-lg border border-[#27272A] bg-[#18181B] p-2 text-left cursor-grab transition-all duration-150 hover:border-[#3F3F46] hover:bg-[#202024] active:cursor-grabbing hover:shadow-xs"
-                                      title={`Click to add "${variant}" or drag to canvas`}
-                                    >
-                                      <div className="flex items-start justify-between gap-1">
-                                        <span className="text-[11px] font-medium leading-snug text-[#E4E4E7] group-hover:text-[#F4F4F5] line-clamp-2">
-                                          {variant}
-                                        </span>
-                                        <span className="shrink-0 flex h-4 w-4 items-center justify-center rounded bg-[#27272A] text-[#A1A1AA] transition-colors group-hover:bg-[#FACC15] group-hover:text-[#111111]">
-                                          <Plus className="h-2.5 w-2.5" />
-                                        </span>
-                                      </div>
-                                      <div className="mt-2 flex items-center justify-between border-t border-[#222226] pt-1 text-[9px] text-[#71717A]">
-                                        <span className="capitalize">{widget.category || "Widget"}</span>
-                                        <span className="flex items-center gap-0.5 text-[#52525B] group-hover:text-[#A1A1AA]">
-                                          <GripVertical className="h-2.5 w-2.5" />
-                                          Drag
-                                        </span>
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
+                              {open ? (
+                                <div className="border-t border-[#26262B] bg-[#111113] p-2.5">
+                                  <div className="mb-2 flex items-center justify-between px-0.5">
+                                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717A]">
+                                      Styles &amp; Variants ({widget.supportedVariants.length})
+                                    </span>
+                                    <span className="flex items-center gap-1 text-[10px] text-[#71717A]">
+                                      <GripVertical className="h-3 w-3 text-[#52525B]" />
+                                      Click or drag
+                                    </span>
+                                  </div>
+                                  <div className="grid grid-cols-2 gap-1.5">
+                                    {widget.supportedVariants.map((variant) => {
+                                      const variantKey = `${widget.id}-${variant}`;
+                                      return (
+                                        <div
+                                          key={variantKey}
+                                          role="button"
+                                          tabIndex={0}
+                                          draggable
+                                          onDragStart={(event) => {
+                                            event.stopPropagation();
+                                            beginWidgetDrag(event, widget, variant);
+                                          }}
+                                          onDragEnd={(event) => {
+                                            event.stopPropagation();
+                                            endLibraryDrag();
+                                          }}
+                                          onClick={() => addWidgetVariant(widget, variant)}
+                                          onKeyDown={(event) => {
+                                            if (event.key === "Enter" || event.key === " ") {
+                                              event.preventDefault();
+                                              addWidgetVariant(widget, variant);
+                                            }
+                                          }}
+                                          className="group relative flex flex-col justify-between rounded-lg border border-[#27272A] bg-[#18181B] p-2 text-left cursor-grab transition-all duration-150 hover:border-[#3F3F46] hover:bg-[#202024] active:cursor-grabbing hover:shadow-xs"
+                                          title={`Click to add "${variant}" or drag to canvas`}
+                                        >
+                                          <div className="flex items-start justify-between gap-1">
+                                            <span className="text-[11px] font-medium leading-snug text-[#E4E4E7] group-hover:text-[#F4F4F5] line-clamp-2">
+                                              {variant}
+                                            </span>
+                                            <span className="shrink-0 flex h-4 w-4 items-center justify-center rounded bg-[#27272A] text-[#A1A1AA] transition-colors group-hover:bg-[#FACC15] group-hover:text-[#111111]">
+                                              <Plus className="h-2.5 w-2.5" />
+                                            </span>
+                                          </div>
+                                          <div className="mt-2 flex items-center justify-between border-t border-[#222226] pt-1 text-[9px] text-[#71717A]">
+                                            <span className="capitalize">{widget.category || "Widget"}</span>
+                                            <span className="flex items-center gap-0.5 text-[#52525B] group-hover:text-[#A1A1AA]">
+                                              <GripVertical className="h-2.5 w-2.5" />
+                                              Drag
+                                            </span>
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              ) : null}
                             </div>
-                          ) : null}
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {/* ── Media & Embeds Category ────────────────────────────────── */}
+                    {visibleMediaEmbedSections.length > 0 && (
+                      <div className="mt-3">
+                        <div className="mb-2 flex items-center gap-2 px-1">
+                          <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717A]">Media &amp; Embeds</span>
+                          <div className="flex-1 h-px bg-[#262626]" />
                         </div>
-                      );
-                    })}
-                  </div>
+                        <div className="space-y-1.5">
+                          {visibleMediaEmbedSections.map((item) => {
+                            const IconComponent = item.Icon;
+                            const reg = widgetRegistryEntries.find(
+                              (w) => w.type === item.widgetType || w.id === item.widgetType || w.id === `${item.widgetType}-v1`
+                            );
+                            return (
+                              <div
+                                key={item.id}
+                                role="button"
+                                tabIndex={0}
+                                draggable={!!reg}
+                                onDragStart={(event) => {
+                                  if (reg) {
+                                    beginWidgetDrag(event, reg);
+                                  }
+                                }}
+                                onDragEnd={endLibraryDrag}
+                                className="flex h-[52px] w-full cursor-grab items-center gap-3 rounded-xl border border-[#262626] bg-[#161618] px-3 transition-all hover:border-[#38383D] hover:bg-[#1A1A1D] select-none group active:cursor-grabbing"
+                                onClick={() => {
+                                  if (reg) {
+                                    addWidgetVariant(reg, reg.defaultVariant || reg.supportedVariants?.[0] || "");
+                                  }
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter" || e.key === " ") {
+                                    e.preventDefault();
+                                    if (reg) {
+                                      addWidgetVariant(reg, reg.defaultVariant || reg.supportedVariants?.[0] || "");
+                                    }
+                                  }
+                                }}
+                              >
+                                <span className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white ${item.iconBg}`}>
+                                  <IconComponent className="h-4 w-4" />
+                                </span>
+                                <div className="min-w-0 flex-1">
+                                  <span className="block truncate text-[13px] font-semibold text-[#F4F4F5]">
+                                    {item.label}
+                                  </span>
+                                  <span className="block truncate text-[10.5px] text-[#71717A] mt-0.5 leading-tight">
+                                    {item.subtitle}
+                                  </span>
+                                </div>
+                                <span
+                                  className="shrink-0 flex h-6 w-6 items-center justify-center rounded-lg bg-[#202024] text-[#71717A] transition-colors group-hover:bg-[#FACC15] group-hover:text-[#111111]"
+                                  title={`Add ${item.label}`}
+                                >
+                                  <Plus className="h-3.5 w-3.5" />
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
@@ -669,6 +832,21 @@ export function RightContextPanel({
           )}
         </div>
       )}
+
+      {/* Embed modal for Media & Embeds section items */}
+      <CustomEmbedModal
+        isOpen={embedModalOpen}
+        onClose={() => {
+          setEmbedModalOpen(false);
+          setEmbedModalPluginType(null);
+        }}
+        embedToEdit={null}
+        initialPluginType={embedModalPluginType}
+        onSaved={() => {
+          setEmbedModalOpen(false);
+          setEmbedModalPluginType(null);
+        }}
+      />
     </aside>
   );
 }

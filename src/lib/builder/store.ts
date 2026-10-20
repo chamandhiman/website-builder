@@ -1941,10 +1941,15 @@ export const useBuilder = create<BuilderState>((set, get) => ({
         ...copy.widgetInstance,
         id: copy.id,
       };
+      try {
+        const regenerated = getWidgetBootstrapExport(copy.widgetInstance.type, copy.widgetInstance, { editorMode: true });
+        if (regenerated) copy.html = regenerated;
+      } catch (_) {}
     }
     const sections = [...page.sections];
     sections.splice(idx + 1, 0, copy);
     updatePageSections(set, get, sections);
+    get().selectSection(copy.id);
     get().pushHistory();
   },
 
@@ -1955,7 +1960,12 @@ export const useBuilder = create<BuilderState>((set, get) => ({
     if (from < 0 || from >= sections.length || to < 0 || to > sections.length) return;
     const [item] = sections.splice(from, 1);
     if (!item || isSharedChromeSection(item)) return;
-    sections.splice(Math.max(0, Math.min(to, sections.length)), 0, item);
+    const hasHeader = sections.length > 0 && isSharedChromeSection(sections[0]);
+    const minIdx = hasHeader ? 1 : 0;
+    const hasFooter = sections.length > 0 && isSharedChromeSection(sections[sections.length - 1]);
+    const maxIdx = hasFooter ? sections.length - 1 : sections.length;
+    const boundedTo = Math.max(minIdx, Math.min(to, maxIdx));
+    sections.splice(boundedTo, 0, item);
     updatePageSections(set, get, sections);
     get().pushHistory();
   },
@@ -2429,7 +2439,13 @@ export const useBuilder = create<BuilderState>((set, get) => ({
 
     const sections = page.sections.map((s) => {
       if (!s.widgetInstance || s.widgetInstance.id !== id) return s;
-      return { ...s, widgetInstance: { ...s.widgetInstance, ...patch } };
+      const updatedInstance = { ...s.widgetInstance, ...patch };
+      let nextHtml = s.html;
+      try {
+        const regenerated = getWidgetBootstrapExport(updatedInstance.type, updatedInstance, { editorMode: true });
+        if (regenerated) nextHtml = regenerated;
+      } catch (_) {}
+      return { ...s, widgetInstance: updatedInstance, html: nextHtml };
     });
 
     const widgetInstances = sections

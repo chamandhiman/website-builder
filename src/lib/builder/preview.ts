@@ -997,16 +997,37 @@ export const RUNTIME_SCRIPT = `
   function resolveElementSelection(target) {
     if (!target) return { elementKind: 'section', index: null, tag: null, sectionId: null, widgetId: null, widgetType: null, parentWidgetId: null, childId: null, elementKey: null, elementType: null };
     const section = target.closest && target.closest('[data-wto-section]');
-    const customHtmlEmbedEl = target.closest && target.closest('.wto-custom-html-empty, .wto-custom-html-pending, .wto-embedded-widget-container, [data-wto-widget]');
-    if (customHtmlEmbedEl) {
-      const root = customHtmlEmbedEl.closest && customHtmlEmbedEl.closest('[data-widget-id], [data-wto-widget-root]');
+    const mediaEmbedEl = (target.closest && target.closest(
+      '.wto-youtube-section, .wto-youtube-host, [data-widget="youtube"], ' +
+      '.wto-vimeo-section, .wto-vimeo-host, [data-widget="vimeo"], ' +
+      '.wto-store-locator-section, [data-widget="store_locator"], ' +
+      '.wto-map-section, [data-widget="map"], ' +
+      '.wto-google-reviews-root, [data-widget="google-reviews"], ' +
+      '.wto-custom-html-empty, .wto-custom-html-pending, .wto-embedded-widget-container, .wto-custom-html-wrapper, .wto-custom-html-outer, [data-wto-widget], [data-widget="custom-html"]'
+    )) || (section ? section.querySelector(
+      '.wto-youtube-section, .wto-youtube-host, [data-widget="youtube"], ' +
+      '.wto-vimeo-section, .wto-vimeo-host, [data-widget="vimeo"], ' +
+      '.wto-store-locator-section, [data-widget="store_locator"], ' +
+      '.wto-map-section, [data-widget="map"], ' +
+      '.wto-google-reviews-root, [data-widget="google-reviews"], ' +
+      '.wto-custom-html-empty, .wto-custom-html-pending, .wto-embedded-widget-container, .wto-custom-html-wrapper, .wto-custom-html-outer, [data-wto-widget], [data-widget="custom-html"]'
+    ) : null);
+    if (mediaEmbedEl) {
+      const root = (mediaEmbedEl.closest && mediaEmbedEl.closest('[data-widget-id], [data-wto-widget-root]')) ||
+                   (section ? section.querySelector('[data-widget-id], [data-wto-widget-root]') : null);
+      const wType = root?.getAttribute('data-widget') ||
+        (mediaEmbedEl.closest?.('.wto-youtube-section, .wto-youtube-host, [data-widget="youtube"]') || section?.querySelector('.wto-youtube-section, [data-widget="youtube"]') ? 'youtube' :
+         mediaEmbedEl.closest?.('.wto-vimeo-section, .wto-vimeo-host, [data-widget="vimeo"]') || section?.querySelector('.wto-vimeo-section, [data-widget="vimeo"]') ? 'vimeo' :
+         mediaEmbedEl.closest?.('.wto-store-locator-section, [data-widget="store_locator"]') || section?.querySelector('.wto-store-locator-section, [data-widget="store_locator"]') ? 'store_locator' :
+         mediaEmbedEl.closest?.('.wto-map-section, [data-widget="map"]') || section?.querySelector('.wto-map-section, [data-widget="map"]') ? 'map' :
+         mediaEmbedEl.closest?.('.wto-google-reviews-root, [data-widget="google-reviews"]') || section?.querySelector('.wto-google-reviews-root, [data-widget="google-reviews"]') ? 'google-reviews' : 'custom-html');
       return {
         sectionId: section ? section.dataset.wtoSection : null,
         elementKind: 'section',
         index: null,
         tag: 'div',
         widgetId: root ? root.getAttribute('data-widget-id') : null,
-        widgetType: 'custom-html',
+        widgetType: wType,
         parentWidgetId: null,
         childId: null,
         elementKey: null,
@@ -2235,13 +2256,13 @@ export const RUNTIME_SCRIPT = `
 
   function isEmbeddedAdminWidget(el) {
     if (!el || !(el instanceof Element)) return false;
-    if (el.closest && (el.closest('[data-wto-widget]') || el.closest('.wto-embedded-widget-container') || el.closest('.wto-custom-html-wrapper') || el.closest('.wto-custom-html-pending') || el.closest('.wto-custom-html-empty'))) return true;
-    if (el.querySelector && (el.querySelector('[data-wto-widget]') || el.querySelector('.wto-embedded-widget-container') || el.querySelector('.wto-custom-html-wrapper'))) return true;
-    if (el.closest && el.closest('[data-widget="custom-html"], [data-widget="countdown"], [data-widget="google_reviews"], [data-widget="faq_accordion"], [data-widget="announcement_popup"], [data-widget="accessibility"]')) return true;
-    if (el.getAttribute && ['custom-html', 'countdown', 'google_reviews', 'faq_accordion', 'announcement_popup', 'accessibility'].includes(el.getAttribute('data-widget'))) return true;
-    if (el.closest && el.closest('.wto-countdown-root, .wto-faq-container, .wto-announcement-root, .wto-google-reviews-root, .wto-reviews-container, .wto-dynamic-widget-root, .wto-a11y-root, [data-wto-a11y]')) return true;
-    if (el.querySelector && el.querySelector('.wto-countdown-root, .wto-faq-container, .wto-announcement-root, .wto-google-reviews-root, .wto-reviews-container, .wto-dynamic-widget-root, .wto-a11y-root, [data-wto-a11y]')) return true;
-    if (currentSelection && ['custom-html', 'countdown', 'google_reviews', 'faq_accordion', 'announcement_popup', 'accessibility'].includes(currentSelection.widgetType)) return true;
+    if (el.closest && (el.closest('[data-wto-widget]') || el.closest('.wto-embedded-widget-container') || el.closest('.wto-custom-html-wrapper') || el.closest('.wto-custom-html-pending') || el.closest('.wto-custom-html-empty') || el.closest('.wto-youtube-section') || el.closest('.wto-vimeo-section') || el.closest('.wto-store-locator-section') || el.closest('.wto-map-section'))) return true;
+    if (el.querySelector && (el.querySelector('[data-wto-widget]') || el.querySelector('.wto-embedded-widget-container') || el.querySelector('.wto-custom-html-wrapper') || el.querySelector('.wto-youtube-section') || el.querySelector('.wto-vimeo-section') || el.querySelector('.wto-store-locator-section') || el.querySelector('.wto-map-section'))) return true;
+    if (el.closest && el.closest('[data-widget="custom-html"], [data-widget="youtube"], [data-widget="vimeo"], [data-widget="map"], [data-widget="store_locator"], [data-widget="countdown"], [data-widget="google_reviews"], [data-widget="faq_accordion"], [data-widget="announcement_popup"], [data-widget="accessibility"]')) return true;
+    if (el.getAttribute && ['custom-html', 'youtube', 'vimeo', 'map', 'store_locator', 'countdown', 'google_reviews', 'faq_accordion', 'announcement_popup', 'accessibility'].includes(el.getAttribute('data-widget'))) return true;
+    if (el.closest && el.closest('.wto-countdown-root, .wto-faq-container, .wto-announcement-root, .wto-google-reviews-root, .wto-reviews-container, .wto-dynamic-widget-root, .wto-a11y-root, [data-wto-a11y], .wto-youtube-section, .wto-vimeo-section, .wto-store-locator-section')) return true;
+    if (el.querySelector && el.querySelector('.wto-countdown-root, .wto-faq-container, .wto-announcement-root, .wto-google-reviews-root, .wto-reviews-container, .wto-dynamic-widget-root, .wto-a11y-root, [data-wto-a11y], .wto-youtube-section, .wto-vimeo-section, .wto-store-locator-section')) return true;
+    if (currentSelection && ['custom-html', 'youtube', 'vimeo', 'map', 'store_locator', 'countdown', 'google_reviews', 'faq_accordion', 'announcement_popup', 'accessibility'].includes(currentSelection.widgetType)) return true;
     return false;
   }
 
@@ -2266,7 +2287,7 @@ export const RUNTIME_SCRIPT = `
     const hasTextContent = !!(activeEl && activeEl.textContent && activeEl.textContent.trim().length > 0 && !activeEl.querySelector('section, header, footer, table'));
     const isWidgetText = !!(selection && selection.elementKind === 'widget' && selection.elementType && ['text','button','heading'].includes(selection.elementType));
     const isTextKind = !!(selection && (selection.elementKind === 'text' || selection.elementKind === 'link'));
-    const isEmbedded = isEmbeddedAdminWidget(activeEl) || (selection && ['custom-html', 'countdown', 'google_reviews', 'faq_accordion', 'announcement_popup', 'accessibility'].includes(selection.widgetType));
+    const isEmbedded = isEmbeddedAdminWidget(activeEl) || (selection && ['custom-html', 'youtube', 'vimeo', 'map', 'store_locator', 'countdown', 'google_reviews', 'faq_accordion', 'announcement_popup', 'accessibility'].includes(selection.widgetType));
     const enabledStyleSelection = !isEmbedded && (isWidgetText || isTextKind || (selection && selection.elementKind !== 'section' && (isTextTag || hasTextContent)));
     if (enabledStyleSelection) {
       styleControlWrapper.style.display = 'inline-flex';
@@ -2287,6 +2308,60 @@ export const RUNTIME_SCRIPT = `
       const btn = tb.querySelector('[data-act="' + act + '"]');
       if (btn) btn.style.display = "inline-flex";
     });
+
+    const isChildSel = currentSelection && currentSelection.widgetId && (currentSelection.childId || currentSelection.elementKey);
+    const upBtn = tb.querySelector('[data-act="move-up"]');
+    const downBtn = tb.querySelector('[data-act="move-down"]');
+
+    if (!isChildSel) {
+      const allSections = Array.from(document.querySelectorAll('[data-wto-section]')).filter(
+        (s) => !s.querySelector('[data-wto-shared]') && !s.hasAttribute('data-wto-shared')
+      );
+      const curIdx = currentSection ? allSections.indexOf(currentSection) : -1;
+      const isFirst = curIdx <= 0;
+      const isLast = curIdx >= 0 && curIdx >= allSections.length - 1;
+
+      if (upBtn) {
+        if (isFirst) {
+          upBtn.setAttribute('disabled', 'true');
+          upBtn.style.opacity = '0.35';
+          upBtn.style.cursor = 'not-allowed';
+          upBtn.title = 'Already at the top';
+        } else {
+          upBtn.removeAttribute('disabled');
+          upBtn.style.opacity = '1';
+          upBtn.style.cursor = 'pointer';
+          upBtn.title = 'Move Up';
+        }
+      }
+
+      if (downBtn) {
+        if (isLast) {
+          downBtn.setAttribute('disabled', 'true');
+          downBtn.style.opacity = '0.35';
+          downBtn.style.cursor = 'not-allowed';
+          downBtn.title = 'Already at the bottom';
+        } else {
+          downBtn.removeAttribute('disabled');
+          downBtn.style.opacity = '1';
+          downBtn.style.cursor = 'pointer';
+          downBtn.title = 'Move Down';
+        }
+      }
+    } else {
+      if (upBtn) {
+        upBtn.removeAttribute('disabled');
+        upBtn.style.opacity = '1';
+        upBtn.style.cursor = 'pointer';
+        upBtn.title = 'Move Up';
+      }
+      if (downBtn) {
+        downBtn.removeAttribute('disabled');
+        downBtn.style.opacity = '1';
+        downBtn.style.cursor = 'pointer';
+        downBtn.title = 'Move Down';
+      }
+    }
   }
   function positionToolbar(element) {
     if (!element) { unmountToolbar(); return; }
@@ -2314,6 +2389,11 @@ export const RUNTIME_SCRIPT = `
   tb.addEventListener('click', e => {
     const btn = e.target.closest('button');
     if (!btn || !currentSection) return;
+    if (btn.disabled || btn.hasAttribute('disabled') || btn.getAttribute('disabled') === 'true') {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
     e.preventDefault(); e.stopPropagation();
     const action = btn.dataset.act;
     if (!action) return;
@@ -2383,26 +2463,7 @@ export const RUNTIME_SCRIPT = `
         }
         return;
       }
-      if (action === 'move-up') {
-        const prev = el.previousElementSibling;
-        if (prev && el.parentNode) {
-          el.parentNode.insertBefore(el, prev);
-          indexElementKinds(currentSection);
-          send('section-html', { sectionId: currentSection.dataset.wtoSection, html: currentSection.innerHTML });
-          positionToolbar(el);
-        }
-        return;
-      }
-      if (action === 'move-down') {
-        const next = el.nextElementSibling;
-        if (next && el.parentNode) {
-          el.parentNode.insertBefore(next, el);
-          indexElementKinds(currentSection);
-          send('section-html', { sectionId: currentSection.dataset.wtoSection, html: currentSection.innerHTML });
-          positionToolbar(el);
-        }
-        return;
-      }
+      // Note: move-up and move-down fall through to section-action to reorder the section
     }
      
     send('section-action', { sectionId: currentSection.dataset.wtoSection, action });
@@ -2820,13 +2881,19 @@ export const RUNTIME_SCRIPT = `
   addEventListener('scroll', () => positionToolbar(currentSelectedElementWrapper || currentSection), true);
   addEventListener('resize', () => positionToolbar(currentSelectedElementWrapper || currentSection));
 
-  // Drag reorder
-  document.querySelectorAll('[data-wto-section]').forEach(sec => sec.setAttribute('draggable','true'));
-  document.querySelectorAll('[data-wto-section] a').forEach(a => a.setAttribute('draggable','false'));
+  document.querySelectorAll('[data-wto-section]').forEach(sec => {
+    if (sec.dataset.wtoShared !== 'header' && sec.dataset.wtoShared !== 'footer' && sec.dataset.wtoSection !== 'shared-header' && sec.dataset.wtoSection !== 'shared-footer') {
+      sec.setAttribute('draggable','true');
+    }
+  });
+  document.querySelectorAll('[data-wto-section] a, [data-wto-section] button, [data-wto-section] input, [data-wto-section] textarea').forEach(el => el.setAttribute('draggable','false'));
   let dragId = null;
   document.addEventListener('dragstart', e => {
     try {
       const target = getEventTarget(e);
+      if (target && target.closest && target.closest('button, input, select, textarea, [data-wto-embed-badge], #__wto_tb')) {
+        return;
+      }
       const wrapper = target && target.closest ? target.closest('[data-container-child-wrapper], [data-wto-widget-element-key]') : null;
       if (wrapper && currentSelection && currentSelection.sectionId && currentSelection.widgetId && (currentSelection.childId || currentSelection.elementKey)) {
         currentDragSource = {
@@ -2845,6 +2912,7 @@ export const RUNTIME_SCRIPT = `
       }
       const sec = target && target.closest && target.closest('[data-wto-section]');
       if (!sec) return;
+      if (sec.dataset.wtoShared === 'header' || sec.dataset.wtoShared === 'footer' || sec.dataset.wtoSection === 'shared-header' || sec.dataset.wtoSection === 'shared-footer') return;
       dragId = sec.dataset.wtoSection;
       try { e.dataTransfer.setData('text/plain', dragId); } catch(_){ }
       e.dataTransfer.effectAllowed = 'move';
@@ -2886,8 +2954,12 @@ export const RUNTIME_SCRIPT = `
       const sec = target && target.closest && target.closest('[data-wto-section]');
       if (!sec || !dragId) return;
       e.preventDefault();
+      const isHeader = sec.dataset.wtoShared === 'header' || sec.dataset.wtoSection === 'shared-header';
+      const isFooter = sec.dataset.wtoShared === 'footer' || sec.dataset.wtoSection === 'shared-footer';
       const r = sec.getBoundingClientRect();
-      const before = e.clientY < r.top + r.height/2;
+      let before = e.clientY < r.top + r.height/2;
+      if (isHeader) before = false;
+      if (isFooter) before = true;
       let line = document.getElementById('__wto_line');
       if (!line) { line = document.createElement('div'); line.id='__wto_line'; line.style.cssText='position:absolute;left:0;right:0;height:3px;background:#6366f1;z-index:9999;pointer-events:none;'; document.body.appendChild(line); }
       const top = before ? sec.offsetTop : sec.offsetTop + sec.offsetHeight;
@@ -3840,7 +3912,7 @@ export function buildPreviewHTML(opts: {
           </div>
         `;
       }
-      return `<div data-wto-section="${s.id}" class="wto-section${selectedClass}" ${extra}${hiddenAttr}>${embedCanvasBadge}${resolveAssetPaths(linked, assets)}</div>`;
+      return `<div data-wto-section="${s.id}" draggable="${editable ? 'true' : 'false'}" class="wto-section${selectedClass}" ${extra}${hiddenAttr}>${embedCanvasBadge}${resolveAssetPaths(linked, assets)}</div>`;
     })
     .join("\n");
 
@@ -3861,6 +3933,18 @@ export function buildPreviewHTML(opts: {
     .wto-section.wto-selected {
       outline: none !important;
       box-shadow: none !important;
+    }
+    .wto-section[draggable="true"] { cursor: grab; }
+    .wto-section[draggable="true"]:active { cursor: grabbing; }
+    .wto-youtube-section iframe,
+    .wto-vimeo-section iframe,
+    .wto-map-section iframe,
+    .wto-store-locator-section iframe,
+    [data-widget="youtube"] iframe,
+    [data-widget="vimeo"] iframe,
+    [data-widget="map"] iframe,
+    [data-widget="store_locator"] iframe {
+      pointer-events: none !important;
     }
     .wto-element-selected {
       outline: 2px solid #FACC15 !important;

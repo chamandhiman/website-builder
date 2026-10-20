@@ -1,6 +1,18 @@
 import type { ComponentType } from "react";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { faMagic, faBars, faHeading, faParagraph, faHandPointer, faImage, faSquare, faColumns, faCopyright, faImages, faTableCells, faCircleQuestion, faBriefcase, faBuilding, faBullhorn, faChartLine, faUsers, faDollarSign, faQuoteLeft, faLayerGroup, faHeadset, faLocationPin, faStar, faCode } from "@fortawesome/free-solid-svg-icons";
+import { faMagic, faBars, faHeading, faParagraph, faHandPointer, faImage, faSquare, faColumns, faCopyright, faImages, faTableCells, faCircleQuestion, faBriefcase, faBuilding, faBullhorn, faChartLine, faUsers, faDollarSign, faQuoteLeft, faLayerGroup, faHeadset, faLocationPin, faStar, faCode, faVideo, faPlay, faCompass } from "@fortawesome/free-solid-svg-icons";
+import { YouTube } from "./YouTube/YouTube";
+import { YouTubeProperties } from "./YouTube/YouTubeProperties";
+import { buildYouTubeBootstrapMarkup } from "./YouTube/YouTubeBootstrapExport";
+import { defaultYouTubeWidgetData } from "./YouTube/YouTubeTypes";
+import { Vimeo } from "./Vimeo/Vimeo";
+import { VimeoProperties } from "./Vimeo/VimeoProperties";
+import { buildVimeoBootstrapMarkup } from "./Vimeo/VimeoBootstrapExport";
+import { defaultVimeoWidgetData } from "./Vimeo/VimeoTypes";
+import { StoreLocator } from "./StoreLocator/StoreLocator";
+import { StoreLocatorProperties } from "./StoreLocator/StoreLocatorProperties";
+import { buildStoreLocatorBootstrapMarkup } from "./StoreLocator/StoreLocatorBootstrapExport";
+import { defaultStoreLocatorWidgetData } from "./StoreLocator/StoreLocatorTypes";
 import { CustomHtml } from "./CustomHtml/CustomHtml";
 import { CustomHtmlProperties } from "./CustomHtml/CustomHtmlProperties";
 import { buildCustomHtmlBootstrapMarkup } from "./CustomHtml/CustomHtmlBootstrapExport";
@@ -188,7 +200,6 @@ export function getWidgetPlacementClassification(typeOrId: string): WidgetPlacem
   const reg = getWidgetRegistration(typeOrId);
   if (reg?.placementClassification) return reg.placementClassification;
   const t = (reg?.type || typeOrId || "").toLowerCase();
-  if (t === "custom-html" || t === "custom-html-v1") return "inline_embed";
   if (t === "whatsapp_chat" || t === "accessibility" || t === "language_switcher") return "floating";
   return "page";
 }
@@ -206,10 +217,13 @@ export const WIDGET_SORT_ORDER: string[] = [
   "overlay-banner",
   "gallery",
   "testimonials",
+  "youtube",
+  "vimeo",
   "google-reviews",
   "custom-html",
   "contact",
   "map",
+  "store_locator",
   "footer",
 ];
 
@@ -923,6 +937,60 @@ registerWidget({
   defaultVariant: "Full Width Clean",
 });
 
+// ── YOUTUBE VIDEO SECTION ──────────────────────────────────────────────────
+registerWidget({
+  id: "youtube-v1",
+  type: "youtube",
+  displayName: "YouTube Video",
+  icon: faVideo,
+  category: "Media",
+  placementClassification: "page",
+  preview: "Responsive YouTube video player with custom aspect ratio, border radius, and spacing.",
+  description: "Embed any YouTube video directly on your page with easy-to-use URL input and sizing options.",
+  component: YouTube,
+  propertiesComponent: YouTubeProperties,
+  bootstrapExporter: buildYouTubeBootstrapMarkup,
+  defaultData: defaultYouTubeWidgetData,
+  supportedVariants: ["Responsive 16:9", "Clean Minimal", "Boxed Shadow"],
+  defaultVariant: "Responsive 16:9",
+});
+
+// ── VIMEO VIDEO SECTION ────────────────────────────────────────────────────
+registerWidget({
+  id: "vimeo-v1",
+  type: "vimeo",
+  displayName: "Vimeo Video",
+  icon: faVideo,
+  category: "Media",
+  placementClassification: "page",
+  preview: "Responsive Vimeo video player with custom aspect ratio, border radius, and spacing.",
+  description: "Embed any Vimeo video directly on your page with easy-to-use URL input and sizing options.",
+  component: Vimeo,
+  propertiesComponent: VimeoProperties,
+  bootstrapExporter: buildVimeoBootstrapMarkup,
+  defaultData: defaultVimeoWidgetData,
+  supportedVariants: ["Responsive 16:9", "Clean Minimal", "Boxed Shadow"],
+  defaultVariant: "Responsive 16:9",
+});
+
+// ── STORE LOCATOR SECTION ──────────────────────────────────────────────────
+registerWidget({
+  id: "store_locator-v1",
+  type: "store_locator",
+  displayName: "Store Locator",
+  icon: faCompass,
+  category: "Content",
+  placementClassification: "page",
+  preview: "Interactive store locator with Google Maps integration and location directory.",
+  description: "Show your physical stores or branch locations with addresses, phone numbers, hours, and directions.",
+  component: StoreLocator,
+  propertiesComponent: StoreLocatorProperties,
+  bootstrapExporter: buildStoreLocatorBootstrapMarkup,
+  defaultData: defaultStoreLocatorWidgetData,
+  supportedVariants: ["Split Map & List", "Stacked Full Map", "Directory Grid"],
+  defaultVariant: "Split Map & List",
+});
+
 // ── GOOGLE REVIEWS DYNAMIC WIDGET (STUDIO PLATFORM & EMBED) ────────────────
 registerWidget({
   id: "google-reviews-v1",
@@ -930,6 +998,7 @@ registerWidget({
   displayName: "Google Reviews",
   icon: faStar,
   category: "Marketing",
+  placementClassification: "page",
   preview: "Dynamic Google Reviews widget configured via Widget Studio and embedded using real-time widget runtime.",
   description: "Connect your business in the Widget Studio to fetch verified reviews, customize responsive layouts, and publish live embeds.",
   component: GoogleReviews,
@@ -947,7 +1016,7 @@ registerWidget({
   displayName: "Custom HTML / Embed",
   icon: faCode,
   category: "Advanced",
-  placementClassification: "inline_embed",
+  placementClassification: "page",
   preview: "Embed studio widgets (Google Reviews, Countdown Timer, etc.), third-party iframes, or custom HTML.",
   description: "Generic embed container for studio widgets, third-party code snippets, and custom HTML.",
   component: CustomHtml,

@@ -31,7 +31,16 @@ export function InspectorPanel() {
     );
   }
 
-  // When an individual element is selected, show its properties only (never for custom HTML placeholder or embedded widgets)
+  // When an individual element is selected, show its properties only (never for custom HTML placeholder, embedded widgets, or generic section div wrappers)
+  const isEmbedOrMediaWidget = Boolean(
+    (section?.widgetInstance &&
+      ["youtube", "vimeo", "map", "store_locator", "google-reviews", "custom-html"].includes(section.widgetInstance.type)) ||
+    (selectedElement?.widgetType &&
+      ["youtube", "vimeo", "map", "store_locator", "google-reviews", "custom-html"].includes(selectedElement.widgetType)) ||
+    ["section-youtube", "section-vimeo", "section-map", "section-google-reviews", "section-store-locator", "section-custom-html", "youtube-v1", "vimeo-v1", "map-v1", "google-reviews-v1", "store_locator-v1", "custom-html-v1"].includes(section?.templateId || "") ||
+    /wto-(youtube|vimeo|map|store-locator|custom-html|google-reviews)/i.test(section?.html || "")
+  );
+
   const isCustomHtmlOrPlaceholder = Boolean(
     selectedElement?.widgetType === "custom-html" ||
     selectedElement?.textContent?.includes("Add your widget here") ||
@@ -39,7 +48,11 @@ export function InspectorPanel() {
     selectedElement?.elementType === "custom-html"
   );
 
-  if (selectedElement && selectedElement.kind !== "section" && !isCustomHtmlOrPlaceholder) {
+  const isGenericDivWithoutChild = Boolean(
+    selectedElement && (selectedElement.kind === "container" || selectedElement.tag === "div") && !selectedElement.childId
+  );
+
+  if (selectedElement && selectedElement.kind !== "section" && !isCustomHtmlOrPlaceholder && !isEmbedOrMediaWidget && !isGenericDivWithoutChild) {
     return (
       <SelectedElementInspector
         selectedElement={selectedElement}

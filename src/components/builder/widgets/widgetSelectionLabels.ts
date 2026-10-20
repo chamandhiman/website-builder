@@ -22,6 +22,12 @@ export const WIDGET_SELECTION_LABELS: Record<string, string> = {
   testimonials: "Testimonials",
   "google-reviews": "Google Reviews",
   "overlay-banner": "Background Image overlay text banner",
+  youtube: "YouTube Video",
+  vimeo: "Vimeo Video",
+  map: "Google Map",
+  "google-map": "Google Map",
+  store_locator: "Store Locator",
+  "custom-html": "Custom HTML / Embed",
 };
 
 export function getWidgetSelectionLabel(type?: string | null, fallback = "Widget"): string {
