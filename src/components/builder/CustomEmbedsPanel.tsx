@@ -139,6 +139,17 @@ const PLUGIN_CATALOG: CatalogItem[] = [
     iconBg: "bg-[#4F46E5]",
     iconType: "back_to_top",
   },
+  {
+    id: "custom_embed",
+    name: "Floating Custom Embed",
+    category: "tools",
+    categoryLabel: "Tools",
+    renderingCategory: "floating",
+    description: "Position custom HTML, chatbot widgets, or third-party floating code snippets at any screen corner.",
+    pluginType: "custom_embed",
+    iconBg: "bg-[#3F3F46]",
+    iconType: "custom_html",
+  },
 ];
 
 export function CustomEmbedsPanel() {

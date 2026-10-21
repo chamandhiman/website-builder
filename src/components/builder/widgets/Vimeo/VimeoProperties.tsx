@@ -70,7 +70,7 @@ export function VimeoProperties({
 
   const videoId = extractVimeoId(urlInput);
   const isValid = Boolean(videoId);
-  const embedUrl = videoId ? buildVimeoEmbedUrl(videoId, content.autoplay, content.loop) : "";
+  const embedUrl = videoId ? buildVimeoEmbedUrl(videoId, { autoplay: content.autoplay, loop: content.loop }) : "";
 
   return (
     <PropertyPanel title="Vimeo Video" icon={<Video className="h-4 w-4 text-[#1AB7EA]" />} onClose={onClose}>

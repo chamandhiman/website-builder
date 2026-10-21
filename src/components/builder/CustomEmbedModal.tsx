@@ -50,6 +50,7 @@ import { nanoid } from "nanoid";
 import { WhatsAppChatModal } from "./WhatsAppChatModal";
 import { AccessibilityToolbarModal } from "./AccessibilityToolbarModal";
 import { AnnouncementBarModal } from "./AnnouncementBarModal";
+import { StandardFloatingPluginModal } from "./floating-plugins/StandardFloatingPluginModal";
 
 export interface CustomEmbedModalProps {
   isOpen: boolean;
@@ -267,25 +268,54 @@ const POPUP_TEMPLATES: PopupTemplateItem[] = [
 ];
 
 export function CustomEmbedModal(props: CustomEmbedModalProps) {
-  const isWhatsApp = useMemo(() => {
+  const isFloatingPlugin = useMemo(() => {
     if (props.embedToEdit) {
-      if (props.embedToEdit.pluginType === "whatsapp") return true;
+      if (props.embedToEdit.displayType === "floating" || props.embedToEdit.floatingRecord) return true;
+      const pt = props.embedToEdit.pluginType || "";
+      if (
+        [
+          "contact",
+          "whatsapp",
+          "accessibility",
+          "language",
+          "chatbot",
+          "announcement",
+          "popup",
+          "back_to_top",
+          "custom_embed",
+        ].includes(pt)
+      ) {
+        return true;
+      }
       const lower = (props.embedToEdit.name || "").toLowerCase();
-      if (lower.includes("whatsapp")) return true;
-      if (props.embedToEdit.floatingRecord?.type === "whatsapp_chat") return true;
-      if (props.embedToEdit.html && (props.embedToEdit.html.includes("wa.me") || props.embedToEdit.html.includes("whatsapp"))) return true;
+      if (
+        lower.includes("whatsapp") ||
+        lower.includes("accessibility") ||
+        lower.includes("a11y") ||
+        lower.includes("language") ||
+        lower.includes("announcement") ||
+        lower.includes("popup") ||
+        lower.includes("chatbot") ||
+        lower.includes("contact") ||
+        lower.includes("back to top")
+      ) {
+        return true;
+      }
     }
-    return props.initialPluginType === "whatsapp";
-  }, [props.embedToEdit, props.initialPluginType]);
-
-  const isAccessibility = useMemo(() => {
-    if (props.embedToEdit) {
-      if (props.embedToEdit.pluginType === "accessibility") return true;
-      const lower = (props.embedToEdit.name || "").toLowerCase();
-      if (lower.includes("accessibility") || lower.includes("a11y")) return true;
-      if (props.embedToEdit.floatingRecord?.type === "accessibility") return true;
+    if (props.initialPluginType) {
+      return [
+        "contact",
+        "whatsapp",
+        "accessibility",
+        "language",
+        "chatbot",
+        "announcement",
+        "popup",
+        "back_to_top",
+        "custom_embed",
+      ].includes(props.initialPluginType);
     }
-    return props.initialPluginType === "accessibility";
+    return false;
   }, [props.embedToEdit, props.initialPluginType]);
 
   const isAnnouncement = useMemo(() => {
@@ -293,33 +323,12 @@ export function CustomEmbedModal(props: CustomEmbedModalProps) {
       if (props.embedToEdit.pluginType === "announcement") return true;
       const lower = (props.embedToEdit.name || "").toLowerCase();
       if (lower.includes("announcement")) return true;
-      if (props.embedToEdit.floatingRecord?.type === "announcement_popup") return true;
-      if (props.embedToEdit.floatingId && props.embedToEdit.floatingId.startsWith("fw-ann")) return true;
+      if (props.embedToEdit.floatingRecord?.type === "announcement_popup") {
+        if (props.embedToEdit.floatingRecord?.config?.layout !== "modal") return true;
+      }
     }
     return props.initialPluginType === "announcement";
   }, [props.embedToEdit, props.initialPluginType]);
-
-  if (props.isOpen && isWhatsApp) {
-    return (
-      <WhatsAppChatModal
-        isOpen={props.isOpen}
-        onClose={props.onClose}
-        embedToEdit={props.embedToEdit}
-        onSaved={props.onSaved}
-      />
-    );
-  }
-
-  if (props.isOpen && isAccessibility) {
-    return (
-      <AccessibilityToolbarModal
-        isOpen={props.isOpen}
-        onClose={props.onClose}
-        embedToEdit={props.embedToEdit}
-        onSaved={props.onSaved}
-      />
-    );
-  }
 
   if (props.isOpen && isAnnouncement) {
     return (
@@ -327,6 +336,18 @@ export function CustomEmbedModal(props: CustomEmbedModalProps) {
         isOpen={props.isOpen}
         onClose={props.onClose}
         embedToEdit={props.embedToEdit}
+        onSaved={props.onSaved}
+      />
+    );
+  }
+
+  if (props.isOpen && isFloatingPlugin) {
+    return (
+      <StandardFloatingPluginModal
+        isOpen={props.isOpen}
+        onClose={props.onClose}
+        embedToEdit={props.embedToEdit}
+        initialPluginType={props.initialPluginType}
         onSaved={props.onSaved}
       />
     );
@@ -1029,12 +1050,12 @@ function CustomEmbedModalInner({
         const sec = createYouTubeSection({
           id: embedToEdit?.sectionId,
           name: finalName,
-          videoUrl: ytUrl.trim(),
+          url: ytUrl.trim(),
           aspectRatio: ytAspectRatio,
           maxWidth: ytMaxWidth,
           autoplay: ytAutoplay,
           mute: ytMute,
-          controls: ytControls,
+          showControls: ytControls,
         });
 
         if (embedToEdit?.sectionId) {

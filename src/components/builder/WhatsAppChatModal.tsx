@@ -90,7 +90,29 @@ export const COLOR_SWATCHES = [
   { value: "#EC4899", label: "Pink", isLight: false },
 ];
 
+import { StandardFloatingPluginModal } from "./floating-plugins/StandardFloatingPluginModal";
+
 export function WhatsAppChatModal({
+  isOpen,
+  onClose,
+  embedToEdit,
+  onSaved,
+}: WhatsAppChatModalProps) {
+  if (isOpen) {
+    return (
+      <StandardFloatingPluginModal
+        isOpen={isOpen}
+        onClose={onClose}
+        embedToEdit={embedToEdit}
+        initialPluginType="whatsapp"
+        onSaved={onSaved}
+      />
+    );
+  }
+  return null;
+}
+
+function LegacyWhatsAppChatModal({
   isOpen,
   onClose,
   embedToEdit,
@@ -439,6 +461,36 @@ export function WhatsAppChatModal({
                       inputMode="numeric"
                       value={rawPhone}
                       onChange={(e) => setRawPhone(formatTenDigitPhoneNumber(e.target.value))}
+                      onKeyDown={(e) => {
+                        if (
+                          e.key === "Backspace" ||
+                          e.key === "Delete" ||
+                          e.key === "Tab" ||
+                          e.key === "Escape" ||
+                          e.key === "Enter" ||
+                          e.key === "ArrowLeft" ||
+                          e.key === "ArrowRight" ||
+                          e.key === "Home" ||
+                          e.key === "End" ||
+                          e.ctrlKey ||
+                          e.metaKey
+                        ) {
+                          return;
+                        }
+                        if (!/^\d$/.test(e.key)) {
+                          e.preventDefault();
+                          return;
+                        }
+                        const digits = rawPhone.replace(/\D/g, "");
+                        const input = e.currentTarget;
+                        const hasSelection =
+                          input.selectionStart !== null &&
+                          input.selectionEnd !== null &&
+                          input.selectionStart !== input.selectionEnd;
+                        if (digits.length >= 10 && !hasSelection) {
+                          e.preventDefault();
+                        }
+                      }}
                       placeholder="(123)-456-7890"
                       maxLength={14}
                       className="h-10 flex-1 bg-[#1A1A1E] px-3.5 text-xs text-white placeholder-zinc-500 focus:outline-none font-mono"

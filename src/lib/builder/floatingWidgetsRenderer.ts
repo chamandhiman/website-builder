@@ -343,18 +343,25 @@ export function renderFloatingWidgetsOverlay(
           href = `mailto:${rawVal}`;
         }
 
-        const iconSvg = actionType === "whatsapp"
+        const customIcon = widget.config.customIconUrl
+          ? `<img src="${widget.config.customIconUrl}" alt="icon" style="width: 18px; height: 18px; object-fit: contain; flex-shrink: 0;" />`
+          : null;
+
+        const iconSvg = customIcon || (actionType === "whatsapp"
           ? `<svg viewBox="0 0 32 32" width="18" height="18" fill="currentColor" style="flex-shrink:0;"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.825.736 5.48 2.025 7.78L.667 30.667l7.098-1.328A15.932 15.932 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm8.01 22.614c-.332.935-1.642 1.716-2.696 1.944-.72.155-1.662.28-4.82-1.03-4.04-1.674-6.643-5.787-6.845-6.056-.195-.268-1.62-2.155-1.62-4.11 0-1.954 1.026-2.915 1.39-3.315.363-.4.792-.5 1.057-.5.265 0 .53.003.762.014.246.012.576-.093.901.688.332.8 1.13 2.723 1.23 2.946.098.223.164.484.032.748-.131.264-.197.43-.393.662-.196.23-.414.514-.59.69-.197.195-.403.407-.174.802.23.394 1.022 1.685 2.193 2.73 1.507 1.344 2.778 1.762 3.172 1.957.394.197.625.165.856-.1.23-.264.986-1.147 1.25-1.542.264-.395.527-.33.888-.198.363.132 2.298 1.083 2.693 1.28.396.198.66.297.758.462.099.165.099.957-.233 1.892z"/></svg>`
           : actionType === "email"
           ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>`
-          : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`;
+          : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`);
 
         const displayLabel = rawVal ? label : (editorMode ? `${label} (Set Phone)` : label);
+        const size = widget.config.size || "medium";
+        const btnPadding = size === "small" ? "8px 14px" : size === "large" ? "12px 22px" : "10px 18px";
+        const fontSize = size === "small" ? "12px" : size === "large" ? "14px" : "13px";
 
         htmlParts.push(`
           <div class="wto-floating-item wto-floating-contact" ${editAttrs} style="position: fixed; ${posStyle} z-index: 99995; pointer-events: auto;">
             ${editorControls}
-            <a href="${editorMode ? "javascript:void(0)" : href}" class="wto-contact-btn" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; background: ${btnColor}; color: ${textColor}; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px; font-weight: 700; box-shadow: 0 6px 20px rgba(0,0,0,0.3); transition: transform 0.2s ease;">
+            <a href="${editorMode ? "javascript:void(0)" : href}" title="${label}" class="wto-contact-btn" style="display: inline-flex; align-items: center; gap: 8px; padding: ${btnPadding}; border-radius: 999px; background: ${btnColor}; color: ${textColor}; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: ${fontSize}; font-weight: 700; box-shadow: 0 6px 20px rgba(0,0,0,0.3); transition: transform 0.2s ease;">
               ${iconSvg}
               <span>${displayLabel}</span>
             </a>

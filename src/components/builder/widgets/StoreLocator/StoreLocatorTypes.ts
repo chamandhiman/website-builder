@@ -20,6 +20,7 @@ export interface StoreLocatorContent {
   paddingTop: number;
   paddingBottom: number;
   stores: StoreLocationItem[];
+  [key: string]: unknown;
 }
 
 export interface StoreLocatorWidgetData extends WidgetData {

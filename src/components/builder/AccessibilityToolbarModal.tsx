@@ -40,7 +40,29 @@ export function getA11yHumanIconSvg(color: string = "currentColor", size: number
   return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="${color}" style="display:block; flex-shrink:0;"><path d="M12 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/></svg>`;
 }
 
+import { StandardFloatingPluginModal } from "./floating-plugins/StandardFloatingPluginModal";
+
 export function AccessibilityToolbarModal({
+  isOpen,
+  onClose,
+  embedToEdit,
+  onSaved,
+}: AccessibilityToolbarModalProps) {
+  if (isOpen) {
+    return (
+      <StandardFloatingPluginModal
+        isOpen={isOpen}
+        onClose={onClose}
+        embedToEdit={embedToEdit}
+        initialPluginType="accessibility"
+        onSaved={onSaved}
+      />
+    );
+  }
+  return null;
+}
+
+function LegacyAccessibilityToolbarModal({
   isOpen,
   onClose,
   embedToEdit,

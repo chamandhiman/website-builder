@@ -164,14 +164,22 @@ export function getProjectCustomEmbeds(project: Project | null | undefined): Cus
       defaultName = "Back to Top";
       pType = "back_to_top";
     } else if (fw.type === "floating_contact") {
-      defaultName = "Floating Contact";
+      defaultName = "Floating Contact Button";
       pType = "contact";
+    } else if (fw.type === "chatbot") {
+      defaultName = "AI Chatbot";
+      pType = "chatbot";
     } else if (fw.type === "announcement_popup") {
-      defaultName = "Announcement Popup";
-      pType = "announcement";
+      if (fw.config?.layout === "modal" || fw.name.toLowerCase().includes("popup")) {
+        defaultName = "Popup Modal";
+        pType = "popup";
+      } else {
+        defaultName = "Announcement Bar";
+        pType = "announcement";
+      }
     } else if (fw.type === "custom_embed") {
-      defaultName = "Custom HTML";
-      pType = "custom_html";
+      defaultName = "Floating Custom Embed";
+      pType = "custom_embed";
     }
 
     const html = String(fw.snippetHtml || fw.config?.html || "");
