@@ -354,6 +354,7 @@ function migrateProject(raw: unknown): Project {
       hideFooter: page.hideFooter ?? false,
     }));
     base = {
+      ...p,
       id: String(p.id),
       name: p.name ?? "Untitled",
       pages,
@@ -375,6 +376,7 @@ function migrateProject(raw: unknown): Project {
       keywords: p.keywords,
       publishedAt: p.publishedAt,
       thumbnail: p.thumbnail,
+      floatingWidgets: Array.isArray(p.floatingWidgets) ? p.floatingWidgets : [],
     };
   } else {
     const pageId = nanoid(8);
@@ -393,6 +395,7 @@ function migrateProject(raw: unknown): Project {
       },
     ];
     base = {
+      ...p,
       id: String(p.id ?? nanoid(8)),
       name: p.name ?? "Untitled",
       pages,
@@ -409,6 +412,7 @@ function migrateProject(raw: unknown): Project {
       updatedAt: p.updatedAt ?? Date.now(),
       assets: p.assets,
       selectedTemplateId: p.selectedTemplateId,
+      floatingWidgets: Array.isArray(p.floatingWidgets) ? p.floatingWidgets : [],
     };
   }
   const isYoga = base.selectedTemplateId === "tpl-flow-yoga" || /flow\s*yoga/i.test(base.name || "");
@@ -485,6 +489,24 @@ function loadFromStorage(): { projects: Record<string, Project>; currentProjectI
     for (const [id, p] of Object.entries(parsed.projects || {})) {
       const migrated = migrateProject(p);
       migrated.assets = normalizeAssetMap(migrated.assets as Record<string, unknown> | undefined) as Record<string, BuilderAssetEntry> | undefined;
+
+      // Smart recovery: if floatingWidgets is empty or missing, check preview cache
+      if ((!migrated.floatingWidgets || migrated.floatingWidgets.length === 0) && typeof window !== "undefined") {
+        try {
+          const previewRaw =
+            localStorage.getItem(`wto-preview-${id}`) ??
+            sessionStorage.getItem(`wto-preview-${id}`) ??
+            localStorage.getItem("wto-preview-latest") ??
+            sessionStorage.getItem("wto-preview-latest");
+          if (previewRaw) {
+            const parsedPreview = JSON.parse(previewRaw);
+            if (Array.isArray(parsedPreview?.project?.floatingWidgets) && parsedPreview.project.floatingWidgets.length > 0) {
+              migrated.floatingWidgets = parsedPreview.project.floatingWidgets;
+            }
+          }
+        } catch {}
+      }
+
       projects[id] = migrated;
     }
     let leftPanelOpen = parsed.leftPanelOpen;
@@ -1255,6 +1277,7 @@ export const useBuilder = create<BuilderState>((set, get) => ({
         hideHeader: pg.hideHeader,
         hideFooter: pg.hideFooter,
       })),
+      floatingWidgets: p.floatingWidgets ? JSON.parse(JSON.stringify(p.floatingWidgets)) : [],
       globalCss: p.globalCss,
       globalJs: p.globalJs,
     };
@@ -2598,6 +2621,7 @@ function applyHistoryEntry(
           currentPageId: entry.pageId,
           sharedHeader: entry.sharedHeader !== undefined ? entry.sharedHeader : cur.sharedHeader,
           sharedFooter: entry.sharedFooter !== undefined ? entry.sharedFooter : cur.sharedFooter,
+          floatingWidgets: entry.floatingWidgets !== undefined ? entry.floatingWidgets : cur.floatingWidgets,
           globalCss: entry.globalCss,
           globalJs: entry.globalJs,
           updatedAt: Date.now(),

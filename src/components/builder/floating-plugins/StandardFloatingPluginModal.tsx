@@ -23,6 +23,7 @@ import type {
 } from "@/lib/builder/floatingWidgetsTypes";
 import { FloatingPluginModalShell } from "./FloatingPluginModalShell";
 import { LiveWebsitePreviewFrame } from "./LiveWebsitePreviewFrame";
+import { WhatsAppChatModal } from "../WhatsAppChatModal";
 
 // Plugin Config Components & Renderers
 import {
@@ -824,6 +825,17 @@ export function StandardFloatingPluginModal({
         );
     }
   };
+
+  if (isOpen && activePluginType === "whatsapp") {
+    return (
+      <WhatsAppChatModal
+        isOpen={isOpen}
+        onClose={onClose}
+        embedToEdit={embedToEdit}
+        onSaved={onSaved}
+      />
+    );
+  }
 
   return (
     <FloatingPluginModalShell

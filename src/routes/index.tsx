@@ -22,6 +22,16 @@ export const Route = createFileRoute("/")({
         content:
           "Pick a template, edit anything with your mouse, and download clean website files. No coding needed.",
       },
+      {
+        property: "og:url",
+        content: "https://builder.webtoolocean.com/",
+      },
+    ],
+    links: [
+      {
+        rel: "canonical",
+        href: "https://builder.webtoolocean.com/",
+      },
     ],
   }),
   component: RootOrSubdomainIndex,

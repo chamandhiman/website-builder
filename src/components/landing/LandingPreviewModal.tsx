@@ -163,7 +163,7 @@ export function LandingPreviewModal({
               srcDoc={livePreviewHtml}
               title={template.name || template.n}
               className="w-full h-full border-0"
-              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-popups-to-escape-sandbox"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-popups-to-escape-sandbox allow-presentation"
             />
           ) : (
             <div

@@ -195,7 +195,21 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
     try {
       iframeWindow.postMessage({ __wto: true, type: 'set-selected-section', payload: { sectionId: selectedId } }, '*');
     } catch (_) { }
+    if (selectedId) {
+      scrollSectionIntoView(selectedId);
+    }
   }, [mounted, selectedId]);
+
+  useEffect(() => {
+    const handleScroll = (e: Event) => {
+      const customEvent = e as CustomEvent<{ sectionId?: string }>;
+      if (customEvent.detail?.sectionId) {
+        scrollSectionIntoView(customEvent.detail.sectionId);
+      }
+    };
+    window.addEventListener("wto-scroll-to-section", handleScroll);
+    return () => window.removeEventListener("wto-scroll-to-section", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (!mounted || !selectedId) {

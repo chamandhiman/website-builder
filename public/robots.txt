@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+Allow: /templates
+Allow: /assets/
+Allow: /images/
+Allow: /style.css
+Allow: /favicon.ico
+Allow: /favicon.png
+Disallow: /dashboard/
+Disallow: /dashboard
+Disallow: /super-admin/
+Disallow: /super-admin
+Disallow: /editor/
+Disallow: /demo/
+Disallow: /login
+Disallow: /register
+
+Sitemap: https://builder.webtoolocean.com/sitemap.xml

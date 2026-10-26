@@ -132,8 +132,10 @@ export function buildCustomHtmlBootstrapMarkup(
   const radiusStyle = cfg.borderRadius > 0 ? `border-radius:${cfg.borderRadius}px;overflow:hidden;` : ``;
   const paddingStyle = `padding-top:${cfg.paddingTop}px;padding-bottom:${cfg.paddingBottom}px;`;
 
+  const escapeAttr = (s: string) => String(s || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
   const wrapResult = (inner: string) => {
-    return `<div class="wto-custom-html-outer" style="${maxWidthStyle}${paddingStyle}${heightStyle}${radiusStyle}"><div class="wto-custom-html-wrapper w-100 overflow-visible" style="display:block;width:100%;position:relative;">${inner}</div></div>`;
+    return `<div class="wto-custom-html-outer" style="${maxWidthStyle}${paddingStyle}${heightStyle}${radiusStyle}"><div class="wto-custom-html-wrapper w-100 overflow-visible" data-wto-custom-html="1" style="display:block;width:100%;position:relative;">${inner}</div></div>`;
   };
 
   // 2. Check if this contains a WebToolOcean dynamic widget embed
@@ -224,7 +226,7 @@ export function buildCustomHtmlBootstrapMarkup(
       const cleanHtml = context?.editorMode
         ? rawHtml.replace(/<script[^>]*src=["']https:\/\/widgets\.webtoolocean\.com\/widget\.js["'][^>]*>\s*<\/script>/gi, "")
         : rawHtml;
-      return wrapResult(`<div class="wto-custom-html-wrapper w-100 overflow-visible" style="display:block;width:100%;position:relative;">${cleanHtml}</div>`);
+      return wrapResult(`<div class="wto-custom-html-wrapper w-100 overflow-visible" data-wto-custom-html="1" style="display:block;width:100%;position:relative;">${cleanHtml}</div>`);
     }
 
     // If not found in local storage, in preview or live mode preserve the embed markup and ensure runtime script is available
@@ -245,5 +247,38 @@ export function buildCustomHtmlBootstrapMarkup(
   }
 
   // 3. For custom HTML, iframes, and third-party embeds (YouTube, Calendly, forms, etc.):
+  if (context?.editorMode) {
+    const hasScript = /<script\b/i.test(rawHtml);
+    if (hasScript) {
+      const widgetIdMatch = rawHtml.match(/data-widget-id=["']([^"']+)["']/i);
+      const scriptSrcMatch = rawHtml.match(/src=["']([^"']+)["']/i);
+      const widgetIdLabel = widgetIdMatch ? widgetIdMatch[1] : null;
+      const scriptLabel = scriptSrcMatch ? scriptSrcMatch[1].split("/").pop() : "Custom Script";
+
+      const editorEmbedBadge = `
+        <div class="wto-custom-script-editor-card" data-wto-ignore-edit="1" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:#18181b;border:1.5px solid rgba(245,158,11,0.4);border-radius:12px;color:#e4e4e7;font-family:system-ui,-apple-system,sans-serif;margin:8px 0;box-shadow:0 4px 16px rgba(0,0,0,0.3);user-select:none;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(245,158,11,0.15);color:#fbbf24;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            </div>
+            <div>
+              <div style="font-weight:700;font-size:12px;color:#ffffff;display:flex;align-items:center;gap:6px;">
+                <span>Embed Script: ${escapeAttr(scriptLabel || "Custom Script")}</span>
+                <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:999px;background:rgba(34,197,94,0.15);color:#4ade80;border:1px solid rgba(34,197,94,0.3);">ACTIVE</span>
+              </div>
+              <div style="font-size:11px;color:#a1a1aa;margin-top:1px;">
+                ${widgetIdLabel ? `Widget ID: <strong style="color:#ffffff;">${escapeAttr(widgetIdLabel)}</strong> &bull; ` : ""}
+                Live preview running in canvas &amp; preview
+              </div>
+            </div>
+          </div>
+        </div>
+      `.trim();
+
+      const editorMarkup = `${editorEmbedBadge}\n${rawHtml}`;
+      return wrapResult(editorMarkup);
+    }
+  }
+
   return wrapResult(rawHtml);
 }

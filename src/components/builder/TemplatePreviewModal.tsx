@@ -368,7 +368,7 @@ export function TemplatePreviewModal({
               srcDoc={previewHtml}
               title={`${template.name} Preview`}
               className="h-full w-full border-0 bg-white"
-              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-popups-to-escape-sandbox"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-popups-to-escape-sandbox allow-presentation"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-[#94A3B8] text-sm">

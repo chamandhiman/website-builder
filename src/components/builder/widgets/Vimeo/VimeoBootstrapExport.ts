@@ -79,7 +79,6 @@ export function buildVimeoBootstrapMarkup(
             title="Vimeo Video Player"
             style="position: absolute; inset: 0; width: 100%; height: 100%; border: none; ${editorMode ? "pointer-events: none;" : ""}"
             allow="autoplay; fullscreen; picture-in-picture"
-            allowfullscreen
           ></iframe>
         </div>
       </div>

@@ -330,9 +330,30 @@ export function CustomEmbedModal(props: CustomEmbedModalProps) {
     return props.initialPluginType === "announcement";
   }, [props.embedToEdit, props.initialPluginType]);
 
+  const isWhatsApp = useMemo(() => {
+    if (props.embedToEdit) {
+      if (props.embedToEdit.pluginType === "whatsapp") return true;
+      const lower = (props.embedToEdit.name || "").toLowerCase();
+      if (lower.includes("whatsapp")) return true;
+      if (props.embedToEdit.floatingRecord?.type === "whatsapp_chat") return true;
+    }
+    return props.initialPluginType === "whatsapp";
+  }, [props.embedToEdit, props.initialPluginType]);
+
   if (props.isOpen && isAnnouncement) {
     return (
       <AnnouncementBarModal
+        isOpen={props.isOpen}
+        onClose={props.onClose}
+        embedToEdit={props.embedToEdit}
+        onSaved={props.onSaved}
+      />
+    );
+  }
+
+  if (props.isOpen && isWhatsApp) {
+    return (
+      <WhatsAppChatModal
         isOpen={props.isOpen}
         onClose={props.onClose}
         embedToEdit={props.embedToEdit}

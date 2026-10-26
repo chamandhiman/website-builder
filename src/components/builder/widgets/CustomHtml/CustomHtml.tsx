@@ -35,8 +35,15 @@ export function CustomHtml({ data = defaultCustomHtmlWidgetData }: { data: Widge
   const sanitizedRawHtml = rawHtml
     .replace(/<script[^>]*src=["']https?:\/\/widgets\.webtoolocean\.com\/widget\.js["'][^>]*>\s*<\/script>/gi, "")
     .replace(/https?:\/\/widgets\.webtoolocean\.com\/widget\.js/gi, "/widget.js");
+  const hasActiveProject = useBuilder((s) => Boolean(s.currentProjectId));
+  const isEditable = typeof window !== "undefined" && (window.location.pathname.startsWith("/editor") || hasActiveProject);
   const [livePreviewMarkup, setLivePreviewMarkup] = useState<string | null>(null);
   const [isWidgetDisabled, setIsWidgetDisabled] = useState(false);
+
+  const hasScript = /<script\b/i.test(rawHtml);
+  const widgetIdAttrMatch = rawHtml.match(/data-widget-id=["']([^"']+)["']/i);
+  const customWidgetId = widgetIdAttrMatch ? widgetIdAttrMatch[1] : null;
+  const isPureScript = hasScript && rawHtml.replace(/<script[\s\S]*?<\/script>/gi, "").trim() === "";
 
   // Check if this Custom HTML contains a WebToolOcean widget embed (e.g. data-wto-widget="wgt_google_..." or data-wto-widget="wgt_wa_...")
   const wtoWidgetMatch = rawHtml.match(/data-wto-widget=(?:["']|&quot;)?([^"'\s>&;]+)(?:["']|&quot;)?/i);
@@ -340,6 +347,69 @@ export function CustomHtml({ data = defaultCustomHtmlWidgetData }: { data: Widge
     return cleanup;
   }, [livePreviewMarkup, rawHtml]);
 
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const container = containerRef.current;
+    const scripts = Array.from(container.querySelectorAll("script"));
+    const createdScripts: HTMLScriptElement[] = [];
+
+    scripts.forEach((oldScript) => {
+      if (oldScript.getAttribute("data-wto-executed") === "1") return;
+      if (oldScript.getAttribute("type") === "text/wto-inert") return;
+      const widgetId = oldScript.getAttribute("data-widget-id");
+      const src = oldScript.getAttribute("src");
+
+      if (src && src.includes("webtoolocean.com") && !widgetId) {
+        console.warn("[CustomHtml] Embed script is missing data-widget-id attribute:", src);
+      }
+
+      if (widgetId) {
+        if (
+          (window as any)["__WTO_POPUP_" + widgetId + "_LOADED__"] ||
+          (src && src.includes("whatsapp") && (window as any)["__WTO_WHATSAPP_LOADED__"])
+        ) {
+          oldScript.setAttribute("data-wto-executed", "1");
+          return;
+        }
+      }
+      oldScript.setAttribute("data-wto-executed", "1");
+
+      const newScript = document.createElement("script");
+      for (let i = 0; i < oldScript.attributes.length; i++) {
+        const attr = oldScript.attributes[i];
+        if (attr.name === "type" && attr.value === "text/wto-inert") continue;
+        newScript.setAttribute(attr.name, attr.value);
+      }
+      newScript.setAttribute("data-wto-executed", "1");
+      if (oldScript.textContent) {
+        newScript.textContent = oldScript.textContent;
+      }
+
+      newScript.onerror = (e) => {
+        console.warn("[CustomHtml] Failed to load external embed script:", src, e);
+      };
+
+      oldScript.parentNode?.replaceChild(newScript, oldScript);
+      createdScripts.push(newScript);
+    });
+
+    return () => {
+      createdScripts.forEach((s) => {
+        const widgetId = s.getAttribute("data-widget-id");
+        if (widgetId) {
+          const popupHost = document.getElementById("wto-popup-host-" + widgetId);
+          if (popupHost) popupHost.remove();
+          delete (window as any)["__WTO_POPUP_" + widgetId + "_LOADED__"];
+
+          const waHost = document.getElementById("wto-whatsapp-container-" + widgetId);
+          if (waHost) waHost.remove();
+          delete (window as any)["__WTO_WHATSAPP_LOADED__"];
+        }
+        s.remove();
+      });
+    };
+  }, [sanitizedRawHtml]);
+
   if (d.advanced?.visibility === false) return null;
   if (detectedWidgetId && isWidgetDisabled) return null;
 
@@ -418,6 +488,36 @@ export function CustomHtml({ data = defaultCustomHtmlWidgetData }: { data: Widge
             >
               Open Studio ↗
             </a>
+          </div>
+        ) : isEditable && hasScript && isPureScript ? (
+          <div className="relative group">
+            <div
+              className="w-full p-3 rounded-xl border border-amber-500/30 bg-zinc-900/90 text-zinc-200 text-sm flex items-center justify-between select-none shadow-lg mb-2"
+              data-wto-ignore-edit="1"
+              data-builder-selectable="false"
+              data-builder-editor-only="1"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-amber-400/10 text-amber-400 flex items-center justify-center shrink-0">
+                  <Code2 className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="font-bold text-white text-xs flex items-center gap-2">
+                    <span>Embed Script: {customWidgetId || "Custom Script"}</span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                      ACTIVE
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-zinc-400 mt-0.5">
+                    Live preview running in canvas &amp; preview
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              className="w-full"
+              dangerouslySetInnerHTML={{ __html: sanitizedRawHtml }}
+            />
           </div>
         ) : (
           <div className="relative group">

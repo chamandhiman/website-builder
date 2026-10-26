@@ -674,28 +674,24 @@ export function renderAccessibilityHtml(
     }
 
     /* 6. High Contrast Mode */
-    body.wto-a11y-active-high-contrast {
-      background-color: #000000 !important;
-      color: #ffffff !important;
-    }
-    body.wto-a11y-active-high-contrast *:not(.wto-a11y-root, .wto-a11y-root *) {
-      background-color: #000000 !important;
-      color: #ffff00 !important;
-      border-color: #ffffff !important;
-      box-shadow: none !important;
+    body.wto-a11y-active-high-contrast > .wto-page-shell,
+    body.wto-a11y-active-high-contrast > *:not(.wto-floating-widgets-layer):not([data-wto-floating-layer]):not(.wto-a11y-root) {
+      filter: contrast(135%) brightness(102%) !important;
     }
 
     /* 7. Inverted Colors Mode */
-    body.wto-a11y-active-inverted {
+    body.wto-a11y-active-inverted > .wto-page-shell,
+    body.wto-a11y-active-inverted > *:not(.wto-floating-widgets-layer):not([data-wto-floating-layer]):not(.wto-a11y-root) {
       filter: invert(1) hue-rotate(180deg) !important;
       background-color: #ffffff !important;
     }
     body.wto-a11y-active-inverted .wto-a11y-root {
-      filter: invert(1) hue-rotate(180deg) !important;
+      filter: none !important;
     }
 
     /* 8. Monochrome / Grayscale Mode */
-    body.wto-a11y-active-monochrome {
+    body.wto-a11y-active-monochrome > .wto-page-shell,
+    body.wto-a11y-active-monochrome > *:not(.wto-floating-widgets-layer):not([data-wto-floating-layer]):not(.wto-a11y-root) {
       filter: grayscale(100%) !important;
     }
     body.wto-a11y-active-monochrome .wto-a11y-root {

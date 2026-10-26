@@ -296,7 +296,7 @@ export function createYouTubeSection({
   const html = `<section class="wto-youtube-section py-8" style="width: 100%; background: transparent;">
   <div class="container" style="max-width: ${maxWidth}; margin: 0 auto; padding: 0 16px;">
     <div style="position: relative; width: 100%; aspect-ratio: ${aspectRatio}; border-radius: 14px; overflow: hidden; box-shadow: 0 12px 36px rgba(0,0,0,0.35);">
-      <iframe src="${embedUrl}" title="${name || 'YouTube Video'}" style="position: absolute; inset: 0; width: 100%; height: 100%; border: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <iframe src="${embedUrl}" title="${name || 'YouTube Video'}" style="position: absolute; inset: 0; width: 100%; height: 100%; border: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"></iframe>
     </div>
   </div>
 </section>`;

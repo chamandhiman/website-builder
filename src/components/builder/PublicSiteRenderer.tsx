@@ -163,7 +163,7 @@ export function PublicSiteRenderer({ slug, initialPageSlug }: PublicSiteRenderer
         srcDoc={renderedHtml}
         title={data.name || "Published Website"}
         className="w-full h-full border-0 block"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-popups-to-escape-sandbox"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-popups-to-escape-sandbox allow-presentation"
       />
 
       {/* Subtle "Made with WebToolOcean" Badge */}

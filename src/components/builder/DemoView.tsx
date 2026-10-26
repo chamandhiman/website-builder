@@ -653,9 +653,9 @@ export function DemoView({ projectId }: { projectId: string }) {
 
   return (
     <iframe
+      key={`${actualProjectId}-${activePageId}-${(projRef.current || proj)?.updatedAt || 0}`}
       title={(projRef.current || proj)?.name || "Preview"}
       srcDoc={previewHtml || undefined}
-      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-popups-to-escape-sandbox"
       style={{ width: "100vw", height: "100vh", border: 0 }}
     />
   );

@@ -1,4 +1,4 @@
-﻿import { createWidgetInstance, getWidgetBootstrapExport, type WidgetData } from "../widgetRegistry";
+import { createWidgetInstance, getWidgetBootstrapExport, type WidgetData } from "../widgetRegistry";
 import { getContainerChildWidgetData, type ContainerChildItem } from "../Container/ContainerTypes";
 import { defaultHeroWidgetData, getHeroChildItems, isHeroWidgetData, normalizeHeroChildItem } from "./HeroTypes";
 import { getResponsiveSpacingCss, resolveHeroLayoutMargin, resolveHeroLayoutPadding } from "../spacing";
@@ -185,7 +185,7 @@ export function buildHeroBootstrapMarkup(
           if (videoType === "youtube") {
             const youtubeUrl = String((style as any).youtubeUrl || "");
             const embedUrl = youtubeUrl.replace("watch?v=", "embed/").replace("youtu.be/", "www.youtube.com/embed/");
-            return `<iframe src="${embedUrl}" style="position:absolute;inset:0;width:100%;height:100%;border:none;object-fit:cover;z-index:0;pointer-events:none;" allow="autoplay; encrypted-media" allowfullscreen title="Background video"></iframe>`;
+            return `<iframe src="${embedUrl}" style="position:absolute;inset:0;width:100%;height:100%;border:none;object-fit:cover;z-index:0;pointer-events:none;" allow="autoplay; encrypted-media; fullscreen" title="Background video"></iframe>`;
           }
           if (videoType === "vimeo") {
             const vimeoUrl = String((style as any).vimeoUrl || "");
@@ -194,7 +194,7 @@ export function buildHeroBootstrapMarkup(
             const muted = (style as any).videoMuted ?? true;
             const loop = (style as any).videoLoop ?? true;
             const controls = (style as any).videoShowControls ?? false;
-            return `<iframe src="${embedUrl}?autoplay=${autoplay ? 1 : 0}&muted=${muted ? 1 : 0}&loop=${loop ? 1 : 0}&controls=${controls ? 1 : 0}" style="position:absolute;inset:0;width:100%;height:100%;border:none;object-fit:cover;z-index:0;pointer-events:none;" allow="autoplay; fullscreen" allowfullscreen title="Background video"></iframe>`;
+            return `<iframe src="${embedUrl}?autoplay=${autoplay ? 1 : 0}&muted=${muted ? 1 : 0}&loop=${loop ? 1 : 0}&controls=${controls ? 1 : 0}" style="position:absolute;inset:0;width:100%;height:100%;border:none;object-fit:cover;z-index:0;pointer-events:none;" allow="autoplay; fullscreen" title="Background video"></iframe>`;
           }
           const videoSrc = String((style as any).videoSrc || "");
           return `<video autoplay=${(style as any).videoAutoplay ?? true} muted=${(style as any).videoMuted ?? true} loop=${(style as any).videoLoop ?? true} controls=${(style as any).videoShowControls ?? false} poster="${(style as any).videoPoster || ""}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;"><source src="${videoSrc}" /></video>`;

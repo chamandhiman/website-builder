@@ -116,16 +116,16 @@ export function renderFloatingWidgetsOverlay(
     const pos = widget.position;
 
     let posStyle = "";
-    if (pos === "bottom_right") posStyle = `bottom: ${coords.y}px; right: ${coords.x}px;`;
-    else if (pos === "bottom_left") posStyle = `bottom: ${coords.y}px; left: ${coords.x}px;`;
-    else if (pos === "bottom_center") posStyle = `bottom: ${coords.y}px; left: 50%; transform: translateX(-50%);`;
-    else if (pos === "top_right") posStyle = `top: ${coords.y}px; right: ${coords.x}px;`;
-    else if (pos === "top_left") posStyle = `top: ${coords.y}px; left: ${coords.x}px;`;
-    else if (pos === "top_center") posStyle = `top: ${coords.y}px; left: 50%; transform: translateX(-50%);`;
-    else if (pos === "top_fixed") posStyle = `top: 0; left: 0; width: 100%;`;
-    else if (pos === "bottom_fixed") posStyle = `bottom: 0; left: 0; width: 100%;`;
-    else if (pos === "middle_right") posStyle = `top: 50%; right: ${coords.x}px; transform: translateY(-50%);`;
-    else if (pos === "middle_left") posStyle = `top: 50%; left: ${coords.x}px; transform: translateY(-50%);`;
+    if (pos === "bottom_right") posStyle = `bottom: ${coords.y}px !important; right: ${coords.x}px !important;`;
+    else if (pos === "bottom_left") posStyle = `bottom: ${coords.y}px !important; left: ${coords.x}px !important;`;
+    else if (pos === "bottom_center") posStyle = `bottom: ${coords.y}px !important; left: 50% !important; transform: translateX(-50%) !important;`;
+    else if (pos === "top_right") posStyle = `top: ${coords.y}px !important; right: ${coords.x}px !important;`;
+    else if (pos === "top_left") posStyle = `top: ${coords.y}px !important; left: ${coords.x}px !important;`;
+    else if (pos === "top_center") posStyle = `top: ${coords.y}px !important; left: 50% !important; transform: translateX(-50%) !important;`;
+    else if (pos === "top_fixed") posStyle = `top: 0 !important; left: 0 !important; width: 100% !important;`;
+    else if (pos === "bottom_fixed") posStyle = `bottom: 0 !important; left: 0 !important; width: 100% !important;`;
+    else if (pos === "middle_right") posStyle = `top: 50% !important; right: ${coords.x}px !important; transform: translateY(-50%) !important;`;
+    else if (pos === "middle_left") posStyle = `top: 50% !important; left: ${coords.x}px !important; transform: translateY(-50%) !important;`;
 
     const desktopDisplay = widget.showOnDesktop ? "flex" : "none";
     const mobileDisplay = widget.showOnMobile ? "flex" : "none";
@@ -173,7 +173,7 @@ export function renderFloatingWidgetsOverlay(
         const isLeft = pos.includes("left");
 
         htmlParts.push(`
-          <div class="wto-floating-item wto-floating-whatsapp" ${editAttrs} style="position: fixed; ${posStyle} z-index: 99999; pointer-events: auto;">
+          <div class="wto-floating-item wto-floating-whatsapp" ${editAttrs} style="position: fixed !important; ${posStyle} z-index: 99999 !important; pointer-events: auto !important;">
             ${editorControls}
             <div class="wto-wa-container" style="display: flex; flex-direction: ${pos.startsWith("middle") ? (isLeft ? "row" : "row-reverse") : "column"}; align-items: ${isLeft ? "flex-start" : "flex-end"}; gap: 10px;">
               ${
@@ -489,15 +489,40 @@ export function renderFloatingWidgetsOverlay(
 
   const overlayHtml = `
     <!-- WebToolOcean Floating Widgets Overlay Layer -->
-    <div class="wto-floating-widgets-layer" data-wto-floating-layer="1" style="position: fixed; inset: 0; pointer-events: none; z-index: 99999; overflow: visible;">
+    <div class="wto-floating-widgets-layer" data-wto-floating-layer="1" style="position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; width: 100vw !important; height: 100vh !important; pointer-events: none !important; z-index: 2147483647 !important; overflow: visible !important;">
       ${htmlParts.join("\n")}
     </div>
   `;
 
   const css = `
-    .wto-floating-widgets-layer { pointer-events: none !important; }
-    .wto-floating-item { pointer-events: auto !important; transition: transform 0.18s ease; }
-    .wto-floating-item:hover { transform: translateY(-2px); }
+    /* Body & HTML must NEVER have filter or transform, which would break position: fixed viewport anchoring */
+    body, html {
+      filter: none !important;
+    }
+    .wto-floating-widgets-layer {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      pointer-events: none !important;
+      z-index: 2147483647 !important;
+      overflow: visible !important;
+      transform: none !important;
+    }
+    .wto-floating-item {
+      position: fixed !important;
+      pointer-events: auto !important;
+      z-index: 2147483647 !important;
+    }
+    .wto-floating-item:not(.wto-floating-announcement-banner) {
+      transition: transform 0.18s ease;
+    }
+    .wto-floating-item:not(.wto-floating-announcement-banner):hover {
+      transform: translateY(-2px);
+    }
     .wto-floating-announcement-banner, .wto-floating-announcement-banner:hover { transform: none !important; }
     @keyframes wtoSlideDown {
       from { transform: translateY(-100%); opacity: 0; }
@@ -519,19 +544,10 @@ export function renderFloatingWidgetsOverlay(
       outline-offset: 4px;
       box-shadow: 0 0 16px rgba(250, 204, 21, 0.45) !important;
     }
-    /* Accessibility Widget Styles */
-    body.wto-high-contrast {
-      background-color: #000000 !important;
-      color: #FFFF00 !important;
-    }
-    body.wto-high-contrast *:not(.wto-a11y-panel):not(.wto-a11y-panel *) {
-      background-color: #000000 !important;
-      color: #FFFF00 !important;
-      border-color: #FFFF00 !important;
-    }
-    body.wto-high-contrast a:not(.wto-a11y-panel *) {
-      color: #00FFFF !important;
-      text-decoration: underline !important;
+    /* Accessibility Widget Styles: Applied cleanly to content shell so body never gets filter */
+    body.wto-high-contrast > .wto-page-shell,
+    body.wto-high-contrast > *:not(.wto-floating-widgets-layer):not([data-wto-floating-layer]):not(.wto-floating-item):not(#wto-a11y-flyout) {
+      filter: contrast(135%) brightness(102%) !important;
     }
     body.wto-readable-font *:not(.wto-a11y-panel *) {
       font-family: Arial, Helvetica, sans-serif !important;
@@ -629,13 +645,16 @@ export function renderFloatingWidgetsOverlay(
         }
       }, true);
 
-      // Restore saved preferences
+      // Restore saved preferences (disabled in builder editorMode)
       try {
+        if (${editorMode}) {
+          document.body.classList.remove('wto-high-contrast');
+        }
         var rawA11y = localStorage.getItem('wto_a11y_prefs');
         if (rawA11y) {
           var p = JSON.parse(rawA11y);
           if (p.scale && p.scale !== 100) applyA11yScale(p.scale);
-          if (p.contrast) document.body.classList.add('wto-high-contrast');
+          if (!${editorMode} && p.contrast) document.body.classList.add('wto-high-contrast');
           if (p.font) document.body.classList.add('wto-readable-font');
           if (p.keyboard) document.body.classList.add('wto-a11y-focus-visible');
           if (p.reducedMotion) document.body.classList.add('wto-reduced-motion');

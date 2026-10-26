@@ -24,6 +24,7 @@ import {
   Navigation,
   Bot,
   LayoutTemplate,
+  Plus,
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
@@ -138,17 +139,6 @@ const PLUGIN_CATALOG: CatalogItem[] = [
     pluginType: "back_to_top",
     iconBg: "bg-[#4F46E5]",
     iconType: "back_to_top",
-  },
-  {
-    id: "custom_embed",
-    name: "Floating Custom Embed",
-    category: "tools",
-    categoryLabel: "Tools",
-    renderingCategory: "floating",
-    description: "Position custom HTML, chatbot widgets, or third-party floating code snippets at any screen corner.",
-    pluginType: "custom_embed",
-    iconBg: "bg-[#3F3F46]",
-    iconType: "custom_html",
   },
 ];
 
@@ -474,89 +464,89 @@ export function CustomEmbedsPanel() {
     switch (iconType) {
       case "whatsapp":
         return (
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#25D366] text-white shadow-sm">
-            <svg viewBox="0 0 32 32" className="h-6 w-6 fill-current">
+          <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl bg-[#25D366] text-white shadow-sm">
+            <svg viewBox="0 0 32 32" className="h-5 w-5 fill-current">
               <path d="M16 0C7.163 0 0 7.163 0 16c0 2.825.736 5.48 2.025 7.78L.667 30.667l7.098-1.328A15.932 15.932 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm8.01 22.614c-.332.935-1.642 1.716-2.696 1.944-.72.155-1.662.28-4.82-1.03-4.04-1.674-6.643-5.787-6.845-6.056-.195-.268-1.62-2.155-1.62-4.11 0-1.954 1.026-2.915 1.39-3.315.363-.4.792-.5 1.057-.5.265 0 .53.003.762.014.246.012.576-.093.901.688.332.8 1.13 2.723 1.23 2.946.098.223.164.484.032.748-.131.264-.197.43-.393.662-.196.23-.414.514-.59.69-.197.195-.403.407-.174.802.23.394 1.022 1.685 2.193 2.73 1.507 1.344 2.778 1.762 3.172 1.957.394.197.625.165.856-.1.23-.264.986-1.147 1.25-1.542.264-.395.527-.33.888-.198.363.132 2.298 1.083 2.693 1.28.396.198.66.297.758.462.099.165.099.957-.233 1.892z"/>
             </svg>
           </div>
         );
       case "youtube":
         return (
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#E02424] text-white shadow-sm">
-            <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current">
+          <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl bg-[#E02424] text-white shadow-sm">
+            <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current">
               <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
             </svg>
           </div>
         );
       case "maps":
         return (
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#34A853] text-white shadow-sm">
-            <MapPin className="h-6 w-6" />
+          <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl bg-[#34A853] text-white shadow-sm">
+            <MapPin className="h-5 w-5" />
           </div>
         );
       case "language":
         return (
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-sm">
-            <Globe className="h-6 w-6" />
+          <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-sm">
+            <Globe className="h-5 w-5" />
           </div>
         );
       case "accessibility":
         return (
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-sm">
-            <Accessibility className="h-6 w-6" />
+          <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-sm">
+            <Accessibility className="h-5 w-5" />
           </div>
         );
       case "contact":
         return (
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#0284C7] text-white shadow-sm">
+          <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl bg-[#0284C7] text-white shadow-sm">
             <Phone className="h-5 w-5" />
           </div>
         );
       case "back_to_top":
         return (
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#4F46E5] text-white shadow-sm">
-            <ArrowUp className="h-6 w-6" />
+          <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl bg-[#4F46E5] text-white shadow-sm">
+            <ArrowUp className="h-5 w-5" />
           </div>
         );
       case "announcement":
         return (
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#D97706] text-white shadow-sm">
+          <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl bg-[#D97706] text-white shadow-sm">
             <Megaphone className="h-5 w-5" />
           </div>
         );
       case "reviews":
         return (
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EA4335] text-white shadow-sm">
+          <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl bg-[#EA4335] text-white shadow-sm">
             <Star className="h-5 w-5 fill-current" />
           </div>
         );
       case "vimeo":
         return (
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#1AB7EA] text-white shadow-sm">
+          <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl bg-[#1AB7EA] text-white shadow-sm">
             <Video className="h-5 w-5" />
           </div>
         );
       case "store_locator":
         return (
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#059669] text-white shadow-sm">
+          <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl bg-[#059669] text-white shadow-sm">
             <Navigation className="h-5 w-5" />
           </div>
         );
       case "chatbot":
         return (
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-sm">
-            <Bot className="h-6 w-6" />
+          <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-sm">
+            <Bot className="h-5 w-5" />
           </div>
         );
       case "popup":
         return (
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EC4899] text-white shadow-sm">
+          <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl bg-[#EC4899] text-white shadow-sm">
             <Megaphone className="h-5 w-5" />
           </div>
         );
       default:
         return (
-          <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${bgClass} text-white shadow-sm border border-zinc-700/60 font-mono text-sm font-bold`}>
+          <div className={`flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl ${bgClass} text-white shadow-sm border border-zinc-700/60 font-mono text-sm font-bold`}>
             &lt;/&gt;
           </div>
         );
@@ -598,18 +588,19 @@ export function CustomEmbedsPanel() {
                   : "bg-transparent text-zinc-400 hover:text-white"
               }`}
             >
-              Active Plugins
+              Active Plugins ({filterCounts.all})
             </button>
             <button
               type="button"
               onClick={() => setInternalTab("add_new")}
-              className={`py-2 text-xs font-bold rounded-lg transition-all ${
+              className={`py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
                 internalTab === "add_new"
                   ? "bg-[#FACC15] text-zinc-950 shadow-sm"
                   : "bg-transparent text-zinc-400 hover:text-white"
               }`}
             >
-              Add New
+              <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
+              <span>Add New</span>
             </button>
           </div>
 
@@ -735,8 +726,8 @@ export function CustomEmbedsPanel() {
         )}
       </div>
 
-      {/* ── BODY (Scrollable Cards Area) ───────────────────────── */}
-      <div className="flex-1 overflow-y-auto px-3.5 py-3 space-y-2.5">
+      {/* ── BODY (Scrollable Content Area) ───────────────────────── */}
+      <div className={`flex-1 overflow-y-auto ${internalTab === "my_plugins" ? "px-3.5 py-3 space-y-2.5" : ""}`}>
         {internalTab === "my_plugins" ? (
           /* TAB 1: MY PLUGINS */
           allEmbeds.length === 0 ? (
@@ -881,55 +872,50 @@ export function CustomEmbedsPanel() {
             })
           )
         ) : (
-          /* TAB 2: ADD NEW CATALOG */
+          /* TAB 2: ADD NEW CATALOG - Compact continuous list */
           filteredCatalog.length === 0 ? (
-            <div className="my-8 p-6 text-center rounded-2xl border border-dashed border-zinc-800 bg-[#161619]">
-              <Search className="mx-auto h-6 w-6 text-zinc-500 mb-2" />
-              <p className="text-xs font-medium text-zinc-300">No matching plugins in catalog</p>
-              <p className="mt-1 text-[11px] text-zinc-500">Try choosing another category or clearing search</p>
+            <div className="px-3.5 py-3">
+              <div className="my-8 p-6 text-center rounded-2xl border border-dashed border-zinc-800 bg-[#161619]">
+                <Search className="mx-auto h-6 w-6 text-zinc-500 mb-2" />
+                <p className="text-xs font-medium text-zinc-300">No matching plugins in catalog</p>
+                <p className="mt-1 text-[11px] text-zinc-500">Try choosing another category or clearing search</p>
+              </div>
             </div>
           ) : (
-            filteredCatalog.map((plugin) => {
-              return (
-                <div
-                  key={plugin.id}
-                  className="group rounded-2xl border border-zinc-800/80 bg-[#161618] p-3 flex items-center justify-between gap-3 hover:border-zinc-700 hover:bg-[#1A1A1D] transition-all"
-                >
-                  {/* Icon */}
-                  {renderCardIcon(plugin.iconType, plugin.iconBg)}
+            <div className="flex flex-col">
+              {filteredCatalog.map((plugin) => {
+                return (
+                  <div
+                    key={plugin.id}
+                    className="group flex min-h-[58px] items-center justify-between gap-3 px-3 py-2 border-b border-[#303036] last:border-b-0 hover:bg-white/[0.04] focus-within:bg-white/[0.04] transition-colors"
+                  >
+                    {/* Icon */}
+                    {renderCardIcon(plugin.iconType, plugin.iconBg)}
 
-                  {/* Middle Info */}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <h4 className="font-bold text-sm text-white truncate">
+                    {/* Middle Info - Plugin Name */}
+                    <div className="min-w-0 flex-1">
+                      <h4
+                        className="font-medium text-sm text-zinc-100 group-hover:text-white truncate leading-none"
+                        title={plugin.name}
+                      >
                         {plugin.name}
                       </h4>
-                      {plugin.renderingCategory === "floating" ? (
-                        <span className="inline-flex items-center rounded-full bg-emerald-950/70 border border-emerald-500/40 px-2 py-0.2 text-[9px] font-semibold text-emerald-400">
-                          Floating
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center rounded-full bg-amber-950/70 border border-amber-500/40 px-2 py-0.2 text-[9px] font-semibold text-amber-300">
-                          Page Section
-                        </span>
-                      )}
                     </div>
-                    <p className="text-xs text-zinc-400 line-clamp-2 mt-0.5 leading-snug">
-                      {plugin.description}
-                    </p>
-                  </div>
 
-                  {/* Yellow Add Button matching Mockup 2 */}
-                  <button
-                    type="button"
-                    onClick={() => handleOpenAddModal(plugin.pluginType)}
-                    className="shrink-0 flex items-center justify-center rounded-lg bg-[#FACC15] hover:bg-[#FDE047] px-4 py-1.5 text-xs font-bold text-zinc-950 transition shadow-xs active:scale-95"
-                  >
-                    Add
-                  </button>
-                </div>
-              );
-            })
+                    {/* Yellow Add (+) Button */}
+                    <button
+                      type="button"
+                      onClick={() => handleOpenAddModal(plugin.pluginType)}
+                      className="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg bg-[#FACC15] hover:bg-[#FDE047] text-zinc-950 transition shadow-xs active:scale-95 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#FACC15] focus-visible:ring-offset-1 focus-visible:ring-offset-[#18181B]"
+                      title={`Add ${plugin.name}`}
+                      aria-label={`Add ${plugin.name}`}
+                    >
+                      <Plus className="h-4 w-4 stroke-[2.5]" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
           )
         )}
       </div>

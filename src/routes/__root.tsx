@@ -88,14 +88,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "WebToolOcean — Drag & Drop Website Builder" },
       { property: "og:description", content: "Build beautiful, responsive websites without code. Drag pre-built HTML sections, edit inline, and export production-ready HTML, CSS, and JavaScript." },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://builder.webtoolocean.com/" },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d85a05a9-c71b-4775-88b8-cb73c6849803/id-preview-56fcb52b--36d1ad9a-6d64-4ba7-ae4f-8fde04af296f.lovable.app-1783423688753.png" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@WebToolOcean" },
       { name: "twitter:title", content: "WebToolOcean — Drag & Drop Website Builder" },
       { name: "twitter:description", content: "Build beautiful, responsive websites without code. Drag pre-built HTML sections, edit inline, and export production-ready HTML, CSS, and JavaScript." },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d85a05a9-c71b-4775-88b8-cb73c6849803/id-preview-56fcb52b--36d1ad9a-6d64-4ba7-ae4f-8fde04af296f.lovable.app-1783423688753.png" },
     ],
     links: [
+      {
+        rel: "canonical",
+        href: "https://builder.webtoolocean.com/",
+      },
       {
         rel: "preconnect",
         href: "https://fonts.googleapis.com",
@@ -128,7 +133,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
     scripts: [
-      { src: "https://www.googletagmanager.com/gtag/js?id=G-W14JC88EV7", async: true },
+      { src: "https://www.googletagmanager.com/gtag/js?id=G-4C1PP726EZ", async: true },
     ],
   }),
   shellComponent: RootShell,

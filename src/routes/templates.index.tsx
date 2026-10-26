@@ -23,6 +23,25 @@ export const Route = createFileRoute("/templates/")({
         content:
           "Browse high-converting, responsive website templates for business, real estate, portfolio, health, restaurant, and SaaS. Customize visually and download clean HTML.",
       },
+      {
+        property: "og:title",
+        content: "Website Templates | WebToolOcean Website Builder",
+      },
+      {
+        property: "og:description",
+        content:
+          "Browse high-converting, responsive website templates for business, real estate, portfolio, health, restaurant, and SaaS. Customize visually and download clean HTML.",
+      },
+      {
+        property: "og:url",
+        content: "https://builder.webtoolocean.com/templates",
+      },
+    ],
+    links: [
+      {
+        rel: "canonical",
+        href: "https://builder.webtoolocean.com/templates",
+      },
     ],
   }),
   component: PublicTemplatesPage,

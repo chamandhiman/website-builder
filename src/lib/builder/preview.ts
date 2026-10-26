@@ -567,6 +567,69 @@ div:has(nav) { position: relative; z-index: 9999; }
 @media (min-width: 1180px) { [data-wto-hidden-desktop="1"] { display: block !important; } }
 `;
 
+export const WTO_CUSTOM_HTML_ACTIVATOR = `
+  // Dynamic Custom HTML & Embed script activation for canvas, preview, and published pages
+  var activateCustomHtmlScripts = function(scope) {
+    var root = scope || document;
+    if (!root.querySelectorAll) return;
+    var scripts = Array.from(root.querySelectorAll('.wto-custom-html-wrapper script, [data-wto-custom-html] script, .wto-floating-custom-inner script, script[data-widget-id], script[src*="webtoolocean.com"]'));
+    scripts.forEach(function(oldScript) {
+        if (oldScript.getAttribute('data-wto-executed') === '1') return;
+        var widgetId = oldScript.getAttribute('data-widget-id');
+        var src = oldScript.getAttribute('src');
+
+        // Diagnostic warning for missing widget ID on external WebToolOcean embed scripts
+        if (src && src.indexOf('webtoolocean.com') !== -1 && !widgetId) {
+          console.warn('[CustomHtml] Embed script is missing data-widget-id attribute:', src);
+        }
+
+        // Deduplication safeguard: avoid executing if this specific widget instance is already initialized
+        if (widgetId) {
+          if (
+            window['__WTO_POPUP_' + widgetId + '_LOADED__'] ||
+            (src && src.indexOf('whatsapp') !== -1 && window['__WTO_WHATSAPP_LOADED__'])
+          ) {
+            oldScript.setAttribute('data-wto-executed', '1');
+            return;
+          }
+        }
+        oldScript.setAttribute('data-wto-executed', '1');
+
+        var newScript = document.createElement('script');
+        for (var i = 0; i < oldScript.attributes.length; i++) {
+          var attr = oldScript.attributes[i];
+          if (attr.name === 'type' && attr.value === 'text/wto-inert') {
+            continue;
+          }
+          newScript.setAttribute(attr.name, attr.value);
+        }
+        newScript.setAttribute('data-wto-executed', '1');
+        if (oldScript.textContent) {
+          newScript.textContent = oldScript.textContent;
+        }
+
+        newScript.onerror = function(err) {
+          console.warn('[CustomHtml] Failed to load external embed script:', src, err);
+        };
+
+        oldScript.parentNode.replaceChild(newScript, oldScript);
+      });
+  };
+  activateCustomHtmlScripts(document);
+  if (typeof MutationObserver !== 'undefined' && document.body) {
+    var customScriptMo = new MutationObserver(function(muts) {
+      muts.forEach(function(m) {
+        m.addedNodes.forEach(function(node) {
+          if (node.nodeType === 1) {
+            activateCustomHtmlScripts(node);
+          }
+        });
+      });
+    });
+    customScriptMo.observe(document.body, { childList: true, subtree: true });
+  }
+`;
+
 export const RUNTIME_SCRIPT = `
 (function(){
   const send = (type, payload) => {
@@ -3412,6 +3475,7 @@ send('navigate-page', { slug });
     ${WTO_CAROUSEL_RUNTIME}
   ${WTO_FAQ_RUNTIME}
   ${WTO_STANDALONE_WIDGET_JS}
+  ${WTO_CUSTOM_HTML_ACTIVATOR}
 })();
 `;
 
@@ -3548,6 +3612,8 @@ const EXPORT_RUNTIME_BASE = `
       }
     } catch (_) {}
   });
+
+  ${WTO_CUSTOM_HTML_ACTIVATOR}
   } catch (err) {
     console.error('Export site runtime failed', err);
   }
@@ -4065,9 +4131,27 @@ ${fontAwesomeStyles}
 ${bootstrapStyles}
 ${previewStyles}
 <style>
-  html, body { margin: 0; min-height: 100%; overflow-x: hidden; }
+  html, body { margin: 0; min-height: 100%; overflow-x: hidden; filter: none !important; }
   body { margin: 0; min-height: 100%; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: #fff; color: #111827; }
   body > .wto-page-shell { min-height: 100%; }
+  .wto-floating-widgets-layer {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    pointer-events: none !important;
+    z-index: 2147483647 !important;
+    overflow: visible !important;
+    transform: none !important;
+  }
+  .wto-floating-item {
+    position: fixed !important;
+    pointer-events: auto !important;
+    z-index: 2147483647 !important;
+  }
   /* Universal sticky header on scroll for all themes */
   header,
   .site-header,

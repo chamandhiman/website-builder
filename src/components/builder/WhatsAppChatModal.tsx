@@ -3,11 +3,15 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   X,
-  MessageCircle,
-  Upload,
   Check,
-  AlertCircle,
   ChevronDown,
+  Monitor,
+  Smartphone,
+  Paintbrush,
+  SlidersHorizontal,
+  GraduationCap,
+  ArrowRight,
+  Sparkles,
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
@@ -15,11 +19,6 @@ import { nanoid } from "nanoid";
 import { useBuilder } from "@/lib/builder/store";
 import type { CustomEmbedItem } from "@/lib/builder/customEmbedsUtils";
 import type { FloatingPosition, FloatingWidgetRecord } from "@/lib/builder/floatingWidgetsTypes";
-import {
-  normalizeWhatsAppPhone,
-  isValidWhatsAppPhone,
-  createWhatsAppUrl,
-} from "@/services/whatsappChatTemplates";
 import { getWhatsAppButtonIconSvg } from "@/lib/builder/floatingWidgetsRenderer";
 
 /**
@@ -82,15 +81,14 @@ export const COUNTRY_CALLING_CODES = [
 
 export const COLOR_SWATCHES = [
   { value: "#25D366", label: "Green", isLight: false },
-  { value: "#FFFFFF", label: "White", isLight: true },
+  { value: "#128C7E", label: "Teal", isLight: false },
   { value: "#111111", label: "Black", isLight: false },
-  { value: "#EF4444", label: "Red", isLight: false },
-  { value: "#3B82F6", label: "Blue", isLight: false },
+  { value: "#2563EB", label: "Blue", isLight: false },
   { value: "#8B5CF6", label: "Purple", isLight: false },
-  { value: "#EC4899", label: "Pink", isLight: false },
+  { value: "#EF4444", label: "Red", isLight: false },
+  { value: "#F97316", label: "Orange", isLight: false },
+  { value: "#FFFFFF", label: "White", isLight: true },
 ];
-
-import { StandardFloatingPluginModal } from "./floating-plugins/StandardFloatingPluginModal";
 
 export function WhatsAppChatModal({
   isOpen,
@@ -98,69 +96,44 @@ export function WhatsAppChatModal({
   embedToEdit,
   onSaved,
 }: WhatsAppChatModalProps) {
-  if (isOpen) {
-    return (
-      <StandardFloatingPluginModal
-        isOpen={isOpen}
-        onClose={onClose}
-        embedToEdit={embedToEdit}
-        initialPluginType="whatsapp"
-        onSaved={onSaved}
-      />
-    );
-  }
-  return null;
-}
-
-function LegacyWhatsAppChatModal({
-  isOpen,
-  onClose,
-  embedToEdit,
-  onSaved,
-}: WhatsAppChatModalProps) {
-  const project = useBuilder((s) => (s.currentProjectId ? s.projects[s.currentProjectId] : null));
   const persistWithStatus = useBuilder((s) => s.persistWithStatus);
 
-  // Form State
+  // ── MODAL TAB STATE ────────────────────────────────────────────────────────
+  const [activeTab, setActiveTab] = useState<"design" | "preferences">("design");
+
+  // ── TAB ONE: DESIGN (WhatsApp Contact Details & Button Style) ──────────────
   const [countryCode, setCountryCode] = useState("+91");
   const [rawPhone, setRawPhone] = useState("");
   const [agentName, setAgentName] = useState("Customer Support");
-  const [prefilledMessage, setPrefilledMessage] = useState("Hello! I have a question about your services.");
-
-  // Style State
+  const [prefilledMessage, setPrefilledMessage] = useState(
+    "Hello! I have a question about your services."
+  );
   const [buttonStyle, setButtonStyle] = useState<WhatsAppButtonStyleKey>("whatsapp_standard");
+
+  // ── TAB TWO: PREFERENCES (Appearance, Position & Visibility) ───────────────
   const [buttonColor, setButtonColor] = useState("#25D366");
-  const [buttonLabel, setButtonLabel] = useState("Chat with us");
-  const [labelPosition, setLabelPosition] = useState<"hover" | "always" | "hidden">("hover");
-  const [customIconUrl, setCustomIconUrl] = useState<string>("");
-
-  // Position State
-  const [position, setPosition] = useState<"bottom_right" | "bottom_left" | "middle_right" | "middle_left">("bottom_right");
-
-  // Visibility State
-  const [pageTargeting, setPageTargeting] = useState<"all" | "custom">("all");
-  const [selectedPages, setSelectedPages] = useState<string[]>([]);
+  const [buttonSize, setButtonSize] = useState<"small" | "medium" | "large">("medium");
+  const [tooltipText, setTooltipText] = useState("Chat with us 👋");
+  const [position, setPosition] = useState<FloatingPosition>("bottom_right");
   const [showOnDesktop, setShowOnDesktop] = useState(true);
   const [showOnMobile, setShowOnMobile] = useState(true);
   const [showTooltip, setShowTooltip] = useState(true);
-  const [tooltipText, setTooltipText] = useState("Chat with us 👋");
 
-  // Submission State
+  // ── PREVIEW & SUBMISSION STATE ─────────────────────────────────────────────
+  const [previewMode, setPreviewMode] = useState<"desktop" | "mobile">("desktop");
   const [isSaving, setIsSaving] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Available project pages
-  const projectPages = useMemo(() => project?.pages || [], [project]);
+  const customColorInputRef = useRef<HTMLInputElement>(null);
 
   // Initialize or re-populate when modal opens or embedToEdit changes
   useEffect(() => {
     if (!isOpen) return;
+    setActiveTab("design");
 
     if (embedToEdit && embedToEdit.floatingRecord) {
       const fw = embedToEdit.floatingRecord;
       const cfg = fw.config || {};
 
-      // Phone extraction (strictly 10 digits formatted)
+      // Phone extraction
       const storedPhone = String(cfg.phoneNumber || "").trim();
       const matchedCode = COUNTRY_CALLING_CODES.find((c) => storedPhone.startsWith(c.code));
       let digits = "";
@@ -180,165 +153,94 @@ function LegacyWhatsAppChatModal({
       setPrefilledMessage(cfg.prefilledMessage || "Hello! I have a question about your services.");
       setButtonStyle(cfg.buttonStyle || "whatsapp_standard");
       setButtonColor(cfg.buttonColor || "#25D366");
-      setButtonLabel(cfg.buttonLabel || "Chat with us");
-      setLabelPosition(cfg.labelPosition || "hover");
-      setCustomIconUrl(cfg.customIconUrl || "");
+      setButtonSize(cfg.buttonSize || "medium");
+      setTooltipText(cfg.tooltipText || cfg.greetingText || "Chat with us 👋");
 
-      // Position
-      const validPositions: Array<"bottom_right" | "bottom_left" | "middle_right" | "middle_left"> = [
+      const validPositions: FloatingPosition[] = [
         "bottom_right",
         "bottom_left",
         "middle_right",
         "middle_left",
       ];
       if (validPositions.includes(fw.position as any)) {
-        setPosition(fw.position as any);
+        setPosition(fw.position);
       } else {
         setPosition("bottom_right");
       }
 
-      // Visibility
-      setPageTargeting(fw.pageTargeting === "custom" ? "custom" : "all");
-      setSelectedPages(fw.targetedPages || []);
-      setShowOnDesktop(fw.showOnDesktop !== false);
-      setShowOnMobile(fw.showOnMobile !== false);
-      setShowTooltip(cfg.showTooltip !== false);
-      setTooltipText(cfg.tooltipText || cfg.greetingText || "Chat with us 👋");
+      setShowOnDesktop(fw.showOnDesktop ?? true);
+      setShowOnMobile(fw.showOnMobile ?? true);
+      setShowTooltip(cfg.showTooltip ?? true);
     } else {
-      // Default initial state
+      // Default initial values for new plugin
       setCountryCode("+91");
       setRawPhone("");
       setAgentName("Customer Support");
       setPrefilledMessage("Hello! I have a question about your services.");
       setButtonStyle("whatsapp_standard");
       setButtonColor("#25D366");
-      setButtonLabel("Chat with us");
-      setLabelPosition("hover");
-      setCustomIconUrl("");
+      setButtonSize("medium");
+      setTooltipText("Chat with us 👋");
       setPosition("bottom_right");
-      setPageTargeting("all");
-      setSelectedPages(projectPages.map((p) => p.id));
       setShowOnDesktop(true);
       setShowOnMobile(true);
       setShowTooltip(true);
-      setTooltipText("Chat with us 👋");
     }
-  }, [isOpen, embedToEdit, projectPages]);
+  }, [isOpen, embedToEdit]);
 
   if (!isOpen) return null;
 
-  // Normalized clean phone (strictly 10 numbers)
-  const cleanDigits = rawPhone.replace(/\D/g, "").slice(0, 10);
-  const isPhoneValid = cleanDigits.length === 10;
-  const combinedPhone = `${countryCode}${cleanDigits}`;
-  const waClickUrl = isPhoneValid
-    ? createWhatsAppUrl(combinedPhone, prefilledMessage)
-    : "javascript:void(0)";
-
-  // Handle custom icon upload
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!["image/png", "image/svg+xml", "image/jpeg", "image/webp"].includes(file.type)) {
-      toast.error("Please upload a PNG, SVG, or JPEG file");
-      return;
-    }
-
-    if (file.size > 200 * 1024) {
-      toast.error("File size must be 200KB or less");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      if (dataUrl) {
-        setCustomIconUrl(dataUrl);
-        toast.success("Custom icon uploaded");
-      }
-    };
-    reader.onerror = () => {
-      toast.error("Failed to read image file");
-    };
-    reader.readAsDataURL(file);
-  };
-
-  // Toggle page in selected pages checklist
-  const togglePageSelection = (pageId: string) => {
-    setSelectedPages((prev) =>
-      prev.includes(pageId) ? prev.filter((id) => id !== pageId) : [...prev, pageId]
-    );
-  };
-
-  // Save Plugin
+  // ── SAVE HANDLER ───────────────────────────────────────────────────────────
   const handleSave = async () => {
-    if (!cleanDigits) {
-      toast.error("Please enter a WhatsApp phone number");
-      return;
-    }
-
-    if (cleanDigits.length !== 10) {
-      toast.error("Please enter a valid 10-digit phone number in format (123)-456-7890");
-      return;
-    }
-
-    if (!showOnDesktop && !showOnMobile) {
-      toast.error("Please enable at least one device (Desktop or Mobile)");
-      return;
-    }
-
-    if (pageTargeting === "custom" && selectedPages.length === 0) {
-      toast.error("Please select at least one page under Selected Pages");
+    const digits = rawPhone.replace(/\D/g, "");
+    if (!digits || digits.length < 7) {
+      toast.error("Please enter a valid WhatsApp phone number (minimum 7 digits)");
+      setActiveTab("design");
       return;
     }
 
     setIsSaving(true);
-
     try {
-      const fwId = embedToEdit?.floatingId || embedToEdit?.id || `fw-wa-${nanoid(8)}`;
+      const now = Date.now();
+      const cleanCountryCode = countryCode.trim();
+      const fullPhone = `${cleanCountryCode}${digits}`;
+      const recordId = embedToEdit?.floatingId || `flt_wa_${nanoid(8)}`;
 
-      const fwRecord: FloatingWidgetRecord = {
-        id: fwId,
+      const fwRec: FloatingWidgetRecord = {
+        id: recordId,
         type: "whatsapp_chat",
         name: "WhatsApp Chat",
         enabled: true,
-        position: position as FloatingPosition,
+        position: position,
         offsetX: 20,
         offsetY: 20,
-        showOnDesktop,
-        showOnMobile,
-        pageTargeting,
-        targetedPages: pageTargeting === "custom" ? selectedPages : undefined,
+        showOnDesktop: showOnDesktop,
+        showOnMobile: showOnMobile,
+        pageTargeting: "all",
         config: {
-          phoneNumber: combinedPhone,
-          countryCode,
-          rawPhone: cleanDigits,
-          formattedPhone: rawPhone,
+          countryCode: cleanCountryCode,
+          rawPhone: rawPhone,
+          phoneNumber: fullPhone,
           agentName: agentName.trim() || "Customer Support",
           prefilledMessage: prefilledMessage.trim(),
-          buttonStyle,
-          buttonColor,
-          buttonLabel: buttonLabel.trim() || "Chat with us",
-          labelPosition,
-          customIconUrl,
-          showTooltip,
+          buttonStyle: buttonStyle,
+          buttonColor: buttonColor,
+          buttonSize: buttonSize,
+          buttonLabel: "Chat with us",
           tooltipText: tooltipText.trim() || "Chat with us 👋",
+          showTooltip: showTooltip,
         },
-        createdAt: embedToEdit?.floatingRecord?.createdAt || Date.now(),
-        updatedAt: Date.now(),
+        createdAt: embedToEdit?.floatingRecord?.createdAt || now,
+        updatedAt: now,
       };
 
+      // Persist directly into the website builder store
       useBuilder.setState((s) => {
         const cur = s.currentProjectId ? s.projects[s.currentProjectId] : null;
         if (!cur) return s;
         const existing = cur.floatingWidgets || [];
-        const idx = existing.findIndex((w) => w.id === fwRecord.id);
-        const next =
-          idx >= 0
-            ? existing.map((w, i) => (i === idx ? fwRecord : w))
-            : [...existing, fwRecord];
-
+        const idx = existing.findIndex((w) => w.id === fwRec.id);
+        const next = idx >= 0 ? existing.map((w, i) => (i === idx ? fwRec : w)) : [...existing, fwRec];
         return {
           projects: {
             ...s.projects,
@@ -347,55 +249,33 @@ function LegacyWhatsAppChatModal({
         };
       });
 
-      await persistWithStatus();
-      toast.success("WhatsApp Chat plugin saved successfully!");
+      persistWithStatus();
+      toast.success("Saved WhatsApp Chat");
       onSaved?.();
       onClose();
     } catch (err: any) {
       console.error("[WhatsAppChatModal] Save error:", err);
-      toast.error(err?.message || "Failed to save WhatsApp Chat plugin");
+      toast.error(err?.message || "Failed to save plugin");
     } finally {
       setIsSaving(false);
     }
   };
 
-  // Render button icon in modal and preview
-  const isWhiteButton = buttonColor.toLowerCase() === "#ffffff";
-  const iconColor = isWhiteButton ? "#111111" : "#FFFFFF";
-
-  const renderCurrentIcon = (size = 20) => {
-    if (customIconUrl) {
-      return (
-        <img
-          src={customIconUrl}
-          alt="WhatsApp"
-          style={{ width: size, height: size, objectFit: "contain" }}
-        />
-      );
-    }
-    return (
-      <span
-        dangerouslySetInnerHTML={{
-          __html: getWhatsAppButtonIconSvg(buttonStyle, iconColor),
-        }}
-        style={{
-          display: "inline-flex",
-          width: size,
-          height: size,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      />
-    );
-  };
+  // Preview sizing calculations
+  const isWhite = buttonColor.toLowerCase() === "#ffffff";
+  const iconColor = isWhite ? "#111111" : "#FFFFFF";
+  const btnPx = buttonSize === "small" ? "h-11 w-11" : buttonSize === "large" ? "h-16 w-16" : "h-13 w-13";
+  const isHiddenInCurrentPreview =
+    (previewMode === "desktop" && !showOnDesktop) || (previewMode === "mobile" && !showOnMobile);
 
   return (
-    <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/85 backdrop-blur-xs p-3 sm:p-5 animate-in fade-in duration-150">
-      <div className="relative flex flex-col w-full max-w-6xl max-h-[94vh] rounded-2xl bg-[#121214] text-[#F5F5F5] border border-[#27272A] shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/70 backdrop-blur-xs p-3 sm:p-5 animate-in fade-in duration-150">
+      <div className="relative flex flex-col w-full max-w-6xl max-h-[94vh] rounded-2xl bg-white text-zinc-900 border border-zinc-200 shadow-2xl overflow-hidden">
         {/* ── HEADER ───────────────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between border-b border-[#222225] px-6 py-4 bg-[#151518]">
-          <div className="flex items-center gap-3.5">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#25D366] text-white shadow-md">
+        <div className="flex shrink-0 items-center justify-between border-b border-zinc-200 px-6 py-4 bg-white">
+          <div className="flex items-center gap-3.5 min-w-0">
+            {/* WhatsApp Green Squircle */}
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#25D366] text-white shadow-sm">
               <span
                 dangerouslySetInnerHTML={{
                   __html: getWhatsAppButtonIconSvg("whatsapp_standard", "#FFFFFF"),
@@ -403,606 +283,586 @@ function LegacyWhatsAppChatModal({
                 className="w-6 h-6 flex items-center justify-center"
               />
             </div>
-            <div>
-              <h2 className="text-base font-bold text-white tracking-tight">
-                {embedToEdit ? "Edit WhatsApp Chat" : "Add WhatsApp Chat"}
+            <div className="min-w-0">
+              <h2 className="text-base sm:text-lg font-bold text-zinc-900 tracking-tight truncate">
+                WhatsApp Chat
               </h2>
-              <p className="text-xs text-zinc-400">
-                Add a WhatsApp chat button to your website. Configure the settings below.
+              <p className="text-xs text-zinc-500 truncate">
+                Connect with visitors in real-time using WhatsApp messaging.
               </p>
             </div>
           </div>
+
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-2 text-zinc-400 hover:bg-[#222226] hover:text-white transition"
+            className="rounded-lg p-2 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 transition shrink-0"
             aria-label="Close modal"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* ── MAIN CONTENT (2 COLUMNS) ────────────────────────────────────── */}
-        <div className="flex flex-1 overflow-hidden flex-col lg:flex-row">
-          {/* ── LEFT COLUMN: CONFIGURATION ─────────────────────────────────── */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-zinc-700 bg-[#121214]">
-            {/* 1. CONTENT SECTION */}
-            <div className="space-y-3.5">
-              <div className="flex items-center gap-2.5">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FACC15] text-zinc-950 text-xs font-black">
-                  1
-                </span>
-                <h3 className="text-sm font-bold text-white">Content</h3>
-              </div>
+        {/* ── TWO-COLUMN BODY ───────────────────────────────────────────────── */}
+        <div className="flex flex-1 overflow-hidden flex-col lg:flex-row min-h-0">
+          {/* ── LEFT COLUMN: TAB CONTROLS & CONFIGURATION ──────────────────── */}
+          <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 scrollbar-thin bg-white">
+            {/* ── TWO SEPARATE TABS HEADER: DESIGN & PREFERENCES ─────────────── */}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setActiveTab("design")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition ${
+                  activeTab === "design"
+                    ? "bg-[#2563EB] text-white shadow-sm"
+                    : "bg-zinc-100 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/80"
+                }`}
+              >
+                <Paintbrush className="h-4 w-4" />
+                <span>Design</span>
+              </button>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Phone Number with Country Code */}
-                <div>
-                  <label className="block text-xs font-semibold text-zinc-200 mb-1.5">
-                    WhatsApp Phone Number <span className="text-red-400">*</span>
+              <button
+                type="button"
+                onClick={() => setActiveTab("preferences")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition ${
+                  activeTab === "preferences"
+                    ? "bg-[#2563EB] text-white shadow-sm"
+                    : "bg-zinc-100 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/80"
+                }`}
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+                <span>Preferences</span>
+              </button>
+            </div>
+
+            {/* ── TAB ONE: DESIGN ────────────────────────────────────────────── */}
+            {activeTab === "design" && (
+              <div className="space-y-6 animate-in fade-in duration-150">
+                {/* 1. WHATSAPP DETAILS */}
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-zinc-900 uppercase tracking-wider block">
+                    WhatsApp Details
                   </label>
-                  <div className="flex rounded-lg overflow-hidden border border-[#2E2E33] focus-within:border-[#FACC15] transition">
-                    <div className="relative shrink-0 bg-[#1A1A1E] border-r border-[#2E2E33]">
-                      <select
-                        value={countryCode}
-                        onChange={(e) => setCountryCode(e.target.value)}
-                        className="h-10 pl-3 pr-7 bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer appearance-none"
-                      >
-                        {COUNTRY_CALLING_CODES.map((c) => (
-                          <option key={c.code} value={c.code} className="bg-[#1A1A1E] text-white">
-                            {c.code} ({c.country})
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 pointer-events-none" />
+
+                  {/* Phone Number with Country Selector */}
+                  <div>
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                      <span className="text-xs font-semibold text-zinc-700">Phone Number</span>
+                      <span className="text-rose-500 font-bold">*</span>
                     </div>
+                    <div className="flex rounded-xl overflow-hidden border border-zinc-200 focus-within:border-[#FACC15] focus-within:ring-2 focus-within:ring-yellow-400/20 bg-white transition shadow-xs">
+                      <div className="relative shrink-0 border-r border-zinc-200 bg-zinc-50">
+                        <select
+                          value={countryCode}
+                          onChange={(e) => setCountryCode(e.target.value)}
+                          className="h-11 pl-3 pr-8 bg-transparent text-xs font-semibold text-zinc-800 focus:outline-none cursor-pointer appearance-none"
+                        >
+                          {COUNTRY_CALLING_CODES.map((c) => (
+                            <option key={c.code} value={c.code} className="bg-white text-zinc-900">
+                              {c.flag} {c.code} ({c.country})
+                            </option>
+                          ))}
+                        </select>
+                        <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 pointer-events-none" />
+                      </div>
+                      <input
+                        type="tel"
+                        inputMode="numeric"
+                        value={rawPhone}
+                        onChange={(e) =>
+                          setRawPhone(formatTenDigitPhoneNumber(e.target.value))
+                        }
+                        placeholder="(123)-456-7890"
+                        maxLength={14}
+                        className="h-11 flex-1 bg-transparent px-3 text-xs text-zinc-900 placeholder-zinc-400 focus:outline-none font-mono"
+                      />
+                    </div>
+                    <p className="text-[11px] text-zinc-500 mt-1">
+                      Enter your phone number. Visitors clicking the chat button will directly message this WhatsApp number.
+                    </p>
+                  </div>
+
+                  {/* Pre-filled Message */}
+                  <div>
+                    <span className="text-xs font-semibold text-zinc-700 block mb-1.5">
+                      Pre-filled Message
+                    </span>
+                    <textarea
+                      value={prefilledMessage}
+                      onChange={(e) => setPrefilledMessage(e.target.value)}
+                      placeholder="Hello! I have a question about your services."
+                      rows={3}
+                      className="w-full p-3 rounded-xl border border-zinc-200 bg-white text-xs font-medium text-zinc-800 placeholder-zinc-400 focus:outline-none focus:border-[#FACC15] focus:ring-2 focus:ring-yellow-400/20 resize-none transition shadow-xs"
+                    />
+                    <p className="text-[11px] text-zinc-500 mt-1">
+                      This message will be pre-typed into the visitor's WhatsApp chat input when they click the button.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 2. BUTTON DESIGN SELECTION CARDS */}
+                <div className="space-y-3 pt-2 border-t border-zinc-100">
+                  <label className="text-xs font-bold text-zinc-900 uppercase tracking-wider block">
+                    1. Chat Button Style
+                  </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                    {(
+                      [
+                        { key: "whatsapp_standard", label: "Standard" },
+                        { key: "bubble_dots", label: "Bubble" },
+                        { key: "oval_dots", label: "Dots" },
+                        { key: "phone", label: "Call / WA" },
+                        { key: "whatsapp_solid", label: "Solid" },
+                      ] as const
+                    ).map((s) => {
+                      const isSelected = buttonStyle === s.key;
+                      return (
+                        <button
+                          key={s.key}
+                          type="button"
+                          onClick={() => setButtonStyle(s.key)}
+                          className={`relative flex flex-col items-center justify-center p-3.5 rounded-xl transition ${
+                            isSelected
+                              ? "border-2 border-[#FACC15] bg-yellow-50/30 shadow-xs"
+                              : "border border-zinc-200 bg-white hover:border-zinc-300 hover:bg-zinc-50/50"
+                          }`}
+                        >
+                          {/* Checkmark indicator for selected design */}
+                          {isSelected && (
+                            <div className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#FACC15] text-zinc-950 shadow-xs">
+                              <Check className="h-2.5 w-2.5 stroke-[3]" />
+                            </div>
+                          )}
+
+                          {/* Miniature Button Representation */}
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: getWhatsAppButtonIconSvg(s.key, "#25D366"),
+                            }}
+                            className="mb-2 flex items-center justify-center h-8 w-8"
+                          />
+                          <span
+                            className={`text-xs font-bold truncate ${
+                              isSelected ? "text-zinc-900" : "text-zinc-600"
+                            }`}
+                          >
+                            {s.label}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ── TAB TWO: PREFERENCES ───────────────────────────────────────── */}
+            {activeTab === "preferences" && (
+              <div className="space-y-6 animate-in fade-in duration-150">
+                {/* 1. BUTTON POSITION */}
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-zinc-900 uppercase tracking-wider block">
+                    2. Button Position
+                  </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {(
+                      [
+                        { key: "bottom_right", label: "Right Bottom" },
+                        { key: "bottom_left", label: "Left Bottom" },
+                        { key: "middle_right", label: "Middle Right" },
+                        { key: "middle_left", label: "Middle Left" },
+                      ] as const
+                    ).map((posItem) => {
+                      const isSelected = position === posItem.key;
+                      return (
+                        <button
+                          key={posItem.key}
+                          type="button"
+                          onClick={() => setPosition(posItem.key)}
+                          className={`relative flex flex-col items-center justify-between p-3 rounded-xl transition ${
+                            isSelected
+                              ? "border-2 border-[#FACC15] bg-yellow-50/30 shadow-xs"
+                              : "border border-zinc-200 bg-white hover:border-zinc-300 hover:bg-zinc-50/50"
+                          }`}
+                        >
+                          {isSelected && (
+                            <div className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#FACC15] text-zinc-950 shadow-xs">
+                              <Check className="h-2.5 w-2.5 stroke-[3]" />
+                            </div>
+                          )}
+
+                          {/* Miniature Screen Diagram with Position Dot */}
+                          <div className="h-12 w-full max-w-[84px] rounded-md bg-zinc-100 border border-zinc-200 relative p-1 mb-2">
+                            <div className="h-1 w-full bg-zinc-300/80 rounded-xs mb-1" />
+                            <div
+                              className={`absolute h-2.5 w-2.5 rounded-full bg-[#25D366] shadow-xs ${
+                                posItem.key === "bottom_right"
+                                  ? "bottom-1.5 right-1.5"
+                                  : posItem.key === "bottom_left"
+                                  ? "bottom-1.5 left-1.5"
+                                  : posItem.key === "middle_right"
+                                  ? "top-1/2 -translate-y-1/2 right-1.5"
+                                  : "top-1/2 -translate-y-1/2 left-1.5"
+                              }`}
+                            />
+                          </div>
+
+                          <span
+                            className={`text-xs font-bold truncate ${
+                              isSelected ? "text-zinc-900" : "text-zinc-600"
+                            }`}
+                          >
+                            {posItem.label}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 2. APPEARANCE */}
+                <div className="space-y-4 pt-2 border-t border-zinc-100">
+                  <label className="text-xs font-bold text-zinc-900 uppercase tracking-wider block">
+                    3. Appearance
+                  </label>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Button Color Swatches & Custom Picker */}
+                    <div>
+                      <span className="text-xs font-semibold text-zinc-700 block mb-2">
+                        Button Color
+                      </span>
+                      <div className="flex items-center gap-2 flex-wrap pt-0.5">
+                        {COLOR_SWATCHES.map((swatch) => {
+                          const isSelected = buttonColor.toLowerCase() === swatch.value.toLowerCase();
+                          return (
+                            <button
+                              key={swatch.value}
+                              type="button"
+                              onClick={() => setButtonColor(swatch.value)}
+                              style={{ backgroundColor: swatch.value }}
+                              className={`h-7 w-7 rounded-full border border-zinc-300 transition-transform ${
+                                isSelected
+                                  ? "ring-2 ring-offset-2 ring-offset-white ring-[#2563EB] scale-110 shadow-xs"
+                                  : "hover:scale-105 opacity-90 hover:opacity-100"
+                              }`}
+                              title={swatch.label}
+                            />
+                          );
+                        })}
+
+                        {/* Custom Color Rainbow Picker Button */}
+                        <div className="relative">
+                          <button
+                            type="button"
+                            onClick={() => customColorInputRef.current?.click()}
+                            style={{
+                              background:
+                                "conic-gradient(from 180deg at 50% 50%, #EF4444, #F59E0B, #10B981, #06B6D4, #3B82F6, #8B5CF6, #EF4444)",
+                            }}
+                            className="h-7 w-7 rounded-full border border-zinc-300 hover:scale-105 transition-transform shadow-xs"
+                            title="Custom Color"
+                          />
+                          <input
+                            ref={customColorInputRef}
+                            type="color"
+                            value={buttonColor}
+                            onChange={(e) => setButtonColor(e.target.value)}
+                            className="sr-only"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Button Size */}
+                    <div>
+                      <span className="text-xs font-semibold text-zinc-700 block mb-2">
+                        Button Size
+                      </span>
+                      <div className="flex items-center gap-2">
+                        {(
+                          [
+                            { key: "small", label: "Small" },
+                            { key: "medium", label: "Medium" },
+                            { key: "large", label: "Large" },
+                          ] as const
+                        ).map((sizeItem) => {
+                          const isSelected = buttonSize === sizeItem.key;
+                          return (
+                            <button
+                              key={sizeItem.key}
+                              type="button"
+                              onClick={() => setButtonSize(sizeItem.key)}
+                              className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition ${
+                                isSelected
+                                  ? "border border-[#2563EB] bg-blue-50 text-[#2563EB] shadow-xs"
+                                  : "border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50"
+                              }`}
+                            >
+                              {sizeItem.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Tooltip / Hover Label */}
+                  <div>
+                    <span className="text-xs font-semibold text-zinc-700 block mb-1.5">
+                      4. Text & Message (Tooltip / Hover Label)
+                    </span>
                     <input
-                      type="tel"
-                      inputMode="numeric"
-                      value={rawPhone}
-                      onChange={(e) => setRawPhone(formatTenDigitPhoneNumber(e.target.value))}
-                      onKeyDown={(e) => {
-                        if (
-                          e.key === "Backspace" ||
-                          e.key === "Delete" ||
-                          e.key === "Tab" ||
-                          e.key === "Escape" ||
-                          e.key === "Enter" ||
-                          e.key === "ArrowLeft" ||
-                          e.key === "ArrowRight" ||
-                          e.key === "Home" ||
-                          e.key === "End" ||
-                          e.ctrlKey ||
-                          e.metaKey
-                        ) {
-                          return;
-                        }
-                        if (!/^\d$/.test(e.key)) {
-                          e.preventDefault();
-                          return;
-                        }
-                        const digits = rawPhone.replace(/\D/g, "");
-                        const input = e.currentTarget;
-                        const hasSelection =
-                          input.selectionStart !== null &&
-                          input.selectionEnd !== null &&
-                          input.selectionStart !== input.selectionEnd;
-                        if (digits.length >= 10 && !hasSelection) {
-                          e.preventDefault();
-                        }
-                      }}
-                      placeholder="(123)-456-7890"
-                      maxLength={14}
-                      className="h-10 flex-1 bg-[#1A1A1E] px-3.5 text-xs text-white placeholder-zinc-500 focus:outline-none font-mono"
+                      type="text"
+                      value={tooltipText}
+                      onChange={(e) => setTooltipText(e.target.value)}
+                      placeholder="Chat with us 👋"
+                      className="w-full h-11 px-3.5 rounded-xl border border-zinc-200 bg-white text-xs font-semibold text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#FACC15] focus:ring-2 focus:ring-yellow-400/20 transition shadow-xs"
                     />
                   </div>
-                  <p className="text-[11px] text-zinc-400 mt-1">
-                    Enter your 10-digit WhatsApp number (e.g. (123)-456-7890).
+                </div>
+
+                {/* 3. DISPLAY OPTIONS */}
+                <div className="space-y-3 pt-2 border-t border-zinc-100">
+                  <label className="text-xs font-bold text-zinc-900 uppercase tracking-wider block">
+                    5. Display Options
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 border border-zinc-200">
+                      <span className="text-xs font-semibold text-zinc-800">Show on Desktop</span>
+                      <Switch
+                        checked={showOnDesktop}
+                        onCheckedChange={setShowOnDesktop}
+                        className="data-[state=checked]:bg-[#2563EB]"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 border border-zinc-200">
+                      <span className="text-xs font-semibold text-zinc-800">Show on Mobile</span>
+                      <Switch
+                        checked={showOnMobile}
+                        onCheckedChange={setShowOnMobile}
+                        className="data-[state=checked]:bg-[#2563EB]"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 border border-zinc-200">
+                      <span className="text-xs font-semibold text-zinc-800">Show Tooltip</span>
+                      <Switch
+                        checked={showTooltip}
+                        onCheckedChange={setShowTooltip}
+                        className="data-[state=checked]:bg-[#2563EB]"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* ── RIGHT COLUMN: FIXED LIVE WEBSITE PREVIEW ───────────────────── */}
+          <div className="w-full lg:w-[480px] xl:w-[520px] shrink-0 border-t lg:border-t-0 lg:border-l border-zinc-200 bg-[#FAFAFA] p-5 sm:p-6 flex flex-col justify-between overflow-y-auto scrollbar-thin">
+            <div>
+              {/* Preview Header & Controls */}
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-sm font-bold text-zinc-900 tracking-tight">
+                    Live Preview
+                  </h3>
+                  <p className="text-[11px] text-zinc-500">
+                    See how the WhatsApp chat button will look on your website.
                   </p>
                 </div>
 
-                {/* Support Agent Name */}
-                <div>
-                  <label className="block text-xs font-semibold text-zinc-200 mb-1.5">
-                    Support Agent Name <span className="text-zinc-500 font-normal">(Optional)</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={agentName}
-                    onChange={(e) => setAgentName(e.target.value)}
-                    placeholder="Customer Support"
-                    className="h-10 w-full rounded-lg bg-[#1A1A1E] px-3.5 text-xs text-white placeholder-zinc-500 border border-[#2E2E33] focus:border-[#FACC15] focus:outline-none transition"
-                  />
-                </div>
-              </div>
-
-              {/* Pre-filled Message */}
-              <div>
-                <label className="block text-xs font-semibold text-zinc-200 mb-1.5">
-                  Pre-filled Message <span className="text-zinc-500 font-normal">(Optional)</span>
-                </label>
-                <input
-                  type="text"
-                  value={prefilledMessage}
-                  onChange={(e) => setPrefilledMessage(e.target.value)}
-                  placeholder="Hello! I have a question about your services."
-                  className="h-10 w-full rounded-lg bg-[#1A1A1E] px-3.5 text-xs text-white placeholder-zinc-500 border border-[#2E2E33] focus:border-[#FACC15] focus:outline-none transition"
-                />
-              </div>
-            </div>
-
-            {/* 2. STYLE SECTION */}
-            <div className="space-y-4 pt-1 border-t border-[#1F1F24]">
-              <div className="flex items-center gap-2.5">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FACC15] text-zinc-950 text-xs font-black">
-                  2
-                </span>
-                <h3 className="text-sm font-bold text-white">Style</h3>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Left Sub-column: Button Style & Color */}
-                <div className="space-y-4">
-                  <div>
-                    <span className="block text-xs font-medium text-zinc-300 mb-2">Button Style</span>
-                    <div className="flex items-center gap-2.5 flex-wrap">
-                      {(
-                        [
-                          { key: "whatsapp_standard", title: "WhatsApp" },
-                          { key: "bubble_dots", title: "Chat Bubble" },
-                          { key: "oval_dots", title: "Message Bubble" },
-                          { key: "phone", title: "Phone" },
-                          { key: "whatsapp_solid", title: "WhatsApp Badge" },
-                        ] as const
-                      ).map((styleItem) => {
-                        const isSelected = buttonStyle === styleItem.key;
-                        return (
-                          <button
-                            key={styleItem.key}
-                            type="button"
-                            onClick={() => setButtonStyle(styleItem.key)}
-                            title={styleItem.title}
-                            className={`flex h-11 w-11 items-center justify-center rounded-xl transition ${
-                              isSelected
-                                ? "border-2 border-[#FACC15] bg-[#222228] text-white shadow-sm"
-                                : "border border-[#2B2B32] bg-[#18181C] text-zinc-300 hover:border-zinc-500 hover:text-white"
-                            }`}
-                          >
-                            <span
-                              dangerouslySetInnerHTML={{
-                                __html: getWhatsAppButtonIconSvg(
-                                  styleItem.key,
-                                  isSelected ? "#25D366" : "#A1A1AA"
-                                ),
-                              }}
-                              className="w-5 h-5 flex items-center justify-center"
-                            />
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  <div>
-                    <span className="block text-xs font-medium text-zinc-300 mb-2">Button Color</span>
-                    <div className="flex items-center gap-2.5 flex-wrap">
-                      {COLOR_SWATCHES.map((swatch) => {
-                        const isSelected = buttonColor.toLowerCase() === swatch.value.toLowerCase();
-                        return (
-                          <button
-                            key={swatch.value}
-                            type="button"
-                            onClick={() => setButtonColor(swatch.value)}
-                            title={swatch.label}
-                            style={{ backgroundColor: swatch.value }}
-                            className={`h-7 w-7 rounded-full transition-transform active:scale-95 ${
-                              isSelected
-                                ? "ring-2 ring-[#FACC15] ring-offset-2 ring-offset-[#121214] scale-110"
-                                : "border border-zinc-700/60 hover:scale-105"
-                            }`}
-                          />
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Right Sub-column: Label, Label Position, Custom Icon */}
-                <div className="space-y-3.5">
-                  <div>
-                    <label className="block text-xs font-semibold text-zinc-200 mb-1.5">
-                      Button Label <span className="text-zinc-500 font-normal">(Optional)</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={buttonLabel}
-                      onChange={(e) => setButtonLabel(e.target.value)}
-                      placeholder="Chat with us"
-                      className="h-10 w-full rounded-lg bg-[#1A1A1E] px-3.5 text-xs text-white placeholder-zinc-500 border border-[#2E2E33] focus:border-[#FACC15] focus:outline-none transition"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-zinc-200 mb-1.5">
-                      Label Position
-                    </label>
-                    <div className="relative">
-                      <select
-                        value={labelPosition}
-                        onChange={(e) => setLabelPosition(e.target.value as any)}
-                        className="h-10 w-full rounded-lg bg-[#1A1A1E] pl-3.5 pr-8 text-xs text-white border border-[#2E2E33] focus:border-[#FACC15] focus:outline-none appearance-none cursor-pointer"
-                      >
-                        <option value="hover" className="bg-[#1A1A1E] text-white">
-                          Show on Hover
-                        </option>
-                        <option value="always" className="bg-[#1A1A1E] text-white">
-                          Always Show
-                        </option>
-                        <option value="hidden" className="bg-[#1A1A1E] text-white">
-                          Hidden
-                        </option>
-                      </select>
-                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 pointer-events-none" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-zinc-200 mb-1.5">
-                      Custom Icon <span className="text-zinc-500 font-normal">(Optional)</span>
-                    </label>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        accept="image/png,image/svg+xml,image/jpeg,image/webp"
-                        onChange={handleFileUpload}
-                        className="hidden"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#1A1A1E] border border-[#2E2E33] hover:border-zinc-500 text-xs font-medium text-white transition active:scale-95"
-                      >
-                        <Upload className="h-3.5 w-3.5 text-zinc-400" />
-                        <span>Upload Icon</span>
-                      </button>
-                      {customIconUrl ? (
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={customIconUrl}
-                            alt="Uploaded icon"
-                            className="h-7 w-7 object-contain rounded bg-zinc-800 p-0.5 border border-zinc-700"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setCustomIconUrl("")}
-                            className="text-[11px] text-red-400 hover:text-red-300 underline"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      ) : (
-                        <span className="text-[11px] text-zinc-400">PNG, SVG (max 200KB)</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 3. POSITION SECTION */}
-            <div className="space-y-3 pt-1 border-t border-[#1F1F24]">
-              <div className="flex items-center gap-2.5">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FACC15] text-zinc-950 text-xs font-black">
-                  3
-                </span>
-                <h3 className="text-sm font-bold text-white">Position</h3>
-              </div>
-              <p className="text-xs text-zinc-400">
-                Choose where to show the WhatsApp button on your website.
-              </p>
-
-              {/* 4 Cards */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {(
-                  [
-                    { key: "bottom_right", label: "Bottom Right" },
-                    { key: "bottom_left", label: "Bottom Left" },
-                    { key: "middle_right", label: "Middle Right" },
-                    { key: "middle_left", label: "Middle Left" },
-                  ] as const
-                ).map((posItem) => {
-                  const isSelected = position === posItem.key;
-                  return (
-                    <button
-                      key={posItem.key}
-                      type="button"
-                      onClick={() => setPosition(posItem.key)}
-                      className={`flex flex-col items-center justify-between p-3 rounded-xl transition ${
-                        isSelected
-                          ? "border-2 border-[#FACC15] bg-[#1E1E24] shadow-sm"
-                          : "border border-[#2B2B30] bg-[#16161A] hover:border-zinc-500"
-                      }`}
-                    >
-                      {/* Miniature screen diagram */}
-                      <div className="h-14 w-full max-w-[100px] rounded-md bg-[#0D0D10] border border-[#2B2B32] relative p-1 mb-2">
-                        <div className="h-1.5 w-full bg-[#1F1F26] rounded-xs mb-1" />
-                        {/* Position Indicator Dot */}
-                        <div
-                          className={`absolute h-2.5 w-2.5 rounded-full bg-[#25D366] shadow-[0_0_8px_#25D366] ${
-                            posItem.key === "bottom_right"
-                              ? "bottom-1.5 right-1.5"
-                              : posItem.key === "bottom_left"
-                              ? "bottom-1.5 left-1.5"
-                              : posItem.key === "middle_right"
-                              ? "top-1/2 -translate-y-1/2 right-1.5"
-                              : "top-1/2 -translate-y-1/2 left-1.5"
-                          }`}
-                        />
-                      </div>
-                      <span
-                        className={`text-xs font-semibold ${
-                          isSelected ? "text-[#FACC15]" : "text-zinc-300"
-                        }`}
-                      >
-                        {posItem.label}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* 4. VISIBILITY SECTION */}
-            <div className="space-y-4 pt-1 border-t border-[#1F1F24]">
-              <div className="flex items-center gap-2.5">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FACC15] text-zinc-950 text-xs font-black">
-                  4
-                </span>
-                <h3 className="text-sm font-bold text-white">Visibility</h3>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                {/* Show On: All Pages vs Selected Pages */}
-                <div className="space-y-2">
-                  <span className="block text-xs font-medium text-zinc-300 mb-1">Show On</span>
-                  <label className="flex items-center gap-2 cursor-pointer text-xs text-zinc-200">
-                    <input
-                      type="radio"
-                      name="pageTargeting"
-                      checked={pageTargeting === "all"}
-                      onChange={() => setPageTargeting("all")}
-                      className="accent-[#FACC15] h-3.5 w-3.5 cursor-pointer"
-                    />
-                    <span>All Pages</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer text-xs text-zinc-200">
-                    <input
-                      type="radio"
-                      name="pageTargeting"
-                      checked={pageTargeting === "custom"}
-                      onChange={() => {
-                        setPageTargeting("custom");
-                        if (selectedPages.length === 0 && projectPages.length > 0) {
-                          setSelectedPages([projectPages[0].id]);
-                        }
-                      }}
-                      className="accent-[#FACC15] h-3.5 w-3.5 cursor-pointer"
-                    />
-                    <span>Selected Pages</span>
-                  </label>
-
-                  {pageTargeting === "custom" && (
-                    <div className="mt-2 p-2 rounded-lg bg-[#18181C] border border-[#2B2B32] max-h-32 overflow-y-auto space-y-1.5 scrollbar-thin">
-                      {projectPages.map((p) => (
-                        <label
-                          key={p.id}
-                          className="flex items-center gap-2 text-[11px] text-zinc-300 cursor-pointer hover:text-white"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={selectedPages.includes(p.id)}
-                            onChange={() => togglePageSelection(p.id)}
-                            className="accent-[#FACC15] h-3 w-3 rounded cursor-pointer"
-                          />
-                          <span className="truncate">{p.name || p.slug || "Untitled Page"}</span>
-                        </label>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Show on Devices */}
-                <div className="space-y-2">
-                  <span className="block text-xs font-medium text-zinc-300 mb-1">
-                    Show on Devices
-                  </span>
-                  <label className="flex items-center gap-2 cursor-pointer text-xs text-zinc-200">
-                    <input
-                      type="checkbox"
-                      checked={showOnDesktop}
-                      onChange={(e) => setShowOnDesktop(e.target.checked)}
-                      className="accent-[#FACC15] h-3.5 w-3.5 rounded cursor-pointer"
-                    />
-                    <span>Desktop</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer text-xs text-zinc-200">
-                    <input
-                      type="checkbox"
-                      checked={showOnMobile}
-                      onChange={(e) => setShowOnMobile(e.target.checked)}
-                      className="accent-[#FACC15] h-3.5 w-3.5 rounded cursor-pointer"
-                    />
-                    <span>Mobile</span>
-                  </label>
-                </div>
-
-                {/* Show Tooltip / Message */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-zinc-300">
-                      Show Tooltip / Message
-                    </span>
-                    <Switch
-                      checked={showTooltip}
-                      onCheckedChange={setShowTooltip}
-                      className="data-[state=checked]:bg-[#25D366]"
-                    />
-                  </div>
-
-                  {showTooltip && (
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 rounded-lg bg-[#1A1A1E] border border-[#2E2E33] px-2.5 py-1.5 focus-within:border-[#FACC15] transition">
-                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-white text-[10px]">
-                          💬
-                        </span>
-                        <input
-                          type="text"
-                          value={tooltipText}
-                          onChange={(e) => setTooltipText(e.target.value)}
-                          placeholder="Chat with us"
-                          className="w-full bg-transparent text-xs text-white placeholder-zinc-500 focus:outline-none"
-                        />
-                      </div>
-                      <p className="text-[10px] text-zinc-400">This text will show on hover</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ── RIGHT COLUMN: LIVE WEBSITE PREVIEW ─────────────────────────── */}
-          <div className="w-full lg:w-[460px] shrink-0 border-t lg:border-t-0 lg:border-l border-[#222225] bg-[#0E0E10] p-6 flex flex-col justify-between">
-            <div>
-              {/* Realistic Browser Window Frame */}
-              <div className="mx-auto rounded-xl border border-[#2B2B32] bg-[#141418] shadow-2xl overflow-hidden w-full max-w-[420px]">
-                {/* Browser Address Bar */}
-                <div className="flex items-center gap-2 px-3 py-2 bg-[#1A1A20] border-b border-[#25252C]">
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <span className="h-2 w-2 rounded-full bg-[#EF4444]" />
-                    <span className="h-2 w-2 rounded-full bg-[#FACC15]" />
-                    <span className="h-2 w-2 rounded-full bg-[#10B981]" />
-                  </div>
-                  <div className="flex-1 rounded-md bg-[#0D0D10] px-2 py-0.5 text-[10px] text-zinc-400 truncate text-center font-mono">
-                    https://yourwebsite.com
-                  </div>
-                </div>
-
-                {/* Simulated Website Canvas */}
-                <div className="relative h-[360px] bg-gradient-to-b from-[#1C1C24] via-[#121216] to-[#0A0A0C] p-4 flex flex-col justify-between overflow-hidden">
-                  {/* Website Header */}
-                  <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                    <span className="text-xs font-black tracking-wider text-white">LOGO</span>
-                    <div className="flex items-center gap-3 text-[10px] text-zinc-300 font-medium">
-                      <span>Home</span>
-                      <span>About</span>
-                      <span>Services</span>
-                      <span>Contact</span>
-                      <span className="rounded-md bg-[#FACC15] px-2 py-0.5 font-bold text-zinc-950 text-[9px]">
-                        Get Started
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Website Hero Section */}
-                  <div className="my-auto space-y-2 text-center px-2">
-                    <h4 className="text-lg font-black text-white leading-tight">
-                      Build Your Dream Website
-                    </h4>
-                    <p className="text-[11px] text-zinc-400 line-clamp-2 max-w-[260px] mx-auto">
-                      Create stunning websites with our easy to use builder. No coding required.
-                    </p>
-                    <div className="pt-2">
-                      <span className="inline-block rounded-lg bg-[#FACC15] px-4 py-1.5 text-xs font-bold text-zinc-950 shadow-sm">
-                        Get Started
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* ── THE LIVE FLOATING WHATSAPP BUTTON IN PREVIEW ── */}
-                  <div
-                    className={`absolute z-20 flex flex-col pointer-events-auto transition-all duration-300 ${
-                      position === "bottom_right"
-                        ? "bottom-4 right-4 items-end"
-                        : position === "bottom_left"
-                        ? "bottom-4 left-4 items-start"
-                        : position === "middle_right"
-                        ? "top-1/2 -translate-y-1/2 right-4 items-end"
-                        : "top-1/2 -translate-y-1/2 left-4 items-start"
+                {/* Desktop / Mobile Switch */}
+                <div className="flex items-center gap-1 rounded-xl bg-zinc-200/70 p-1 border border-zinc-300">
+                  <button
+                    type="button"
+                    onClick={() => setPreviewMode("desktop")}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition ${
+                      previewMode === "desktop"
+                        ? "bg-[#FACC15] text-zinc-950 shadow-xs"
+                        : "text-zinc-600 hover:text-zinc-900"
                     }`}
                   >
-                    {/* Tooltip bubble preview */}
-                    {showTooltip && (
-                      <div
-                        className={`mb-2 rounded-xl bg-white p-2.5 shadow-xl text-zinc-900 text-xs font-medium max-w-[170px] animate-in fade-in slide-in-from-bottom-2 ${
-                          position.includes("left") ? "rounded-bl-xs" : "rounded-br-xs"
-                        }`}
-                      >
-                        <div className="text-[9px] font-bold text-[#059669] uppercase tracking-wide">
-                          {agentName || "Customer Support"}
-                        </div>
-                        <div className="text-[11px] leading-snug font-semibold mt-0.5">
-                          {tooltipText || "Chat with us 👋"}
+                    <Monitor className="h-3.5 w-3.5" />
+                    <span>Desktop</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPreviewMode("mobile")}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition ${
+                      previewMode === "mobile"
+                        ? "bg-[#FACC15] text-zinc-950 shadow-xs"
+                        : "text-zinc-600 hover:text-zinc-900"
+                    }`}
+                  >
+                    <Smartphone className="h-3.5 w-3.5" />
+                    <span>Mobile</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Realistic Website Mockup Frame */}
+              <div className="w-full flex justify-center items-center py-2">
+                <div
+                  className={`rounded-2xl border border-zinc-200 bg-white text-zinc-900 shadow-xl overflow-hidden relative select-none transition-all duration-200 ${
+                    previewMode === "desktop"
+                      ? "w-full max-w-[460px]"
+                      : "w-[290px] border-zinc-300"
+                  }`}
+                >
+                  {/* Website Mockup Navbar */}
+                  <div className="flex items-center justify-between px-4 py-2.5 border-b border-zinc-100 bg-white">
+                    <div className="flex items-center gap-1.5">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-md bg-[#FACC15] text-zinc-950 shadow-xs">
+                        <GraduationCap className="h-3.5 w-3.5 stroke-[2.5]" />
+                      </span>
+                      <span className="font-extrabold text-xs tracking-tight text-[#0F172A]">
+                        WebTool<span className="text-[#0284C7]">Ocean</span>
+                      </span>
+                    </div>
+
+                    {previewMode === "desktop" && (
+                      <div className="hidden sm:flex items-center gap-2.5 text-[10px] font-semibold text-zinc-500">
+                        <span>Home</span>
+                        <span className="flex items-center gap-0.5">
+                          Tools <ChevronDown className="h-2.5 w-2.5 text-zinc-400" />
+                        </span>
+                        <span>Blog</span>
+                        <span>About</span>
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      className="rounded-full bg-[#0284C7] px-3 py-1 text-[10px] font-bold text-white shadow-xs"
+                    >
+                      Contact Us
+                    </button>
+                  </div>
+
+                  {/* Website Mockup Hero Content */}
+                  <div className="relative min-h-[300px] bg-gradient-to-br from-[#F8FAFC] via-[#F1F5F9] to-[#E0E7FF]/30 p-5 flex items-center justify-between overflow-hidden">
+                    {/* Left text */}
+                    <div className="relative z-10 max-w-[190px] space-y-1.5">
+                      <h3 className="text-lg sm:text-xl font-black text-[#0F172A] leading-tight tracking-tight">
+                        Build Your <br />
+                        <span className="text-[#2563EB]">Dream Website</span>
+                      </h3>
+                      <p className="text-[10px] font-medium text-zinc-500">
+                        Simple. Fast. Powerful.
+                      </p>
+                      <div className="pt-1.5">
+                        <button
+                          type="button"
+                          className="inline-flex items-center gap-1 rounded-full bg-[#0284C7] px-3.5 py-1 text-[10px] font-bold text-white shadow-xs"
+                        >
+                          <span>Get Started</span>
+                          <ArrowRight className="h-2.5 w-2.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Right Laptop Illustration (Desktop mode only) */}
+                    {previewMode === "desktop" && (
+                      <div className="relative z-0 hidden sm:block w-[170px]">
+                        <div className="rounded-xl border border-zinc-200 bg-white p-1.5 shadow-md">
+                          <div className="h-20 rounded-lg bg-gradient-to-tr from-blue-50 to-indigo-50 border border-blue-100/80 p-1.5 flex flex-col justify-between">
+                            <div className="flex items-center justify-between">
+                              <div className="h-1.5 w-10 rounded-full bg-blue-200" />
+                              <div className="flex gap-1">
+                                <span className="h-1.5 w-1.5 rounded-full bg-rose-400" />
+                                <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-1">
+                              <div className="h-6 rounded bg-white shadow-xs p-1" />
+                              <div className="h-6 rounded bg-blue-500/10 p-1 flex items-center justify-center">
+                                <span className="text-[7px] font-bold text-blue-600">Active</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="mt-1 h-1 rounded-b-md bg-zinc-300 mx-auto w-[110%]" />
                         </div>
                       </div>
                     )}
 
-                    {/* WhatsApp Action Button */}
+                    {/* ── FLOATING WHATSAPP CHAT BUTTON IN PREVIEW ─────────────── */}
                     <div
-                      style={{
-                        backgroundColor: buttonColor,
-                        color: iconColor,
-                      }}
-                      className={`relative inline-flex items-center gap-2 rounded-full shadow-lg transition-transform hover:scale-105 ${
-                        labelPosition === "always" ? "px-3.5 py-2.5" : "p-3"
-                      } ${isWhiteButton ? "border border-zinc-300" : ""}`}
+                      className={`absolute z-20 flex flex-col pointer-events-auto transition-all duration-300 ${
+                        position === "bottom_right"
+                          ? "bottom-4 right-4 items-end"
+                          : position === "bottom_left"
+                          ? "bottom-4 left-4 items-start"
+                          : position === "middle_right"
+                          ? "top-1/2 -translate-y-1/2 right-4 items-end"
+                          : "top-1/2 -translate-y-1/2 left-4 items-start"
+                      }`}
                     >
-                      {/* Icon */}
-                      {renderCurrentIcon(20)}
+                      {isHiddenInCurrentPreview ? (
+                        <div className="rounded-lg bg-zinc-900/90 text-white px-2.5 py-1 text-[10px] font-semibold shadow-md">
+                          Hidden on {previewMode === "desktop" ? "Desktop" : "Mobile"}
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-end gap-1.5 animate-in fade-in duration-150">
+                          {/* Tooltip bubble preview */}
+                          {showTooltip && (
+                            <div className="rounded-xl bg-white px-3 py-2 text-zinc-900 text-xs font-medium max-w-[170px] shadow-lg border border-zinc-200/90 flex flex-col gap-0.5">
+                              <div className="flex items-center justify-between text-[9px] font-bold text-[#059669] uppercase tracking-wider">
+                                <span>{agentName || "Customer Support"}</span>
+                                <span className="text-zinc-400 hover:text-zinc-600 cursor-pointer ml-2">×</span>
+                              </div>
+                              <div className="text-[11px] leading-snug font-semibold text-zinc-800">
+                                {tooltipText || "Chat with us 👋"}
+                              </div>
+                            </div>
+                          )}
 
-                      {/* Optional Always Label */}
-                      {labelPosition === "always" && (
-                        <span className="text-xs font-bold whitespace-nowrap">
-                          {buttonLabel || "Chat with us"}
-                        </span>
+                          {/* WhatsApp Floating Button */}
+                          <div
+                            style={{ backgroundColor: buttonColor, color: iconColor }}
+                            className={`relative flex items-center justify-center rounded-full shadow-xl transition-transform hover:scale-105 border-2 border-white/20 ${btnPx}`}
+                          >
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: getWhatsAppButtonIconSvg(buttonStyle, iconColor),
+                              }}
+                              className="w-5 h-5 flex items-center justify-center"
+                            />
+                            {/* Unread Message Badge */}
+                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#EF4444] text-[9px] font-bold text-white border border-white shadow-xs">
+                              1
+                            </span>
+                          </div>
+                        </div>
                       )}
-
-                      {/* Unread Message Badge '1' */}
-                      <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#EF4444] text-[9px] font-bold text-white border border-white shadow-xs">
-                        1
-                      </span>
                     </div>
                   </div>
-
-                  {/* Warning overlay if phone number is empty */}
-                  {!isPhoneValid && (
-                    <div className="absolute inset-x-2 bottom-2 z-30 rounded-lg bg-amber-500/90 backdrop-blur-xs px-2.5 py-1.5 text-center text-[10px] font-bold text-zinc-950 flex items-center justify-center gap-1.5 shadow-md">
-                      <AlertCircle className="h-3 w-3 shrink-0" />
-                      <span>Enter a valid WhatsApp phone number to activate widget</span>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
 
-            {/* Note on Click to Chat */}
-            <div className="mt-4 p-3 rounded-xl bg-[#141418] border border-[#222228] text-[11px] text-zinc-400">
-              <span className="font-semibold text-zinc-200">Click-to-Chat URL:</span>
-              <div className="font-mono text-[10px] text-emerald-400 truncate mt-0.5">
-                {isPhoneValid ? waClickUrl : "https://wa.me/[phone]?text=[message]"}
-              </div>
+            {/* Bottom Live Preview Notice matching mockup */}
+            <div className="mt-4 rounded-xl bg-[#FEFCE8] border border-[#FEF08A] px-3.5 py-2.5 text-xs text-[#854D0E] flex items-center gap-2 shadow-xs">
+              <span className="text-base shrink-0">💡</span>
+              <span className="font-medium">
+                This is a live preview. Changes you make on the left will update here immediately.
+              </span>
             </div>
           </div>
         </div>
 
-        {/* ── FOOTER ACTIONS ──────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between border-t border-[#222225] px-6 py-4 bg-[#151518]">
+        {/* ── FOOTER ACTIONS ─────────────────────────────────────────────────── */}
+        <div className="flex shrink-0 items-center justify-between border-t border-zinc-200 px-6 py-4 bg-white">
           <button
             type="button"
             onClick={onClose}
             disabled={isSaving}
-            className="px-5 py-2 rounded-xl border border-zinc-700 bg-transparent text-xs font-bold text-white hover:bg-zinc-800 transition active:scale-95"
+            className="px-5 py-2.5 rounded-xl border border-zinc-200 bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold text-zinc-700 transition disabled:opacity-50"
           >
             Cancel
           </button>
@@ -1011,9 +871,9 @@ function LegacyWhatsAppChatModal({
             type="button"
             onClick={handleSave}
             disabled={isSaving}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#FACC15] hover:bg-[#FDE047] text-zinc-950 text-xs font-extrabold shadow-md transition active:scale-95 disabled:opacity-50"
+            className="flex items-center justify-center min-w-[130px] px-6 py-2.5 rounded-xl bg-[#FACC15] hover:bg-[#FDE047] text-xs font-bold text-zinc-950 shadow-md transition active:scale-95 disabled:opacity-50"
           >
-            {isSaving ? "Saving Plugin..." : "Save Plugin"}
+            {isSaving ? "Saving..." : "Save Plugin"}
           </button>
         </div>
       </div>

@@ -80,8 +80,7 @@ export function buildYouTubeBootstrapMarkup(
             src="${embedUrl}"
             title="YouTube Video Player"
             style="position: absolute; inset: 0; width: 100%; height: 100%; border: none; ${editorMode ? "pointer-events: none;" : ""}"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
           ></iframe>
         </div>
       </div>

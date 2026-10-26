@@ -24,6 +24,16 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/templates/$templateId")({
+  head: () => ({
+    meta: [
+      { title: "Website Template Preview | WebToolOcean Website Builder" },
+      {
+        name: "description",
+        content:
+          "Preview, customize, and export this professional website template visually using WebToolOcean.",
+      },
+    ],
+  }),
   component: TemplateDetailPage,
 });
 
@@ -36,6 +46,12 @@ function TemplateDetailPage() {
   const [actionLoading, setActionLoading] = useState(false);
   const [previewDevice, setPreviewDevice] = useState<"desktop" | "mobile">("desktop");
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+
+  useEffect(() => {
+    if (template?.name) {
+      document.title = `${template.name} Template | WebToolOcean Website Builder`;
+    }
+  }, [template?.name]);
 
   useEffect(() => {
     let cancelled = false;
