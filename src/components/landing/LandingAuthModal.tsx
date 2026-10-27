@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
 import { createProjectFromTemplate, type Template } from "@/services/templates";
-import { WtoAuthBackdrop, WtoAuthCard } from "@/components/auth/WtoAuthCard";
+import { WtoAuthCard } from "@/components/auth/WtoAuthCard";
 import { X } from "lucide-react";
 
 interface LandingAuthModalProps {
@@ -26,6 +26,17 @@ export function LandingAuthModal({
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && !loading && !signingIn) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, loading, signingIn, onClose]);
 
   if (!isOpen || !mounted) return null;
 
@@ -55,6 +66,13 @@ export function LandingAuthModal({
       toast.success("Signed in with Google!");
       handleSuccessRedirect(pendingTemplate);
     } catch (err: any) {
+      if (
+        err?.code === "auth/popup-closed-by-user" ||
+        err?.code === "auth/cancelled-popup-request" ||
+        err?.message?.includes("closed-by-user")
+      ) {
+        return;
+      }
       console.error("Google sign in error:", err);
       toast.error(err?.message || "Google sign in failed. Please try again.");
     } finally {
@@ -73,40 +91,36 @@ export function LandingAuthModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[2000] min-h-screen w-screen h-screen flex items-center justify-center p-4 sm:p-6 bg-[#10110e] overflow-hidden"
+      className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in-0 duration-200"
       role="dialog"
       aria-modal="true"
+      onClick={(e) => {
+        if (e.target === e.currentTarget && !isWorking) {
+          onClose();
+        }
+      }}
     >
-      {/* Refined animated contour-grid backdrop */}
-      <WtoAuthBackdrop />
+      <div className="relative w-full max-w-[440px]">
+        {/* Close button top-right */}
+        <button
+          type="button"
+          onClick={() => !isWorking && onClose()}
+          className="absolute -top-3 -right-3 z-30 w-8 h-8 rounded-full flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 border border-white/10 text-zinc-300 hover:text-white transition-all cursor-pointer shadow-lg"
+          aria-label="Close"
+          disabled={isWorking}
+        >
+          <X size={15} />
+        </button>
 
-      {/* Brand logo top-left */}
-      <div className="fixed top-6 left-6 sm:top-7 sm:left-8 z-20 flex items-center gap-2.5 text-white font-extrabold text-[1.02rem] tracking-tight">
-        <div className="w-[34px] h-[34px] rounded-[10px] bg-[#f4d536] text-[#10110e] flex items-center justify-center font-black text-lg shadow-[0_0_24px_rgba(244,213,54,0.2)]">
-          W
-        </div>
-        <span>WebToolOcean</span>
+        {/* Centered Auth Card */}
+        <WtoAuthCard
+          title={title}
+          subtitle={subtitle}
+          loading={isWorking}
+          onGoogleClick={handleGoogleLogin}
+          animate="card-in"
+        />
       </div>
-
-      {/* Close button top-right */}
-      <button
-        type="button"
-        onClick={() => !isWorking && onClose()}
-        className="fixed top-6 right-6 sm:top-7 sm:right-8 z-20 w-10 h-10 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-400 hover:text-white transition-all cursor-pointer shadow-lg"
-        aria-label="Close"
-        disabled={isWorking}
-      >
-        <X size={18} />
-      </button>
-
-      {/* Centered Auth Card */}
-      <WtoAuthCard
-        title={title}
-        subtitle={subtitle}
-        loading={isWorking}
-        onGoogleClick={handleGoogleLogin}
-        animate="card-in"
-      />
     </div>,
     document.body
   );

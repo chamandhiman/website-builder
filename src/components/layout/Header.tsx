@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LoginDialog } from "@/components/builder/LoginDialog";
+import { LoginDropdown } from "@/components/auth/LoginDropdown";
 import { toast } from "sonner";
 
 export function Header({ hideBranding, hideProfile }: { hideBranding?: boolean; hideProfile?: boolean } = {}) {
@@ -20,16 +20,8 @@ export function Header({ hideBranding, hideProfile }: { hideBranding?: boolean; 
   const navigate = useNavigate();
 
   const { user, logout, authReady } = useAuth();
-  const [authDialogOpen, setAuthDialogOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<"sign-in" | "sign-up">("sign-in");
   const showProjectDashboard = useBuilder((s) => s.showProjectDashboard);
   const setShowProjectDashboard = useBuilder((s) => s.setShowProjectDashboard);
-
-  useEffect(() => {
-    if (user && authDialogOpen) {
-      setAuthDialogOpen(false);
-    }
-  }, [user, authDialogOpen]);
 
   const handleLogout = async () => {
     await logout();
@@ -40,8 +32,7 @@ export function Header({ hideBranding, hideProfile }: { hideBranding?: boolean; 
 
   const handleSwitchAccount = async () => {
     await logout();
-    setAuthMode("sign-in");
-    setAuthDialogOpen(true);
+    toast.info("Signed out. Click Log in to choose an account.");
   };
 
   if (!mounted) {
@@ -152,27 +143,11 @@ export function Header({ hideBranding, hideProfile }: { hideBranding?: boolean; 
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <div className="hidden items-center gap-2 md:flex">
-                  <button
-                    type="button"
-                    className="inline-flex h-9 items-center justify-center rounded-md border border-[#363636] bg-[#1F1F1F] px-4 text-sm font-semibold text-[#F5F5F5] transition hover:border-[#FACC15] hover:text-[#FACC15]"
-                    onClick={() => {
-                      setAuthMode("sign-in");
-                      setAuthDialogOpen(true);
-                    }}
-                  >
-                    Log in
-                  </button>
-                  <button
-                    type="button"
-                    className="inline-flex h-9 items-center justify-center rounded-md bg-[#FACC15] px-4 text-sm font-semibold text-[#111111] transition hover:bg-[#FDE047]"
-                    onClick={() => {
-                      setAuthMode("sign-up");
-                      setAuthDialogOpen(true);
-                    }}
-                  >
-                    Sign Up
-                  </button>
+                <div className="flex items-center">
+                  <LoginDropdown
+                    triggerClassName="inline-flex h-9 items-center justify-center rounded-md border border-[#363636] bg-[#1F1F1F] px-4 text-sm font-semibold text-[#F5F5F5] transition hover:border-[#FACC15] hover:text-[#FACC15]"
+                    triggerChildren="Log in"
+                  />
                 </div>
               )
             ) : null}
@@ -180,7 +155,6 @@ export function Header({ hideBranding, hideProfile }: { hideBranding?: boolean; 
           </div>
         ) : null}
       </div>
-      <LoginDialog open={authDialogOpen} onOpenChange={setAuthDialogOpen} initialMode={authMode} />
     </header>
   );
 }

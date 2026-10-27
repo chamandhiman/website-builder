@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TemplatesRouteImport } from './routes/templates'
 import { Route as SuperAdminRouteImport } from './routes/super-admin'
 import { Route as RegisterRouteImport } from './routes/register'
-import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TemplatesIndexRouteImport } from './routes/templates.index'
@@ -59,11 +58,6 @@ const SuperAdminRoute = SuperAdminRouteImport.update({
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -241,7 +235,6 @@ const DashboardWidgetsWidgetIdInstallRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
-  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/super-admin': typeof SuperAdminRouteWithChildren
   '/templates': typeof TemplatesRouteWithChildren
@@ -278,7 +271,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/dashboard/favorites': typeof DashboardFavoritesRoute
   '/dashboard/projects': typeof DashboardProjectsRoute
@@ -313,7 +305,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
-  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/super-admin': typeof SuperAdminRouteWithChildren
   '/templates': typeof TemplatesRouteWithChildren
@@ -353,7 +344,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
-    | '/login'
     | '/register'
     | '/super-admin'
     | '/templates'
@@ -390,7 +380,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/login'
     | '/register'
     | '/dashboard/favorites'
     | '/dashboard/projects'
@@ -424,7 +413,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/dashboard'
-    | '/login'
     | '/register'
     | '/super-admin'
     | '/templates'
@@ -463,7 +451,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRouteWithChildren
-  LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   SuperAdminRoute: typeof SuperAdminRouteWithChildren
   TemplatesRoute: typeof TemplatesRouteWithChildren
@@ -494,13 +481,6 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -841,7 +821,6 @@ const TemplatesRouteWithChildren = TemplatesRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
-  LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   SuperAdminRoute: SuperAdminRouteWithChildren,
   TemplatesRoute: TemplatesRouteWithChildren,

@@ -21,9 +21,10 @@ import {
   User as UserIcon,
 } from "lucide-react";
 import { toast } from "sonner";
+import { LoginDropdown } from "@/components/auth/LoginDropdown";
 
 interface LandingNavbarProps {
-  onOpenAuthModal: () => void;
+  onOpenAuthModal?: () => void;
 }
 
 export function LandingNavbar({ onOpenAuthModal }: LandingNavbarProps) {
@@ -69,9 +70,7 @@ export function LandingNavbar({ onOpenAuthModal }: LandingNavbarProps) {
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        {!authReady ? (
-          <div style={{ minWidth: "90px", height: "36px" }} />
-        ) : user ? (
+        {authReady && user ? (
           <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <button
@@ -215,22 +214,10 @@ export function LandingNavbar({ onOpenAuthModal }: LandingNavbarProps) {
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <>
-            <button
-              type="button"
-              className="btn btn-ghost sm"
-              onClick={onOpenAuthModal}
-            >
-              Log in
-            </button>
-            <button
-              type="button"
-              className="btn btn-y sm"
-              onClick={onOpenAuthModal}
-            >
-              Sign up free
-            </button>
-          </>
+          <LoginDropdown
+            triggerClassName="btn btn-ghost sm"
+            triggerChildren="Log in"
+          />
         )}
       </div>
     </nav>

@@ -17,6 +17,23 @@ import { GoogleAnalytics } from "@/components/layout/GoogleAnalytics";
 import { VoiceAssistant } from "@/components/voiceAssistant/VoiceAssistant";
 
 function NotFoundComponent() {
+  const router = useRouter();
+  const pathname = router.state.location.pathname;
+
+  useEffect(() => {
+    if (pathname === "/login" || pathname === "/login/" || pathname === "/register") {
+      router.navigate({ to: "/", replace: true });
+    }
+  }, [pathname, router]);
+
+  if (pathname === "/login" || pathname === "/login/" || pathname === "/register") {
+    return (
+      <div className="min-h-screen bg-[#10110e] flex items-center justify-center">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#facc15] border-t-transparent" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">

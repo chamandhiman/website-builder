@@ -9,6 +9,7 @@ import {
 import { PublicNav } from "@/components/layout/PublicNav";
 import { PublicFooter } from "@/components/layout/PublicFooter";
 import { TemplatePreviewModal } from "@/components/builder/TemplatePreviewModal";
+import { useGoogleOneTap } from "@/hooks/useGoogleOneTap";
 import { toast } from "sonner";
 import {
   Sparkles,
@@ -40,7 +41,8 @@ export const Route = createFileRoute("/templates/$templateId")({
 function TemplateDetailPage() {
   const { templateId } = Route.useParams();
   const navigate = useNavigate();
-  const { user, authReady } = useAuth();
+  const { user, authReady, loginWithGoogle } = useAuth();
+  useGoogleOneTap(!user && authReady);
   const [template, setTemplate] = useState<Template | null>(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
@@ -83,17 +85,28 @@ function TemplateDetailPage() {
     }
 
     if (!authReady || !user) {
-      toast.info("Please sign in or create an account to start editing.", {
+      toast.info("Please sign in with Google to start editing.", {
         description: `We'll automatically set up "${template.name}" for you.`,
       });
-      navigate({
-        to: "/login" as never,
-        search: {
-          templateId: template.id,
-          action: "use",
-          redirect: `/templates/${template.id}`,
-        } as any,
-      });
+      try {
+        await loginWithGoogle();
+        const newProjectId = createProjectFromTemplate(template);
+        toast.success(`Created project from ${template.name}! Opening editor…`);
+        navigate({
+          to: "/editor/$projectId",
+          params: { projectId: newProjectId },
+        });
+      } catch (err: any) {
+        if (
+          err?.code === "auth/popup-closed-by-user" ||
+          err?.code === "auth/cancelled-popup-request" ||
+          err?.message?.includes("closed-by-user")
+        ) {
+          return;
+        }
+        console.error("Template sign in failed:", err);
+        toast.error("Google sign in failed. Please try again.");
+      }
       return;
     }
 

@@ -1,6 +1,7 @@
 import {
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithCredential,
   signOut,
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -12,10 +13,16 @@ import { auth } from "../firebase/firebase";
 
 export const signInWithGoogle = () => {
   const provider = new GoogleAuthProvider();
+  // Prompt account selection so users can choose an active browser Google account or another account
   provider.setCustomParameters({
     prompt: "select_account",
   });
   return signInWithPopup(auth, provider);
+};
+
+export const signInWithGoogleCredential = (idToken: string) => {
+  const credential = GoogleAuthProvider.credential(idToken);
+  return signInWithCredential(auth, credential);
 };
 
 export const signInWithEmail = (email: string, password: string) => {

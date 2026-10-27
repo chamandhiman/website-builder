@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import {
   getPublishedTemplates,
   getUpcomingTemplates,
-  createProjectFromTemplate,
   type Template,
 } from "@/services/templates";
 import { toast } from "sonner";
@@ -21,14 +20,21 @@ import { LandingWidgets } from "./LandingWidgets";
 import { LandingCta } from "./LandingCta";
 import { LandingFooter } from "./LandingFooter";
 import { LandingThemePanel } from "./LandingThemePanel";
-import { LandingPreviewModal } from "./LandingPreviewModal";
 import { LandingAuthModal } from "./LandingAuthModal";
+import { useGoogleOneTap } from "@/hooks/useGoogleOneTap";
+
+const LandingPreviewModal = lazy(() =>
+  import("./LandingPreviewModal").then((m) => ({ default: m.LandingPreviewModal }))
+);
 
 import "./landing.css";
 
 export function LandingPage() {
   const navigate = useNavigate();
   const { user, authReady } = useAuth();
+
+  // Optional Google One Tap on public landing page if client ID configured
+  useGoogleOneTap(!user && authReady);
 
   const [templates, setTemplates] = useState<Template[]>([]);
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -79,7 +85,7 @@ export function LandingPage() {
     }
   };
 
-  const handleSelectTemplate = (template: any) => {
+  const handleSelectTemplate = async (template: any) => {
     if (!template) return;
 
     if (template.status === "upcoming") {
@@ -89,6 +95,7 @@ export function LandingPage() {
 
     if (authReady && user) {
       try {
+        const { createProjectFromTemplate } = await import("@/services/templates");
         const newProjectId = createProjectFromTemplate(template);
         toast.success(`Created project from ${template.name || template.n}! Opening builder…`);
         navigate({
@@ -157,15 +164,19 @@ export function LandingPage() {
       <LandingThemePanel />
 
       {/* Template Live Preview Modal */}
-      <LandingPreviewModal
-        isOpen={Boolean(previewTemplate)}
-        onClose={() => setPreviewTemplate(null)}
-        template={previewTemplate}
-        onUseTemplate={(t) => {
-          setPreviewTemplate(null);
-          handleSelectTemplate(t);
-        }}
-      />
+      {previewTemplate && (
+        <Suspense fallback={null}>
+          <LandingPreviewModal
+            isOpen={Boolean(previewTemplate)}
+            onClose={() => setPreviewTemplate(null)}
+            template={previewTemplate}
+            onUseTemplate={(t) => {
+              setPreviewTemplate(null);
+              handleSelectTemplate(t);
+            }}
+          />
+        </Suspense>
+      )}
 
       {/* Authentication Modal */}
       <LandingAuthModal

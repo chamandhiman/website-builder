@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { LayoutDashboard } from "lucide-react";
+import { LoginDropdown } from "@/components/auth/LoginDropdown";
 
 export function PublicNav() {
   const { user, authReady } = useAuth();
@@ -28,7 +29,7 @@ export function PublicNav() {
           <a href="/#features" className="hover:text-[#f4f4f5] transition">
             Features
           </a>
-          <a href="/#pricing" className="hover:text-[#f4f4f5] transition">
+          <a href="/#pricing" className="hover:text-[#facc15] transition">
             Pricing
           </a>
         </div>
@@ -43,20 +44,10 @@ export function PublicNav() {
               <span>Dashboard</span>
             </Link>
           ) : (
-            <>
-              <Link
-                to={"/login" as any}
-                className="rounded-full border border-[#2a2a2f] px-4 py-2 text-xs font-semibold text-[#f4f4f5] hover:border-[#facc15] transition"
-              >
-                Log in
-              </Link>
-              <Link
-                to="/register"
-                className="rounded-full bg-[#facc15] px-4 py-2 text-xs font-bold text-[#151515] hover:bg-yellow-400 transition"
-              >
-                Start free
-              </Link>
-            </>
+            <LoginDropdown
+              triggerClassName="rounded-full border border-[#2a2a2f] px-4 py-2 text-xs font-semibold text-[#f4f4f5] hover:border-[#facc15] transition"
+              triggerChildren="Log in"
+            />
           )}
         </div>
       </div>

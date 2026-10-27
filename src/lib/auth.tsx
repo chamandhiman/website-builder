@@ -3,14 +3,12 @@ import { createUserIfNotExists, getUserRole, setUserRole } from "@/services/fire
 
 import {
   signInWithGoogle,
+  signInWithGoogleCredential,
   signInWithEmail,
   registerWithEmail,
   subscribeToAuth,
   logout as firebaseLogout,
 } from "@/services/auth";
-import { useBuilder } from "@/lib/builder/store";
-import { saveBuilderProject, getBuilderProject } from "@/services/builderProject";
-import { saveProjectMetadata } from "@/services/project";
 
 type AuthUser = {
   id: string;
@@ -29,6 +27,7 @@ type AuthContextValue = {
   login: (email: string, password: string) => Promise<void>;
   register: (firstName: string, lastName: string, email: string, password: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
+  loginWithGoogleCredential: (idToken: string) => Promise<void>;
   logout: () => Promise<void>;
   requireSuperAdmin: () => void;
 };
@@ -79,25 +78,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       latestUserId.current = firebaseUser.uid;
       await createUserIfNotExists(firebaseUser);
 
-      const builderState = useBuilder.getState();
-      const currentProject = builderState.currentProject();
-      
-      if (currentProject) {
+      // Lazily migrate any local project without bundling 2MB builder store in root
+      if (typeof window !== "undefined") {
         try {
-          await saveBuilderProject(currentProject);
-          await saveProjectMetadata({
-            id: currentProject.id,
-            name: currentProject.name,
-            templateId: currentProject.selectedTemplateId ?? null,
-            thumbnail: currentProject.thumbnail || "",
-            description: currentProject.description || "",
-            favorite: false,
-            status: "draft",
-            createdAt: currentProject.createdAt ?? Date.now(),
-            updatedAt: currentProject.updatedAt ?? Date.now(),
-            pages: currentProject.pages.map((p) => p.slug || p.id),
-            isPublic: false,
-          });
+          const { useBuilder } = await import("@/lib/builder/store");
+          const builderState = useBuilder.getState();
+          const currentProject = builderState.currentProject();
+          
+          if (currentProject) {
+            const { saveBuilderProject } = await import("@/services/builderProject");
+            const { saveProjectMetadata } = await import("@/services/project");
+            await saveBuilderProject(currentProject);
+            await saveProjectMetadata({
+              id: currentProject.id,
+              name: currentProject.name,
+              templateId: currentProject.selectedTemplateId ?? null,
+              thumbnail: currentProject.thumbnail || "",
+              description: currentProject.description || "",
+              favorite: false,
+              status: "draft",
+              createdAt: currentProject.createdAt ?? Date.now(),
+              updatedAt: currentProject.updatedAt ?? Date.now(),
+              pages: currentProject.pages.map((p) => p.slug || p.id),
+              isPublic: false,
+            });
+          }
         } catch (error) {
           console.error("Failed to migrate local project to cloud after login:", error);
         }
@@ -170,9 +175,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const loginWithGoogleCredential = async (idToken: string) => {
+    setSigningIn(true);
+
+    try {
+      const result = await signInWithGoogleCredential(idToken);
+      await createUserIfNotExists(result.user);
+    } finally {
+      setSigningIn(false);
+    }
+  };
+
   const requireSuperAdmin = () => {
-    const current = useBuilder.getState().currentProject();
-    if (!current) {
+    if (user?.role !== "super_admin") {
       throw new Error("Unauthorized: Super admin access required.");
     }
   };
@@ -185,6 +200,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       login,
       register,
       loginWithGoogle,
+      loginWithGoogleCredential,
       logout,
       requireSuperAdmin,
     }),
@@ -219,6 +235,7 @@ const defaultAuthValue: AuthContextValue = {
   login: async () => {},
   register: async () => {},
   loginWithGoogle: async () => {},
+  loginWithGoogleCredential: async () => {},
   logout: async () => {},
   requireSuperAdmin: () => {},
 };

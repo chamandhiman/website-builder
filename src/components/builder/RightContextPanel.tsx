@@ -52,6 +52,13 @@ import {
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   composePageSections,
   isNavbarSection,
   isFooterSection,
@@ -502,18 +509,9 @@ export function RightContextPanel({
   const [q, setQ] = useState("");
   const [sectionsSubTab, setSectionsSubTab] = useState<"active" | "add_new">("active");
   const [searchOpen, setSearchOpen] = useState(false);
-  const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
   const [draggedSectionId, setDraggedSectionId] = useState<string | null>(null);
   const [dragOverSectionId, setDragOverSectionId] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
-
-  // Close activeMenuId when clicking anywhere outside
-  useEffect(() => {
-    if (!activeMenuId) return;
-    const handleDocClick = () => setActiveMenuId(null);
-    window.addEventListener("click", handleDocClick);
-    return () => window.removeEventListener("click", handleDocClick);
-  }, [activeMenuId]);
 
   // Embed modal state for Media & Embeds section items
   const [embedModalOpen, setEmbedModalOpen] = useState(false);
@@ -1027,7 +1025,6 @@ export function RightContextPanel({
                         const isShared = isSharedChromeSection(section) || section.id === SHARED_HEADER_SECTION_ID || section.id === SHARED_FOOTER_SECTION_ID;
                         const visual = getSectionVisual(section);
                         const VisualIcon = visual.Icon;
-                        const isMenuOpen = activeMenuId === section.id;
 
                         return (
                           <div
@@ -1042,156 +1039,116 @@ export function RightContextPanel({
                               isSelected
                                 ? "rounded-xl border border-[#FACC15] bg-[#18181B] shadow-md shadow-amber-400/5 ring-1 ring-[#FACC15]/20 my-1"
                                 : "border-b border-[#26262B] hover:bg-white/[0.03] rounded-lg"
-                            } ${dragOverSectionId === section.id ? "border-t-2 border-t-[#FACC15]" : ""} ${section.hidden ? "opacity-60" : ""}`}
+                            } ${dragOverSectionId === section.id ? "border-t-2 border-t-[#FACC15]" : ""} ${section.hidden ? "opacity-50" : ""}`}
                           >
-                            {/* Left: Drag Handle + Icon + Name */}
-                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                              {/* Drag Handle */}
-                              <div
-                                className={`shrink-0 p-1 text-zinc-500 transition-colors ${
-                                  !isShared
-                                    ? "cursor-grab active:cursor-grabbing hover:text-zinc-200"
-                                    : "opacity-30 cursor-not-allowed"
-                                }`}
-                                title={isShared ? "Shared header/footer cannot be reordered" : "Drag to reorder section"}
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <GripVertical className="h-4 w-4" />
-                              </div>
-
-                              {/* Section Visual Icon */}
-                              <div
-                                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${visual.iconBg} ${visual.iconColor} shadow-xs`}
-                              >
-                                <VisualIcon className="h-4.5 w-4.5" />
-                              </div>
-
-                              {/* Section Title */}
-                              <div className="min-w-0 flex-1">
-                                <span
-                                  className="block truncate text-[13px] font-semibold text-zinc-100 group-hover:text-white"
-                                  title={visual.name}
-                                >
-                                  {visual.name}
-                                </span>
-                                {isShared && (
-                                  <span className="inline-flex items-center text-[10px] text-amber-400/80 font-medium">
-                                    Global {section.shared === "header" || isNavbarSection(section) ? "Header" : "Footer"}
-                                  </span>
-                                )}
-                              </div>
+                            {/* Far Left: Drag Handle */}
+                            <div
+                              className={`shrink-0 p-0.5 text-zinc-500 transition-colors ${
+                                !isShared
+                                  ? "cursor-grab active:cursor-grabbing hover:text-zinc-200"
+                                  : "opacity-30 cursor-not-allowed"
+                              }`}
+                              title={isShared ? "Global section cannot be reordered" : "Drag to reorder section"}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <GripVertical className="h-4 w-4" />
                             </div>
 
-                            {/* Right: Toggle Switch + Edit Pencil + Red Trash + More Overflow Menu */}
+                            {/* Section Icon: Compact 32px */}
+                            <div
+                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#18181C] border border-zinc-800 text-[#FACC15] shadow-xs"
+                            >
+                              <VisualIcon className="h-4 w-4" />
+                            </div>
+
+                            {/* Full Section Name (flexible width, readable font) */}
+                            <div className="min-w-0 flex-1">
+                              <span
+                                className="block truncate text-[13px] font-medium text-zinc-100 group-hover:text-white leading-snug"
+                                title={visual.name}
+                              >
+                                {visual.name}
+                              </span>
+                              {isShared && (
+                                <span className="block text-[10.5px] text-[#FACC15] font-normal leading-tight mt-0.5">
+                                  Global
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Far Right: Compact Visibility Toggle + Three-Dot Menu */}
                             <div className="flex items-center gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
-                              {/* Enable/Disable Switch (yellow when on) */}
+                              {/* Compact Visibility Toggle (yellow when on) */}
                               <Switch
                                 checked={!section.hidden}
                                 onCheckedChange={() => toggleHidden(section.id)}
-                                className="data-[state=checked]:bg-[#FACC15] data-[state=checked]:border-[#FACC15]"
-                                title={section.hidden ? "Enable section" : "Disable section"}
+                                className="data-[state=checked]:bg-[#FACC15] data-[state=checked]:border-[#FACC15] shrink-0 scale-90"
+                                title={section.hidden ? "Show section" : "Hide section"}
                               />
 
-                              {/* Edit Pencil Icon */}
-                              <button
-                                type="button"
-                                onClick={() => handleEditSection(section.id)}
-                                className="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
-                                title="Edit section in Properties"
-                              >
-                                <Pencil className="h-3.5 w-3.5" />
-                              </button>
-
-                              {/* Delete Red Trash Icon */}
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  removeSection(section.id);
-                                  toast.success(`Removed "${visual.name}"`);
-                                }}
-                                className="flex h-7 w-7 items-center justify-center rounded-lg text-rose-500 hover:text-rose-400 hover:bg-rose-500/10 transition"
-                                title="Delete section from this page"
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                              </button>
-
-                              {/* More Overflow Menu */}
-                              <div className="relative">
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setActiveMenuId(isMenuOpen ? null : section.id);
-                                  }}
-                                  className="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
-                                  title="More options"
-                                >
-                                  <MoreVertical className="h-3.5 w-3.5" />
-                                </button>
-
-                                {isMenuOpen && (
-                                  <div
-                                    className="absolute right-0 top-full mt-1 w-36 rounded-xl border border-zinc-800 bg-[#1E1E22] p-1.5 shadow-2xl z-50 text-xs animate-in fade-in zoom-in-95"
-                                    onClick={(e) => e.stopPropagation()}
+                              {/* Three-Dot Menu with all secondary actions */}
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <button
+                                    type="button"
+                                    className="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FACC15]"
+                                    title="More actions"
                                   >
-                                    {!isShared && (
-                                      <button
-                                        type="button"
-                                        onClick={() => {
-                                          setActiveMenuId(null);
-                                          duplicateSection(section.id);
-                                          toast.success(`Duplicated "${visual.name}"`);
-                                        }}
-                                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-zinc-300 hover:bg-zinc-800 hover:text-white transition"
-                                      >
-                                        <Copy className="h-3.5 w-3.5 text-zinc-400" />
-                                        <span>Duplicate</span>
-                                      </button>
+                                    <MoreVertical className="h-4 w-4" />
+                                  </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                  align="end"
+                                  sideOffset={4}
+                                  className="w-40 rounded-xl border border-zinc-800 bg-[#18181B]/98 backdrop-blur-xl p-1.5 shadow-2xl text-xs z-50 text-zinc-200"
+                                >
+                                  <DropdownMenuItem
+                                    onSelect={() => handleEditSection(section.id)}
+                                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white transition cursor-pointer"
+                                  >
+                                    <Pencil className="h-3.5 w-3.5 text-zinc-400" />
+                                    <span>Edit Section</span>
+                                  </DropdownMenuItem>
+
+                                  {!isShared && (
+                                    <DropdownMenuItem
+                                      onSelect={() => {
+                                        duplicateSection(section.id);
+                                        toast.success(`Duplicated "${visual.name}"`);
+                                      }}
+                                      className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white transition cursor-pointer"
+                                    >
+                                      <Copy className="h-3.5 w-3.5 text-zinc-400" />
+                                      <span>Duplicate</span>
+                                    </DropdownMenuItem>
+                                  )}
+
+                                  <DropdownMenuItem
+                                    onSelect={() => toggleHidden(section.id)}
+                                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white transition cursor-pointer"
+                                  >
+                                    {section.hidden ? (
+                                      <Eye className="h-3.5 w-3.5 text-zinc-400" />
+                                    ) : (
+                                      <EyeOff className="h-3.5 w-3.5 text-zinc-400" />
                                     )}
+                                    <span>{section.hidden ? "Show" : "Hide"}</span>
+                                  </DropdownMenuItem>
 
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        setActiveMenuId(null);
-                                        handleEditSection(section.id);
-                                      }}
-                                      className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-zinc-300 hover:bg-zinc-800 hover:text-white transition"
-                                    >
-                                      <Pencil className="h-3.5 w-3.5 text-zinc-400" />
-                                      <span>Edit Section</span>
-                                    </button>
+                                  <DropdownMenuSeparator className="my-1 bg-zinc-800" />
 
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        setActiveMenuId(null);
-                                        toggleHidden(section.id);
-                                      }}
-                                      className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-zinc-300 hover:bg-zinc-800 hover:text-white transition"
-                                    >
-                                      {section.hidden ? (
-                                        <Eye className="h-3.5 w-3.5 text-zinc-400" />
-                                      ) : (
-                                        <EyeOff className="h-3.5 w-3.5 text-zinc-400" />
-                                      )}
-                                      <span>{section.hidden ? "Show" : "Hide"}</span>
-                                    </button>
-
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        setActiveMenuId(null);
-                                        removeSection(section.id);
-                                        toast.success(`Removed "${visual.name}"`);
-                                      }}
-                                      className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-rose-400 hover:bg-rose-500/10 transition mt-0.5 border-t border-zinc-800/80 pt-1.5"
-                                    >
-                                      <Trash2 className="h-3.5 w-3.5" />
-                                      <span>Delete</span>
-                                    </button>
-                                  </div>
-                                )}
-                              </div>
+                                  <DropdownMenuItem
+                                    onSelect={() => {
+                                      removeSection(section.id);
+                                      toast.success(`Removed "${visual.name}"`);
+                                    }}
+                                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 focus:bg-rose-500/10 focus:text-rose-300 transition cursor-pointer"
+                                  >
+                                    <Trash2 className="h-3.5 w-3.5 text-rose-400" />
+                                    <span>Delete</span>
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             </div>
                           </div>
                         );

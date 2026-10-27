@@ -38,19 +38,6 @@ export function GoogleLogoSvg(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-export function WtoAuthBackdrop() {
-  return (
-    <div className="wto-auth-backdrop" aria-hidden="true">
-      <div className="wto-auth-grid" />
-      <div className="wto-auth-halo" />
-      <div className="wto-auth-beam" />
-      <div className="wto-auth-orbit-dot" />
-      <div className="wto-auth-orbit-dot d2" />
-      <div className="wto-auth-grain" />
-    </div>
-  );
-}
-
 export function WtoAuthCard({
   title = "Sign in to your account",
   subtitle = "Continue with Google to securely access your workspace and everything you have been building.",

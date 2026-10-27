@@ -24,7 +24,7 @@ function RegisterRedirectPage() {
 
   useEffect(() => {
     void navigate({
-      to: "/login" as any,
+      to: "/" as any,
       search: { redirect, templateId, action } as any,
       replace: true,
     });
