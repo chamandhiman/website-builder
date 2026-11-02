@@ -7,13 +7,31 @@ import { getWidgetChildItems, buildNormalizedChildData, setWidgetChildItems, fin
 import { createWidgetInstance, getWidgetPropertiesComponent } from "@/components/builder/widgets/widgetRegistry";
 import { SelectedElementInspector } from "./SelectedElementInspector";
 import { PropertiesPanel } from "./PropertiesPanel";
+import { FloatingWidgetProperties } from "./floating-plugins/FloatingWidgetProperties";
 import { MousePointerClick, X } from "lucide-react";
 
 export function InspectorPanel() {
   const project = useBuilder((s) => (s.currentProjectId ? s.projects[s.currentProjectId] : null));
   const selectedId = useBuilder((s) => s.selectedSectionId);
+  const selectedFloatingWidgetId = useBuilder((s) => s.selectedFloatingWidgetId);
+  const selectFloatingWidget = useBuilder((s) => s.selectFloatingWidget);
   const selectedElement = useBuilder((s) => s.selectedElement);
   const selectElement = useBuilder((s) => s.selectElement);
+
+  const floatingWidget = selectedFloatingWidgetId
+    ? (project?.floatingWidgets || []).find((w) => w.id === selectedFloatingWidgetId)
+    : null;
+
+  if (floatingWidget) {
+    return (
+      <div className="h-full overflow-hidden bg-[#171717]">
+        <FloatingWidgetProperties
+          widget={floatingWidget}
+          onClose={() => selectFloatingWidget(null)}
+        />
+      </div>
+    );
+  }
 
   const section = selectedId ? findSectionInProject(project, selectedId, pageOf(project)) : null;
 

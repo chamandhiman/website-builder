@@ -37,52 +37,40 @@ export function Header({ hideBranding, hideProfile }: { hideBranding?: boolean; 
 
   if (!mounted) {
     return (
-      <header className="sticky top-0 z-50 h-12 w-full border-b border-[#363636] bg-[#1F1F1F]/95">
+      <header className="sticky top-0 z-50 h-12 w-full border-b border-[#E2E8F0] bg-white/95">
         <div className="flex h-full items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="h-8 w-32 rounded-md bg-[#2B2B2B]" />
-          <div className="h-8 w-8 rounded-full bg-[#2B2B2B]" />
+          <div className="h-8 w-32 rounded-md bg-[#F1F5F9]" />
+          <div className="h-8 w-8 rounded-full bg-[#F1F5F9]" />
         </div>
       </header>
     );
   }
 
   return (
-    <header className="sticky top-0 z-50 h-12 w-full border-b border-[#363636] bg-[#1F1F1F]/95">
+    <header className="sticky top-0 z-50 h-12 w-full border-b border-[#E2E8F0] bg-white/95 backdrop-blur-xs">
       <div className="flex h-full items-center justify-between px-4 sm:px-6 lg:px-8">
         {!hideBranding ? (
-          <div className="flex items-center gap-3 text-[#F5F5F5]">
+          <div className="flex items-center gap-3 text-[#111827]">
             {showProjectDashboard ? (
               <button
                 type="button"
                 onClick={() => navigate({ to: "/" })}
-                className="flex items-center gap-3 text-[#F5F5F5] hover:text-[#F5F5F5]"
+                className="flex items-center outline-none hover:opacity-90 transition cursor-pointer"
+                aria-label="Website Builder home"
               >
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#FACC15] text-sm font-semibold uppercase tracking-tight text-[#111111] shadow-sm">
-                  W
-                </div>
-
-                <div className="hidden sm:block">
-                  <p className="text-sm font-semibold leading-none">
-                    WebToolOcean
-                  </p>
-                  <p className="text-xs text-[#969696]">
-                    Website Builder
-                  </p>
-                </div>
+                <img
+                  src="/logo.png"
+                  alt="Website Builder by WebToolOcean"
+                  className="h-8 w-auto max-w-[190px] object-contain"
+                />
               </button>
             ) : (
-              <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#FACC15] text-sm font-semibold uppercase tracking-tight text-[#111111] shadow-sm">
-                  W
-                </div>
-                <div className="hidden sm:block">
-                  <p className="text-sm font-semibold leading-none">
-                    WebToolOcean
-                  </p>
-                  <p className="text-xs text-[#969696]">
-                    Website Builder
-                  </p>
-                </div>
+              <div className="flex items-center">
+                <img
+                  src="/logo.png"
+                  alt="Website Builder by WebToolOcean"
+                  className="h-8 w-auto max-w-[190px] object-contain"
+                />
               </div>
             )}
           </div>
@@ -96,25 +84,25 @@ export function Header({ hideBranding, hideProfile }: { hideBranding?: boolean; 
                   <DropdownMenuTrigger asChild>
                     <button
                       type="button"
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#363636] bg-[#1F1F1F] text-[#F5F5F5] transition hover:border-[#FACC15]"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#E2E8F0] bg-white text-[#111827] transition hover:border-[#7137D8] shadow-xs"
                     >
                       <Avatar className="h-8 w-8">
                         {user.photoURL ? (
                           <AvatarImage src={user.photoURL} alt={user.name} referrerPolicy="no-referrer" />
                         ) : (
-                          <AvatarFallback>{user.initials}</AvatarFallback>
+                          <AvatarFallback className="bg-purple-100 text-[#7137D8] font-bold">{user.initials}</AvatarFallback>
                         )}
                       </Avatar>
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent sideOffset={8} align="end" className="w-56 bg-[#1F1F1F] border-[#363636] text-[#F5F5F5]">
+                  <DropdownMenuContent sideOffset={8} align="end" className="w-56 bg-white border-[#E2E8F0] text-[#111827] shadow-xl rounded-xl p-1">
                     <div className="px-3 py-2 text-sm">
-                      <p className="font-semibold text-[#F5F5F5]">{user.name}</p>
-                      <p className="text-xs text-[#969696]">{user.email}</p>
+                      <p className="font-semibold text-[#111827]">{user.name}</p>
+                      <p className="text-xs text-[#64748B]">{user.email}</p>
                     </div>
-                    <DropdownMenuSeparator className="bg-[#363636]" />
-                    <DropdownMenuItem onSelect={handleSwitchAccount} className="text-[#D0D0D0] hover:bg-[#242424] hover:text-[#F5F5F5]">
-                      <User className="mr-2 h-4 w-4 text-[#969696]" />
+                    <DropdownMenuSeparator className="bg-[#E2E8F0]" />
+                    <DropdownMenuItem onSelect={handleSwitchAccount} className="text-[#475569] hover:bg-[#F1F5F9] hover:text-[#111827] rounded-lg">
+                      <User className="mr-2 h-4 w-4 text-[#64748B]" />
                       Switch Account
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -122,22 +110,22 @@ export function Header({ hideBranding, hideProfile }: { hideBranding?: boolean; 
                         setShowProjectDashboard(true);
                         navigate({ to: '/' });
                       }}
-                      className="text-[#D0D0D0] hover:bg-[#242424] hover:text-[#F5F5F5]"
+                      className="text-[#475569] hover:bg-[#F1F5F9] hover:text-[#111827] rounded-lg"
                     >
-                      <User className="mr-2 h-4 w-4 text-[#969696]" />
+                      <User className="mr-2 h-4 w-4 text-[#64748B]" />
                       Dashboard
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => void 0} className="text-[#D0D0D0] hover:bg-[#242424] hover:text-[#F5F5F5]">
-                      <Settings className="mr-2 h-4 w-4 text-[#969696]" />
+                    <DropdownMenuItem onSelect={() => void 0} className="text-[#475569] hover:bg-[#F1F5F9] hover:text-[#111827] rounded-lg">
+                      <Settings className="mr-2 h-4 w-4 text-[#64748B]" />
                       Settings
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => void 0} className="text-[#D0D0D0] hover:bg-[#242424] hover:text-[#F5F5F5]">
-                      <CreditCard className="mr-2 h-4 w-4 text-[#969696]" />
+                    <DropdownMenuItem onSelect={() => void 0} className="text-[#475569] hover:bg-[#F1F5F9] hover:text-[#111827] rounded-lg">
+                      <CreditCard className="mr-2 h-4 w-4 text-[#64748B]" />
                       Billing
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-[#363636]" />
-                    <DropdownMenuItem onSelect={handleLogout} className="text-[#D0D0D0] hover:bg-[#242424] hover:text-[#F5F5F5]">
-                      <LogOut className="mr-2 h-4 w-4 text-[#969696]" />
+                    <DropdownMenuSeparator className="bg-[#E2E8F0]" />
+                    <DropdownMenuItem onSelect={handleLogout} className="text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg">
+                      <LogOut className="mr-2 h-4 w-4 text-red-500" />
                       Sign out
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -145,7 +133,7 @@ export function Header({ hideBranding, hideProfile }: { hideBranding?: boolean; 
               ) : (
                 <div className="flex items-center">
                   <LoginDropdown
-                    triggerClassName="inline-flex h-9 items-center justify-center rounded-md border border-[#363636] bg-[#1F1F1F] px-4 text-sm font-semibold text-[#F5F5F5] transition hover:border-[#FACC15] hover:text-[#FACC15]"
+                    triggerClassName="inline-flex h-9 items-center justify-center rounded-md border border-[#E2E8F0] bg-white px-4 text-sm font-semibold text-[#111827] transition hover:border-[#7137D8] hover:text-[#7137D8] shadow-xs"
                     triggerChildren="Log in"
                   />
                 </div>

@@ -44,7 +44,7 @@ function DashboardLayout() {
   if (!authReady || !user) {
     return (
       <MainLayout hideHeader hasSidebar={false}>
-        <CenteredLoader message="Preparing your website builder…" details="This will only take a moment." />
+        <CenteredLoader />
       </MainLayout>
     );
   }

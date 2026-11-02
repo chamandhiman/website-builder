@@ -41,10 +41,10 @@ export function SuperAdminSidebar({ children }: { children: ReactNode }) {
 
   if (!mounted) {
     return (
-      <aside className="fixed inset-y-0 left-0 z-40 flex w-[180px] flex-col border-r border-[#363636] bg-[#202020]">
+      <aside className="fixed inset-y-0 left-0 z-40 flex w-[180px] flex-col border-r border-[#E2E8F0] bg-white">
         <div className="flex h-full flex-col items-center gap-3 py-4">
-          <div className="h-10 w-10 rounded-xl bg-[#2B2B2B]" />
-          <div className="h-10 w-10 rounded-xl bg-[#2B2B2B]" />
+          <div className="h-10 w-10 rounded-xl bg-[#F1F5F9]" />
+          <div className="h-10 w-10 rounded-xl bg-[#F1F5F9]" />
         </div>
       </aside>
     );
@@ -52,15 +52,17 @@ export function SuperAdminSidebar({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <aside className="fixed inset-y-0 left-0 z-40 flex w-[180px] flex-col border-r border-[#363636] bg-[#202020]">
+      <aside className="fixed inset-y-0 left-0 z-40 flex w-[180px] flex-col border-r border-[#E2E8F0] bg-white shadow-xs">
         <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
           <div className="flex items-center gap-2.5 px-3 pb-4 pt-5">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#FACC15] text-sm font-semibold uppercase tracking-tight text-[#111111] shadow-sm">
-              S
-            </div>
+            <img
+              src="/logo-icon.png"
+              alt="Super Admin"
+              className="h-9 w-9 shrink-0 rounded-lg object-contain"
+            />
             <div className="flex flex-col">
-              <p className="text-[12px] font-semibold leading-tight text-[#F5F5F5]">Super Admin</p>
-              <p className="text-[11px] leading-tight text-[#969696]">Template Manager</p>
+              <p className="text-[12px] font-semibold leading-tight text-[#111827]">Super Admin</p>
+              <p className="text-[11px] leading-tight text-[#64748B]">Template Manager</p>
             </div>
           </div>
 
@@ -72,8 +74,8 @@ export function SuperAdminSidebar({ children }: { children: ReactNode }) {
                   key={key}
                   type="button"
                   onClick={() => navigate({ to: route as never })}
-                  className={`group relative flex w-full items-center gap-2.5 border-t border-[#363636] px-2 py-2.5 transition-all duration-150 ${
-                    active ? "bg-[#FACC15]/10 text-[#FACC15]" : "text-[#969696] hover:bg-[#2B2B2B] hover:text-[#F5F5F5]"
+                  className={`group relative flex w-full items-center gap-2.5 border-t border-[#E2E8F0] px-2 py-2.5 transition-all duration-150 ${
+                    active ? "bg-[#7137D8]/10 text-[#7137D8] font-bold" : "text-[#475569] hover:bg-[#F1F5F9] hover:text-[#111827]"
                   }`}
                   style={{ borderRadius: "6px" }}
                 >
@@ -86,52 +88,52 @@ export function SuperAdminSidebar({ children }: { children: ReactNode }) {
             })}
           </nav>
 
-          <div className="shrink-0 border-t border-[#363636] p-2">
+          <div className="shrink-0 border-t border-[#E2E8F0] p-2">
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
                     type="button"
-                    className="flex w-full items-center gap-2 rounded-xl px-2 py-2 transition hover:bg-[#2B2B2B]"
+                    className="flex w-full items-center gap-2 rounded-xl px-2 py-2 transition hover:bg-[#F1F5F9]"
                   >
                     <Avatar className="h-8 w-8 shrink-0">
                       {user?.photoURL ? (
                         <AvatarImage src={user.photoURL} alt={user.name} />
                       ) : (
-                        <AvatarFallback className="text-[10px]">{user?.initials}</AvatarFallback>
+                        <AvatarFallback className="text-[10px] bg-purple-100 text-[#7137D8] font-bold">{user?.initials}</AvatarFallback>
                       )}
                     </Avatar>
                     <div className="flex-1 overflow-hidden text-left">
-                      <p className="truncate text-[12px] font-medium leading-tight text-[#F5F5F5]">{user?.name}</p>
-                      <p className="truncate text-[10px] leading-tight text-[#969696]">{user?.email}</p>
+                      <p className="truncate text-[12px] font-medium leading-tight text-[#111827]">{user?.name}</p>
+                      <p className="truncate text-[10px] leading-tight text-[#64748B]">{user?.email}</p>
                     </div>
-                    <ChevronDown className="h-4 w-4 shrink-0 text-[#969696]" />
+                    <ChevronDown className="h-4 w-4 shrink-0 text-[#64748B]" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent sideOffset={4} align="end" className="w-56 bg-[#1F1F1F] border-[#363636] text-[#F5F5F5]">
+                <DropdownMenuContent sideOffset={4} align="end" className="w-56 bg-white border-[#E2E8F0] text-[#111827] shadow-xl rounded-xl p-1">
                   <div className="px-3 py-2 text-sm">
-                    <p className="font-semibold text-[#F5F5F5]">{user?.name}</p>
-                    <p className="text-xs text-[#969696]">{user?.email}</p>
+                    <p className="font-semibold text-[#111827]">{user?.name}</p>
+                    <p className="text-xs text-[#64748B]">{user?.email}</p>
                   </div>
-                  <DropdownMenuSeparator className="bg-[#363636]" />
+                  <DropdownMenuSeparator className="bg-[#E2E8F0]" />
                   <DropdownMenuItem
                     onSelect={() => {
                       navigate({ to: "/dashboard" as never });
                     }}
-                    className="text-[#D0D0D0] hover:bg-[#242424] hover:text-[#F5F5F5]"
+                    className="text-[#475569] hover:bg-[#F1F5F9] hover:text-[#111827] rounded-lg"
                   >
                     Builder Dashboard
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-[#363636]" />
+                  <DropdownMenuSeparator className="bg-[#E2E8F0]" />
                   <DropdownMenuItem
                     onSelect={async () => {
                       await logout();
                       navigate({ to: "/" });
                       toast.success("Signed out successfully");
                     }}
-                    className="text-[#D0D0D0] hover:bg-[#242424] hover:text-[#F5F5F5]"
+                    className="text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg"
                   >
-                    <LogOut className="mr-2 h-4 w-4" />
+                    <LogOut className="mr-2 h-4 w-4 text-red-500" />
                     Sign out
                   </DropdownMenuItem>
                 </DropdownMenuContent>

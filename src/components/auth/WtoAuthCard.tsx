@@ -63,6 +63,15 @@ export function WtoAuthCard({
         maxWidth: "440px",
       }}
     >
+      {/* Brand Logo */}
+      <div className="flex justify-center mb-5">
+        <img
+          src="/logo.png"
+          alt="Website Builder by WebToolOcean"
+          className="h-10 w-auto max-w-[210px] object-contain"
+        />
+      </div>
+
       {/* Heading */}
       <div
         className="wto-auth-welcome"

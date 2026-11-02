@@ -60,12 +60,11 @@ export function LiveWebsitePreviewFrame({
           <div className="flex items-center justify-between px-5 py-3 border-b border-zinc-100 bg-white/95 backdrop-blur-xs">
             {/* Logo */}
             <div className="flex items-center gap-1.5">
-              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[#FACC15] text-zinc-950 shadow-xs">
-                <GraduationCap className="h-4 w-4 stroke-[2.5]" />
-              </span>
-              <span className="font-extrabold text-sm tracking-tight text-[#0F172A]">
-                WebTool<span className="text-[#0284C7]">Ocean</span>
-              </span>
+              <img
+                src="/logo.png"
+                alt="Website Builder by WebToolOcean"
+                className="h-6 w-auto object-contain"
+              />
             </div>
 
             {/* Nav links */}
@@ -175,12 +174,11 @@ export function LiveWebsitePreviewFrame({
           {/* WebToolOcean Mobile Header */}
           <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-zinc-100 bg-white">
             <div className="flex items-center gap-1">
-              <span className="flex h-5 w-5 items-center justify-center rounded bg-[#FACC15] text-zinc-950">
-                <GraduationCap className="h-3 w-3 stroke-[2.5]" />
-              </span>
-              <span className="font-extrabold text-xs tracking-tight text-[#0F172A]">
-                WebTool<span className="text-[#0284C7]">Ocean</span>
-              </span>
+              <img
+                src="/logo.png"
+                alt="Website Builder by WebToolOcean"
+                className="h-5 w-auto object-contain"
+              />
             </div>
             <Menu className="h-4 w-4 text-zinc-700" />
           </div>

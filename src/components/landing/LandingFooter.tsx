@@ -5,8 +5,12 @@ export function LandingFooter() {
     <footer className="ft">
       <div className="ft-top">
         <div className="ft-brand">
-          <a className="brand" href="#">
-            WebTool<b>Ocean</b>
+          <a className="brand" href="#" aria-label="Website Builder by WebToolOcean" style={{ display: "inline-flex", alignItems: "center" }}>
+            <img
+              src="/logo.png"
+              alt="Website Builder by WebToolOcean"
+              className="h-10 w-auto max-w-[220px] object-contain"
+            />
           </a>
           <p>
             Build beautiful websites in minutes. Pick a template, edit it live, and

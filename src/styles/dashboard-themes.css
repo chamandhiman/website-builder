@@ -1,188 +1,191 @@
-/* Dashboard Themes: Dark (Black), Navy Blue, and White (Light) */
+/* ============================================================
+   Dashboard Themes — Light/White Only
+   All theme variants are forced to clean, modern light theme.
+   ============================================================ */
 
-/* Base transitions for smooth switching */
+/* Force the app layout to light */
 .wto-app-layout,
-.wto-app-layout aside,
-.wto-app-layout section,
-.wto-app-layout div {
-  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
+.wto-app-content-scroll,
+[data-dashboard-theme] .wto-app-layout,
+[data-dashboard-theme] .wto-app-content-scroll {
+  background-color: #F8FAFC !important;
+  color: #111827 !important;
 }
 
-/* ==========================================================
-   1. NAVY BLUE THEME
-   ========================================================== */
-[data-dashboard-theme="navy"] .wto-app-layout,
-[data-dashboard-theme="navy"] .wto-app-layout > div,
-[data-dashboard-theme="navy"] .wto-app-content-scroll {
-  background-color: #070c18 !important;
-  color: #f1f5f9 !important;
+/* Sidebar — always light */
+aside.wto-sidebar,
+[data-dashboard-theme] aside.wto-sidebar {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 1px 0 3px rgba(0, 0, 0, 0.03) !important;
 }
 
-/* Sidebar in Navy */
-[data-dashboard-theme="navy"] aside.wto-sidebar {
-  background-color: #0b1429 !important;
-  border-color: rgba(56, 189, 248, 0.16) !important;
+/* Sidebar text colors */
+aside.wto-sidebar .text-white,
+[data-dashboard-theme] aside.wto-sidebar .text-white,
+[data-dashboard-theme] aside.wto-sidebar strong {
+  color: #111827 !important;
 }
 
-[data-dashboard-theme="navy"] .wto-sidebar button:hover,
-[data-dashboard-theme="navy"] .wto-sidebar nav button:hover {
-  background-color: rgba(56, 189, 248, 0.08) !important;
-  color: #ffffff !important;
+aside.wto-sidebar .text-\[\#9a9aa3\],
+aside.wto-sidebar .text-\[\#6b6b74\],
+aside.wto-sidebar .text-\[\#8e8e98\],
+[data-dashboard-theme] aside.wto-sidebar .text-\[\#9a9aa3\],
+[data-dashboard-theme] aside.wto-sidebar .text-\[\#6b6b74\],
+[data-dashboard-theme] aside.wto-sidebar .text-\[\#8e8e98\] {
+  color: #64748B !important;
 }
 
-/* Hero Greeting Banner in Navy */
-[data-dashboard-theme="navy"] .wto-app-layout section.relative.rounded-\[22px\] {
-  background: linear-gradient(135deg, #0d1a38 0%, #0a1530 55%, #070e22 100%) !important;
-  border-color: rgba(56, 189, 248, 0.24) !important;
-  box-shadow: 0 20px 45px -15px rgba(2, 6, 23, 0.7) !important;
+aside.wto-sidebar button:hover,
+aside.wto-sidebar nav button:hover,
+[data-dashboard-theme] aside.wto-sidebar button:hover,
+[data-dashboard-theme] aside.wto-sidebar nav button:hover {
+  background-color: #F1F5F9 !important;
+  color: #111827 !important;
 }
 
-/* Cards & Panels in Navy */
-[data-dashboard-theme="navy"] .wto-app-layout div[class*="bg-[#151518]"],
-[data-dashboard-theme="navy"] .wto-app-layout div[class*="bg-[#18181c]"],
-[data-dashboard-theme="navy"] .wto-app-layout div[class*="bg-[#141418]"],
-[data-dashboard-theme="navy"] .wto-app-layout div[class*="bg-[#16161a]"],
-[data-dashboard-theme="navy"] .wto-app-layout section[class*="bg-[#151518]"],
-[data-dashboard-theme="navy"] .wto-app-layout article[class*="bg-[#151518]"] {
-  background-color: #0f1c3d !important;
-  border-color: rgba(56, 189, 248, 0.15) !important;
-  box-shadow: 0 10px 25px -5px rgba(2, 6, 23, 0.5) !important;
-}
-
-/* Secondary Action Buttons in Navy */
-[data-dashboard-theme="navy"] .wto-app-layout button[class*="bg-[#151518]"],
-[data-dashboard-theme="navy"] .wto-app-layout a[class*="bg-[#151518]"] {
-  background-color: #14244d !important;
-  border-color: rgba(56, 189, 248, 0.22) !important;
-  color: #f1f5f9 !important;
-}
-
-[data-dashboard-theme="navy"] .wto-app-layout button[class*="bg-[#151518]"]:hover,
-[data-dashboard-theme="navy"] .wto-app-layout a[class*="bg-[#151518]"]:hover {
-  background-color: #1a2f63 !important;
-  border-color: rgba(56, 189, 248, 0.4) !important;
-}
-
-/* Inputs in Navy */
-[data-dashboard-theme="navy"] .wto-app-layout input,
-[data-dashboard-theme="navy"] .wto-app-layout textarea {
-  background-color: #0a1329 !important;
-  border-color: rgba(56, 189, 248, 0.2) !important;
-  color: #f8fafc !important;
-}
-
-/* Text adjustments in Navy */
-[data-dashboard-theme="navy"] .wto-app-layout .text-\[\#9a9aa3\],
-[data-dashboard-theme="navy"] .wto-app-layout .text-\[\#8e8e98\] {
-  color: #94a3b8 !important;
-}
-
-
-/* ==========================================================
-   2. WHITE / LIGHT THEME
-   ========================================================== */
-[data-dashboard-theme="light"] .wto-app-layout,
-[data-dashboard-theme="light"] .wto-app-layout > div,
-[data-dashboard-theme="light"] .wto-app-content-scroll {
-  background-color: #f8fafc !important;
-  color: #0f172a !important;
-}
-
-/* Sidebar in Light */
-[data-dashboard-theme="light"] aside.wto-sidebar {
-  background-color: #ffffff !important;
-  border-color: #e2e8f0 !important;
-  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.03) !important;
-}
-
-[data-dashboard-theme="light"] aside.wto-sidebar strong,
-[data-dashboard-theme="light"] aside.wto-sidebar .text-white {
-  color: #0f172a !important;
-}
-
-[data-dashboard-theme="light"] aside.wto-sidebar .text-\[\#9a9aa3\],
-[data-dashboard-theme="light"] aside.wto-sidebar .text-\[\#6b6b74\],
-[data-dashboard-theme="light"] aside.wto-sidebar .text-\[\#8e8e98\] {
-  color: #64748b !important;
-}
-
-[data-dashboard-theme="light"] aside.wto-sidebar button:hover,
-[data-dashboard-theme="light"] aside.wto-sidebar nav button:hover {
-  background-color: #f1f5f9 !important;
-  color: #0f172a !important;
-}
-
-/* Hero Greeting Banner in Light */
-[data-dashboard-theme="light"] .wto-app-layout section.relative.rounded-\[22px\] {
-  background: linear-gradient(135deg, #ffffff 0%, #fefce8 60%, #f1f5f9 100%) !important;
-  border-color: #fde047 !important;
-  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.06) !important;
-}
-
-/* Cards & Panels in Light */
-[data-dashboard-theme="light"] .wto-app-layout div[class*="bg-[#151518]"],
-[data-dashboard-theme="light"] .wto-app-layout div[class*="bg-[#18181c]"],
-[data-dashboard-theme="light"] .wto-app-layout div[class*="bg-[#141418]"],
-[data-dashboard-theme="light"] .wto-app-layout div[class*="bg-[#16161a]"],
-[data-dashboard-theme="light"] .wto-app-layout section[class*="bg-[#151518]"],
-[data-dashboard-theme="light"] .wto-app-layout article[class*="bg-[#151518]"] {
-  background-color: #ffffff !important;
-  border-color: #e2e8f0 !important;
-  box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03) !important;
-  color: #0f172a !important;
-}
-
-/* Headings & Text in Light */
-[data-dashboard-theme="light"] .wto-app-layout .text-white,
-[data-dashboard-theme="light"] .wto-app-layout h1,
-[data-dashboard-theme="light"] .wto-app-layout h2,
-[data-dashboard-theme="light"] .wto-app-layout h3 {
-  color: #0f172a !important;
-}
-
-[data-dashboard-theme="light"] .wto-app-layout .text-\[\#d4d4d8\],
-[data-dashboard-theme="light"] .wto-app-layout .text-\[\#f4f4f5\] {
-  color: #1e293b !important;
-}
-
-[data-dashboard-theme="light"] .wto-app-layout .text-\[\#9a9aa3\],
-[data-dashboard-theme="light"] .wto-app-layout .text-\[\#8e8e98\],
-[data-dashboard-theme="light"] .wto-app-layout .text-\[\#6b6b74\] {
-  color: #64748b !important;
-}
-
-/* Borders in Light */
-[data-dashboard-theme="light"] .wto-app-layout .border-white\/\[0\.07\],
-[data-dashboard-theme="light"] .wto-app-layout .border-white\/\[0\.08\],
-[data-dashboard-theme="light"] .wto-app-layout .border-white\/10 {
-  border-color: #e2e8f0 !important;
-}
-
-/* Secondary Buttons in Light */
-[data-dashboard-theme="light"] .wto-app-layout button[class*="bg-[#151518]"],
-[data-dashboard-theme="light"] .wto-app-layout a[class*="bg-[#151518]"] {
-  background-color: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  color: #0f172a !important;
+/* Cards & Panels */
+.wto-app-layout div[class*="bg-[#151518]"],
+.wto-app-layout div[class*="bg-[#18181c]"],
+.wto-app-layout div[class*="bg-[#141418]"],
+.wto-app-layout div[class*="bg-[#16161a]"],
+.wto-app-layout div[class*="bg-[#0b0b0d]"],
+.wto-app-layout section[class*="bg-[#151518]"],
+.wto-app-layout article[class*="bg-[#151518]"],
+[data-dashboard-theme] .wto-app-layout div[class*="bg-[#151518]"],
+[data-dashboard-theme] .wto-app-layout div[class*="bg-[#18181c]"],
+[data-dashboard-theme] .wto-app-layout div[class*="bg-[#141418]"],
+[data-dashboard-theme] .wto-app-layout div[class*="bg-[#16161a]"],
+[data-dashboard-theme] .wto-app-layout div[class*="bg-[#0b0b0d]"],
+[data-dashboard-theme] .wto-app-layout section[class*="bg-[#151518]"],
+[data-dashboard-theme] .wto-app-layout article[class*="bg-[#151518]"] {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+  color: #111827 !important;
 }
 
-[data-dashboard-theme="light"] .wto-app-layout button[class*="bg-[#151518]"]:hover,
-[data-dashboard-theme="light"] .wto-app-layout a[class*="bg-[#151518]"]:hover {
-  background-color: #f1f5f9 !important;
-  border-color: #94a3b8 !important;
+/* Headings and text */
+.wto-app-layout h1,
+.wto-app-layout h2,
+.wto-app-layout h3,
+[data-dashboard-theme] .wto-app-layout h1,
+[data-dashboard-theme] .wto-app-layout h2,
+[data-dashboard-theme] .wto-app-layout h3 {
+  color: #111827 !important;
 }
 
-/* Inputs in Light */
-[data-dashboard-theme="light"] .wto-app-layout input,
-[data-dashboard-theme="light"] .wto-app-layout textarea {
-  background-color: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  color: #0f172a !important;
+/* Primary and colored buttons / badges — ALWAYS pure white text */
+.wto-app-layout button[class*="from-[#7137D8]"],
+.wto-app-layout button[class*="bg-[#7137D8]"],
+.wto-app-layout a[class*="from-[#7137D8]"],
+.wto-app-layout a[class*="bg-[#7137D8]"],
+.wto-app-layout button[class*="from-[#7137D8]"] *,
+.wto-app-layout button[class*="bg-[#7137D8]"] *,
+.wto-app-layout a[class*="from-[#7137D8]"] *,
+.wto-app-layout a[class*="bg-[#7137D8]"] *,
+.wto-app-layout button[class*="bg-primary"],
+.wto-app-layout button[class*="bg-primary"] *,
+.wto-app-layout .text-white,
+[data-dashboard-theme] .wto-app-layout button[class*="from-[#7137D8]"],
+[data-dashboard-theme] .wto-app-layout button[class*="bg-[#7137D8]"],
+[data-dashboard-theme] .wto-app-layout button[class*="from-[#7137D8]"] *,
+[data-dashboard-theme] .wto-app-layout button[class*="bg-[#7137D8]"] * {
+  color: #FFFFFF !important;
 }
 
-/* Project Card Thumbnails in Light */
-[data-dashboard-theme="light"] .wto-app-layout .bg-white\/\[0\.03\],
-[data-dashboard-theme="light"] .wto-app-layout .bg-white\/\[0\.04\] {
-  background-color: #f1f5f9 !important;
+.wto-app-layout .text-\[\#d4d4d8\],
+.wto-app-layout .text-\[\#f4f4f5\],
+[data-dashboard-theme] .wto-app-layout .text-\[\#d4d4d8\],
+[data-dashboard-theme] .wto-app-layout .text-\[\#f4f4f5\] {
+  color: #1E293B !important;
+}
+
+.wto-app-layout .text-\[\#9a9aa3\],
+.wto-app-layout .text-\[\#8e8e98\],
+.wto-app-layout .text-\[\#6b6b74\],
+[data-dashboard-theme] .wto-app-layout .text-\[\#9a9aa3\],
+[data-dashboard-theme] .wto-app-layout .text-\[\#8e8e98\],
+[data-dashboard-theme] .wto-app-layout .text-\[\#6b6b74\] {
+  color: #64748B !important;
+}
+
+/* Borders */
+.wto-app-layout .border-white\/\[0\.07\],
+.wto-app-layout .border-white\/\[0\.08\],
+.wto-app-layout .border-white\/10,
+[data-dashboard-theme] .wto-app-layout .border-white\/\[0\.07\],
+[data-dashboard-theme] .wto-app-layout .border-white\/\[0\.08\],
+[data-dashboard-theme] .wto-app-layout .border-white\/10 {
+  border-color: #E2E8F0 !important;
+}
+
+/* Secondary Buttons */
+.wto-app-layout button[class*="bg-[#151518]"],
+.wto-app-layout a[class*="bg-[#151518]"],
+[data-dashboard-theme] .wto-app-layout button[class*="bg-[#151518]"],
+[data-dashboard-theme] .wto-app-layout a[class*="bg-[#151518]"] {
+  background-color: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  color: #111827 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+.wto-app-layout button[class*="bg-[#151518]"]:hover,
+.wto-app-layout a[class*="bg-[#151518]"]:hover,
+[data-dashboard-theme] .wto-app-layout button[class*="bg-[#151518]"]:hover,
+[data-dashboard-theme] .wto-app-layout a[class*="bg-[#151518]"]:hover {
+  background-color: #F1F5F9 !important;
+  border-color: #94A3B8 !important;
+}
+
+/* Inputs */
+.wto-app-layout input,
+.wto-app-layout textarea,
+[data-dashboard-theme] .wto-app-layout input,
+[data-dashboard-theme] .wto-app-layout textarea {
+  background-color: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  color: #111827 !important;
+}
+
+/* Subtle backgrounds */
+.wto-app-layout .bg-white\/\[0\.03\],
+.wto-app-layout .bg-white\/\[0\.04\],
+[data-dashboard-theme] .wto-app-layout .bg-white\/\[0\.03\],
+[data-dashboard-theme] .wto-app-layout .bg-white\/\[0\.04\] {
+  background-color: #F1F5F9 !important;
+}
+
+/* Hero greeting banner with vibrant brand gradient tint */
+.wto-app-layout section.relative.rounded-\[22px\],
+[data-dashboard-theme] .wto-app-layout section.relative.rounded-\[22px\] {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FAF5FF 50%, #F0F9FF 100%) !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 4px 20px -2px rgba(113, 55, 216, 0.06) !important;
+}
+
+/* Dashboard Statistic Cards (4 tinted cards) */
+.wto-app-layout .bg-\[\#F6F0FE\],
+[data-dashboard-theme] .wto-app-layout .bg-\[\#F6F0FE\] {
+  background-color: #F6F0FE !important;
+  border-color: #E9D8FD !important;
+}
+
+.wto-app-layout .bg-\[\#EDFDF2\],
+[data-dashboard-theme] .wto-app-layout .bg-\[\#EDFDF2\] {
+  background-color: #EDFDF2 !important;
+  border-color: #C6F6D5 !important;
+}
+
+.wto-app-layout .bg-\[\#EEF6FE\],
+[data-dashboard-theme] .wto-app-layout .bg-\[\#EEF6FE\] {
+  background-color: #EEF6FE !important;
+  border-color: #CDE5FE !important;
+}
+
+.wto-app-layout .bg-\[\#FDF2F8\],
+[data-dashboard-theme] .wto-app-layout .bg-\[\#FDF2F8\] {
+  background-color: #FDF2F8 !important;
+  border-color: #FBCFE8 !important;
 }

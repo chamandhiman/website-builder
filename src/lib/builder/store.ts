@@ -2035,7 +2035,7 @@ export const useBuilder = create<BuilderState>((set, get) => ({
       page?.sections.find((s) => s.id === id) ??
       null;
     const widgetInstanceId = section?.widgetInstance?.id ?? null;
-    set({ selectedSectionId: id ?? null, selectedWidgetId: widgetInstanceId, selectedElement: null, selectedElementStyle: null, breadcrumb: [] });
+    set({ selectedSectionId: id ?? null, selectedWidgetId: widgetInstanceId, selectedElement: null, selectedElementStyle: null, breadcrumb: [], selectedFloatingWidgetId: null });
   },
   selectElement: (value) => {
     const nextWidgetId = value ? (value.parentWidgetId ?? value.widgetId ?? get().selectedWidgetId) : null;

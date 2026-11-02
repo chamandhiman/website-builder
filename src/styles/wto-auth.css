@@ -1,11 +1,11 @@
 :root {
-  --wto-black: #10110e;
-  --wto-panel: #171813;
-  --wto-yellow: #f4d536;
-  --wto-yellow-soft: #fff2a6;
-  --wto-muted: #a5a598;
-  --wto-line: rgba(255, 255, 255, 0.12);
-  --wto-white: #f8f8f1;
+  --wto-black: #FFFFFF;
+  --wto-panel: #F8FAFC;
+  --wto-yellow: #7137D8;
+  --wto-yellow-soft: #7137D8;
+  --wto-muted: #64748B;
+  --wto-line: #E2E8F0;
+  --wto-white: #111827;
 }
 
 /* Card and Content */
@@ -15,21 +15,21 @@
   width: min(100%, 440px) !important;
   max-width: 440px !important;
   padding: 42px 38px 34px !important;
-  border: 1px solid rgba(255, 255, 255, 0.11) !important;
+  border: 1px solid #E2E8F0 !important;
   border-radius: 24px !important;
-  background: linear-gradient(145deg, rgba(30, 31, 25, 0.97), rgba(21, 22, 18, 0.97)) !important;
-  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.48), 0 0 55px rgba(244, 213, 54, 0.045) !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12), 0 0 35px rgba(113, 55, 216, 0.08) !important;
   overflow: hidden !important;
   font-family: "DM Sans", sans-serif !important;
-  color: var(--wto-white) !important;
+  color: #111827 !important;
   box-sizing: border-box !important;
 }
 .wto-auth-card:before {
   content: "";
   position: absolute;
   inset: 0 0 auto;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--wto-yellow), transparent);
+  height: 3px;
+  background: linear-gradient(90deg, #7137D8 0%, #D52BBD 45%, #3478F6 75%, #FF8A35 100%);
 }
 .wto-auth-card:after {
   content: "";
@@ -37,7 +37,7 @@
   width: 220px;
   height: 220px;
   border-radius: 50%;
-  background: rgba(244, 213, 54, 0.035);
+  background: rgba(113, 55, 216, 0.04);
   filter: blur(32px);
   right: -115px;
   top: -130px;
@@ -61,11 +61,11 @@
   text-align: center !important;
   margin: 0 0 12px 0 !important;
   padding: 0 !important;
-  color: #ffffff !important;
+  color: #111827 !important;
 }
 
 .wto-auth-sub {
-  color: #b1b1a6 !important;
+  color: #475569 !important;
   font-family: "DM Sans", sans-serif !important;
   font-size: 0.88rem !important;
   line-height: 1.6 !important;
@@ -79,11 +79,11 @@
   position: relative !important;
   z-index: 1 !important;
   width: 100% !important;
-  height: 55px !important;
-  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  height: 52px !important;
+  border: 1px solid #CBD5E1 !important;
   border-radius: 12px !important;
-  background: #f8f8f5 !important;
-  color: #1b1b18 !important;
+  background: #FFFFFF !important;
+  color: #111827 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -95,13 +95,15 @@
   padding: 0 16px !important;
   margin: 0 0 22px 0 !important;
   box-sizing: border-box !important;
-  transition: transform 0.2s, box-shadow 0.2s, background 0.2s !important;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s !important;
   text-decoration: none !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
 }
 .wto-auth-google:hover {
   transform: translateY(-2px);
-  background: #ffffff !important;
-  box-shadow: 0 9px 28px rgba(244, 213, 54, 0.15);
+  background: #F8FAFC !important;
+  border-color: #7137D8 !important;
+  box-shadow: 0 8px 24px rgba(113, 55, 216, 0.16);
 }
 .wto-auth-google:active {
   transform: none;
@@ -124,7 +126,7 @@
   gap: 12px !important;
   margin: 0 0 18px 0 !important;
   padding: 0 !important;
-  color: #a6a696 !important;
+  color: #64748B !important;
   font-size: 0.65rem !important;
   font-weight: 700 !important;
   letter-spacing: 0.17em !important;
@@ -134,7 +136,7 @@
 .wto-auth-divider:after {
   content: "";
   height: 1px;
-  background: rgba(255, 255, 255, 0.12);
+  background: #E2E8F0;
   flex: 1;
 }
 
@@ -143,10 +145,10 @@
   align-items: flex-start !important;
   gap: 11px !important;
   padding: 13px 15px !important;
-  background: rgba(255, 255, 255, 0.035) !important;
-  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  background: #F8FAFC !important;
+  border: 1px solid #E2E8F0 !important;
   border-radius: 10px !important;
-  color: #c3c3b8 !important;
+  color: #475569 !important;
   font-size: 0.76rem !important;
   line-height: 1.55 !important;
   text-align: left !important;
@@ -155,12 +157,12 @@
 }
 .wto-auth-privacy svg {
   flex: 0 0 17px !important;
-  color: var(--wto-yellow) !important;
+  color: #7137D8 !important;
   margin-top: 1px !important;
 }
 
 .wto-auth-terms {
-  color: #8e8e83 !important;
+  color: #64748B !important;
   text-align: center !important;
   font-size: 0.71rem !important;
   line-height: 1.65 !important;
@@ -169,9 +171,9 @@
   box-sizing: border-box !important;
 }
 .wto-auth-terms a {
-  color: var(--wto-yellow-soft) !important;
+  color: #7137D8 !important;
   text-decoration: underline !important;
-  text-decoration-color: rgba(244, 213, 54, 0.5) !important;
+  text-decoration-color: rgba(113, 55, 216, 0.4) !important;
   text-underline-offset: 3px !important;
 }
 
@@ -180,14 +182,14 @@
   justify-content: center !important;
   align-items: center !important;
   gap: 7px !important;
-  color: #a1a194 !important;
+  color: #64748B !important;
   font-size: 0.71rem !important;
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box !important;
 }
 .wto-auth-secure svg {
-  color: var(--wto-yellow) !important;
+  color: #7137D8 !important;
 }
 
 .wto-auth-close-btn {
@@ -199,16 +201,16 @@
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #a5a598;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  color: #475569;
   cursor: pointer;
   transition: all 0.15s;
   z-index: 20;
 }
 .wto-auth-close-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  background: #E2E8F0;
+  color: #111827;
 }
 
 /* Animations */

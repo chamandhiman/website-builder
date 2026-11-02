@@ -584,6 +584,15 @@ export const WTO_CUSTOM_HTML_ACTIVATOR = `
         }
 
         // Deduplication safeguard: avoid executing if this specific widget instance is already initialized
+        window.__WTO_LOADED_SCRIPTS__ = window.__WTO_LOADED_SCRIPTS__ || new Set();
+        if (src) {
+          if (window.__WTO_LOADED_SCRIPTS__.has(src)) {
+            oldScript.setAttribute('data-wto-executed', '1');
+            return;
+          }
+          window.__WTO_LOADED_SCRIPTS__.add(src);
+        }
+
         if (widgetId) {
           if (
             window['__WTO_POPUP_' + widgetId + '_LOADED__'] ||
@@ -3099,6 +3108,28 @@ export const RUNTIME_SCRIPT = `
         }
       if (target.closest("[data-carousel-prev], [data-carousel-next], [data-carousel-dot], [data-carousel-items-prev], [data-carousel-items-next], [data-carousel-indicator], .wto-nav-btn, .wto-dot-btn, [data-wto-carousel-btn], .wto-readmore-btn")) return;
       if (target.closest('[data-grid-add-child="1"]')) return;
+      const faqBtn = target.closest('.wto-faq-question-btn');
+      if (faqBtn) {
+        const faqItem = faqBtn.closest('.wto-faq-item');
+        if (faqItem) {
+          const isOpen = faqItem.classList.contains('is-open');
+          const container = faqItem.closest('.wto-faq-container') || faqItem.parentElement;
+          if (!isOpen && container) {
+            container.querySelectorAll('.wto-faq-item').forEach(function(it) {
+              it.classList.remove('is-open');
+              const b = it.querySelector('.wto-faq-question-btn');
+              if (b) b.setAttribute('aria-expanded', 'false');
+            });
+          }
+          if (isOpen) {
+            faqItem.classList.remove('is-open');
+            faqBtn.setAttribute('aria-expanded', 'false');
+          } else {
+            faqItem.classList.add('is-open');
+            faqBtn.setAttribute('aria-expanded', 'true');
+          }
+        }
+      }
       const embedActBtn = target.closest('[data-wto-embed-act]');
       if (embedActBtn) {
         e.preventDefault();
@@ -3951,34 +3982,7 @@ export function buildPreviewHTML(opts: {
       const linked = pages ? resolvePageLinks(visibleHtml, pages) : visibleHtml;
       const extra = sectionAttrs(s);
       const hiddenAttr = s.hidden && editable ? ' data-wto-hidden="1"' : "";
-      const isEmbedSection = s.widgetInstance?.type === "custom-html" || (s.id && s.id.startsWith("custom-html")) || (s.templateId && s.templateId.includes("custom-html")) || /custom-html/i.test(s.name || "");
-      let embedCanvasBadge = "";
-      if (editable && isEmbedSection) {
-        const lowerName = (s.name || "").toLowerCase();
-        const lowerHtml = (s.html || "").toLowerCase();
-        let embedTitle = "Custom Embed";
-        if (lowerName.includes("youtube") || lowerHtml.includes("youtube.com") || lowerHtml.includes("youtu.be")) embedTitle = "YouTube Video";
-        else if (lowerName.includes("map") || lowerHtml.includes("google.com/maps")) embedTitle = "Google Map";
-        else if (lowerName.includes("form") || lowerHtml.includes("<form") || lowerHtml.includes("typeform")) embedTitle = "Contact Form";
-        else if (s.name) embedTitle = s.name;
-
-        const placementText = s.shared === "header" ? "Global Header" : s.shared === "footer" ? "Global Footer" : "Inline Page";
-
-        embedCanvasBadge = `
-          <div class="wto-embed-canvas-badge" data-wto-embed-badge="1" style="display: flex; align-items: center; justify-content: space-between; padding: 5px 12px; background: rgba(18, 18, 22, 0.96); border: 1.5px solid rgba(250, 204, 21, 0.6); border-bottom: none; border-radius: 8px 8px 0 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 11px; font-weight: 600; color: #FACC15; pointer-events: auto; user-select: none; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-              <span style="font-weight: 700; color: #ffffff;">${escapeAttribute(embedTitle)}</span>
-              <span style="font-size: 10px; padding: 2px 7px; border-radius: 999px; background: rgba(250,204,21,0.18); color: #FDE047; font-weight: 700; border: 1px solid rgba(250,204,21,0.3);">${placementText}</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <button type="button" data-wto-embed-act="edit" data-wto-embed-id="${s.id}" style="all: unset; cursor: pointer; padding: 3px 9px; border-radius: 5px; background: #27272A; color: #ffffff; font-size: 11px; font-weight: 600; transition: background 0.15s ease; border: 1px solid #3F3F46;">Edit</button>
-              <button type="button" data-wto-embed-act="delete" data-wto-embed-id="${s.id}" style="all: unset; cursor: pointer; padding: 3px 9px; border-radius: 5px; background: rgba(239,68,68,0.22); color: #fca5a5; font-size: 11px; font-weight: 600; transition: background 0.15s ease; border: 1px solid rgba(239,68,68,0.4);">Delete</button>
-            </div>
-          </div>
-        `;
-      }
-      return `<div data-wto-section="${s.id}" draggable="${editable ? 'true' : 'false'}" class="wto-section${selectedClass}" ${extra}${hiddenAttr}>${embedCanvasBadge}${resolveAssetPaths(linked, assets)}</div>`;
+      return `<div data-wto-section="${s.id}" draggable="${editable ? 'true' : 'false'}" class="wto-section${selectedClass}" ${extra}${hiddenAttr}>${resolveAssetPaths(linked, assets)}</div>`;
     })
     .join("\n");
 

@@ -308,21 +308,21 @@ export function CanvasToolbar({
 
   if (!mounted || !project) {
     return (
-      <div className="flex h-12 items-center border-b border-[#363636] bg-[#1F1F1F] px-3">
-        <div className="h-8 w-48 rounded-md bg-[#2B2B2B]" />
+      <div className="flex h-12 items-center border-b border-[#E2E8F0] bg-white px-3">
+        <div className="h-8 w-48 rounded-md bg-[#F1F5F9]" />
       </div>
     );
   }
 
   return (
-    <div className="flex h-12 shrink-0 items-center justify-between border-b border-[#363636] bg-[#1F1F1F] px-2 sm:px-3 gap-1.5 sm:gap-2">
+    <div className="flex h-12 shrink-0 items-center justify-between border-b border-[#E2E8F0] bg-white px-2 sm:px-3 gap-1.5 sm:gap-2">
       <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
         {/* Mobile Hamburger menu button */}
         {onToggleMobileMenu && (
           <button
             type="button"
             onClick={onToggleMobileMenu}
-            className="inline-flex md:hidden h-8 w-8 items-center justify-center rounded-lg border border-[#363636] bg-[#1F1F1F] text-[#FACC15] transition hover:bg-[#242424] shrink-0"
+            className="inline-flex md:hidden h-8 w-8 items-center justify-center rounded-lg border border-[#E2E8F0] bg-white text-[#7137D8] transition hover:bg-[#F1F5F9] shrink-0"
             aria-label="Open navigation menu"
             title="Open Menu"
           >
@@ -331,25 +331,25 @@ export function CanvasToolbar({
         )}
 
         {/* Page selector + actions grouped */}
-        <div className="flex items-center rounded-lg border border-[#363636] bg-[#1F1F1F] overflow-visible" ref={selectorRef}>
+        <div className="flex items-center rounded-lg border border-[#E2E8F0] bg-white overflow-visible" ref={selectorRef}>
           <div className="relative">
             <button
               type="button"
               onClick={() => setPageSelectorOpen(!pageSelectorOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-[#D0D0D0] transition hover:bg-[#242424] rounded-lg"
+              className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-[#111827] transition hover:bg-[#F1F5F9] rounded-lg"
             >
-              <FileText className="h-3.5 w-3.5 text-[#969696] shrink-0" />
+              <FileText className="h-3.5 w-3.5 text-[#64748B] shrink-0" />
               <span className="max-w-[120px] truncate">{activePage?.name ?? "Select page"}</span>
-              <ChevronDown className={`h-3.5 w-3.5 text-[#969696] transition-transform duration-150 ${pageSelectorOpen ? "rotate-180" : ""}`} />
+              <ChevronDown className={`h-3.5 w-3.5 text-[#64748B] transition-transform duration-150 ${pageSelectorOpen ? "rotate-180" : ""}`} />
             </button>
 
             {pageSelectorOpen && (
-              <div className="absolute top-[calc(100%+6px)] left-0 z-[100] w-56 rounded-xl border border-[#363636] bg-[#1A1A1A] p-1 shadow-2xl">
+              <div className="absolute top-[calc(100%+6px)] left-0 z-[100] w-56 rounded-xl border border-[#E2E8F0] bg-white p-1 shadow-2xl">
                 <div className="flex items-center justify-between px-2 pb-1 pt-0.5">
-                  <span className="text-[10px] uppercase tracking-wider text-[#707070]">Pages</span>
-                  <span className="text-[10px] text-[#707070]">{(pages ?? []).length}</span>
+                  <span className="text-[10px] uppercase tracking-wider text-[#64748B] font-semibold">Pages</span>
+                  <span className="text-[10px] text-[#64748B]">{(pages ?? []).length}</span>
                 </div>
-                <div className="my-0.5 border-t border-[#2A2A2A]" />
+                <div className="my-0.5 border-t border-[#E2E8F0]" />
                 {(pages ?? []).map((page: any) => (
                   <button
                     key={page.id}
@@ -360,14 +360,14 @@ export function CanvasToolbar({
                     }}
                     className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm transition ${
                       page.id === currentPageId
-                        ? "bg-[#FACC15]/10 text-[#FACC15]"
-                        : "text-[#D0D0D0] hover:bg-[#242424]"
+                        ? "bg-purple-50 text-[#7137D8] font-bold"
+                        : "text-[#475569] hover:bg-[#F1F5F9]"
                     }`}
                   >
-                    <FileText className="h-3.5 w-3.5 shrink-0 opacity-60" />
+                    <FileText className="h-3.5 w-3.5 shrink-0 opacity-70" />
                     <span className="truncate flex-1">{page.name}</span>
                     {page.id === currentPageId && (
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#FACC15] shrink-0" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#7137D8] shrink-0" />
                     )}
                   </button>
                 ))}
@@ -376,7 +376,7 @@ export function CanvasToolbar({
           </div>
 
           {/* Divider */}
-          <div className="h-5 w-px bg-[#363636] shrink-0" />
+          <div className="h-5 w-px bg-[#E2E8F0] shrink-0" />
 
           {/* Page actions for the active page */}
           {activePage && (
@@ -388,7 +388,7 @@ export function CanvasToolbar({
               onDuplicate={onDuplicatePage ?? (() => {})}
               onDelete={onDeletePage ?? (() => {})}
               onSeo={onOpenSeo ?? (() => {})}
-              triggerClassName="inline-flex h-[30px] w-8 items-center justify-center text-[#969696] transition hover:bg-[#242424] hover:text-[#D0D0D0] rounded-lg"
+              triggerClassName="inline-flex h-[30px] w-8 items-center justify-center text-[#64748B] transition hover:bg-[#F1F5F9] hover:text-[#111827] rounded-lg"
             />
           )}
         </div>
@@ -398,18 +398,18 @@ export function CanvasToolbar({
           type="button"
           onClick={onAddPage}
           title="Add new page"
-          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#363636] bg-[#1F1F1F] text-[#969696] transition hover:border-[#FACC15] hover:bg-[#FACC15]/10 hover:text-[#FACC15]"
+          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#E2E8F0] bg-white text-[#475569] transition hover:border-[#7137D8] hover:bg-purple-50 hover:text-[#7137D8]"
         >
           <Plus className="h-4 w-4" />
         </button>
 
         {/* Divider */}
-        <div className="mx-0.5 h-5 w-px bg-[#363636]" />
+        <div className="mx-0.5 h-5 w-px bg-[#E2E8F0]" />
 
         <div className="hidden items-center gap-1 md:flex">
           <button
             type="button"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#363636] bg-[#1F1F1F] text-[#D0D0D0] transition hover:border-[#FACC15] hover:text-[#F5F5F5]"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-[#475569] transition hover:border-[#7137D8] hover:text-[#111827]"
             title="Undo"
             onClick={undo}
           >
@@ -418,21 +418,21 @@ export function CanvasToolbar({
 
           <button
             type="button"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#363636] bg-[#1F1F1F] text-[#D0D0D0] transition hover:border-[#FACC15] hover:text-[#F5F5F5]"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#E2E8F0] bg-white text-[#475569] transition hover:border-[#7137D8] hover:text-[#111827]"
             title="Redo"
             onClick={redo}
           >
             <Redo2 className="w-4 h-4" />
           </button>
 
-          <div className="mx-1 h-4 w-px bg-[#363636]" />
+          <div className="mx-1 h-4 w-px bg-[#E2E8F0]" />
 
           <button
             type="button"
             className={`inline-flex h-8 w-8 items-center justify-center rounded-md border transition ${
               device === "desktop"
-                ? "border-[#FACC15] bg-[#FACC15] text-[#111111]"
-                : "border-[#363636] bg-[#1F1F1F] text-[#D0D0D0] hover:border-[#FACC15] hover:text-[#F5F5F5]"
+                ? "border-[#7137D8] bg-[#7137D8] text-white shadow-xs"
+                : "border-[#E2E8F0] bg-white text-[#475569] hover:border-[#7137D8] hover:text-[#111827]"
             }`}
             onClick={() => setDevice("desktop")}
             title="Desktop"
@@ -444,8 +444,8 @@ export function CanvasToolbar({
             type="button"
             className={`inline-flex h-8 w-8 items-center justify-center rounded-md border transition ${
               device === "tablet"
-                ? "border-[#FACC15] bg-[#FACC15] text-[#111111]"
-                : "border-[#363636] bg-[#1F1F1F] text-[#D0D0D0] hover:border-[#FACC15] hover:text-[#F5F5F5]"
+                ? "border-[#7137D8] bg-[#7137D8] text-white shadow-xs"
+                : "border-[#E2E8F0] bg-white text-[#475569] hover:border-[#7137D8] hover:text-[#111827]"
             }`}
             onClick={() => setDevice("tablet")}
             title="Tablet"
@@ -457,8 +457,8 @@ export function CanvasToolbar({
             type="button"
             className={`inline-flex h-8 w-8 items-center justify-center rounded-md border transition ${
               device === "mobile"
-                ? "border-[#FACC15] bg-[#FACC15] text-[#111111]"
-                : "border-[#363636] bg-[#1F1F1F] text-[#D0D0D0] hover:border-[#FACC15] hover:text-[#F5F5F5]"
+                ? "border-[#7137D8] bg-[#7137D8] text-white shadow-xs"
+                : "border-[#E2E8F0] bg-white text-[#475569] hover:border-[#7137D8] hover:text-[#111827]"
             }`}
             onClick={() => setDevice("mobile")}
             title="Mobile"
@@ -466,15 +466,15 @@ export function CanvasToolbar({
             <Smartphone className="w-4 h-4" />
           </button>
 
-          <div className="mx-1 h-4 w-px bg-[#363636]" />
+          <div className="mx-1 h-4 w-px bg-[#E2E8F0]" />
 
           {isTemplateMode ? (
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center rounded-full border border-[#FACC15]/40 bg-[#FACC15]/10 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-[#FACC15]">
+              <span className="inline-flex items-center rounded-full border border-purple-200 bg-purple-50 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-[#7137D8]">
                 Template Mode
               </span>
-              <span className="text-xs font-medium text-[#F5F5F5]">{templateName}</span>
-              <span className="text-xs text-[#969696]">({templateCategory})</span>
+              <span className="text-xs font-medium text-[#111827]">{templateName}</span>
+              <span className="text-xs text-[#64748B]">({templateCategory})</span>
             </div>
           ) : (
             <SaveStatus status={saveStatus} errorMessage={saveErrorMessage ?? undefined} onRetry={persistWithStatus} />
@@ -490,20 +490,20 @@ export function CanvasToolbar({
             onClick={onToggleMobilePanel}
             className={`inline-flex md:hidden h-8 items-center gap-1.5 rounded-lg border px-2.5 text-xs font-medium transition shrink-0 ${
               mobilePanelOpen
-                ? "border-[#FACC15] bg-[#FACC15]/10 text-[#FACC15]"
-                : "border-[#363636] bg-[#1F1F1F] text-[#D0D0D0] hover:border-[#FACC15] hover:text-[#FACC15]"
+                ? "border-[#7137D8] bg-purple-50 text-[#7137D8]"
+                : "border-[#E2E8F0] bg-white text-[#475569] hover:border-[#7137D8] hover:text-[#7137D8]"
             }`}
             aria-label="Toggle Widgets & Properties panel"
             title="Widgets & Properties"
           >
-            <SlidersHorizontal className="w-3.5 h-3.5 text-[#FACC15]" />
+            <SlidersHorizontal className="w-3.5 h-3.5 text-[#7137D8]" />
             <span>Edit</span>
           </button>
         )}
 
         <button
           type="button"
-          className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#363636] bg-[#1F1F1F] px-3 text-sm font-medium text-[#F5F5F5] transition hover:border-[#FACC15] hover:text-[#FACC15]"
+          className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#E2E8F0] bg-white px-3 text-sm font-medium text-[#111827] transition hover:border-[#7137D8] hover:text-[#7137D8] shadow-xs"
           onClick={openPreview}
           title="Preview"
         >
@@ -517,7 +517,7 @@ export function CanvasToolbar({
               type="button"
               disabled={savingTemplate}
               onClick={handleSaveAsTemplate}
-              className="inline-flex h-8 items-center gap-1.5 rounded-md bg-[#FACC15] px-3 text-xs font-semibold text-[#111111] transition hover:bg-[#FDE047] disabled:opacity-50"
+              className="inline-flex h-8 items-center gap-1.5 rounded-md bg-[#7137D8] px-3 text-xs font-semibold text-white transition hover:bg-[#5b2ab5] disabled:opacity-50 shadow-xs"
               title={templateId ? "Save to Template" : "Save as Template"}
             >
               <Save className="w-3.5 h-3.5" />
@@ -527,7 +527,7 @@ export function CanvasToolbar({
             <button
               type="button"
               onClick={() => navigate({ to: "/super-admin/templates" })}
-              className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#363636] bg-[#1F1F1F] px-3 text-xs font-medium text-[#D0D0D0] transition hover:border-[#525252] hover:text-[#F5F5F5]"
+              className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#E2E8F0] bg-white px-3 text-xs font-medium text-[#475569] transition hover:border-[#CBD5E1] hover:text-[#111827]"
               title="Exit to Templates"
             >
               <X className="w-3.5 h-3.5" />
@@ -539,7 +539,7 @@ export function CanvasToolbar({
             <button
               type="button"
               disabled={isPublishing}
-              className="inline-flex h-8 items-center gap-1.5 rounded-md bg-[#FACC15] px-3 text-sm font-medium text-[#111111] transition hover:bg-[#FDE047] disabled:opacity-60"
+              className="inline-flex h-8 items-center gap-1.5 rounded-md bg-gradient-to-r from-[#7137D8] via-[#D52BBD] to-[#FF8A35] px-3 text-sm font-semibold text-white transition hover:opacity-95 disabled:opacity-60 shadow-xs"
               onClick={handlePublish}
               title={project.published ? "Update published website" : "Publish website"}
             >

@@ -38,6 +38,7 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
   const selectedId = useBuilder((s) => s.selectedSectionId);
   const device = useBuilder((s) => s.device);
   const select = useBuilder((s) => s.selectSection);
+  const selectedFloatingWidgetId = useBuilder((s) => s.selectedFloatingWidgetId);
   const selectElement = useBuilder((s) => s.selectElement);
   const selectPage = useBuilder((s) => s.selectPage);
   const selectedElement = useBuilder((s) => s.selectedElement);
@@ -622,7 +623,12 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
         el.style.outlineOffset = "";
       }
     });
-  }, [selectedId, srcDoc]);
+    doc.querySelectorAll("[data-wto-floating-id]").forEach((node) => {
+      const el = node as HTMLElement;
+      const isSelected = el.getAttribute("data-wto-floating-id") === selectedFloatingWidgetId;
+      el.classList.toggle("wto-selected-floating", isSelected);
+    });
+  }, [selectedId, selectedFloatingWidgetId, srcDoc]);
 
   useEffect(() => {
     const doc = iframeRefToUse.current?.contentDocument;
@@ -640,7 +646,12 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
     if (typeof window === "undefined") return;
     (window as unknown as { __wtoEditable: boolean }).__wtoEditable = editable;
     function onMsg(e: MessageEvent) {
-      const data = e.data as { __wto?: boolean; type?: string; payload?: Record<string, unknown> };
+      const data = e.data as {
+        __wto?: boolean;
+        type?: string;
+        widgetId?: string;
+        payload?: Record<string, unknown>;
+      };
       if (!data || !data.__wto) return;
       if (data.type === "select") {
         const sectionId = String(data.payload?.sectionId ?? "");
@@ -786,6 +797,20 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
         if (embedId) {
           select(embedId);
           window.dispatchEvent(new CustomEvent("wto-open-embed-editor", { detail: { embedId } }));
+        }
+      }
+      if (data.type === "WTO_SELECT_FLOATING_WIDGET" || data.type === "wto-select-floating") {
+        const fwId = String(data.widgetId || (data.payload?.widgetId as string) || "");
+        if (fwId) {
+          useBuilder.getState().selectFloatingWidget(fwId);
+          useBuilder.getState().setRightPanelTab("properties");
+        }
+      }
+      if (data.type === "WTO_DELETE_FLOATING_WIDGET" || data.type === "wto-delete-floating") {
+        const fwId = String(data.widgetId || (data.payload?.widgetId as string) || "");
+        if (fwId) {
+          useBuilder.getState().removeFloatingWidget(fwId);
+          setPreviewCycle((v) => v + 1);
         }
       }
       if (data.type === "wto-delete-embed") {
@@ -1320,8 +1345,8 @@ export function Canvas({ editable = true, disablePointerEvents = false, iframeRe
             {mounted && project && pageOf(project)?.sections.length === 0 && !project.sharedHeader && !project.sharedFooter ? (
               <div
                 className={`absolute inset-0 flex flex-col items-center justify-center gap-4 border px-6 py-10 text-center text-sm ${draggingLibrarySection
-                    ? "border-dashed border-[#FACC15] bg-[#FACC15]/10 text-[#FACC15]"
-                    : "border-dashed border-[#363636] bg-white text-[#969696]"
+                  ? "border-dashed border-[#FACC15] bg-[#FACC15]/10 text-[#FACC15]"
+                  : "border-dashed border-[#363636] bg-white text-[#969696]"
                   }`}
               >
                 {draggingLibrarySection ? (

@@ -7,29 +7,30 @@ export function PublicNav() {
   const { user, authReady } = useAuth();
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-[#2a2a2f] bg-[#0e0e10]/90 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 w-full border-b border-[#E2E8F0] bg-white/95 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-2.5 font-extrabold text-base tracking-tight text-[#f4f4f5]">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#facc15] font-black text-[#151515] text-base">
-            W
-          </span>
-          <span className="text-lg font-bold font-['Bricolage_Grotesque']">WebToolOcean</span>
+        <Link to="/" className="flex items-center outline-none hover:opacity-90 transition" aria-label="Website Builder home">
+          <img
+            src="/logo.png"
+            alt="Website Builder by WebToolOcean"
+            className="h-9 w-auto max-w-[210px] object-contain"
+          />
         </Link>
 
-        <div className="hidden md:flex items-center gap-6 text-sm font-medium text-[#9a9aa3]">
-          <Link to="/" className="hover:text-[#f4f4f5] transition">
+        <div className="hidden md:flex items-center gap-6 text-sm font-medium text-[#475569]">
+          <Link to="/" className="hover:text-[#111827] transition">
             Home
           </Link>
           <Link
             to="/templates"
-            className="text-[#facc15] hover:text-yellow-400 transition font-semibold"
+            className="text-[#7137D8] hover:text-[#D52BBD] transition font-semibold"
           >
             Templates
           </Link>
-          <a href="/#features" className="hover:text-[#f4f4f5] transition">
+          <a href="/#features" className="hover:text-[#111827] transition">
             Features
           </a>
-          <a href="/#pricing" className="hover:text-[#facc15] transition">
+          <a href="/#pricing" className="hover:text-[#111827] transition">
             Pricing
           </a>
         </div>
@@ -38,14 +39,14 @@ export function PublicNav() {
           {authReady && user ? (
             <Link
               to="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-[#facc15] px-4 py-2 text-xs font-bold text-[#151515] hover:bg-yellow-400 transition"
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#7137D8] to-[#3478F6] px-4 py-2 text-xs font-bold text-white hover:opacity-90 transition shadow-xs"
             >
               <LayoutDashboard className="h-4 w-4" />
               <span>Dashboard</span>
             </Link>
           ) : (
             <LoginDropdown
-              triggerClassName="rounded-full border border-[#2a2a2f] px-4 py-2 text-xs font-semibold text-[#f4f4f5] hover:border-[#facc15] transition"
+              triggerClassName="rounded-full border border-[#CBD5E1] bg-white px-4 py-2 text-xs font-semibold text-[#111827] hover:border-[#7137D8] hover:text-[#7137D8] transition shadow-xs"
               triggerChildren="Log in"
             />
           )}

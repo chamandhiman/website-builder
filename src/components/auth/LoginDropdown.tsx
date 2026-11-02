@@ -114,14 +114,14 @@ export function LoginDropdown({
         align={align}
         sideOffset={sideOffset}
         collisionPadding={16}
-        className="z-50 w-[320px] sm:w-[340px] max-w-[calc(100vw-32px)] p-0 rounded-2xl border border-white/10 bg-[#141512]/98 backdrop-blur-2xl text-zinc-100 shadow-[0_24px_50px_rgba(0,0,0,0.85),0_0_30px_rgba(244,213,54,0.08)] animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 duration-200 outline-none overflow-hidden"
+        className="z-50 w-[320px] sm:w-[340px] max-w-[calc(100vw-32px)] p-0 rounded-2xl border border-[#E2E8F0] bg-white text-[#111827] shadow-[0_20px_50px_rgba(0,0,0,0.12),0_0_20px_rgba(113,55,216,0.06)] animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 duration-200 outline-none overflow-hidden"
       >
-        {/* Subtle top gold accent bar */}
+        {/* Subtle top brand gradient accent bar */}
         <div
-          className="h-[2px] w-full"
+          className="h-[3px] w-full"
           style={{
             background:
-              "linear-gradient(90deg, transparent, #f4d536 50%, transparent)",
+              "linear-gradient(90deg, #7137D8 0%, #D52BBD 45%, #3478F6 75%, #FF8A35 100%)",
           }}
         />
 
@@ -130,23 +130,25 @@ export function LoginDropdown({
           {/* Header branding & badges */}
           <div className="flex items-center justify-between gap-2 mb-2.5">
             <div className="flex items-center gap-2">
-              <div className="w-5 h-5 rounded-[6px] bg-[#f4d536] text-[#10110e] flex items-center justify-center font-black text-[11px] shadow-[0_0_12px_rgba(244,213,54,0.3)]">
-                W
-              </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-300">
+              <img
+                src="/logo-icon.png"
+                alt="WebToolOcean"
+                className="w-5 h-5 rounded-[4px] object-contain"
+              />
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
                 WebToolOcean
               </span>
             </div>
-            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               Verified
             </span>
           </div>
 
-          <h3 className="text-base font-extrabold text-white tracking-tight leading-snug">
+          <h3 className="text-base font-extrabold text-[#111827] tracking-tight leading-snug">
             Sign in to your account
           </h3>
-          <p className="mt-1 text-xs text-zinc-400 leading-relaxed">
+          <p className="mt-1 text-xs text-[#475569] leading-relaxed">
             Secure sign-in with your Google account. Choose any account already logged in your browser.
           </p>
 
@@ -156,12 +158,12 @@ export function LoginDropdown({
               type="button"
               onClick={handleGoogleSignIn}
               disabled={isWorking}
-              className="group relative w-full h-11 px-4 rounded-xl bg-white hover:bg-zinc-100 active:scale-[0.98] text-zinc-900 font-bold text-sm flex items-center justify-center gap-2.5 transition-all duration-200 shadow-md hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f4d536] focus-visible:ring-offset-2 focus-visible:ring-offset-[#141512] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+              className="group relative w-full h-11 px-4 rounded-xl bg-white hover:bg-[#F8FAFC] active:scale-[0.98] border border-[#CBD5E1] hover:border-[#7137D8]/60 text-[#111827] font-bold text-sm flex items-center justify-center gap-2.5 transition-all duration-200 shadow-xs hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7137D8] focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
             >
               {isWorking ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin text-amber-500" />
-                  <span className="font-semibold">Signing you in…</span>
+                  <Loader2 className="h-4 w-4 animate-spin text-[#7137D8]" />
+                  <span className="font-semibold text-[#475569]">Signing you in…</span>
                 </>
               ) : (
                 <>
@@ -173,19 +175,19 @@ export function LoginDropdown({
           </div>
 
           {/* Supporting guarantee */}
-          <p className="mt-2 text-center text-[11px] text-zinc-500 leading-normal">
+          <p className="mt-2 text-center text-[11px] text-[#64748B] leading-normal">
             Secure sign-in with your Google account
           </p>
         </div>
 
         {/* Bottom security strip */}
-        <div className="px-5 py-2.5 bg-white/[0.03] border-t border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
-          <div className="flex items-center gap-1.5 text-zinc-300">
-            <ShieldCheck className="h-3.5 w-3.5 text-[#f4d536]" />
+        <div className="px-5 py-2.5 bg-[#F8FAFC] border-t border-[#E2E8F0] flex items-center justify-between text-[11px] text-[#64748B]">
+          <div className="flex items-center gap-1.5 text-[#475569]">
+            <ShieldCheck className="h-3.5 w-3.5 text-[#7137D8]" />
             <span className="font-medium">OAuth 2.0 Account Chooser</span>
           </div>
-          <div className="flex items-center gap-1 text-zinc-500 text-[10px]">
-            <CheckCircle2 className="h-3 w-3 text-emerald-400" />
+          <div className="flex items-center gap-1 text-[#64748B] text-[10px]">
+            <CheckCircle2 className="h-3 w-3 text-emerald-500" />
             <span>Fast access</span>
           </div>
         </div>

@@ -178,9 +178,11 @@ export function PublicSiteRenderer({ slug, initialPageSlug }: PublicSiteRenderer
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-[11px] font-medium text-neutral-700 hover:text-black"
           >
-            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#111111] text-[#FACC15] text-[9px] font-bold">
-              W
-            </span>
+            <img
+              src="/logo-icon.png"
+              alt="Website Builder"
+              className="h-4 w-4 object-contain"
+            />
             <span>Made with <strong className="font-semibold text-neutral-900">WebToolOcean</strong></span>
           </a>
           <button

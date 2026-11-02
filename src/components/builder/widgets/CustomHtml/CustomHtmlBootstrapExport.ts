@@ -229,7 +229,7 @@ export function buildCustomHtmlBootstrapMarkup(
       return wrapResult(`<div class="wto-custom-html-wrapper w-100 overflow-visible" data-wto-custom-html="1" style="display:block;width:100%;position:relative;">${cleanHtml}</div>`);
     }
 
-    // If not found in local storage, in preview or live mode preserve the embed markup and ensure runtime script is available
+    // In preview or live mode preserve the embed markup and ensure runtime script is available
     if (!context?.editorMode) {
       const hasScriptTag = /widget\.js/i.test(rawHtml);
       const scriptTag = hasScriptTag
@@ -237,48 +237,62 @@ export function buildCustomHtmlBootstrapMarkup(
         : `\n<script src="https://widgets.webtoolocean.com/widget.js" async></script>`;
       return wrapResult(`<div data-wto-widget="${widgetId}" class="wto-embedded-widget-container w-100 overflow-visible" style="display:block;width:100%;">${rawHtml}${scriptTag}</div>`);
     }
-    return `
-      <div data-wto-widget="${widgetId}" class="wto-custom-html-pending"
-           style="display:flex !important;flex-direction:column !important;align-items:center !important;justify-content:center !important;min-height:140px !important;width:100% !important;margin:20px 0 !important;padding:28px 20px !important;box-sizing:border-box !important;border:2px dashed rgba(245,158,11,0.55) !important;border-radius:14px !important;background-color:#18181b !important;color:#f4f4f5 !important;text-align:center !important;cursor:pointer !important;box-shadow:0 4px 20px rgba(0,0,0,0.25) !important;">
-        <div style="color:#f59e0b !important;font-size:14px;font-weight:700;margin-bottom:6px;">Dynamic Widget: ${widgetId}</div>
-        <p style="font-size:12px;color:#a1a1aa !important;margin:0;">Interactive widget will render live upon preview or publish.</p>
-      </div>
-    `.trim();
   }
 
-  // 3. For custom HTML, iframes, and third-party embeds (YouTube, Calendly, forms, etc.):
-  if (context?.editorMode) {
-    const hasScript = /<script\b/i.test(rawHtml);
-    if (hasScript) {
-      const widgetIdMatch = rawHtml.match(/data-widget-id=["']([^"']+)["']/i);
-      const scriptSrcMatch = rawHtml.match(/src=["']([^"']+)["']/i);
-      const widgetIdLabel = widgetIdMatch ? widgetIdMatch[1] : null;
-      const scriptLabel = scriptSrcMatch ? scriptSrcMatch[1].split("/").pop() : "Custom Script";
+  // 3. Check for supported embed scripts (WhatsApp, FAQ, etc.) to render actual visual previews instead of debug cards
+  const contentObj = (data as any)?.content || (data as any)?.data?.content || {};
+  const isWhatsAppScript = /whatsapp(\.min)?\.js|wa\.me|whatsapp_chat/i.test(rawHtml) || contentObj?.embedType === "whatsapp" || Boolean(contentObj?.phoneNumber);
+  const isFaqScript = /faq(\.min)?\.js|faq_accordion/i.test(rawHtml) || contentObj?.embedType === "faq" || (Array.isArray(contentObj?.faqItems) && contentObj.faqItems.length > 0);
 
-      const editorEmbedBadge = `
-        <div class="wto-custom-script-editor-card" data-wto-ignore-edit="1" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:#18181b;border:1.5px solid rgba(245,158,11,0.4);border-radius:12px;color:#e4e4e7;font-family:system-ui,-apple-system,sans-serif;margin:8px 0;box-shadow:0 4px 16px rgba(0,0,0,0.3);user-select:none;">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:32px;height:32px;border-radius:8px;background:rgba(245,158,11,0.15);color:#fbbf24;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-            </div>
-            <div>
-              <div style="font-weight:700;font-size:12px;color:#ffffff;display:flex;align-items:center;gap:6px;">
-                <span>Embed Script: ${escapeAttr(scriptLabel || "Custom Script")}</span>
-                <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:999px;background:rgba(34,197,94,0.15);color:#4ade80;border:1px solid rgba(34,197,94,0.3);">ACTIVE</span>
-              </div>
-              <div style="font-size:11px;color:#a1a1aa;margin-top:1px;">
-                ${widgetIdLabel ? `Widget ID: <strong style="color:#ffffff;">${escapeAttr(widgetIdLabel)}</strong> &bull; ` : ""}
-                Live preview running in canvas &amp; preview
-              </div>
-            </div>
-          </div>
-        </div>
-      `.trim();
+  if (isWhatsAppScript) {
+    try {
+      const phoneAttr = rawHtml.match(/data-phone=["']([^"']+)["']/i)?.[1];
+      const agentAttr = rawHtml.match(/data-agent(?:-name)?=["']([^"']+)["']/i)?.[1];
+      const msgAttr = rawHtml.match(/data-message=["']([^"']+)["']/i)?.[1];
+      const posAttr = rawHtml.match(/data-position=["']([^"']+)["']/i)?.[1];
+      const colorAttr = rawHtml.match(/data-color=["']([^"']+)["']/i)?.[1];
 
-      const editorMarkup = `${editorEmbedBadge}\n${rawHtml}`;
-      return wrapResult(editorMarkup);
-    }
+      const waWidget = createNewWhatsAppChatWidget(
+        contentObj.widgetName || "WhatsApp Live Chat",
+        "classic_whatsapp"
+      );
+      const cfg = waWidget.config as any;
+      if (contentObj.phoneNumber || phoneAttr) cfg.content.phoneNumber = contentObj.phoneNumber || phoneAttr;
+      if (contentObj.agentName || agentAttr) cfg.content.agentName = contentObj.agentName || agentAttr;
+      if (contentObj.message || msgAttr) cfg.content.greetingText = contentObj.message || msgAttr;
+      if (contentObj.buttonLabel) cfg.content.buttonLabel = contentObj.buttonLabel;
+      if (contentObj.position || posAttr) cfg.appearance.position = contentObj.position || posAttr;
+      if (contentObj.buttonColor || colorAttr) cfg.appearance.buttonColor = contentObj.buttonColor || colorAttr;
+
+      const rendered = renderWhatsAppChatHtml(waWidget as any, { isPreview: false });
+      const styleTag = rendered.css ? `<style>${rendered.css}</style>\n` : "";
+      return wrapResult(`${styleTag}<div class="wto-embedded-wa-container" style="display:block;width:100%;position:relative;">${rendered.html}</div>`);
+    } catch (_) {}
   }
 
+  if (isFaqScript) {
+    try {
+      const faqTitleAttr = rawHtml.match(/data-title=["']([^"']+)["']/i)?.[1];
+      const faqWidget = createNewFaqWidget(
+        contentObj.widgetName || contentObj.faqTitle || faqTitleAttr || "FAQ Accordion",
+        "classic_accordion"
+      );
+      const cfg = faqWidget.config as any;
+      if (contentObj.faqTitle || faqTitleAttr) cfg.header.title = contentObj.faqTitle || faqTitleAttr;
+      if (contentObj.faqSubtitle) cfg.header.subtitle = contentObj.faqSubtitle;
+      if (Array.isArray(contentObj.faqItems) && contentObj.faqItems.length > 0) {
+        cfg.items = contentObj.faqItems;
+      }
+      if (contentObj.faqLayout) cfg.layout.style = contentObj.faqLayout;
+      if (contentObj.accentColor) cfg.style.accentColor = contentObj.accentColor;
+
+      const rendered = renderFaqHtml(faqWidget as any);
+      const styleTag = rendered.css ? `<style>${rendered.css}</style>\n` : "";
+      return wrapResult(`${styleTag}<div class="wto-embedded-faq-container" style="display:block;width:100%;position:relative;">${rendered.html}</div>`);
+    } catch (_) {}
+  }
+
+  // 4. For generic custom HTML, iframes, and embeds:
+  // Show clean live preview directly without any black debug cards or script labels!
   return wrapResult(rawHtml);
 }

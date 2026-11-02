@@ -19,7 +19,6 @@ import { LandingFeatures } from "./LandingFeatures";
 import { LandingWidgets } from "./LandingWidgets";
 import { LandingCta } from "./LandingCta";
 import { LandingFooter } from "./LandingFooter";
-import { LandingThemePanel } from "./LandingThemePanel";
 import { LandingAuthModal } from "./LandingAuthModal";
 import { useGoogleOneTap } from "@/hooks/useGoogleOneTap";
 
@@ -160,8 +159,20 @@ export function LandingPage() {
       {/* Footer */}
       <LandingFooter />
 
-      {/* Floating Theme Customizer Panel and Back to Top Button */}
-      <LandingThemePanel />
+      {/* Back to top button */}
+      <a
+        className="totop"
+        href="#"
+        aria-label="Back to top"
+        onClick={(e) => {
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="m18 15-6-6-6 6" />
+        </svg>
+      </a>
 
       {/* Template Live Preview Modal */}
       {previewTemplate && (

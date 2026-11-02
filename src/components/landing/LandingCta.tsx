@@ -12,49 +12,44 @@ export function LandingCta({ onStartBuilding }: LandingCtaProps) {
   };
 
   return (
-    <section className="cta" id="launch">
+    <section className="cta cta-v2" id="launch">
       <div className="orb" />
-      <div className="eyebrow">
-        <i></i>Ready?
+      <div className="cta-eyebrow">
+        <span>—</span> READY TO LAUNCH <span>—</span>
       </div>
       <h2>
-        Pick one.
-        <br />
-        Launch in <span className="hl">minutes.</span>
+        Pick one. Launch <span className="hl">in minutes.</span>
       </h2>
 
-      <div className="steps">
-        <span>
-          <b>1</b>Sign up
+      <div className="cta-steps-v2">
+        <span className="cta-pill">
+          <i className="cta-check">✓</i> Sign up free
         </span>
-        <em>→</em>
-        <span>
-          <b>2</b>Pick a template
+        <span className="cta-pill">
+          <i className="cta-check">✓</i> Pick a template
         </span>
-        <em>→</em>
-        <span>
-          <b>3</b>Edit
+        <span className="cta-pill">
+          <i className="cta-check">✓</i> Edit live
         </span>
-        <em>→</em>
-        <span>
-          <b>4</b>Download
+        <span className="cta-pill">
+          <i className="cta-check">✓</i> Download or publish
         </span>
       </div>
 
       <div className="cta-btns">
         <button
           type="button"
-          className="btn btn-y btn-lg"
+          className="btn btn-y btn-lg cta-btn-primary"
           onClick={onStartBuilding}
         >
-          Start free →
+          Start Free →
         </button>
         <a
-          className="btn btn-w btn-lg"
+          className="btn btn-w btn-lg cta-btn-secondary"
           href="#templates"
           onClick={handleScrollToTemplates}
         >
-          Browse templates
+          Browse Templates
         </a>
       </div>
     </section>

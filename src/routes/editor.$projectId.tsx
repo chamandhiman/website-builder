@@ -103,8 +103,8 @@ function EditorRoute() {
 
   if (!authReady) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-[#171717] text-[#F5F5F5]">
-        <CenteredLoader message="Preparing your website builder…" details="This will only take a moment." />
+      <div className="flex h-screen w-full items-center justify-center bg-white text-[#111827]">
+        <CenteredLoader />
       </div>
     );
   }

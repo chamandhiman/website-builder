@@ -236,30 +236,11 @@ export function TemplatePreviewModal({
         {/* Left: WebToolOcean Official Brand Logo */}
         <div className="flex items-center gap-3 shrink-0">
           <div className="flex items-center gap-2.5">
-            <svg
-              viewBox="0 0 32 32"
-              className="h-8 w-8 shrink-0 rounded-lg shadow-sm"
-              aria-label="WebToolOcean logo"
-              fill="none"
-            >
-              <rect width="32" height="32" rx="8" fill="#FFD21F" />
-              <path
-                d="M6 12.5l4 9.5 4-7.5 4 7.5 4-9.5"
-                stroke="#111"
-                strokeWidth="2.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M22 10.5c1.5-1 3-1 4 0"
-                stroke="#111"
-                strokeWidth="2.4"
-                strokeLinecap="round"
-              />
-            </svg>
-            <span className="font-['Bricolage_Grotesque'] text-lg font-black tracking-tight text-white hidden sm:inline">
-              WebToolOcean
-            </span>
+            <img
+              src="/logo.png"
+              alt="Website Builder by WebToolOcean"
+              className="h-8 w-auto max-w-[190px] object-contain"
+            />
             <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-400">
               <ShieldCheck className="h-3 w-3" /> Preview
             </span>

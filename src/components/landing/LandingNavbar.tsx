@@ -58,8 +58,12 @@ export function LandingNavbar({ onOpenAuthModal }: LandingNavbarProps) {
 
   return (
     <nav className="top">
-      <a className="brand" href="#">
-        WebTool<b>Ocean</b>
+      <a className="brand" href="#" aria-label="Website Builder by WebToolOcean" style={{ display: "inline-flex", alignItems: "center" }}>
+        <img
+          src="/logo.png"
+          alt="Website Builder by WebToolOcean"
+          className="h-9 w-auto max-w-[210px] object-contain"
+        />
       </a>
 
       <div className="menu">
@@ -75,11 +79,11 @@ export function LandingNavbar({ onOpenAuthModal }: LandingNavbarProps) {
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className="group flex items-center gap-2.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full border border-white/10 bg-white/[0.06] hover:bg-white/[0.12] hover:border-yellow-400/50 transition-all duration-200 outline-none select-none cursor-pointer shadow-sm"
+                className="group flex items-center gap-2.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full border border-[#E2E8F0] bg-white hover:bg-[#F8FAFC] hover:border-[#7137D8]/40 transition-all duration-200 outline-none select-none cursor-pointer shadow-xs"
                 title={`Signed in as ${user.email || displayName}`}
               >
                 {/* Modern Avatar with Google Referrer Fix & Fallback */}
-                <div className="relative flex items-center justify-center h-7 w-7 rounded-full overflow-hidden shrink-0 border border-white/15 bg-[#1F1F1F]">
+                <div className="relative flex items-center justify-center h-7 w-7 rounded-full overflow-hidden shrink-0 border border-[#E2E8F0] bg-[#F1F5F9]">
                   {hasValidPhoto ? (
                     <img
                       src={user?.photoURL}
@@ -90,37 +94,36 @@ export function LandingNavbar({ onOpenAuthModal }: LandingNavbarProps) {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <span className="flex h-full w-full items-center justify-center bg-gradient-to-tr from-amber-400 to-yellow-500 font-bold text-black text-[11px] uppercase tracking-tight">
+                    <span className="flex h-full w-full items-center justify-center bg-gradient-to-tr from-[#7137D8] to-[#3478F6] font-bold text-white text-[11px] uppercase tracking-tight">
                       {userInitials}
                     </span>
                   )}
                   {/* Subtle online status indicator */}
-                  <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-400 border border-[#141417]" />
+                  <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-500 border border-white" />
                 </div>
 
                 {/* User Name */}
-                <span className="text-xs font-semibold text-zinc-100 max-w-[100px] truncate sm:max-w-[130px] group-hover:text-yellow-400 transition-colors">
+                <span className="text-xs font-semibold text-[#111827] max-w-[100px] truncate sm:max-w-[130px] group-hover:text-[#7137D8] transition-colors">
                   {displayName}
                 </span>
 
                 {/* Animated Chevron */}
                 <ChevronDown
-                  className={`h-3.5 w-3.5 text-zinc-400 transition-transform duration-200 group-hover:text-zinc-200 ${
-                    dropdownOpen ? "rotate-180 text-yellow-400" : ""
-                  }`}
+                  className={`h-3.5 w-3.5 text-[#64748B] transition-transform duration-200 group-hover:text-[#111827] ${dropdownOpen ? "rotate-180 text-[#7137D8]" : ""
+                    }`}
                 />
               </button>
             </DropdownMenuTrigger>
 
-            {/* Modern Glassmorphic Profile Dropdown Menu */}
+            {/* Modern Clean White Profile Dropdown Menu */}
             <DropdownMenuContent
               sideOffset={10}
               align="end"
-              className="w-64 rounded-2xl border border-white/10 bg-[#121216]/95 backdrop-blur-2xl p-2 text-zinc-100 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_20px_rgba(250,204,21,0.08)] animate-in fade-in zoom-in-95 duration-150 z-50"
+              className="w-64 rounded-2xl border border-[#E2E8F0] bg-white/98 backdrop-blur-2xl p-2 text-[#111827] shadow-[0_15px_35px_rgba(0,0,0,0.1),0_0_15px_rgba(113,55,216,0.06)] animate-in fade-in zoom-in-95 duration-150 z-50"
             >
               {/* Profile Card Header */}
-              <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white/[0.03] border border-white/5 mb-1">
-                <div className="relative flex items-center justify-center h-10 w-10 rounded-full overflow-hidden shrink-0 border border-white/15 bg-[#202024]">
+              <div className="flex items-center gap-3 p-2.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] mb-1">
+                <div className="relative flex items-center justify-center h-10 w-10 rounded-full overflow-hidden shrink-0 border border-[#E2E8F0] bg-[#F1F5F9]">
                   {hasValidPhoto ? (
                     <img
                       src={user?.photoURL}
@@ -131,41 +134,41 @@ export function LandingNavbar({ onOpenAuthModal }: LandingNavbarProps) {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <span className="flex h-full w-full items-center justify-center bg-gradient-to-tr from-amber-400 to-yellow-500 font-extrabold text-black text-sm uppercase">
+                    <span className="flex h-full w-full items-center justify-center bg-gradient-to-tr from-[#7137D8] to-[#3478F6] font-extrabold text-white text-sm uppercase">
                       {userInitials}
                     </span>
                   )}
-                  <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-400 border-2 border-[#121216]" />
+                  <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 border-2 border-white" />
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-bold text-zinc-100 truncate">{displayName}</p>
-                  <p className="text-[11px] text-zinc-400 truncate">{user.email || "Google Account"}</p>
+                  <p className="text-sm font-bold text-[#111827] truncate">{displayName}</p>
+                  <p className="text-[11px] text-[#64748B] truncate">{user.email || "Google Account"}</p>
                   <div className="mt-1 flex items-center gap-1.5">
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-semibold bg-yellow-400/20 text-yellow-300 border border-yellow-400/30">
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-semibold bg-purple-100 text-[#7137D8] border border-purple-200">
                       {user.role === "super_admin" ? "SUPER ADMIN" : "FREE PLAN"}
                     </span>
                   </div>
                 </div>
               </div>
 
-              <DropdownMenuSeparator className="my-1.5 bg-white/10" />
+              <DropdownMenuSeparator className="my-1.5 bg-[#E2E8F0]" />
 
               {/* Primary Dashboard Link */}
               <DropdownMenuItem
                 onSelect={() => navigate({ to: "/dashboard" as never })}
-                className="flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold text-zinc-100 hover:bg-yellow-400/15 hover:text-yellow-300 focus:bg-yellow-400/15 focus:text-yellow-300 transition-colors cursor-pointer group"
+                className="flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold text-[#111827] hover:bg-purple-50 hover:text-[#7137D8] focus:bg-purple-50 focus:text-[#7137D8] transition-colors cursor-pointer group"
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 rounded-lg bg-yellow-400/10 text-yellow-400 group-hover:bg-yellow-400 group-hover:text-black transition-colors">
+                  <div className="p-1.5 rounded-lg bg-purple-100 text-[#7137D8] group-hover:bg-[#7137D8] group-hover:text-white transition-colors">
                     <LayoutDashboard className="h-4 w-4" />
                   </div>
                   <div>
                     <span className="block font-bold">Dashboard</span>
-                    <span className="block text-[10px] text-zinc-400 font-normal">Manage your websites</span>
+                    <span className="block text-[10px] text-[#64748B] font-normal">Manage your websites</span>
                   </div>
                 </div>
-                <ArrowRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-yellow-300 group-hover:translate-x-0.5 transition-all" />
+                <ArrowRight className="h-3.5 w-3.5 text-[#64748B] group-hover:text-[#7137D8] group-hover:translate-x-0.5 transition-all" />
               </DropdownMenuItem>
 
               {/* Templates */}
@@ -178,9 +181,9 @@ export function LandingNavbar({ onOpenAuthModal }: LandingNavbarProps) {
                     navigate({ to: "/templates" as never });
                   }
                 }}
-                className="flex items-center gap-2.5 p-2 rounded-xl text-xs font-medium text-zinc-300 hover:bg-white/[0.08] hover:text-white focus:bg-white/[0.08] focus:text-white transition-colors cursor-pointer"
+                className="flex items-center gap-2.5 p-2 rounded-xl text-xs font-medium text-[#475569] hover:bg-[#F1F5F9] hover:text-[#111827] focus:bg-[#F1F5F9] focus:text-[#111827] transition-colors cursor-pointer"
               >
-                <div className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400">
+                <div className="p-1.5 rounded-lg bg-blue-100 text-[#3478F6]">
                   <Layers className="h-4 w-4" />
                 </div>
                 <span>Explore Templates</span>
@@ -190,23 +193,23 @@ export function LandingNavbar({ onOpenAuthModal }: LandingNavbarProps) {
               {user.role === "super_admin" && (
                 <DropdownMenuItem
                   onSelect={() => navigate({ to: "/super-admin" as never })}
-                  className="flex items-center gap-2.5 p-2 rounded-xl text-xs font-medium text-purple-300 hover:bg-purple-500/15 hover:text-purple-200 focus:bg-purple-500/15 focus:text-purple-200 transition-colors cursor-pointer"
+                  className="flex items-center gap-2.5 p-2 rounded-xl text-xs font-medium text-[#7137D8] hover:bg-purple-50 hover:text-[#7137D8] focus:bg-purple-50 focus:text-[#7137D8] transition-colors cursor-pointer"
                 >
-                  <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-400">
+                  <div className="p-1.5 rounded-lg bg-purple-100 text-[#7137D8]">
                     <ShieldCheck className="h-4 w-4" />
                   </div>
                   <span>Super Admin Panel</span>
                 </DropdownMenuItem>
               )}
 
-              <DropdownMenuSeparator className="my-1.5 bg-white/10" />
+              <DropdownMenuSeparator className="my-1.5 bg-[#E2E8F0]" />
 
               {/* Sign Out */}
               <DropdownMenuItem
                 onSelect={handleLogout}
-                className="flex items-center gap-2.5 p-2 rounded-xl text-xs font-medium text-rose-300 hover:bg-rose-500/15 hover:text-rose-200 focus:bg-rose-500/15 focus:text-rose-200 transition-colors cursor-pointer"
+                className="flex items-center gap-2.5 p-2 rounded-xl text-xs font-medium text-rose-600 hover:bg-rose-50 hover:text-rose-700 focus:bg-rose-50 focus:text-rose-700 transition-colors cursor-pointer"
               >
-                <div className="p-1.5 rounded-lg bg-rose-500/10 text-rose-400">
+                <div className="p-1.5 rounded-lg bg-rose-100 text-rose-600">
                   <LogOut className="h-4 w-4" />
                 </div>
                 <span>Sign out</span>

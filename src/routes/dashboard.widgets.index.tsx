@@ -36,6 +36,7 @@ import {
   Sparkles,
   HelpCircle,
   Eye,
+  Activity,
   MessageSquare,
   LayoutGrid,
   Share2,
@@ -72,6 +73,7 @@ import {
   Unlink,
   Accessibility,
   Languages,
+  Plus,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -155,16 +157,37 @@ export interface CatalogCategory {
   headerIcon: string;
 }
 
+export interface MarketplaceCategoryItem {
+  id: string;
+  label: string;
+  icon: any;
+  count: number;
+}
+
 export interface CatalogWidgetItem {
   id: string;
   title: string;
   description: string;
   categoryId: string;
+  marketplaceCategory: string;
   status: "ready" | "coming_soon";
   iconType: string;
   iconBgClass: string;
   features: string[];
+  designsCount: string;
+  badge?: "popular" | "new";
 }
+
+export const MARKETPLACE_CATEGORIES: MarketplaceCategoryItem[] = [
+  { id: "all", label: "All Widgets", icon: Layers, count: 26 },
+  { id: "social", label: "Social", icon: Share2, count: 6 },
+  { id: "reviews", label: "Reviews", icon: Star, count: 4 },
+  { id: "chat", label: "Chat", icon: MessageSquare, count: 3 },
+  { id: "forms", label: "Forms", icon: FileText, count: 4 },
+  { id: "promotion", label: "Promotion", icon: Megaphone, count: 5 },
+  { id: "content", label: "Content", icon: LayoutList, count: 3 },
+  { id: "utility", label: "Utility", icon: SlidersHorizontal, count: 5 },
+];
 
 const CATALOG_CATEGORIES: CatalogCategory[] = [
   { id: "all", label: "All widgets", iconName: "layout_grid", headerTitle: "All Widgets", headerIcon: "layout_grid" },
@@ -180,13 +203,211 @@ const CATALOG_CATEGORIES: CatalogCategory[] = [
 ];
 
 const CATALOG_WIDGETS: CatalogWidgetItem[] = [
-  // Language & Localization
+  // 1. WhatsApp Chat (Top Row 1, Card 1 in reference mockup)
+  {
+    id: "whatsapp_chat",
+    title: "WhatsApp Chat",
+    description: "Floating chat button that opens WhatsApp conversations.",
+    categoryId: "support",
+    marketplaceCategory: "chat",
+    status: "ready",
+    badge: "popular",
+    designsCount: "3+ Designs",
+    iconType: "whatsapp",
+    iconBgClass: "bg-[#25d366] text-white",
+    features: [
+      "Official WhatsApp Click to Chat (wa.me) URL integration",
+      "Floating buttons, greeting speech bubbles, and contact cards",
+      "Pre-filled starter messages & agent profile information",
+      "100% free — no paid WhatsApp API or backend needed",
+    ],
+  },
+
+  // 2. Announcement Bar (Top Row 1, Card 2 in reference mockup)
+  {
+    id: "announcement_bar",
+    title: "Announcement Bar",
+    description: "Slim top bar for news, flash sales and promotions.",
+    categoryId: "sales",
+    marketplaceCategory: "promotion",
+    status: "ready",
+    badge: "popular",
+    designsCount: "6+ Designs",
+    iconType: "announcement_bar",
+    iconBgClass: "bg-[#f43f5e] text-white",
+    features: [
+      "Top and bottom sticky notification bars",
+      "Integrated countdown timer for urgent sales",
+      "Coupon code copy button with click-to-copy",
+      "Exit-intent and scroll trigger display rules",
+    ],
+  },
+
+  // 3. Popup Widget (Top Row 1, Card 3 in reference mockup)
+  {
+    id: "popup",
+    title: "Popup Widget",
+    description: "Create eye-catching popups to engage your visitors and increase conversions.",
+    categoryId: "sales",
+    marketplaceCategory: "promotion",
+    status: "ready",
+    badge: "popular",
+    designsCount: "8+ Designs",
+    iconType: "popup",
+    iconBgClass: "bg-[#a855f7] text-white",
+    features: [
+      "Exit-intent modal popups that retain leaving visitors",
+      "Timed delay & page scroll percentage triggers",
+      "Special discount code popups with CTA link",
+      "Mobile-responsive full screen or centered dialog",
+    ],
+  },
+
+  // 4. Testimonials Slider (Row 2, Card 1 in reference mockup)
+  {
+    id: "testimonial_slider",
+    title: "Testimonials Slider",
+    description: "Display customer testimonials in a beautiful slider.",
+    categoryId: "reviews",
+    marketplaceCategory: "reviews",
+    status: "coming_soon",
+    badge: "popular",
+    designsCount: "5+ Designs",
+    iconType: "testimonial_slider",
+    iconBgClass: "bg-[#3b82f6] text-white",
+    features: [
+      "Touch-friendly carousel with smooth autoplay",
+      "Client photo, company name, role and star rating",
+      "Support for video testimonial embeds",
+      "Custom accent colors matching your brand palette",
+    ],
+  },
+
+  // 5. Google Reviews (Row 2, Card 2 in reference mockup)
+  {
+    id: "google_reviews",
+    title: "Google Reviews",
+    description: "Show your Google reviews and build instant trust.",
+    categoryId: "reviews",
+    marketplaceCategory: "reviews",
+    status: "ready",
+    designsCount: "4+ Designs",
+    iconType: "google",
+    iconBgClass: "bg-white text-zinc-900 border border-[#E2E8F0] shadow-2xs",
+    features: [
+      "Direct Google Places search & review synchronization",
+      "Carousel, grid, masonry & floating rating badge",
+      "Filter only 4-star and 5-star positive reviews",
+      "Verified Google reviewer badge & authentic stars",
+    ],
+  },
+
+  // 6. Countdown Timer (Row 2, Card 3 in reference mockup)
+  {
+    id: "countdown_timer",
+    title: "Countdown Timer",
+    description: "Create urgency for special offers or events.",
+    categoryId: "urgency",
+    marketplaceCategory: "utility",
+    status: "ready",
+    designsCount: "6+ Designs",
+    iconType: "countdown_timer",
+    iconBgClass: "bg-[#8b5cf6] text-white",
+    features: [
+      "10 designer presets (Flip clock, cyber digital, minimal bar)",
+      "Evergreen visitor timers & fixed deadline dates",
+      "Sticky header, bottom bar or embedded in-page",
+      "Custom actions on timer expiry (hide, redirect, show message)",
+    ],
+  },
+
+  // 7. Instagram Feed (Row 3, Card 1 in reference mockup)
+  {
+    id: "instagram_feed",
+    title: "Instagram Feed",
+    description: "Display your Instagram photos or reels.",
+    categoryId: "social",
+    marketplaceCategory: "social",
+    status: "coming_soon",
+    designsCount: "4+ Designs",
+    iconType: "instagram",
+    iconBgClass: "bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] text-white",
+    features: [
+      "Auto-updating grid and carousel feeds from your profile",
+      "Lightbox modal popup to view photos and videos in HD",
+      "Filter by specific hashtags or user reels",
+      "Shoppable post links directly to product pages",
+    ],
+  },
+
+  // 8. Social Icons (Row 3, Card 2 in reference mockup)
+  {
+    id: "social_icons",
+    title: "Social Icons",
+    description: "Add social media links to your site.",
+    categoryId: "social",
+    marketplaceCategory: "social",
+    status: "coming_soon",
+    designsCount: "5+ Designs",
+    iconType: "social_icons",
+    iconBgClass: "bg-[#3b82f6] text-white",
+    features: [
+      "40+ official brand icons (Twitter/X, LinkedIn, TikTok, etc.)",
+      "Floating sidebar or embedded header/footer links",
+      "Sleek hover effects, brand color fills and glowing badges",
+      "Custom URL links with automatic tooltips",
+    ],
+  },
+
+  // 9. Contact Form (Row 3, Card 3 in reference mockup)
+  {
+    id: "contact_form",
+    title: "Contact Form",
+    description: "Collect messages from your visitors.",
+    categoryId: "support",
+    marketplaceCategory: "forms",
+    status: "coming_soon",
+    designsCount: "4+ Designs",
+    iconType: "contact_form",
+    iconBgClass: "bg-[#ec4899] text-white",
+    features: [
+      "Drag-and-drop custom form field builder",
+      "Instant email delivery and dashboard inbox",
+      "Spam protection with smart honeypot & reCAPTCHA",
+      "File upload attachment support",
+    ],
+  },
+
+  // 10. FAQ Accordion
+  {
+    id: "faq_accordion",
+    title: "FAQ Accordion",
+    description: "Answer common questions easily.",
+    categoryId: "support",
+    marketplaceCategory: "content",
+    status: "ready",
+    badge: "popular",
+    designsCount: "8+ Designs",
+    iconType: "faq",
+    iconBgClass: "bg-[#2563eb] text-white",
+    features: [
+      "8 modern preset designs (Classic, Modern, Minimal, Floating)",
+      "Instant live search and category filter tabs",
+      "Rich text answers with markdown & links support",
+      "Automatic Google FAQPage Schema markup for rich SEO snippets",
+    ],
+  },
+
+  // 11. Website Language Switcher
   {
     id: "language_switcher",
     title: "Website Language Switcher",
     description: "Let visitors choose their preferred website language.",
     categoryId: "localization",
+    marketplaceCategory: "utility",
     status: "ready",
+    badge: "new",
+    designsCount: "7+ Designs",
     iconType: "languages",
     iconBgClass: "bg-[#0284c7] text-white",
     features: [
@@ -197,13 +418,16 @@ const CATALOG_WIDGETS: CatalogWidgetItem[] = [
     ],
   },
 
-  // Accessibility & Compliance
+  // 12. Accessibility Widget
   {
     id: "accessibility",
     title: "Accessibility Widget",
     description: "Give visitors convenient controls to customize their website viewing experience.",
     categoryId: "accessibility",
+    marketplaceCategory: "utility",
     status: "ready",
+    badge: "new",
+    designsCount: "5+ Designs",
     iconType: "accessibility",
     iconBgClass: "bg-[#0284c7] text-white",
     features: [
@@ -214,43 +438,15 @@ const CATALOG_WIDGETS: CatalogWidgetItem[] = [
     ],
   },
 
-  // 1. Support & Communication
-  {
-    id: "whatsapp_chat",
-    title: "WhatsApp Live Chat",
-    description: "Let visitors contact you instantly through WhatsApp.",
-    categoryId: "support",
-    status: "ready",
-    iconType: "whatsapp",
-    iconBgClass: "bg-[#25d366] text-white",
-    features: [
-      "Official WhatsApp Click to Chat (wa.me) URL integration",
-      "Floating buttons, greeting speech bubbles, and contact cards",
-      "Pre-filled starter messages & agent profile information",
-      "100% free — no paid WhatsApp API or backend needed",
-    ],
-  },
-  {
-    id: "faq_accordion",
-    title: "FAQ Accordion",
-    description: "Answer common questions easily.",
-    categoryId: "support",
-    status: "ready",
-    iconType: "faq",
-    iconBgClass: "bg-[#0284c7] text-white",
-    features: [
-      "8 modern preset designs (Classic, Modern, Minimal, Floating)",
-      "Instant live search and category filter tabs",
-      "Rich text answers with markdown & links support",
-      "Automatic Google FAQPage Schema markup for rich SEO snippets",
-    ],
-  },
+  // 13. Live Chat
   {
     id: "live_chat",
     title: "Live Chat",
     description: "Chat with visitors in real-time.",
     categoryId: "support",
+    marketplaceCategory: "chat",
     status: "coming_soon",
+    designsCount: "4+ Designs",
     iconType: "live_chat",
     iconBgClass: "bg-[#8b5cf6] text-white",
     features: [
@@ -260,61 +456,18 @@ const CATALOG_WIDGETS: CatalogWidgetItem[] = [
       "Desktop & mobile instant push alerts",
     ],
   },
-  {
-    id: "contact_form",
-    title: "Contact Form",
-    description: "Collect messages from your visitors.",
-    categoryId: "support",
-    status: "coming_soon",
-    iconType: "contact_form",
-    iconBgClass: "bg-[#f97316] text-white",
-    features: [
-      "Drag-and-drop custom form field builder",
-      "Instant email delivery and dashboard inbox",
-      "Spam protection with smart honeypot & reCAPTCHA",
-      "File upload attachment support",
-    ],
-  },
 
-  // 2. Sales & Promotions
-  {
-    id: "announcement_bar",
-    title: "Announcement Bar",
-    description: "Show offers and important updates.",
-    categoryId: "sales",
-    status: "ready",
-    iconType: "announcement_bar",
-    iconBgClass: "bg-[#f43f5e] text-white",
-    features: [
-      "Top and bottom sticky notification bars",
-      "Integrated countdown timer for urgent sales",
-      "Coupon code copy button with click-to-copy",
-      "Exit-intent and scroll trigger display rules",
-    ],
-  },
-  {
-    id: "popup",
-    title: "Popup",
-    description: "Display popups for offers and announcements.",
-    categoryId: "sales",
-    status: "ready",
-    iconType: "popup",
-    iconBgClass: "bg-[#a855f7] text-white",
-    features: [
-      "Exit-intent modal popups that retain leaving visitors",
-      "Timed delay & page scroll percentage triggers",
-      "Special discount code popups with CTA link",
-      "Mobile-responsive full screen or centered dialog",
-    ],
-  },
+  // 14. Sales Notification
   {
     id: "sales_notification",
     title: "Sales Notification",
     description: "Show recent sales and sign-ups.",
     categoryId: "sales",
+    marketplaceCategory: "promotion",
     status: "coming_soon",
+    designsCount: "4+ Designs",
     iconType: "sales_notification",
-    iconBgClass: "bg-[#f97316] text-white",
+    iconBgClass: "bg-[#3b82f6] text-white",
     features: [
       "Realistic recent purchase popups (FOMO alerts)",
       "Custom product names, customer avatars & locations",
@@ -322,12 +475,16 @@ const CATALOG_WIDGETS: CatalogWidgetItem[] = [
       "Increases buyer trust and conversion rates",
     ],
   },
+
+  // 15. Discount Coupon
   {
     id: "discount_coupon",
     title: "Discount Coupon",
     description: "Show discount codes and special deals.",
     categoryId: "sales",
+    marketplaceCategory: "promotion",
     status: "coming_soon",
+    designsCount: "4+ Designs",
     iconType: "discount_coupon",
     iconBgClass: "bg-[#10b981] text-white",
     features: [
@@ -338,43 +495,34 @@ const CATALOG_WIDGETS: CatalogWidgetItem[] = [
     ],
   },
 
-  // 3. Reviews & Trust
+  // 16. Limited Time Offer
   {
-    id: "google_reviews",
-    title: "Google Reviews",
-    description: "Show customer reviews on your site.",
-    categoryId: "reviews",
-    status: "ready",
-    iconType: "google",
-    iconBgClass: "bg-white text-zinc-900 border border-white/20",
-    features: [
-      "Direct Google Places search & review synchronization",
-      "Carousel, grid, masonry & floating rating badge",
-      "Filter only 4-star and 5-star positive reviews",
-      "Verified Google reviewer badge & authentic stars",
-    ],
-  },
-  {
-    id: "testimonial_slider",
-    title: "Testimonial Slider",
-    description: "Display customer testimonials.",
-    categoryId: "reviews",
+    id: "limited_time_offer",
+    title: "Limited Time Offer",
+    description: "Highlight special offers with urgent ribbons.",
+    categoryId: "urgency",
+    marketplaceCategory: "promotion",
     status: "coming_soon",
-    iconType: "testimonial_slider",
-    iconBgClass: "bg-[#4f46e5] text-white",
+    designsCount: "3+ Designs",
+    iconType: "limited_time_offer",
+    iconBgClass: "bg-[#0ea5e9] text-white",
     features: [
-      "Touch-friendly carousel with smooth autoplay",
-      "Client photo, company name, role and star rating",
-      "Support for video testimonial embeds",
-      "Custom accent colors matching your brand palette",
+      "Flash sale ribbon banner with animated pulsing badge",
+      "Original price vs discounted price calculation display",
+      "Countdown timer built into promotional ribbon",
+      "High-contrast color themes for maximum click-through",
     ],
   },
+
+  // 17. Trust Badges
   {
     id: "trust_badges",
     title: "Trust Badges",
     description: "Show trust badges and payment icons.",
     categoryId: "reviews",
+    marketplaceCategory: "reviews",
     status: "coming_soon",
+    designsCount: "6+ Designs",
     iconType: "trust_badges",
     iconBgClass: "bg-[#10b981] text-white",
     features: [
@@ -384,12 +532,16 @@ const CATALOG_WIDGETS: CatalogWidgetItem[] = [
       "High-resolution vector rendering on all screen sizes",
     ],
   },
+
+  // 18. Rating Stars
   {
     id: "rating_stars",
     title: "Rating Stars",
     description: "Display star ratings for products or services.",
     categoryId: "reviews",
+    marketplaceCategory: "reviews",
     status: "coming_soon",
+    designsCount: "4+ Designs",
     iconType: "rating_stars",
     iconBgClass: "bg-[#f59e0b] text-white",
     features: [
@@ -400,43 +552,15 @@ const CATALOG_WIDGETS: CatalogWidgetItem[] = [
     ],
   },
 
-  // 4. Urgency & Engagement
-  {
-    id: "countdown_timer",
-    title: "Countdown Timer",
-    description: "Create urgency for offers or events.",
-    categoryId: "urgency",
-    status: "ready",
-    iconType: "countdown_timer",
-    iconBgClass: "bg-[#ef4444] text-white",
-    features: [
-      "10 designer presets (Flip clock, cyber digital, minimal bar)",
-      "Evergreen visitor timers & fixed deadline dates",
-      "Sticky header, bottom bar or embedded in-page",
-      "Custom actions on timer expiry (hide, redirect, show message)",
-    ],
-  },
-  {
-    id: "limited_time_offer",
-    title: "Limited Time Offer",
-    description: "Highlight special offers.",
-    categoryId: "urgency",
-    status: "coming_soon",
-    iconType: "limited_time_offer",
-    iconBgClass: "bg-[#f97316] text-white",
-    features: [
-      "Flash sale ribbon banner with animated pulsing badge",
-      "Original price vs discounted price calculation display",
-      "Countdown timer built into promotional ribbon",
-      "High-contrast color themes for maximum click-through",
-    ],
-  },
+  // 19. Stock Counter
   {
     id: "stock_counter",
     title: "Stock Counter",
     description: "Show remaining stock or limited availability.",
     categoryId: "urgency",
+    marketplaceCategory: "utility",
     status: "coming_soon",
+    designsCount: "3+ Designs",
     iconType: "stock_counter",
     iconBgClass: "bg-[#8b5cf6] text-white",
     features: [
@@ -446,12 +570,16 @@ const CATALOG_WIDGETS: CatalogWidgetItem[] = [
       "Proven to reduce checkout abandonment",
     ],
   },
+
+  // 20. Event Countdown
   {
     id: "event_countdown",
     title: "Event Countdown",
     description: "Countdown to your upcoming event.",
     categoryId: "urgency",
+    marketplaceCategory: "utility",
     status: "coming_soon",
+    designsCount: "4+ Designs",
     iconType: "event_countdown",
     iconBgClass: "bg-[#0ea5e9] text-white",
     features: [
@@ -462,43 +590,15 @@ const CATALOG_WIDGETS: CatalogWidgetItem[] = [
     ],
   },
 
-  // 5. Social Media
-  {
-    id: "instagram_feed",
-    title: "Instagram Feed",
-    description: "Display your Instagram photos or reels.",
-    categoryId: "social",
-    status: "coming_soon",
-    iconType: "instagram",
-    iconBgClass: "bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] text-white",
-    features: [
-      "Auto-updating grid and carousel feeds from your profile",
-      "Lightbox modal popup to view photos and videos in HD",
-      "Filter by specific hashtags or user reels",
-      "Shoppable post links directly to product pages",
-    ],
-  },
-  {
-    id: "social_icons",
-    title: "Social Icons",
-    description: "Add social media links to your site.",
-    categoryId: "social",
-    status: "coming_soon",
-    iconType: "social_icons",
-    iconBgClass: "bg-[#3b82f6] text-white",
-    features: [
-      "40+ official brand icons (Twitter/X, LinkedIn, TikTok, etc.)",
-      "Floating sidebar or embedded header/footer links",
-      "Sleek hover effects, brand color fills and glowing badges",
-      "Custom URL links with automatic tooltips",
-    ],
-  },
+  // 21. Facebook Page
   {
     id: "facebook_page",
     title: "Facebook Page",
     description: "Show your Facebook page feed.",
     categoryId: "social",
+    marketplaceCategory: "social",
     status: "coming_soon",
+    designsCount: "3+ Designs",
     iconType: "facebook",
     iconBgClass: "bg-[#1877f2] text-white",
     features: [
@@ -508,12 +608,16 @@ const CATALOG_WIDGETS: CatalogWidgetItem[] = [
       "Responsive container width adapting to any layout",
     ],
   },
+
+  // 22. YouTube Video
   {
     id: "youtube_video",
     title: "YouTube Video",
     description: "Embed YouTube videos on your site.",
     categoryId: "social",
+    marketplaceCategory: "social",
     status: "coming_soon",
+    designsCount: "4+ Designs",
     iconType: "youtube",
     iconBgClass: "bg-[#ef4444] text-white",
     features: [
@@ -524,13 +628,15 @@ const CATALOG_WIDGETS: CatalogWidgetItem[] = [
     ],
   },
 
-  // 6. Forms & Surveys
+  // 23. Newsletter Signup
   {
     id: "newsletter_signup",
     title: "Newsletter Signup",
     description: "Grow your email list with opt-in forms.",
     categoryId: "forms",
+    marketplaceCategory: "forms",
     status: "coming_soon",
+    designsCount: "5+ Designs",
     iconType: "newsletter",
     iconBgClass: "bg-[#7c3aed] text-white",
     features: [
@@ -540,14 +646,18 @@ const CATALOG_WIDGETS: CatalogWidgetItem[] = [
       "Custom thank-you message and discount lead magnet delivery",
     ],
   },
+
+  // 24. Feedback Survey
   {
     id: "feedback_survey",
     title: "Feedback Survey",
     description: "Collect feedback and NPS from visitors.",
     categoryId: "forms",
+    marketplaceCategory: "forms",
     status: "coming_soon",
+    designsCount: "4+ Designs",
     iconType: "survey",
-    iconBgClass: "bg-[#06b6d4] text-white",
+    iconBgClass: "bg-[#0ea5e9] text-white",
     features: [
       "1-click Net Promoter Score (NPS) and star rating surveys",
       "Emoji mood feedback and optional text comments",
@@ -556,15 +666,17 @@ const CATALOG_WIDGETS: CatalogWidgetItem[] = [
     ],
   },
 
-  // 7. Other Utilities
+  // 25. QR Code Generator
   {
     id: "qr_code",
     title: "QR Code Generator",
     description: "Generate scannable QR codes for links & menus.",
     categoryId: "other",
+    marketplaceCategory: "utility",
     status: "coming_soon",
+    designsCount: "4+ Designs",
     iconType: "qr_code",
-    iconBgClass: "bg-[#475569] text-white",
+    iconBgClass: "bg-[#3b82f6] text-white",
     features: [
       "Custom color, rounded dots & centered logo upload",
       "Links, WiFi passwords, vCard contacts and digital menus",
@@ -572,14 +684,18 @@ const CATALOG_WIDGETS: CatalogWidgetItem[] = [
       "Track total scans and visitor devices",
     ],
   },
+
+  // 26. Audio Player
   {
     id: "audio_player",
     title: "Audio Player",
     description: "Stream audio tracks, episodes or background music.",
     categoryId: "other",
+    marketplaceCategory: "content",
     status: "coming_soon",
+    designsCount: "3+ Designs",
     iconType: "audio_player",
-    iconBgClass: "bg-[#db2777] text-white",
+    iconBgClass: "bg-[#ec4899] text-white",
     features: [
       "Compact sticky audio player for podcasts & music tracks",
       "Audio waveform visualizer with scrub control",
@@ -704,7 +820,7 @@ function getWidgetDisplayMeta(type: string, isSmall = false, config?: any) {
   }
 }
 
-function renderCategoryPillIcon(iconName: string, className = "w-3.5 h-3.5") {
+function renderCategoryPillIcon(iconName: string, className = "w-4 h-4") {
   switch (iconName) {
     case "languages":
       return <Languages className={className} />;
@@ -713,9 +829,9 @@ function renderCategoryPillIcon(iconName: string, className = "w-3.5 h-3.5") {
     case "accessibility":
       return <Accessibility className={className} />;
     case "message":
-      return <MessageSquare className={className} />;
+      return <Headphones className={className} />;
     case "megaphone":
-      return <Megaphone className={className} />;
+      return <Percent className={className} />;
     case "star":
       return <Star className={className} />;
     case "clock":
@@ -725,9 +841,489 @@ function renderCategoryPillIcon(iconName: string, className = "w-3.5 h-3.5") {
     case "file_text":
       return <FileText className={className} />;
     case "boxes":
-      return <Boxes className={className} />;
+      return <Layers className={className} />;
     default:
       return <Sparkles className={className} />;
+  }
+}
+
+function WidgetMiniaturePreview({ widgetId }: { widgetId: string }) {
+  switch (widgetId) {
+    case "whatsapp_chat":
+      return (
+        <div className="h-full w-full p-3 flex flex-col justify-between select-none">
+          <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#111827]">
+            <span className="w-2 h-2 rounded-full bg-[#22c55e]" />
+            <span>WhatsApp Customer Support</span>
+          </div>
+          <div className="flex items-start gap-2 my-auto">
+            <div className="w-5 h-5 rounded-full bg-[#25D366] text-white text-[10px] font-bold flex items-center justify-center shrink-0 shadow-2xs">
+              W
+            </div>
+            <div className="p-1.5 px-2.5 rounded-2xl rounded-tl-none bg-white border border-[#E2E8F0] shadow-2xs text-[10px] text-[#334155] leading-tight">
+              Hi there! 👋 How can we help you today?
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <span className="px-2.5 py-1 rounded-full bg-[#25D366] text-white text-[10px] font-bold flex items-center gap-1 shadow-2xs">
+              <WhatsAppIcon className="w-3 h-3 fill-white" />
+              <span>Start Chat</span>
+            </span>
+          </div>
+        </div>
+      );
+
+    case "announcement_bar":
+      return (
+        <div className="h-full w-full p-3 flex items-center justify-center select-none">
+          <div className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-[#7137D8] via-[#D52BBD] to-[#3478F6] text-white flex items-center justify-between text-[11px] shadow-sm">
+            <div className="flex items-center gap-1.5 font-bold truncate">
+              <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-white/20 uppercase tracking-wider shrink-0">
+                NEW
+              </span>
+              <span className="truncate">Spring Sale: 20% Off All Plans!</span>
+            </div>
+            <span className="px-2 py-0.5 rounded-lg bg-white text-[#7137D8] font-black text-[10px] shrink-0 shadow-2xs ml-2">
+              Claim Offer
+            </span>
+          </div>
+        </div>
+      );
+
+    case "popup":
+      return (
+        <div className="h-full w-full p-2 flex items-center justify-center select-none">
+          <div className="w-full max-w-[210px] p-2.5 rounded-xl bg-white border border-[#E2E8F0] shadow-md text-center relative">
+            <span className="absolute top-1 right-2 text-slate-400 text-xs font-bold leading-none cursor-default">
+              ×
+            </span>
+            <div className="text-sm leading-none mb-0.5">🎁</div>
+            <div className="text-[11px] font-extrabold text-[#111827]">Get 15% Off Your First Order</div>
+            <div className="flex items-center gap-1 mt-1.5">
+              <div className="flex-1 bg-[#F8FAFC] border border-[#E2E8F0] rounded px-2 py-1 text-[9px] text-slate-400 text-left truncate">
+                Enter your email
+              </div>
+              <span className="px-2.5 py-1 rounded bg-[#7137D8] text-white text-[9px] font-bold shadow-2xs">
+                Claim
+              </span>
+            </div>
+          </div>
+        </div>
+      );
+
+    case "testimonial_slider":
+      return (
+        <div className="h-full w-full px-2 py-3 flex items-center justify-between select-none">
+          <span className="text-slate-400 text-xs font-bold p-1">‹</span>
+          <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white border border-[#E2E8F0] shadow-2xs flex-1 mx-1 min-w-0">
+            <img
+              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80"
+              alt="Reviewer"
+              className="w-8 h-8 rounded-full object-cover shrink-0"
+            />
+            <div className="min-w-0">
+              <p className="text-[10px] text-[#334155] italic line-clamp-2 leading-tight">
+                &quot;Great experience! The setup was super easy and it works perfectly.&quot;
+              </p>
+              <div className="text-amber-400 text-[9px] font-bold mt-0.5">★★★★★</div>
+            </div>
+          </div>
+          <span className="text-slate-400 text-xs font-bold p-1">›</span>
+        </div>
+      );
+
+    case "google_reviews":
+      return (
+        <div className="h-full w-full p-3 flex items-center justify-center select-none">
+          <div className="w-full max-w-[210px] p-2.5 rounded-xl bg-white border border-[#E2E8F0] shadow-2xs text-center flex flex-col items-center justify-center">
+            <GoogleIcon className="w-5 h-5 mb-0.5" />
+            <div className="text-[11px] font-bold text-[#111827]">Google Reviews</div>
+            <div className="flex items-center gap-1 mt-0.5">
+              <span className="text-sm font-black text-[#111827]">4.9</span>
+              <span className="text-amber-400 text-xs">★★★★★</span>
+            </div>
+            <div className="text-[10px] text-[#64748B] mt-0.5 font-medium">(1,248 reviews)</div>
+          </div>
+        </div>
+      );
+
+    case "countdown_timer":
+      return (
+        <div className="h-full w-full p-2.5 flex flex-col items-center justify-center select-none">
+          <div className="text-[11px] font-bold text-[#111827] mb-2">Limited Time Offer</div>
+          <div className="grid grid-cols-4 gap-1.5 w-full max-w-[230px]">
+            <div className="p-1 rounded-lg bg-[#F6F0FE] border border-[#EDE0FD] text-center">
+              <span className="block text-xs font-black text-[#7137D8] leading-tight">02</span>
+              <span className="block text-[8px] font-bold text-[#7137D8]/80 uppercase">Days</span>
+            </div>
+            <div className="p-1 rounded-lg bg-[#EEF6FE] border border-[#DBEAFE] text-center">
+              <span className="block text-xs font-black text-[#2563EB] leading-tight">14</span>
+              <span className="block text-[8px] font-bold text-[#2563EB]/80 uppercase">Hours</span>
+            </div>
+            <div className="p-1 rounded-lg bg-[#FAF5FF] border border-[#F3E8FF] text-center">
+              <span className="block text-xs font-black text-[#9333EA] leading-tight">36</span>
+              <span className="block text-[8px] font-bold text-[#9333EA]/80 uppercase">Minutes</span>
+            </div>
+            <div className="p-1 rounded-lg bg-[#FDF2F8] border border-[#FCE7F3] text-center">
+              <span className="block text-xs font-black text-[#DB2777] leading-tight">28</span>
+              <span className="block text-[8px] font-bold text-[#DB2777]/80 uppercase">Seconds</span>
+            </div>
+          </div>
+        </div>
+      );
+
+    case "instagram_feed":
+      return (
+        <div className="h-full w-full p-2.5 flex flex-col justify-center select-none">
+          <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#111827] mb-2 px-0.5">
+            <InstagramIcon className="w-3.5 h-3.5 text-[#E1306C]" />
+            <span>Follow Us on Instagram</span>
+          </div>
+          <div className="grid grid-cols-4 gap-1.5">
+            <div className="aspect-square rounded-lg overflow-hidden bg-slate-200">
+              <img
+                src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=120&q=80"
+                alt="post"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="aspect-square rounded-lg overflow-hidden bg-slate-200 relative flex items-center justify-center">
+              <img
+                src="https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=120&q=80"
+                alt="post"
+                className="w-full h-full object-cover"
+              />
+              <span className="absolute w-4 h-4 rounded-full bg-black/60 text-white flex items-center justify-center text-[8px]">
+                ▶
+              </span>
+            </div>
+            <div className="aspect-square rounded-lg overflow-hidden bg-slate-200">
+              <img
+                src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=120&q=80"
+                alt="post"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="aspect-square rounded-lg overflow-hidden bg-slate-200">
+              <img
+                src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=120&q=80"
+                alt="post"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      );
+
+    case "social_icons":
+      return (
+        <div className="h-full w-full p-3 flex flex-col items-center justify-center select-none">
+          <div className="text-[11px] font-bold text-[#111827] mb-2.5">Social Icons</div>
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-full bg-[#1877F2] text-white flex items-center justify-center shadow-xs">
+              <FacebookIcon className="w-3.5 h-3.5" />
+            </div>
+            <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] text-white flex items-center justify-center shadow-xs">
+              <InstagramIcon className="w-3.5 h-3.5" />
+            </div>
+            <div className="w-7 h-7 rounded-full bg-black text-white flex items-center justify-center shadow-xs text-[10px] font-black">
+              𝕏
+            </div>
+            <div className="w-7 h-7 rounded-full bg-[#FF0000] text-white flex items-center justify-center shadow-xs">
+              <YouTubeIcon className="w-3.5 h-3.5" />
+            </div>
+            <div className="w-7 h-7 rounded-full bg-[#0A66C2] text-white flex items-center justify-center shadow-xs text-[10px] font-black">
+              in
+            </div>
+          </div>
+        </div>
+      );
+
+    case "contact_form":
+      return (
+        <div className="h-full w-full p-2.5 flex flex-col justify-center max-w-[220px] mx-auto select-none">
+          <div className="text-[11px] font-bold text-[#111827] mb-1.5 text-center">Get in Touch</div>
+          <div className="space-y-1">
+            <div className="bg-white border border-[#E2E8F0] rounded px-2 py-0.5 text-[9px] text-[#94A3B8]">
+              Your Name
+            </div>
+            <div className="bg-white border border-[#E2E8F0] rounded px-2 py-0.5 text-[9px] text-[#94A3B8]">
+              Email Address
+            </div>
+            <div className="py-1 rounded bg-[#7137D8] text-white font-bold text-[9px] text-center shadow-2xs">
+              Send Message
+            </div>
+          </div>
+        </div>
+      );
+
+    case "faq_accordion":
+      return (
+        <div className="h-full w-full p-2.5 flex flex-col justify-center space-y-1.5 max-w-[230px] mx-auto select-none">
+          <div className="p-1.5 rounded-lg bg-white border border-[#E2E8F0] shadow-2xs">
+            <div className="flex items-center justify-between text-[10px] font-bold text-[#111827]">
+              <span>How does it work?</span>
+              <span className="text-[#7137D8]">▾</span>
+            </div>
+            <p className="text-[8px] text-[#64748B] mt-0.5 line-clamp-1">Instant setup with zero code required.</p>
+          </div>
+          <div className="p-1.5 rounded-lg bg-white border border-[#E2E8F0] shadow-2xs flex items-center justify-between text-[10px] font-semibold text-[#64748B]">
+            <span>Can I customize colors?</span>
+            <span>▸</span>
+          </div>
+        </div>
+      );
+
+    case "language_switcher":
+      return (
+        <div className="h-full w-full p-3 flex flex-col items-center justify-center select-none">
+          <div className="w-full max-w-[200px] p-2 rounded-xl bg-white border border-[#E2E8F0] shadow-2xs">
+            <div className="flex items-center justify-between text-[10px] font-bold text-[#111827] pb-1 border-b border-[#F1F5F9]">
+              <span className="flex items-center gap-1.5">
+                <span className="text-xs">🌐</span> English (US)
+              </span>
+              <span className="text-[#7137D8] text-xs">▾</span>
+            </div>
+            <div className="flex items-center gap-1 mt-1 text-[9px] text-[#64748B]">
+              <span className="px-1.5 py-0.5 rounded bg-[#F6F0FE] text-[#7137D8] font-bold">🇺🇸 EN</span>
+              <span className="px-1.5 py-0.5 rounded hover:bg-[#F8FAFC]">🇪🇸 ES</span>
+              <span className="px-1.5 py-0.5 rounded hover:bg-[#F8FAFC]">🇫🇷 FR</span>
+              <span className="px-1.5 py-0.5 rounded hover:bg-[#F8FAFC]">🇩🇪 DE</span>
+            </div>
+          </div>
+        </div>
+      );
+
+    case "accessibility":
+      return (
+        <div className="h-full w-full p-3 flex items-center justify-center select-none">
+          <div className="w-full max-w-[210px] p-2 rounded-xl bg-white border border-[#E2E8F0] shadow-2xs flex items-center justify-around text-center">
+            <div className="p-1 text-center">
+              <span className="block text-[10px] font-extrabold text-[#7137D8]">A+</span>
+              <span className="text-[8px] text-[#64748B]">Bigger</span>
+            </div>
+            <div className="h-6 w-px bg-[#E2E8F0]" />
+            <div className="p-1 text-center">
+              <span className="block text-[10px] font-extrabold text-[#111827]">◐</span>
+              <span className="text-[8px] text-[#64748B]">Contrast</span>
+            </div>
+            <div className="h-6 w-px bg-[#E2E8F0]" />
+            <div className="p-1 text-center">
+              <span className="block text-[10px] font-extrabold text-[#111827]">Aa</span>
+              <span className="text-[8px] text-[#64748B]">Dyslexic</span>
+            </div>
+          </div>
+        </div>
+      );
+
+    case "live_chat":
+      return (
+        <div className="h-full w-full p-3 flex flex-col justify-between select-none">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-full bg-[#7137D8] text-white flex items-center justify-center text-[10px] font-bold">
+              AI
+            </div>
+            <div className="text-[10px] text-[#111827] font-bold">
+              Support Agent <span className="text-[9px] text-emerald-500 font-semibold">● Online</span>
+            </div>
+          </div>
+          <div className="bg-white border border-[#E2E8F0] p-1.5 rounded-xl rounded-tl-none shadow-2xs text-[9px] text-[#475569]">
+            Hello! Let me know if you need any assistance today.
+          </div>
+          <div className="flex items-center gap-1 text-[8px] text-slate-400">
+            <span>Agent is typing</span>
+            <span className="animate-pulse">● ● ●</span>
+          </div>
+        </div>
+      );
+
+    case "sales_notification":
+      return (
+        <div className="h-full w-full p-3 flex items-center justify-center select-none">
+          <div className="w-full max-w-[220px] p-2 rounded-xl bg-white border border-[#E2E8F0] shadow-md flex items-center gap-2.5">
+            <span className="w-7 h-7 rounded-lg bg-blue-50 text-[#3b82f6] flex items-center justify-center shrink-0">
+              <ShoppingCart className="w-3.5 h-3.5" />
+            </span>
+            <div className="min-w-0">
+              <div className="text-[10px] font-bold text-[#111827] truncate">Alex from London</div>
+              <div className="text-[9px] text-[#64748B] truncate">Purchased Pro License · 2m ago</div>
+            </div>
+          </div>
+        </div>
+      );
+
+    case "discount_coupon":
+      return (
+        <div className="h-full w-full p-3 flex items-center justify-center select-none">
+          <div className="w-full max-w-[210px] p-2.5 rounded-xl bg-[#F0FDF4] border-2 border-dashed border-[#10B981]/50 text-center">
+            <span className="text-[9px] font-bold text-emerald-700 uppercase tracking-wider block">Special Deal</span>
+            <span className="text-sm font-black text-emerald-900 tracking-wider block my-0.5">SAVE20</span>
+            <span className="text-[8px] font-semibold text-emerald-600 block">Click to copy code</span>
+          </div>
+        </div>
+      );
+
+    case "limited_time_offer":
+      return (
+        <div className="h-full w-full p-3 flex items-center justify-center select-none">
+          <div className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white flex items-center justify-between text-[10px] shadow-sm font-bold">
+            <span className="flex items-center gap-1">
+              <Zap className="w-3.5 h-3.5 fill-white" /> FLASH SALE 50%
+            </span>
+            <span className="px-2 py-0.5 rounded bg-white text-orange-600 font-black text-[9px]">
+              01:45:20
+            </span>
+          </div>
+        </div>
+      );
+
+    case "trust_badges":
+      return (
+        <div className="h-full w-full p-2.5 flex items-center justify-around select-none">
+          <div className="p-2 rounded-lg bg-white border border-[#E2E8F0] text-center shadow-2xs">
+            <ShieldCheck className="w-4 h-4 text-emerald-600 mx-auto mb-0.5" />
+            <span className="text-[8px] font-bold text-[#111827] block">SSL 256-bit</span>
+          </div>
+          <div className="p-2 rounded-lg bg-white border border-[#E2E8F0] text-center shadow-2xs">
+            <CheckCircle2 className="w-4 h-4 text-[#7137D8] mx-auto mb-0.5" />
+            <span className="text-[8px] font-bold text-[#111827] block">Verified</span>
+          </div>
+          <div className="p-2 rounded-lg bg-white border border-[#E2E8F0] text-center shadow-2xs">
+            <Zap className="w-4 h-4 text-amber-500 mx-auto mb-0.5 fill-amber-500" />
+            <span className="text-[8px] font-bold text-[#111827] block">Fast CDN</span>
+          </div>
+        </div>
+      );
+
+    case "rating_stars":
+      return (
+        <div className="h-full w-full p-3 flex flex-col items-center justify-center text-center select-none">
+          <span className="text-xl font-black text-[#111827]">4.9 / 5.0</span>
+          <div className="text-amber-400 text-sm mt-0.5">★★★★★</div>
+          <span className="text-[9px] text-[#64748B] font-medium mt-0.5">Based on 350+ customer ratings</span>
+        </div>
+      );
+
+    case "stock_counter":
+      return (
+        <div className="h-full w-full p-3 flex flex-col justify-center select-none">
+          <div className="flex items-center justify-between text-[10px] font-bold text-amber-700 mb-1">
+            <span>🔥 Selling Fast!</span>
+            <span>Only 3 left</span>
+          </div>
+          <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+            <div className="h-full w-4/5 rounded-full bg-gradient-to-r from-amber-500 to-rose-500" />
+          </div>
+          <span className="text-[8px] text-slate-500 mt-1">High demand in your region</span>
+        </div>
+      );
+
+    case "event_countdown":
+      return (
+        <div className="h-full w-full p-3 flex items-center justify-center select-none">
+          <div className="w-full max-w-[210px] p-2.5 rounded-xl bg-white border border-[#E2E8F0] shadow-2xs flex items-center gap-3">
+            <span className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+              <Calendar className="w-5 h-5" />
+            </span>
+            <div className="min-w-0">
+              <span className="text-[10px] font-bold text-[#111827] block truncate">Product Launch 2026</span>
+              <span className="text-[9px] text-[#7137D8] font-bold block">Nov 15 · 3 Days to go</span>
+            </div>
+          </div>
+        </div>
+      );
+
+    case "facebook_page":
+      return (
+        <div className="h-full w-full p-2.5 flex flex-col justify-between select-none">
+          <div className="flex items-center gap-2">
+            <FacebookIcon className="w-5 h-5 text-[#1877F2]" />
+            <div className="text-[10px] font-bold text-[#111827]">Official Brand Page</div>
+          </div>
+          <div className="text-[9px] text-slate-500">18,500 followers · Community & Updates</div>
+          <div className="flex justify-end">
+            <span className="px-2.5 py-1 rounded-lg bg-[#1877F2] text-white text-[9px] font-bold shadow-2xs">
+              Like Page
+            </span>
+          </div>
+        </div>
+      );
+
+    case "youtube_video":
+      return (
+        <div className="h-full w-full p-2 flex items-center justify-center select-none">
+          <div className="w-full max-w-[220px] aspect-video rounded-xl bg-slate-800 relative flex items-center justify-center overflow-hidden shadow-xs">
+            <div className="w-9 h-9 rounded-full bg-[#FF0000] text-white flex items-center justify-center shadow-md">
+              <YouTubeIcon className="w-5 h-5 fill-white ml-0.5" />
+            </div>
+            <span className="absolute bottom-1.5 right-2 text-[8px] font-bold text-white bg-black/70 px-1 rounded">
+              08:42
+            </span>
+          </div>
+        </div>
+      );
+
+    case "newsletter_signup":
+      return (
+        <div className="h-full w-full p-2.5 flex flex-col justify-center max-w-[220px] mx-auto select-none">
+          <div className="text-[11px] font-bold text-[#111827] mb-1.5 text-center">Subscribe to Newsletter</div>
+          <div className="flex items-center gap-1">
+            <div className="flex-1 bg-white border border-[#E2E8F0] rounded px-2 py-1 text-[9px] text-[#94A3B8]">
+              Your email address
+            </div>
+            <span className="px-2.5 py-1 rounded bg-[#7137D8] text-white text-[9px] font-bold shadow-2xs">
+              Join
+            </span>
+          </div>
+        </div>
+      );
+
+    case "feedback_survey":
+      return (
+        <div className="h-full w-full p-3 flex flex-col items-center justify-center select-none">
+          <div className="text-[10px] font-bold text-[#111827] mb-2">How was your experience?</div>
+          <div className="flex items-center gap-2 text-base">
+            <span className="hover:scale-125 transition">😡</span>
+            <span className="hover:scale-125 transition">😕</span>
+            <span className="hover:scale-125 transition">😐</span>
+            <span className="hover:scale-125 transition">🙂</span>
+            <span className="scale-125 hover:scale-135 transition">😍</span>
+          </div>
+        </div>
+      );
+
+    case "qr_code":
+      return (
+        <div className="h-full w-full p-2 flex items-center justify-center select-none">
+          <div className="p-2 rounded-xl bg-white border border-[#E2E8F0] shadow-xs flex items-center justify-center">
+            <QrCode className="w-16 h-16 text-[#111827]" />
+          </div>
+        </div>
+      );
+
+    case "audio_player":
+      return (
+        <div className="h-full w-full p-3 flex flex-col justify-center select-none">
+          <div className="p-2 rounded-xl bg-white border border-[#E2E8F0] shadow-2xs flex items-center gap-2.5">
+            <div className="w-6 h-6 rounded-full bg-[#EC4899] text-white flex items-center justify-center text-[10px]">
+              ▶
+            </div>
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] font-bold text-[#111827] block truncate">Morning Meditation</span>
+              <div className="w-full h-1 bg-slate-200 rounded-full mt-1">
+                <div className="h-full w-1/3 bg-[#EC4899] rounded-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+
+    default:
+      return (
+        <div className="h-full w-full p-3 flex items-center justify-center select-none text-slate-400">
+          <Sparkles className="w-8 h-8 text-[#7137D8]" />
+        </div>
+      );
   }
 }
 
@@ -749,7 +1345,9 @@ function DashboardWidgetsPage() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [catalogLayout, setCatalogLayout] = useState<"list" | "cards">("list");
+  const [filterPill, setFilterPill] = useState<"all" | "popular" | "new">("all");
+  const [marketplaceSort, setMarketplaceSort] = useState<"popular" | "name_asc" | "name_desc" | "newest">("popular");
+  const [previewModalWidget, setPreviewModalWidget] = useState<CatalogWidgetItem | null>(null);
   const [comingSoonModalWidget, setComingSoonModalWidget] = useState<CatalogWidgetItem | null>(null);
   const [notifyEmail, setNotifyEmail] = useState("");
   const [notifiedWidgetIds, setNotifiedWidgetIds] = useState<string[]>([]);
@@ -1088,34 +1686,79 @@ function DashboardWidgetsPage() {
     setNotifyEmail("");
   };
 
-  const filteredCatalogSections = useMemo(() => {
+  const filteredMarketplaceWidgets = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
 
-    return CATALOG_CATEGORIES.filter((cat) => cat.id !== "all")
-      .map((cat) => {
-        if (selectedCategory !== "all" && selectedCategory !== cat.id) {
-          return null;
+    let list = CATALOG_WIDGETS.filter((w) => {
+      // 1. Category filter
+      if (selectedCategory !== "all") {
+        if (selectedCategory === "social") {
+          if (!["instagram_feed", "social_icons", "facebook_page", "youtube_video", "whatsapp_chat"].includes(w.id) && w.marketplaceCategory !== "social") {
+            return false;
+          }
+        } else if (selectedCategory === "reviews") {
+          if (!["google_reviews", "testimonial_slider", "trust_badges", "rating_stars"].includes(w.id) && w.marketplaceCategory !== "reviews") {
+            return false;
+          }
+        } else if (selectedCategory === "chat") {
+          if (!["whatsapp_chat", "live_chat", "contact_form"].includes(w.id) && w.marketplaceCategory !== "chat") {
+            return false;
+          }
+        } else if (selectedCategory === "forms") {
+          if (!["contact_form", "newsletter_signup", "feedback_survey", "popup"].includes(w.id) && w.marketplaceCategory !== "forms") {
+            return false;
+          }
+        } else if (selectedCategory === "promotion") {
+          if (!["announcement_bar", "popup", "sales_notification", "discount_coupon", "limited_time_offer"].includes(w.id) && w.marketplaceCategory !== "promotion") {
+            return false;
+          }
+        } else if (selectedCategory === "content") {
+          if (!["faq_accordion", "audio_player", "language_switcher"].includes(w.id) && w.marketplaceCategory !== "content") {
+            return false;
+          }
+        } else if (selectedCategory === "utility") {
+          if (!["countdown_timer", "language_switcher", "accessibility", "stock_counter", "qr_code", "event_countdown"].includes(w.id) && w.marketplaceCategory !== "utility") {
+            return false;
+          }
+        } else if (w.marketplaceCategory !== selectedCategory && w.categoryId !== selectedCategory) {
+          return false;
         }
+      }
 
-        const items = CATALOG_WIDGETS.filter((w) => {
-          if (w.categoryId !== cat.id) return false;
-          if (!q) return true;
-          return (
-            w.title.toLowerCase().includes(q) ||
-            w.description.toLowerCase().includes(q) ||
-            cat.label.toLowerCase().includes(q)
-          );
-        });
+      // 2. Filter pill (all / popular / new)
+      if (filterPill === "popular") {
+        if (w.badge !== "popular" && !["whatsapp_chat", "announcement_bar", "popup", "testimonial_slider", "google_reviews", "countdown_timer", "instagram_feed", "social_icons", "faq_accordion"].includes(w.id)) {
+          return false;
+        }
+      } else if (filterPill === "new") {
+        if (w.badge !== "new" && !["language_switcher", "accessibility", "contact_form", "feedback_survey", "qr_code"].includes(w.id)) {
+          return false;
+        }
+      }
 
-        if (items.length === 0) return null;
+      // 3. Search query
+      if (q) {
+        const match =
+          w.title.toLowerCase().includes(q) ||
+          w.description.toLowerCase().includes(q) ||
+          w.marketplaceCategory.toLowerCase().includes(q);
+        if (!match) return false;
+      }
 
-        return {
-          ...cat,
-          items,
-        };
-      })
-      .filter(Boolean) as Array<CatalogCategory & { items: CatalogWidgetItem[] }>;
-  }, [searchQuery, selectedCategory]);
+      return true;
+    });
+
+    // 4. Sorting
+    if (marketplaceSort === "name_asc") {
+      list = [...list].sort((a, b) => a.title.localeCompare(b.title));
+    } else if (marketplaceSort === "name_desc") {
+      list = [...list].sort((a, b) => b.title.localeCompare(a.title));
+    } else if (marketplaceSort === "newest") {
+      list = [...list].sort((a, b) => (b.badge === "new" ? 1 : 0) - (a.badge === "new" ? 1 : 0));
+    }
+
+    return list;
+  }, [searchQuery, selectedCategory, filterPill, marketplaceSort]);
 
 
   const handleToggleWidgetActive = async (w: WidgetInstanceRecord) => {
@@ -1347,25 +1990,25 @@ function DashboardWidgetsPage() {
       {/* ================= CASE 1: CHOOSE COUNTDOWN TEMPLATE ================= */}
       {viewMode === "choose_countdown" && (
         <div className="space-y-6 pt-2">
-          <div className="flex items-center justify-between pb-5 border-b border-[#26262e]">
+          <div className="flex items-center justify-between pb-5 border-b border-[#E2E8F0]">
             <div className="flex items-center gap-3.5">
               <button
                 type="button"
                 onClick={() => setViewMode("catalog")}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#151518] hover:bg-[#1f1f25] text-[#9a9aa3] hover:text-white border border-white/10 text-xs font-bold transition cursor-pointer"
+                className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-[#F8FAFC] text-[#475569] hover:text-[#111827] border border-[#E2E8F0] text-xs font-bold transition cursor-pointer shadow-2xs"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Back to Widgets</span>
               </button>
               <div>
-                <h1 className="text-xl font-extrabold text-white">Choose a Countdown Template</h1>
-                <p className="text-xs text-[#9a9aa3]">Select a pre-designed style to launch your countdown widget.</p>
+                <h1 className="text-xl font-extrabold text-[#111827]">Choose a Countdown Template</h1>
+                <p className="text-xs text-[#64748B]">Select a pre-designed style to launch your countdown widget.</p>
               </div>
             </div>
             <button
               type="button"
               onClick={() => handleSelectCountdownTemplate(COUNTDOWN_TEMPLATE_LIST[0])}
-              className="py-2 px-3.5 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md shadow-[#ffc21a]/20 cursor-pointer"
+              className="py-2 px-3.5 rounded-xl bg-gradient-to-r from-[#7137D8] to-[#8B5CF6] text-white font-bold text-xs shadow-xs hover:opacity-95 cursor-pointer"
             >
               <span>Blank Timer +</span>
             </button>
@@ -1375,29 +2018,29 @@ function DashboardWidgetsPage() {
             {COUNTDOWN_TEMPLATE_LIST.map((tpl) => (
               <div
                 key={tpl.key}
-                className="p-4 rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/40 transition flex flex-col justify-between group"
+                className="p-4 rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#7137D8]/40 hover:shadow-md transition flex flex-col justify-between group shadow-2xs"
               >
                 <div className="space-y-3">
-                  <div className="h-44 rounded-xl overflow-hidden bg-[#0d0d10] border border-[#26262e] p-2 flex items-center justify-center">
+                  <div className="h-44 rounded-xl overflow-hidden bg-[#F8FAFC] border border-[#E2E8F0] p-2 flex items-center justify-center">
                     <TemplateCardPreview tpl={tpl} />
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-white text-base group-hover:text-[#ffc21a] transition">
+                    <h3 className="font-extrabold text-[#111827] text-base group-hover:text-[#7137D8] transition">
                       {tpl.name}
                     </h3>
-                    <p className="text-xs text-[#9a9aa3] line-clamp-2 mt-1">{tpl.description}</p>
+                    <p className="text-xs text-[#64748B] line-clamp-2 mt-1">{tpl.description}</p>
                   </div>
                 </div>
 
-                <div className="pt-4 mt-2 border-t border-white/[0.06] flex items-center justify-between gap-2">
-                  <span className="text-[11px] font-bold text-[#ffc21a] bg-[#ffc21a]/10 px-2 py-0.5 rounded-full border border-[#ffc21a]/20 capitalize">
+                <div className="pt-4 mt-2 border-t border-[#F1F5F9] flex items-center justify-between gap-2">
+                  <span className="text-[11px] font-bold text-[#7137D8] bg-[#7137D8]/10 px-2.5 py-0.5 rounded-full border border-[#7137D8]/20 capitalize">
                     {(tpl as any).timerMode || tpl.config?.timerMode || "Date"}
                   </span>
                   <button
                     type="button"
                     disabled={creatingCountdownKey === tpl.key}
                     onClick={() => handleSelectCountdownTemplate(tpl)}
-                    className="py-1.5 px-3 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md hover:opacity-90 transition cursor-pointer"
+                    className="py-1.5 px-3.5 rounded-xl bg-gradient-to-r from-[#7137D8] to-[#8B5CF6] text-white font-bold text-xs shadow-xs hover:opacity-90 transition cursor-pointer"
                   >
                     <span>{creatingCountdownKey === tpl.key ? "Opening…" : "Use Template →"}</span>
                   </button>
@@ -1411,103 +2054,103 @@ function DashboardWidgetsPage() {
       {/* ================= CASE 2: CHOOSE GOOGLE REVIEWS LAYOUT ================= */}
       {viewMode === "choose_google_reviews" && (
         <div className="space-y-6 pt-2">
-          <div className="flex items-center justify-between pb-5 border-b border-[#26262e]">
+          <div className="flex items-center justify-between pb-5 border-b border-[#E2E8F0]">
             <div className="flex items-center gap-3.5">
               <button
                 type="button"
                 onClick={() => setViewMode("catalog")}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#151518] hover:bg-[#1f1f25] text-[#9a9aa3] hover:text-white border border-white/10 text-xs font-bold transition cursor-pointer"
+                className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-[#F8FAFC] text-[#475569] hover:text-[#111827] border border-[#E2E8F0] text-xs font-bold transition cursor-pointer shadow-2xs"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Back to Widgets</span>
               </button>
               <div>
-                <h1 className="text-xl font-extrabold text-white">Choose Google Reviews Layout</h1>
-                <p className="text-xs text-[#9a9aa3]">Display authentic Google reviews on your websites.</p>
+                <h1 className="text-xl font-extrabold text-[#111827]">Choose Google Reviews Layout</h1>
+                <p className="text-xs text-[#64748B]">Display authentic Google reviews on your websites.</p>
               </div>
             </div>
           </div>
 
           <div className="max-w-md">
-            <label className="text-xs font-bold text-[#9a9aa3] block mb-1.5">Widget Name</label>
+            <label className="text-xs font-bold text-[#475569] block mb-1.5">Widget Name</label>
             <input
               type="text"
               value={googleWidgetName}
               onChange={(e) => setGoogleWidgetName(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-[#141418] border border-[#26262e] text-white text-sm focus:outline-none focus:border-[#ffc21a]"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#E2E8F0] text-[#111827] text-sm focus:outline-none focus:border-[#7137D8] shadow-2xs"
               placeholder="e.g. Homepage Customer Reviews"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {/* Carousel */}
-            <div className="p-5 rounded-2xl bg-[#151518] border border-white/[0.08] flex flex-col justify-between space-y-4">
+            <div className="p-5 rounded-2xl bg-white border border-[#E2E8F0] shadow-2xs hover:shadow-md transition flex flex-col justify-between space-y-4">
               <div className="space-y-3">
-                <div className="h-32 rounded-xl bg-[#0f0f13] border border-white/10 p-3 flex flex-col justify-center">
-                  <div className="text-xs text-[#ffc21a] font-bold">★★★★★ 5.0</div>
-                  <p className="text-xs text-white mt-1 italic">&quot;Best service in town! Super fast delivery.&quot;</p>
-                  <small className="text-[11px] text-[#6b6b74] mt-1">Ananya S. · Verified Google Review</small>
+                <div className="h-32 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] p-3 flex flex-col justify-center">
+                  <div className="text-xs text-amber-500 font-bold">★★★★★ 5.0</div>
+                  <p className="text-xs text-[#111827] mt-1 italic">&quot;Best service in town! Super fast delivery.&quot;</p>
+                  <small className="text-[11px] text-[#64748B] mt-1">Ananya S. · Verified Google Review</small>
                 </div>
-                <h3 className="font-extrabold text-white text-base">Interactive Carousel</h3>
-                <p className="text-xs text-[#9a9aa3]">Smooth horizontal slider with auto-play and navigation arrows.</p>
+                <h3 className="font-extrabold text-[#111827] text-base">Interactive Carousel</h3>
+                <p className="text-xs text-[#64748B]">Smooth horizontal slider with auto-play and navigation arrows.</p>
               </div>
               <button
                 type="button"
                 disabled={creatingGoogle}
                 onClick={() => handleCreateGoogleReview("carousel")}
-                className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md transition cursor-pointer"
+                className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-[#7137D8] to-[#8B5CF6] text-white font-bold text-xs shadow-xs hover:opacity-95 transition cursor-pointer"
               >
                 <span>{creatingGoogle ? "Creating…" : "Select Carousel & Open →"}</span>
               </button>
             </div>
 
             {/* Grid */}
-            <div className="p-5 rounded-2xl bg-[#151518] border border-white/[0.08] flex flex-col justify-between space-y-4">
+            <div className="p-5 rounded-2xl bg-white border border-[#E2E8F0] shadow-2xs hover:shadow-md transition flex flex-col justify-between space-y-4">
               <div className="space-y-3">
-                <div className="h-32 rounded-xl bg-[#0f0f13] border border-white/10 p-3 grid grid-cols-2 gap-2">
-                  <div className="p-2 rounded bg-[#16161c] border border-white/10 text-[10px] text-zinc-300">
-                    <span className="text-[#ffc21a]">★★★★★</span>
+                <div className="h-32 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] p-3 grid grid-cols-2 gap-2">
+                  <div className="p-2 rounded bg-white border border-[#E2E8F0] text-[10px] text-[#334155]">
+                    <span className="text-amber-500">★★★★★</span>
                     <p className="line-clamp-2 mt-0.5">Super support!</p>
                   </div>
-                  <div className="p-2 rounded bg-[#16161c] border border-white/10 text-[10px] text-zinc-300">
-                    <span className="text-[#ffc21a]">★★★★★</span>
+                  <div className="p-2 rounded bg-white border border-[#E2E8F0] text-[10px] text-[#334155]">
+                    <span className="text-amber-500">★★★★★</span>
                     <p className="line-clamp-2 mt-0.5">Great quality!</p>
                   </div>
                 </div>
-                <h3 className="font-extrabold text-white text-base">Multi-Column Grid</h3>
-                <p className="text-xs text-[#9a9aa3]">Show multiple reviews simultaneously in a responsive grid layout.</p>
+                <h3 className="font-extrabold text-[#111827] text-base">Multi-Column Grid</h3>
+                <p className="text-xs text-[#64748B]">Show multiple reviews simultaneously in a responsive grid layout.</p>
               </div>
               <button
                 type="button"
                 disabled={creatingGoogle}
                 onClick={() => handleCreateGoogleReview("grid")}
-                className="w-full py-2 px-3 rounded-xl bg-[#1f1f25] border border-white/10 text-white font-bold text-xs hover:border-[#ffc21a]/50 transition cursor-pointer"
+                className="w-full py-2 px-3 rounded-xl bg-white border border-[#CBD5E1] text-[#111827] hover:bg-[#F8FAFC] font-bold text-xs hover:border-[#7137D8]/50 transition cursor-pointer"
               >
                 <span>{creatingGoogle ? "Creating…" : "Select Grid & Open →"}</span>
               </button>
             </div>
 
             {/* Floating Badge */}
-            <div className="p-5 rounded-2xl bg-[#151518] border border-white/[0.08] flex flex-col justify-between space-y-4">
+            <div className="p-5 rounded-2xl bg-white border border-[#E2E8F0] shadow-2xs hover:shadow-md transition flex flex-col justify-between space-y-4">
               <div className="space-y-3">
-                <div className="h-32 rounded-xl bg-[#0f0f13] border border-white/10 p-3 flex items-center justify-center">
-                  <div className="px-3.5 py-2 rounded-xl bg-[#1a1a20] border border-[#303038] text-center">
-                    <div className="text-xs font-bold text-white flex items-center gap-1.5 justify-center">
+                <div className="h-32 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] p-3 flex items-center justify-center">
+                  <div className="px-3.5 py-2 rounded-xl bg-white border border-[#E2E8F0] text-center shadow-xs">
+                    <div className="text-xs font-bold text-[#111827] flex items-center gap-1.5 justify-center">
                       <GoogleIcon />
                       <span>Google Rating</span>
                     </div>
-                    <div className="text-[#ffc21a] text-xs font-bold mt-1">★★★★★ 4.9/5</div>
-                    <div className="text-[10px] text-[#6b6b74]">150+ verified reviews</div>
+                    <div className="text-amber-500 text-xs font-bold mt-1">★★★★★ 4.9/5</div>
+                    <div className="text-[10px] text-[#64748B]">150+ verified reviews</div>
                   </div>
                 </div>
-                <h3 className="font-extrabold text-white text-base">Floating Rating Badge</h3>
-                <p className="text-xs text-[#9a9aa3]">A compact badge pinned to the corner or embedded inline in headers.</p>
+                <h3 className="font-extrabold text-[#111827] text-base">Floating Rating Badge</h3>
+                <p className="text-xs text-[#64748B]">A compact badge pinned to the corner or embedded inline in headers.</p>
               </div>
               <button
                 type="button"
                 disabled={creatingGoogle}
                 onClick={() => handleCreateGoogleReview("badge")}
-                className="w-full py-2 px-3 rounded-xl bg-[#1f1f25] border border-white/10 text-white font-bold text-xs hover:border-[#ffc21a]/50 transition cursor-pointer"
+                className="w-full py-2 px-3 rounded-xl bg-white border border-[#CBD5E1] text-[#111827] hover:bg-[#F8FAFC] font-bold text-xs hover:border-[#7137D8]/50 transition cursor-pointer"
               >
                 <span>{creatingGoogle ? "Creating…" : "Select Badge & Open →"}</span>
               </button>
@@ -1519,941 +2162,347 @@ function DashboardWidgetsPage() {
       {/* ================= MAIN CATALOG & ACTIVE VIEW ================= */}
       {viewMode !== "choose_countdown" && viewMode !== "choose_google_reviews" && (
         <>
-          {/* ================= HERO BANNER WITH 2x2 STATS GRID ================= */}
-          <section className="relative rounded-[22px] bg-gradient-to-br from-[#17150f] via-[#141418] to-[#121215] border border-white/[0.07] p-6 lg:p-7 overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-2xl">
-            {/* Ambient Gold & Blue Glow */}
+          {/* ================= HERO BANNER WITH COMPACT INLINE STATS ================= */}
+          <section className="relative rounded-2xl bg-gradient-to-br from-white via-[#FAF5FF] to-[#F5F3FF] border border-[#E2E8F0] p-4.5 sm:p-5 lg:px-6 lg:py-4.5 overflow-hidden flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5 shadow-xs">
+            {/* Ambient soft pastel glow */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              <div className="absolute -top-24 right-1/4 w-80 h-80 rounded-full bg-[#ffc21a]/15 blur-3xl pointer-events-none" />
-              <div className="absolute -bottom-24 right-1/3 w-64 h-64 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
+              <div className="absolute -top-24 right-1/4 w-80 h-80 rounded-full bg-[#7137D8]/8 blur-3xl pointer-events-none" />
+              <div className="absolute -bottom-24 right-1/3 w-64 h-64 rounded-full bg-[#3478F6]/8 blur-3xl pointer-events-none" />
             </div>
 
             {/* Left: Heading & Description */}
-            <div className="relative z-10 flex-1 min-w-0 max-w-xl">
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ffc21a]/10 border border-[#ffc21a]/25 text-[#ffc21a] text-xs font-bold mb-3">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#ffc21a] animate-pulse" />
+            <div className="relative z-10 flex-1 min-w-0 max-w-md xl:max-w-lg">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#7137D8]/10 border border-[#7137D8]/20 text-[#7137D8] text-[11px] font-bold mb-2 shadow-2xs">
+                <Zap className="w-3 h-3 text-[#7137D8] fill-[#7137D8]" />
                 Dynamic Widgets
               </span>
-              <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight leading-tight mb-2">
-                Widget Studio <span className="text-[#ffc21a] bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] bg-clip-text text-transparent">&amp; Hub</span>
+              <h1 className="text-xl md:text-2xl font-black text-[#111827] tracking-tight leading-tight mb-1">
+                Widget Studio &amp;{" "}
+                <span className="bg-gradient-to-r from-[#7137D8] via-[#D52BBD] to-[#FF8A35] bg-clip-text text-transparent">
+                  Hub
+                </span>
               </h1>
-              <p className="text-xs md:text-sm text-[#9a9aa3] leading-relaxed">
+              <p className="text-xs text-[#475569] leading-relaxed">
                 Choose interactive widgets to boost conversions, build social trust and embed them on any website — in under a minute.
               </p>
             </div>
 
-            {/* Right: 2x2 Grid of Square Stats Boxes */}
-            <div className="relative z-10 shrink-0 grid grid-cols-2 gap-2.5 sm:gap-3 w-full md:w-auto">
-              {/* Stat 1: Widgets in catalog */}
-              <div className="flex flex-col justify-between p-3 sm:p-3.5 rounded-xl bg-black/40 border border-white/[0.08] backdrop-blur-md w-full sm:w-[136px] sm:h-[96px] hover:border-[#ffc21a]/40 transition group">
+            {/* Right: 4 Inline Compact Pastel Statistic Cards on Desktop (Wrap on Tablet/Mobile) */}
+            <div className="relative z-10 shrink-0 grid grid-cols-2 lg:flex lg:flex-row items-stretch lg:items-center gap-2.5 w-full lg:w-auto">
+              {/* Stat 1: Total widgets (Soft Lavender) */}
+              <div className="flex flex-col justify-between p-3 rounded-xl bg-[#F6F0FE] border border-[#E9D8FD] shadow-2xs hover:border-[#D6BCFA] hover:shadow-xs transition group w-full lg:w-[130px] xl:w-[138px] h-[86px]">
                 <div className="flex items-center justify-between">
-                  <span className="w-7 h-7 rounded-lg bg-[#ffc21a]/15 text-[#ffc21a] flex items-center justify-center">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <rect x="3" y="3" width="7" height="7" rx="1.5" />
-                      <rect x="14" y="3" width="7" height="7" rx="1.5" />
-                      <rect x="14" y="14" width="7" height="7" rx="1.5" />
-                      <rect x="3" y="14" width="7" height="7" rx="1.5" />
-                    </svg>
+                  <span className="w-7 h-7 rounded-lg bg-[#EDE0FD] text-[#7137D8] flex items-center justify-center shadow-2xs">
+                    <LayoutGrid className="w-3.5 h-3.5 text-[#7137D8]" />
                   </span>
-                  <span className="text-xl font-black text-white group-hover:text-[#ffc21a] transition">
+                  <span className="text-xl font-black text-[#111827] group-hover:text-[#7137D8] transition-colors leading-none">
                     {CATALOG_WIDGETS.length}
                   </span>
                 </div>
-                <div className="text-[11px] font-semibold text-[#9a9aa3] mt-2 truncate">In catalog</div>
+                <div className="text-[11px] font-semibold text-[#64748B] mt-1.5 truncate">Total widgets</div>
               </div>
 
-              {/* Stat 2: Ready to use */}
-              <div className="flex flex-col justify-between p-3 sm:p-3.5 rounded-xl bg-black/40 border border-white/[0.08] backdrop-blur-md w-full sm:w-[136px] sm:h-[96px] hover:border-[#22c55e]/40 transition group">
+              {/* Stat 2: Ready to use (Soft Mint) */}
+              <div className="flex flex-col justify-between p-3 rounded-xl bg-[#EDFDF2] border border-[#C6F6D5] shadow-2xs hover:border-[#9AE6B4] hover:shadow-xs transition group w-full lg:w-[130px] xl:w-[138px] h-[86px]">
                 <div className="flex items-center justify-between">
-                  <span className="w-7 h-7 rounded-lg bg-[#22c55e]/15 text-[#22c55e] flex items-center justify-center">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
+                  <span className="w-7 h-7 rounded-lg bg-[#D1FAE5] text-[#16A34A] flex items-center justify-center shadow-2xs">
+                    <Check className="w-3.5 h-3.5 text-[#16A34A] stroke-[2.5]" />
                   </span>
-                  <span className="text-xl font-black text-white group-hover:text-[#22c55e] transition">5</span>
+                  <span className="text-xl font-black text-[#111827] group-hover:text-[#16A34A] transition-colors leading-none">
+                    5
+                  </span>
                 </div>
-                <div className="text-[11px] font-semibold text-[#9a9aa3] mt-2 truncate">Ready to use</div>
+                <div className="text-[11px] font-semibold text-[#64748B] mt-1.5 truncate">Ready to use</div>
               </div>
 
-              {/* Stat 3: Active on your sites */}
-              <div className="flex flex-col justify-between p-3 sm:p-3.5 rounded-xl bg-black/40 border border-white/[0.08] backdrop-blur-md w-full sm:w-[136px] sm:h-[96px] hover:border-[#60a5fa]/40 transition group">
+              {/* Stat 3: Active on sites (Soft Blue) */}
+              <button
+                type="button"
+                onClick={() => setViewMode(viewMode === "active" ? "catalog" : "active")}
+                className="flex flex-col justify-between p-3 rounded-xl bg-[#EEF6FE] border border-[#CDE5FE] shadow-2xs hover:border-[#BEE3F8] hover:shadow-xs transition group w-full lg:w-[130px] xl:w-[138px] h-[86px] text-left cursor-pointer"
+              >
                 <div className="flex items-center justify-between">
-                  <span className="w-7 h-7 rounded-lg bg-[#60a5fa]/15 text-[#60a5fa] flex items-center justify-center">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                    </svg>
+                  <span className="w-7 h-7 rounded-lg bg-[#DBEAFE] text-[#2563EB] flex items-center justify-center shadow-2xs">
+                    <Activity className="w-3.5 h-3.5 text-[#2563EB]" />
                   </span>
-                  <span className="text-xl font-black text-white group-hover:text-[#60a5fa] transition">
+                  <span className="text-xl font-black text-[#111827] group-hover:text-[#2563EB] transition-colors leading-none">
                     {widgets.length || 0}
                   </span>
                 </div>
-                <div className="text-[11px] font-semibold text-[#9a9aa3] mt-2 truncate">Active on sites</div>
-              </div>
+                <div className="text-[11px] font-semibold text-[#64748B] mt-1.5 truncate">
+                  {viewMode === "active" ? "← Back to catalog" : "Active on sites"}
+                </div>
+              </button>
 
-              {/* Stat 4: Views this month */}
-              <div className="flex flex-col justify-between p-3 sm:p-3.5 rounded-xl bg-black/40 border border-white/[0.08] backdrop-blur-md w-full sm:w-[136px] sm:h-[96px] hover:border-[#a78bfa]/40 transition group">
+              {/* Stat 4: Views this month (Soft Pink) */}
+              <div className="flex flex-col justify-between p-3 rounded-xl bg-[#FDF2F8] border border-[#FBCFE8] shadow-2xs hover:border-[#F687B3] hover:shadow-xs transition group w-full lg:w-[130px] xl:w-[138px] h-[86px]">
                 <div className="flex items-center justify-between">
-                  <span className="w-7 h-7 rounded-lg bg-[#a78bfa]/15 text-[#a78bfa] flex items-center justify-center">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
+                  <span className="w-7 h-7 rounded-lg bg-[#FCE7F3] text-[#D52BBD] flex items-center justify-center shadow-2xs">
+                    <Eye className="w-3.5 h-3.5 text-[#D52BBD]" />
                   </span>
                   <div className="text-right">
-                    <span className="text-lg font-black text-white group-hover:text-[#a78bfa] transition leading-none">12.4k</span>
-                    <span className="text-[9px] font-bold text-[#22c55e] block leading-none mt-0.5">↑ 18%</span>
+                    <span className="text-lg font-black text-[#111827] group-hover:text-[#D52BBD] transition-colors leading-none block">
+                      12.4k
+                    </span>
+                    <span className="text-[9px] font-bold text-[#16A34A] inline-flex items-center gap-0.5 leading-none mt-0.5">
+                      ↑ 18%
+                    </span>
                   </div>
                 </div>
-                <div className="text-[11px] font-semibold text-[#9a9aa3] mt-2 truncate">Views this month</div>
+                <div className="text-[11px] font-semibold text-[#64748B] mt-1.5 truncate">Views this month</div>
               </div>
             </div>
           </section>
 
-          {/* ================= VIEW SELECTOR & SEARCH TOOLBAR ================= */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
-            {/* View/Tab Buttons: All widgets & Active widgets (Green Button) */}
-            <div className="flex items-center gap-2.5 shrink-0">
-              {/* 1. All widgets */}
+          {/* ================= THREE-PART MARKETPLACE LAYOUT ================= */}
+          {/* If user switched to active view via Hero stat or button, provide a quick back banner */}
+          {viewMode === "active" && (
+            <div className="flex items-center justify-between pb-1">
               <button
                 type="button"
-                onClick={() => {
-                  setViewMode("catalog");
-                  setSelectedCategory("all");
-                }}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs transition cursor-pointer shrink-0 ${
-                  viewMode === "catalog"
-                    ? "bg-[#ffc21a] text-[#1a1400] font-black shadow-md shadow-[#ffc21a]/25"
-                    : "bg-[#151518] border border-white/[0.08] text-[#9a9aa3] hover:text-white font-semibold hover:bg-white/[0.04]"
-                }`}
+                onClick={() => setViewMode("catalog")}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-[#7137D8] text-white shadow-sm shadow-[#7137D8]/30 transition hover:bg-[#6025C5] cursor-pointer"
               >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="3" y="3" width="7" height="7" rx="1.5" />
-                  <rect x="14" y="3" width="7" height="7" rx="1.5" />
-                  <rect x="14" y="14" width="7" height="7" rx="1.5" />
-                  <rect x="3" y="14" width="7" height="7" rx="1.5" />
-                </svg>
-                <span>All widgets</span>
-                <span
-                  className={`text-[10px] font-black px-1.5 py-0.2 rounded-full ${
-                    viewMode === "catalog" ? "bg-black/20 text-[#1a1400]" : "bg-white/10 text-[#9a9aa3]"
-                  }`}
-                >
-                  {CATALOG_WIDGETS.length}
-                </span>
-              </button>
-
-              {/* 2. Active widgets (Prominent Green Button) */}
-              <button
-                type="button"
-                onClick={() => setViewMode("active")}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs transition cursor-pointer shrink-0 ${
-                  viewMode === "active"
-                    ? "bg-gradient-to-r from-[#22c55e] to-[#16a34a] text-[#052e16] font-black shadow-md shadow-[#22c55e]/30 ring-2 ring-[#22c55e]/40"
-                    : "bg-[#22c55e]/15 border border-[#22c55e]/40 text-[#4ade80] hover:bg-[#22c55e]/25 font-bold"
-                }`}
-              >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  className="shrink-0"
-                >
-                  <path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                </svg>
-                <span>Active widgets</span>
-                <span
-                  className={`text-[10px] font-black px-1.5 py-0.2 rounded-full ${
-                    viewMode === "active" ? "bg-black/25 text-[#052e16]" : "bg-[#22c55e]/25 text-[#22c55e]"
-                  }`}
-                >
-                  {widgets.length || 0}
-                </span>
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>← Back to Widget Studio</span>
               </button>
             </div>
+          )}
 
-            {/* Right controls: Search & Layout Toggle (when in catalog view) */}
-            {viewMode === "catalog" && (
-              <div className="flex items-center gap-2 shrink-0">
-                <div className="flex items-center gap-2 bg-[#151518] border border-white/[0.08] focus-within:border-[#ffc21a]/50 rounded-xl px-3 py-1.5 w-full sm:w-[250px]">
-                  <Search className="w-3.5 h-3.5 text-[#6b6b74] shrink-0" />
+          {viewMode === "catalog" && (
+            <div className="flex flex-col lg:flex-row items-start gap-6 pt-1">
+              {/* ================= LEFT: WIDGET CATEGORIES SIDEBAR ================= */}
+              <aside className="w-full lg:w-64 shrink-0 space-y-4 lg:sticky lg:top-4 lg:self-start lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto pr-0.5">
+                {/* Search widgets input at the top */}
+                <div className="relative">
+                  <Search className="w-4 h-4 text-[#94A3B8] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
                     type="search"
                     placeholder="Search widgets..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="bg-transparent border-0 outline-none text-xs text-white placeholder:text-[#6b6b74] flex-1 min-w-0"
+                    className="w-full pl-10 pr-8 py-2.5 rounded-xl bg-white border border-[#E2E8F0] focus:border-[#7137D8] focus:ring-2 focus:ring-[#7137D8]/10 text-xs font-medium text-[#111827] placeholder:text-[#94A3B8] shadow-2xs outline-none transition"
                   />
                   {searchQuery && (
                     <button
                       type="button"
                       onClick={() => setSearchQuery("")}
-                      className="text-[#6b6b74] hover:text-white text-xs"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#111827] cursor-pointer"
                     >
-                      <X className="w-3 h-3" />
+                      <X className="w-3.5 h-3.5" />
                     </button>
                   )}
                 </div>
 
-                {/* Toggle Between Row List and Card Previews */}
-                <div className="hidden sm:flex items-center p-1 rounded-xl bg-[#151518] border border-white/[0.08] shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => setCatalogLayout("list")}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
-                      catalogLayout === "list"
-                        ? "bg-[#ffc21a] text-[#1a1400]"
-                        : "text-[#9a9aa3] hover:text-white"
-                    }`}
-                    title="Categorized List Rows"
-                  >
-                    <LayoutList className="w-3.5 h-3.5" />
-                    <span className="hidden md:inline">Rows</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCatalogLayout("cards")}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
-                      catalogLayout === "cards"
-                        ? "bg-[#ffc21a] text-[#1a1400]"
-                        : "text-[#9a9aa3] hover:text-white"
-                    }`}
-                    title="Interactive Live Cards"
-                  >
-                    <LayoutGrid className="w-3.5 h-3.5" />
-                    <span className="hidden md:inline">Cards</span>
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+                {/* Categories container */}
+                <div className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-2xs">
+                  <div className="px-3 pt-1 pb-2">
+                    <span className="text-[11px] font-bold tracking-wider text-[#94A3B8] uppercase">
+                      WIDGET CATEGORIES
+                    </span>
+                  </div>
 
-          {/* ================= CATALOG VIEW ================= */}
-          {viewMode === "catalog" && (
-            <section className="space-y-6">
-              {/* ================= PRIMARY LIST LAYOUT (SCREENSHOT 1) ================= */}
-              {catalogLayout === "list" && (
-                <div className="space-y-8">
-                  {filteredCatalogSections.length === 0 ? (
-                    <div className="rounded-2xl bg-[#151518] border border-white/[0.08] p-10 text-center space-y-3">
-                      <div className="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/10 text-[#9a9aa3] flex items-center justify-center mx-auto">
-                        <Search className="w-5 h-5" />
-                      </div>
-                      <h3 className="text-base font-bold text-white">No widgets found</h3>
-                      <p className="text-xs text-[#9a9aa3] max-w-sm mx-auto">
-                        We couldn&apos;t find any widgets matching &ldquo;{searchQuery}&rdquo;. Try another search term or clear the filter.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSearchQuery("");
-                          setSelectedCategory("all");
-                        }}
-                        className="py-2 px-4 rounded-xl bg-[#ffc21a] text-[#1a1400] font-bold text-xs inline-flex cursor-pointer shadow-md"
-                      >
-                        Reset Filters
-                      </button>
+                  <nav className="space-y-1">
+                    {MARKETPLACE_CATEGORIES.map((cat) => {
+                      const IconComponent = cat.icon;
+                      const isActive = selectedCategory === cat.id;
+                      return (
+                        <button
+                          key={cat.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedCategory(cat.id);
+                          }}
+                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
+                            isActive
+                              ? "bg-[#F6F0FE] text-[#7137D8]"
+                              : "text-[#475569] hover:bg-[#F8FAFC] hover:text-[#111827]"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <IconComponent
+                              className={`w-4 h-4 ${
+                                isActive ? "text-[#7137D8]" : "text-[#64748B]"
+                              }`}
+                            />
+                            <span>{cat.label}</span>
+                          </div>
+                          <span
+                            className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                              isActive
+                                ? "bg-[#7137D8] text-white"
+                                : "bg-[#F1F5F9] text-[#64748B]"
+                            }`}
+                          >
+                            {cat.count}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </nav>
+                </div>
+              </aside>
+
+              {/* ================= RIGHT: MAIN WIDGET MARKETPLACE ================= */}
+              <div className="flex-1 w-full min-w-0 space-y-5">
+                {/* Top Filter Bar: All / Popular / New pills on left, Sort dropdown on right */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  {/* Filter Pills */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setFilterPill("all")}
+                      className={`px-4 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer ${
+                        filterPill === "all"
+                          ? "bg-[#7137D8] text-white shadow-sm shadow-[#7137D8]/20"
+                          : "bg-white border border-[#E2E8F0] text-[#475569] hover:text-[#111827] hover:bg-[#F8FAFC]"
+                      }`}
+                    >
+                      All
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFilterPill("popular")}
+                      className={`px-4 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer ${
+                        filterPill === "popular"
+                          ? "bg-[#7137D8] text-white shadow-sm shadow-[#7137D8]/20"
+                          : "bg-white border border-[#E2E8F0] text-[#475569] hover:text-[#111827] hover:bg-[#F8FAFC]"
+                      }`}
+                    >
+                      Popular
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFilterPill("new")}
+                      className={`px-4 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer ${
+                        filterPill === "new"
+                          ? "bg-[#7137D8] text-white shadow-sm shadow-[#7137D8]/20"
+                          : "bg-white border border-[#E2E8F0] text-[#475569] hover:text-[#111827] hover:bg-[#F8FAFC]"
+                      }`}
+                    >
+                      New
+                    </button>
+                  </div>
+
+                  {/* Sort dropdown */}
+                  <div className="flex items-center gap-2 self-end sm:self-auto">
+                    <span className="text-xs text-[#64748B] font-medium">Sort:</span>
+                    <select
+                      value={marketplaceSort}
+                      onChange={(e) => setMarketplaceSort(e.target.value as any)}
+                      aria-label="Sort widgets"
+                      className="bg-white border border-[#E2E8F0] text-[#111827] text-xs font-semibold rounded-xl px-3 py-1.5 outline-none focus:border-[#7137D8] shadow-2xs cursor-pointer"
+                    >
+                      <option value="popular">Most Popular</option>
+                      <option value="name_asc">Name (A → Z)</option>
+                      <option value="name_desc">Name (Z → A)</option>
+                      <option value="newest">Newest</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Grid of Widget Cards */}
+                {filteredMarketplaceWidgets.length === 0 ? (
+                  <div className="bg-white rounded-2xl border border-[#E2E8F0] p-12 text-center shadow-2xs">
+                    <div className="w-12 h-12 rounded-2xl bg-[#F6F0FE] text-[#7137D8] flex items-center justify-center mx-auto mb-3">
+                      <Search className="w-6 h-6" />
                     </div>
-                  ) : (
-                    filteredCatalogSections.map((sec) => (
-                      <section key={sec.id} className="space-y-3">
-                        {/* Section Header with Category Icon, Title, and "View all ->" */}
-                        <div className="flex items-center justify-between pb-1">
-                          <h2 className="flex items-center gap-2 text-base font-extrabold text-white tracking-tight">
-                            <span className="text-[#ffc21a]">
-                              {renderCategoryPillIcon(sec.headerIcon, "w-4 h-4")}
-                            </span>
-                            <span>{sec.headerTitle}</span>
-                          </h2>
+                    <h3 className="text-sm font-bold text-[#111827] mb-1">No widgets found</h3>
+                    <p className="text-xs text-[#64748B] max-w-sm mx-auto mb-4">
+                      We couldn't find any widgets matching "{searchQuery}". Try searching for something else or reset your filters.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery("");
+                        setSelectedCategory("all");
+                        setFilterPill("all");
+                      }}
+                      className="px-4 py-2 rounded-xl bg-[#7137D8] hover:bg-[#6025C5] text-white text-xs font-bold transition cursor-pointer"
+                    >
+                      Reset Filters
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {filteredMarketplaceWidgets.map((item) => {
+                      return (
+                        <article
+                          key={item.id}
+                          className="bg-white rounded-2xl border border-[#E2E8F0] hover:border-[#CBD5E1] p-4 flex flex-col justify-between shadow-2xs hover:shadow-md transition-all duration-200 group"
+                        >
+                          <div>
+                            {/* A. Miniature Preview Area */}
+                            <div className="mb-4">
+                              <WidgetMiniaturePreview widgetId={item.id} />
+                            </div>
 
-                          <button
-                            type="button"
-                            onClick={() => setSelectedCategory(selectedCategory === sec.id ? "all" : sec.id)}
-                            className="text-xs font-bold text-sky-400 hover:text-sky-300 flex items-center gap-1 transition cursor-pointer"
-                          >
-                            <span>{selectedCategory === sec.id ? "Show all categories" : "View all"}</span>
-                            <span className="text-sm">→</span>
-                          </button>
-                        </div>
-
-                        {/* 2-Column Grid Matching Screenshot 1 */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                          {sec.items.map((item) => {
-                            const isReady = item.status === "ready";
-                            const isNotified = notifiedWidgetIds.includes(item.id);
-
-                            return (
-                              <div
-                                key={item.id}
-                                onClick={() => handleWidgetClick(item)}
-                                className="rounded-2xl bg-[#0b0e14]/90 hover:bg-[#121622] border border-white/[0.08] hover:border-white/20 p-3.5 sm:p-4 transition-all duration-200 cursor-pointer flex items-center justify-between group shadow-sm hover:shadow-lg hover:shadow-black/40"
-                              >
-                                {/* Left side: Squircle Icon + Info */}
-                                <div className="flex items-center gap-3.5 min-w-0 pr-3">
-                                  <div
-                                    className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-md ${item.iconBgClass}`}
+                            {/* B. Widget Information */}
+                            <div className="space-y-1.5">
+                              <div className="flex items-center gap-2.5">
+                                <div
+                                  className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${item.iconBgClass || "bg-[#7137D8] text-white"}`}
+                                >
+                                  {renderItemIcon(item.iconType)}
+                                </div>
+                                <h3 className="text-sm font-bold text-[#111827] truncate">
+                                  {item.title}
+                                </h3>
+                                {item.badge && (
+                                  <span
+                                    className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded-full uppercase tracking-wider ${
+                                      item.badge.toLowerCase() === "popular"
+                                        ? "bg-[#FFE4E6] text-[#E11D48]"
+                                        : "bg-[#F3E8FF] text-[#7137D8]"
+                                    }`}
                                   >
-                                    {renderItemIcon(item.iconType)}
-                                  </div>
-
-                                  <div className="min-w-0">
-                                    <div className="text-sm font-bold text-white group-hover:text-white transition flex items-center gap-2">
-                                      <span className="truncate">{item.title}</span>
-                                    </div>
-                                    <p className="text-xs text-[#9a9aa3] mt-0.5 truncate leading-tight">
-                                      {item.description}
-                                    </p>
-                                  </div>
-                                </div>
-
-                                {/* Right side: Status Badge + Arrow */}
-                                <div className="flex items-center gap-2.5 shrink-0">
-                                  {isReady ? (
-                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#22c55e]/15 border border-[#22c55e]/30 text-[#22c55e] text-xs font-bold shadow-sm shadow-[#22c55e]/15">
-                                      <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-pulse" />
-                                      Ready
-                                    </span>
-                                  ) : (
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-[#a1a1aa] text-[11px] font-semibold">
-                                      {isNotified ? "Waitlisted ✓" : "Coming soon"}
-                                    </span>
-                                  )}
-
-                                  <ChevronRight className="w-4 h-4 text-[#71717a] group-hover:text-white group-hover:translate-x-0.5 transition" />
-                                </div>
+                                    {item.badge.toUpperCase()}
+                                  </span>
+                                )}
                               </div>
-                            );
-                          })}
-                        </div>
-                      </section>
-                    ))
-                  )}
-                </div>
-              )}
-
-              {/* ================= SECONDARY CARD PREVIEW LAYOUT (SCREENSHOT 2) ================= */}
-              {catalogLayout === "cards" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                  {/* FAQ Accordion (Ready & Fully Functional) */}
-                  {filterMatches("support", "faq accordion") && (
-                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/30 transition overflow-hidden flex flex-col justify-between group shadow-lg">
-                      {/* Preview Box */}
-                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(56,189,248,0.12),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
-                        <div className="w-full max-w-[280px] space-y-2">
-                          <div className="p-2.5 rounded-lg bg-white/[0.06] border border-white/10 shadow-sm">
-                            <div className="flex items-center justify-between text-xs font-bold text-white">
-                              <span>How does it work?</span>
-                              <span className="text-[#ffc21a] text-xs font-black">−</span>
-                            </div>
-                            <p className="text-[10px] text-[#9a9aa3] mt-1 leading-snug line-clamp-1">
-                              Everything is automated and completely customizable.
-                            </p>
-                          </div>
-                          <div className="px-2.5 py-1.5 rounded-lg bg-white/[0.02] border border-white/[0.06] flex items-center justify-between text-xs font-medium text-zinc-300">
-                            <span>Can I embed this anywhere?</span>
-                            <span className="text-zinc-500 text-xs font-bold">+</span>
-                          </div>
-                        </div>
-                        <span className="text-[11px] font-bold text-sky-400 bg-sky-400/10 border border-sky-400/20 px-3 py-0.5 rounded-full mt-2">
-                          💬 Live Accordion &amp; Search
-                        </span>
-                      </div>
-
-                      {/* Card Body */}
-                      <div className="p-5 flex-1 flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
-                              Ready
-                            </span>
-                            <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
-                              8 Pro presets
-                            </span>
-                          </div>
-                          <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
-                            Customer Support
-                          </p>
-                          <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
-                            <span className="w-7 h-7 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center">
-                              <HelpCircle className="w-4 h-4" />
-                            </span>
-                            <span>FAQ Accordion</span>
-                          </h3>
-                          <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
-                            Display frequently asked questions and answers in a clean, interactive accordion with live search, categories, and 8 ready-made templates.
-                          </p>
-                          <ul className="flex flex-wrap gap-1.5 mb-2">
-                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                              ✓ 8 templates
-                            </li>
-                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                              ✓ Live search
-                            </li>
-                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                              ✓ Category filter
-                            </li>
-                          </ul>
-                        </div>
-
-                        <div className="pt-4 mt-2 border-t border-white/[0.06]">
-                          <button
-                            type="button"
-                            onClick={() => handleCreateFaq("classic_accordion")}
-                            className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-sky-400 to-indigo-500 hover:opacity-95 text-black font-extrabold text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow-md shadow-sky-500/10"
-                          >
-                            <span>+ Create FAQ Widget</span>
-                            <ArrowRight className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </div>
-                    </article>
-                  )}
-
-                  {/* WhatsApp Live Chat (Ready & Fully Functional) */}
-                  {filterMatches("support", "whatsapp live chat") && (
-                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#25d366]/40 transition overflow-hidden flex flex-col justify-between group shadow-lg">
-                      {/* Preview Box */}
-                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(37,211,102,0.15),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
-                        <div className="flex flex-col items-center gap-2">
-                          <div className="p-2.5 rounded-2xl bg-white/[0.08] border border-white/10 text-xs text-zinc-200 max-w-[220px] shadow-md flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-[#25d366] shrink-0" />
-                            <span className="truncate">Hi! How can we help you today?</span>
-                          </div>
-                          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#25d366] text-zinc-950 font-bold text-xs shadow-lg shadow-[#25d366]/20">
-                            <WhatsAppIcon className="w-4 h-4 fill-current" />
-                            <span>Chat on WhatsApp</span>
-                          </div>
-                        </div>
-                        <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-0.5 rounded-full mt-3">
-                          💬 Official Click to Chat
-                        </span>
-                      </div>
-
-                      {/* Card Body */}
-                      <div className="p-5 flex-1 flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
-                              Ready
-                            </span>
-                            <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
-                              4 Pro presets
-                            </span>
-                          </div>
-                          <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
-                            Customer Support
-                          </p>
-                          <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
-                            <span className="w-7 h-7 rounded-lg bg-[#25d366]/15 border border-[#25d366]/30 text-[#25d366] flex items-center justify-center">
-                              <WhatsAppIcon className="w-4 h-4 fill-current" />
-                            </span>
-                            <span>WhatsApp Live Chat</span>
-                          </h3>
-                          <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
-                            Let visitors contact you instantly on WhatsApp with floating buttons, greeting bubbles, pre-filled messages, and custom team avatars.
-                          </p>
-                          <ul className="flex flex-wrap gap-1.5 mb-2">
-                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                              ✓ 4 presets
-                            </li>
-                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                              ✓ Pre-filled messages
-                            </li>
-                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                              ✓ Free — no paid API
-                            </li>
-                          </ul>
-                        </div>
-
-                        <div className="pt-4 mt-2 border-t border-white/[0.06]">
-                          <button
-                            type="button"
-                            onClick={() => handleCreateWhatsAppChat("classic_whatsapp")}
-                            className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#25d366] to-[#128c7e] hover:opacity-95 text-zinc-950 font-extrabold text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow-md shadow-[#25d366]/20"
-                          >
-                            <span>+ Create WhatsApp Chat</span>
-                            <ArrowRight className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </div>
-                    </article>
-                  )}
-
-                  {/* Countdown Timer (Ready) */}
-                  {filterMatches("urgency", "countdown timer") && (
-                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/30 transition overflow-hidden flex flex-col justify-between group shadow-lg">
-                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(255,194,26,0.12),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-3">
-                        <div className="flex items-center gap-1.5">
-                          <div className="flex flex-col items-center gap-1">
-                            <div className="relative w-14 h-14 rounded-xl bg-gradient-to-b from-[#26262c] to-[#1f1f24] border border-white/10 text-white font-black text-2xl flex items-center justify-center shadow-lg">
-                              <span>02</span>
-                              <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-black/60" />
-                            </div>
-                            <small className="text-[9px] font-extrabold uppercase tracking-widest text-[#6b6b74]">
-                              HRS
-                            </small>
-                          </div>
-                          <span className="text-[#ffc21a] font-bold text-xl pb-3.5">:</span>
-                          <div className="flex flex-col items-center gap-1">
-                            <div className="relative w-14 h-14 rounded-xl bg-gradient-to-b from-[#26262c] to-[#1f1f24] border border-white/10 text-white font-black text-2xl flex items-center justify-center shadow-lg">
-                              <span>{pad(liveMin)}</span>
-                              <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-black/60" />
-                            </div>
-                            <small className="text-[9px] font-extrabold uppercase tracking-widest text-[#6b6b74]">
-                              MIN
-                            </small>
-                          </div>
-                          <span className="text-[#ffc21a] font-bold text-xl pb-3.5">:</span>
-                          <div className="flex flex-col items-center gap-1">
-                            <div className="relative w-14 h-14 rounded-xl bg-gradient-to-b from-[#26262c] to-[#1f1f24] border border-[#ffc21a]/30 text-[#ffc21a] font-black text-2xl flex items-center justify-center shadow-lg animate-pulse">
-                              <span>{pad(liveSec)}</span>
-                              <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-black/60" />
-                            </div>
-                            <small className="text-[9px] font-extrabold uppercase tracking-widest text-[#6b6b74]">
-                              SEC
-                            </small>
-                          </div>
-                        </div>
-                        <span className="text-[11px] font-bold text-[#ffc21a] bg-[#ffc21a]/10 border border-[#ffc21a]/20 px-3 py-0.5 rounded-full mt-3">
-                          ⚡ Flash sale ends soon
-                        </span>
-                      </div>
-
-                      <div className="p-5 flex-1 flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
-                              Ready
-                            </span>
-                            <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
-                              10 Pro presets
-                            </span>
-                          </div>
-                          <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
-                            Urgency &amp; Conversions
-                          </p>
-                          <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
-                            <span className="w-7 h-7 rounded-lg bg-[#ef4444]/15 border border-[#ef4444]/30 text-[#ef4444] flex items-center justify-center">
-                              <Clock className="w-4 h-4" />
-                            </span>
-                            <span>Countdown Timer</span>
-                          </h3>
-                          <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
-                            Sales deadlines, evergreen visitor timers, recurring bars &amp; number counters with flip-clock styles and expiry actions.
-                          </p>
-                          <ul className="flex flex-wrap gap-1.5 mb-2">
-                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                              ✓ Date &amp; evergreen
-                            </li>
-                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                              ✓ Sticky bars
-                            </li>
-                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                              ✓ Flip clock
-                            </li>
-                          </ul>
-                        </div>
-
-                        <div className="pt-4 mt-2 border-t border-white/[0.06] flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setViewMode("choose_countdown")}
-                            className="flex-1 py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md shadow-[#ffc21a]/20 hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer"
-                          >
-                            <span>Choose widget</span>
-                            <span className="text-sm">→</span>
-                          </button>
-                        </div>
-                      </div>
-                    </article>
-                  )}
-
-                  {/* Google Reviews (Ready) */}
-                  {filterMatches("reviews", "google reviews") && (
-                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/30 transition overflow-hidden flex flex-col justify-between group shadow-lg">
-                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(66,133,244,0.12),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
-                        <div className="w-[220px] p-2.5 rounded-xl bg-[#1f1f25] border border-white/10 shadow-xl flex items-center gap-2.5">
-                          <span className="w-8 h-8 rounded-full bg-[#3b82f6] text-white font-black text-xs flex items-center justify-center shrink-0">
-                            M
-                          </span>
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-1.5">
-                              <strong className="text-xs font-bold text-white">Meera</strong>
-                              <span className="text-[#ffc21a] text-[10px]">★★★★★</span>
-                            </div>
-                            <p className="text-[11px] text-[#9a9aa3] truncate">Highly recommended.</p>
-                          </div>
-                        </div>
-
-                        <div className="absolute right-3.5 bottom-3 bg-white text-black px-2.5 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5">
-                          <GoogleIcon className="w-3.5 h-3.5" />
-                          <span className="font-extrabold text-[11px]">4.9</span>
-                          <span className="text-[#f59e0b] text-[10px]">★</span>
-                        </div>
-                      </div>
-
-                      <div className="p-5 flex-1 flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
-                              Ready
-                            </span>
-                            <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
-                              Live Google Places
-                            </span>
-                          </div>
-                          <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
-                            Social Proof &amp; Trust
-                          </p>
-                          <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
-                            <span className="w-7 h-7 rounded-lg bg-white border border-white text-black flex items-center justify-center">
-                              <GoogleIcon className="w-4 h-4" />
-                            </span>
-                            <span>Google Reviews</span>
-                          </h3>
-                          <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
-                            Display authentic Google reviews with verified badges, real-time ratings and carousel, grid, masonry or floating layouts.
-                          </p>
-                          <ul className="flex flex-wrap gap-1.5 mb-2">
-                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                              ✓ Live sync
-                            </li>
-                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                              ✓ Carousel &amp; grid
-                            </li>
-                          </ul>
-                        </div>
-
-                        <div className="pt-4 mt-2 border-t border-white/[0.06] flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setViewMode("choose_google_reviews")}
-                            className="flex-1 py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md shadow-[#ffc21a]/20 hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer"
-                          >
-                            <span>Choose widget</span>
-                            <span className="text-sm">→</span>
-                          </button>
-                        </div>
-                      </div>
-                    </article>
-                  )}
-
-                  {/* Announcement Bar (Ready) */}
-                  {filterMatches("sales", "announcement bar") && (
-                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-blue-400/30 transition overflow-hidden flex flex-col justify-between group shadow-lg">
-                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(59,130,246,0.15),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
-                        <div className="w-[230px] rounded-xl overflow-hidden bg-[#1f1f25] border border-white/10 shadow-xl">
-                          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-[10px] font-black py-1 px-2.5 overflow-hidden whitespace-nowrap flex items-center justify-between">
-                            <span>🔥 Summer Sale — 25% OFF</span>
-                            <span className="text-[9px] bg-black/30 px-1 rounded font-mono">SAVE25</span>
-                          </div>
-                          <div className="p-3 space-y-1.5 opacity-60">
-                            <div className="h-1.5 bg-white/30 rounded w-3/4" />
-                            <div className="h-1 bg-white/15 rounded w-1/2" />
-                          </div>
-                        </div>
-                        <span className="text-[11px] font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-3 py-0.5 rounded-full mt-3 flex items-center gap-1">
-                          <Megaphone className="w-3 h-3" />
-                          <span>Header &amp; Footer Bars</span>
-                        </span>
-                      </div>
-
-                      <div className="p-5 flex-1 flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
-                              Ready
-                            </span>
-                            <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
-                              6 Pro presets
-                            </span>
-                          </div>
-                          <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
-                            Promotions &amp; Conversion
-                          </p>
-                          <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
-                            <span className="w-7 h-7 rounded-lg bg-blue-500/15 border border-blue-500/30 text-blue-400 flex items-center justify-center">
-                              <Megaphone className="w-4 h-4" />
-                            </span>
-                            <span>Announcement Bar</span>
-                          </h3>
-                          <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
-                            Sticky top &amp; bottom notification banners with countdown urgency, coupon click-to-copy, and sticky scroll pinning.
-                          </p>
-                        </div>
-
-                        <div className="pt-4 mt-2 border-t border-white/[0.06] flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => handleCreateAnnouncement("bar")}
-                            className="flex-1 py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-black text-xs shadow-md shadow-blue-500/20 hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer"
-                          >
-                            <span>Create Announcement Bar</span>
-                            <span className="text-sm">→</span>
-                          </button>
-                        </div>
-                      </div>
-                    </article>
-                  )}
-
-                  {/* Popup Modal (Ready) */}
-                  {filterMatches("sales", "popup") && (
-                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-purple-400/30 transition overflow-hidden flex flex-col justify-between group shadow-lg">
-                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(168,85,247,0.15),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
-                        <div className="w-[190px] rounded-xl overflow-hidden bg-[#1f1f25] border border-purple-500/30 shadow-2xl p-3 text-center">
-                          <span className="inline-block px-1.5 py-0.5 rounded text-[8px] font-bold bg-purple-500/20 text-purple-300 mb-1 border border-purple-500/30">
-                            SPECIAL OFFER
-                          </span>
-                          <div className="text-[11px] font-bold text-white leading-tight">Get 20% Off Today</div>
-                          <div className="text-[9px] text-zinc-400 mt-0.5">Use code: WELCOME20</div>
-                          <div className="mt-2 py-0.5 px-2 rounded-full bg-purple-500 text-white font-bold text-[9px]">
-                            Claim Discount
-                          </div>
-                        </div>
-                        <span className="text-[11px] font-bold text-purple-400 bg-purple-500/10 border border-purple-500/20 px-3 py-0.5 rounded-full mt-2 flex items-center gap-1">
-                          <Layers className="w-3 h-3" />
-                          <span>Lightbox &amp; Dialogs</span>
-                        </span>
-                      </div>
-
-                      <div className="p-5 flex-1 flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
-                              Ready
-                            </span>
-                            <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
-                              6 Pro presets
-                            </span>
-                          </div>
-                          <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
-                            Promotions &amp; Conversion
-                          </p>
-                          <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
-                            <span className="w-7 h-7 rounded-lg bg-purple-500/15 border border-purple-500/30 text-purple-400 flex items-center justify-center">
-                              <Layers className="w-4 h-4" />
-                            </span>
-                            <span>Popup Modal</span>
-                          </h3>
-                          <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
-                            High-converting modal popups with timed page-load delay, return-to-home trigger, exit intent, and discount coupons.
-                          </p>
-                        </div>
-
-                        <div className="pt-4 mt-2 border-t border-white/[0.06] flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => handleCreateAnnouncement("popup")}
-                            className="flex-1 py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-purple-500 to-fuchsia-600 text-white font-black text-xs shadow-md shadow-purple-500/20 hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer"
-                          >
-                            <span>Create Popup Modal</span>
-                            <span className="text-sm">→</span>
-                          </button>
-                        </div>
-                      </div>
-                    </article>
-                  )}
-
-                  {/* WhatsApp Live Chat (Coming soon preview) */}
-                  {filterMatches("support", "whatsapp live chat") && (
-                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-white/20 transition overflow-hidden flex flex-col justify-between group shadow-lg">
-                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(37,211,102,0.12),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
-                        <div className="w-[210px] rounded-xl overflow-hidden bg-[#1f1f25] border border-white/10 shadow-xl pb-2">
-                          <div className="flex items-center gap-2 px-3 py-2 bg-[#075e54]">
-                            <span className="w-5 h-5 rounded-full bg-[#25d366] text-black font-extrabold text-[10px] flex items-center justify-center">
-                              W
-                            </span>
-                            <div>
-                              <strong className="block text-[11px] font-bold text-white leading-tight">Support</strong>
-                              <small className="block text-[9px] text-[#a7f3d0] leading-tight">● Online</small>
+                              <p className="text-xs text-[#64748B] line-clamp-2 leading-relaxed">
+                                {item.description}
+                              </p>
                             </div>
                           </div>
-                          <p className="m-2 p-1.5 rounded-lg bg-[#2a2a31] text-[10px] text-white w-fit">
-                            Hi there 👋 How can we help?
-                          </p>
-                        </div>
 
-                        <span className="absolute right-4 bottom-3 w-9 h-9 rounded-full bg-[#25d366] text-white flex items-center justify-center shadow-lg shadow-[#25d366]/40 animate-pulse">
-                          <WhatsAppIcon />
-                        </span>
-                      </div>
-
-                      <div className="p-5 flex-1 flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center justify-between gap-2 mb-3">
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/[0.06] border border-white/10 text-[#a1a1aa] text-[11px] font-semibold">
-                              Coming soon
-                            </span>
-                          </div>
-                          <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
-                            Chat &amp; Contact
-                          </p>
-                          <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
-                            <span className="w-7 h-7 rounded-lg bg-[#25d366]/15 border border-[#25d366]/30 text-[#25d366] flex items-center justify-center">
-                              <WhatsAppIcon />
-                            </span>
-                            <span>WhatsApp Live Chat</span>
-                          </h3>
-                          <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
-                            Floating WhatsApp button with custom greeting, avatar and pre-filled messages that turn visitors into phone leads.
-                          </p>
-                        </div>
-
-                        <div className="pt-4 mt-2 border-t border-white/[0.06]">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const item = CATALOG_WIDGETS.find((w) => w.id === "whatsapp_chat");
-                              if (item) setComingSoonModalWidget(item);
-                            }}
-                            className="w-full py-2.5 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-dashed border-white/10 hover:border-[#ffc21a]/40 text-[#9a9aa3] hover:text-white font-bold text-xs transition cursor-pointer"
-                          >
-                            🔔 Notify me when ready
-                          </button>
-                        </div>
-                      </div>
-                    </article>
-                  )}
-                  {/* Website Language Switcher (Ready & Fully Functional) */}
-                  {filterMatches("localization", "website language switcher") && (
-                    <article className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#38bdf8]/40 transition overflow-hidden flex flex-col justify-between group shadow-lg">
-                      {/* Preview Box */}
-                      <div className="relative h-44 bg-[radial-gradient(ellipse_at_50%_120%,rgba(56,189,248,0.18),transparent_60%),linear-gradient(180deg,#1a1a1f,#141417)] border-b border-white/[0.07] flex flex-col items-center justify-center p-4">
-                        <div className="w-[230px] rounded-xl overflow-hidden bg-[#1f1f25] border border-white/10 shadow-xl p-3 flex flex-col gap-2">
-                          <div className="flex items-center justify-between text-xs text-white font-bold pb-2 border-b border-white/10">
-                            <div className="flex items-center gap-1.5">
-                              <Globe className="w-3.5 h-3.5 text-[#38bdf8]" />
-                              <span>Select Language</span>
+                          {/* C. Bottom Actions */}
+                          <div className="flex items-center justify-between pt-4 mt-3 border-t border-[#F1F5F9] gap-2">
+                            {/* Available designs count */}
+                            <div className="flex items-center gap-1.5 text-xs text-[#64748B] font-medium shrink-0">
+                              <Layers className="w-3.5 h-3.5 text-[#94A3B8]" />
+                              <span>{item.designsCount || "3+ Designs"}</span>
                             </div>
-                            <span className="text-[10px] text-zinc-400">7 Presets</span>
-                          </div>
-                          <div className="flex items-center justify-between text-xs text-zinc-200">
-                            <span className="flex items-center gap-1.5">
-                              <span>🇺🇸</span>
-                              <span>English</span>
-                            </span>
-                            <span className="text-[10px] text-[#38bdf8] font-bold">✓ Active</span>
-                          </div>
-                          <div className="flex items-center justify-between text-xs text-zinc-400">
-                            <span className="flex items-center gap-1.5">
-                              <span>🇪🇸</span>
-                              <span>Español</span>
-                            </span>
-                            <span className="text-[10px] font-mono text-zinc-500">/es/</span>
-                          </div>
-                        </div>
 
-                        <span className="text-[11px] font-bold text-[#38bdf8] bg-[#38bdf8]/10 border border-[#38bdf8]/20 px-3 py-0.5 rounded-full mt-3 flex items-center gap-1">
-                          <Languages className="w-3 h-3" />
-                          <span>Mode A: No-API Page Router</span>
-                        </span>
-                      </div>
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              {/* + Add widget button */}
+                              <button
+                                type="button"
+                                onClick={() => handleWidgetClick(item.id)}
+                                className="px-3 py-1.5 rounded-lg bg-[#F8FAFC] hover:bg-[#7137D8] text-[#111827] hover:text-white border border-[#E2E8F0] hover:border-[#7137D8] text-xs font-semibold transition cursor-pointer flex items-center gap-1"
+                              >
+                                <Plus className="w-3 h-3" />
+                                <span>Add widget</span>
+                              </button>
 
-                      {/* Card Body */}
-                      <div className="p-5 flex-1 flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/25 text-[#22c55e] text-[11px] font-bold">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
-                              Ready
-                            </span>
-                            <span className="text-[11px] font-bold text-[#9a9aa3] bg-white/[0.05] border border-white/[0.08] px-2.5 py-0.5 rounded-full">
-                              50+ Languages
-                            </span>
+                              {/* Eye icon preview button */}
+                              <button
+                                type="button"
+                                title="Quick Preview"
+                                onClick={() => setPreviewModalWidget(item)}
+                                className="w-8 h-8 rounded-full border border-[#E2E8F0] hover:border-[#7137D8] hover:text-[#7137D8] flex items-center justify-center text-[#64748B] hover:bg-[#F6F0FE] transition cursor-pointer"
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
                           </div>
-                          <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase mb-1">
-                            Language &amp; Localization
-                          </p>
-                          <h3 className="flex items-center gap-2.5 text-lg font-black text-white mb-2">
-                            <span className="w-7 h-7 rounded-lg bg-[#38bdf8]/15 border border-[#38bdf8]/30 text-[#38bdf8] flex items-center justify-center">
-                              <Languages className="w-4 h-4" />
-                            </span>
-                            <span>Website Language Switcher</span>
-                          </h3>
-                          <p className="text-xs text-[#9a9aa3] leading-relaxed mb-4">
-                            Let visitors choose their preferred website language and route seamlessly to translated pages. Works without paid translation APIs.
-                          </p>
-                          <ul className="flex flex-wrap gap-1.5 mb-2">
-                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                              ✓ 7 Layouts
-                            </li>
-                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                              ✓ Browser detection
-                            </li>
-                            <li className="text-[11px] font-medium text-zinc-300 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-0.5">
-                              ✓ Zero paid API
-                            </li>
-                          </ul>
-                        </div>
-
-                        <div className="pt-4 mt-2 border-t border-white/[0.06]">
-                          <button
-                            type="button"
-                            onClick={() => handleCreateLanguageSwitcher("classic_globe")}
-                            className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#38bdf8] to-[#0284c7] hover:opacity-95 text-black font-extrabold text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow-md shadow-[#38bdf8]/20"
-                          >
-                            <span>+ Create Language Switcher</span>
-                            <ArrowRight className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </div>
-                    </article>
-                  )}
-                </div>
-              )}
-            </section>
+                        </article>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
           )}
 
 
@@ -2461,31 +2510,31 @@ function DashboardWidgetsPage() {
           {viewMode === "active" && (
             <section className="space-y-5">
               {/* Main Card */}
-              <div className="rounded-2xl bg-[#151518] border border-white/[0.08] overflow-hidden shadow-xl">
+              <div className="rounded-2xl bg-white border border-[#E2E8F0] overflow-hidden shadow-2xs">
                 {/* Header with Title & View Mode Selector */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 border-b border-white/[0.07]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 border-b border-[#E2E8F0]">
                   <div>
-                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                    <h2 className="text-lg font-bold text-[#111827] flex items-center gap-2">
                       <span>My active widgets</span>
-                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-white/[0.05] text-[#9a9aa3] border border-white/5">
+                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0]">
                         {widgets.length} total
                       </span>
                     </h2>
-                    <p className="text-xs text-[#9a9aa3] mt-0.5">
+                    <p className="text-xs text-[#64748B] mt-0.5">
                       Manage and track widget instances across all your connected websites.
                     </p>
                   </div>
 
                   <div className="flex items-center gap-2.5 flex-wrap">
                     {/* View Layout Toggle: All Widgets (Table) vs Group by Website */}
-                    <div className="inline-flex items-center p-1 rounded-xl bg-[#0e0e11] border border-white/[0.08]">
+                    <div className="inline-flex items-center p-1 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
                       <button
                         type="button"
                         onClick={() => setActiveViewLayout("all")}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
                           activeViewLayout === "all"
-                            ? "bg-[#ffc21a] text-[#1a1400] shadow-sm"
-                            : "text-[#9a9aa3] hover:text-white"
+                            ? "bg-[#7137D8] text-white shadow-xs"
+                            : "text-[#64748B] hover:text-[#111827]"
                         }`}
                         title="View all widgets in a single unified table"
                       >
@@ -2498,8 +2547,8 @@ function DashboardWidgetsPage() {
                         onClick={() => setActiveViewLayout("grouped")}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
                           activeViewLayout === "grouped"
-                            ? "bg-[#ffc21a] text-[#1a1400] shadow-sm"
-                            : "text-[#9a9aa3] hover:text-white"
+                            ? "bg-[#7137D8] text-white shadow-xs"
+                            : "text-[#64748B] hover:text-[#111827]"
                         }`}
                         title="Group widgets under collapsible website headings"
                       >
@@ -2511,7 +2560,7 @@ function DashboardWidgetsPage() {
                     <button
                       type="button"
                       onClick={() => setViewMode("catalog")}
-                      className="py-2 px-3.5 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] hover:opacity-95 text-[#1a1400] font-black text-xs shadow-md transition cursor-pointer flex items-center gap-1.5"
+                      className="py-2 px-3.5 rounded-xl bg-gradient-to-r from-[#7137D8] to-[#8B5CF6] hover:from-[#6025C5] hover:to-[#7C3AED] text-white font-bold text-xs shadow-xs transition cursor-pointer flex items-center gap-1.5"
                     >
                       <span>+ Add widget</span>
                     </button>
@@ -2519,23 +2568,23 @@ function DashboardWidgetsPage() {
                 </div>
 
                 {/* Multi-Criteria Search & Filter Toolbar */}
-                <div className="p-4 sm:p-5 border-b border-white/[0.06] bg-[#111114]/60 space-y-3">
+                <div className="p-4 sm:p-5 border-b border-[#E2E8F0] bg-[#F8FAFC] space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-2.5">
                     {/* 1. Search by Website, Domain, Widget Name, or Instance ID */}
                     <div className="relative lg:col-span-2">
-                      <Search className="w-4 h-4 text-[#9a9aa3] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <Search className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                       <input
                         type="text"
                         value={activeSearch}
                         onChange={(e) => setActiveSearch(e.target.value)}
                         placeholder="Search website, domain, widget or ID…"
-                        className="w-full bg-[#18181c] border border-white/10 rounded-xl pl-9 pr-8 py-2 text-xs text-white placeholder-[#6b6b74] focus:outline-none focus:border-[#ffc21a]/50 transition"
+                        className="w-full bg-white border border-[#E2E8F0] rounded-xl pl-9 pr-8 py-2 text-xs text-[#111827] placeholder-[#94A3B8] focus:outline-none focus:border-[#7137D8] transition"
                       />
                       {activeSearch && (
                         <button
                           type="button"
                           onClick={() => setActiveSearch("")}
-                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9a9aa3] hover:text-white p-0.5 rounded cursor-pointer"
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#111827] p-0.5 rounded cursor-pointer"
                         >
                           <X className="w-3.5 h-3.5" />
                         </button>
@@ -2547,7 +2596,7 @@ function DashboardWidgetsPage() {
                       <select
                         value={siteFilter}
                         onChange={(e) => setSiteFilter(e.target.value)}
-                        className="w-full bg-[#18181c] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#ffc21a]/50 transition appearance-none cursor-pointer truncate pr-7"
+                        className="w-full bg-white border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs text-[#111827] focus:outline-none focus:border-[#7137D8] transition appearance-none cursor-pointer truncate pr-7"
                       >
                         <option value="all">All Websites ({projects.length})</option>
                         {unlinkedWidgetsCount > 0 && (
@@ -2559,7 +2608,7 @@ function DashboardWidgetsPage() {
                           </option>
                         ))}
                       </select>
-                      <ChevronDown className="w-3.5 h-3.5 text-[#9a9aa3] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <ChevronDown className="w-3.5 h-3.5 text-[#94A3B8] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                     </div>
 
                     {/* 3. Filter by Widget Type */}
@@ -2567,7 +2616,7 @@ function DashboardWidgetsPage() {
                       <select
                         value={typeFilter}
                         onChange={(e) => setTypeFilter(e.target.value)}
-                        className="w-full bg-[#18181c] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#ffc21a]/50 transition appearance-none cursor-pointer truncate pr-7"
+                        className="w-full bg-white border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs text-[#111827] focus:outline-none focus:border-[#7137D8] transition appearance-none cursor-pointer truncate pr-7"
                       >
                         <option value="all">All Types</option>
                         <option value="google_reviews">Google Reviews</option>
@@ -2577,7 +2626,7 @@ function DashboardWidgetsPage() {
                         <option value="whatsapp_chat">WhatsApp Live Chat</option>
                         <option value="accessibility">Accessibility Toolbar</option>
                       </select>
-                      <ChevronDown className="w-3.5 h-3.5 text-[#9a9aa3] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <ChevronDown className="w-3.5 h-3.5 text-[#94A3B8] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                     </div>
 
                     {/* 4. Filter by Status (Live / Draft) */}
@@ -2585,13 +2634,13 @@ function DashboardWidgetsPage() {
                       <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="w-full bg-[#18181c] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#ffc21a]/50 transition appearance-none cursor-pointer truncate pr-7"
+                        className="w-full bg-white border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs text-[#111827] focus:outline-none focus:border-[#7137D8] transition appearance-none cursor-pointer truncate pr-7"
                       >
                         <option value="all">All Statuses</option>
                         <option value="published">Live Only</option>
                         <option value="draft">Draft Only</option>
                       </select>
-                      <ChevronDown className="w-3.5 h-3.5 text-[#9a9aa3] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <ChevronDown className="w-3.5 h-3.5 text-[#94A3B8] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                     </div>
 
                     {/* 5. Filter by Active State & Sort */}
@@ -2599,27 +2648,27 @@ function DashboardWidgetsPage() {
                       <select
                         value={enabledFilter}
                         onChange={(e) => setEnabledFilter(e.target.value)}
-                        className="w-full bg-[#18181c] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#ffc21a]/50 transition appearance-none cursor-pointer truncate pr-7"
+                        className="w-full bg-white border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs text-[#111827] focus:outline-none focus:border-[#7137D8] transition appearance-none cursor-pointer truncate pr-7"
                       >
                         <option value="all">All States</option>
                         <option value="active">Active (ON)</option>
                         <option value="inactive">Inactive (OFF)</option>
                       </select>
-                      <ChevronDown className="w-3.5 h-3.5 text-[#9a9aa3] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <ChevronDown className="w-3.5 h-3.5 text-[#94A3B8] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                     </div>
                   </div>
 
                   {/* Secondary Toolbar: Sorting & Active Filter Reset */}
                   <div className="flex flex-wrap items-center justify-between gap-2.5 pt-1 text-xs">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-[#6b6b74] font-medium flex items-center gap-1">
+                      <span className="text-[#64748B] font-medium flex items-center gap-1">
                         <ArrowUpDown className="w-3 h-3" />
                         <span>Sort:</span>
                       </span>
                       <select
                         value={activeSort}
                         onChange={(e) => setActiveSort(e.target.value)}
-                        className="bg-[#18181c] border border-white/10 rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-[#ffc21a]/50 cursor-pointer"
+                        className="bg-white border border-[#E2E8F0] rounded-lg px-2.5 py-1 text-xs text-[#111827] focus:outline-none focus:border-[#7137D8] cursor-pointer"
                       >
                         <option value="updated_desc">Recently Updated</option>
                         <option value="created_desc">Recently Created</option>
@@ -2635,7 +2684,7 @@ function DashboardWidgetsPage() {
                         <button
                           type="button"
                           onClick={resetAllFilters}
-                          className="px-2.5 py-1 rounded-lg bg-white/[0.05] hover:bg-white/[0.08] text-[#ffc21a] text-xs font-semibold border border-[#ffc21a]/25 flex items-center gap-1 transition cursor-pointer"
+                          className="px-2.5 py-1 rounded-lg bg-[#F6F0FE] hover:bg-[#EDE0FD] text-[#7137D8] text-xs font-semibold border border-[#EDE0FD] flex items-center gap-1 transition cursor-pointer"
                         >
                           <X className="w-3 h-3" />
                           <span>Clear filters</span>
@@ -2643,49 +2692,49 @@ function DashboardWidgetsPage() {
                       )}
                     </div>
 
-                    <div className="text-[11px] text-[#9a9aa3]">
-                      Showing <strong className="text-white">{filteredActiveWidgets.length}</strong> of{" "}
-                      <strong className="text-white">{widgets.length}</strong> widgets
+                    <div className="text-[11px] text-[#64748B]">
+                      Showing <strong className="text-[#111827]">{filteredActiveWidgets.length}</strong> of{" "}
+                      <strong className="text-[#111827]">{widgets.length}</strong> widgets
                     </div>
                   </div>
                 </div>
 
                 {/* Content States */}
                 {loading ? (
-                  <div className="py-16 text-center text-[#9a9aa3]">
-                    <div className="w-8 h-8 border-2 border-[#ffc21a] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                  <div className="py-16 text-center text-[#64748B]">
+                    <div className="w-8 h-8 border-2 border-[#7137D8] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
                     Loading your widgets…
                   </div>
                 ) : widgets.length === 0 ? (
                   <div className="p-12 text-center space-y-3">
-                    <div className="w-12 h-12 rounded-2xl bg-[#ffc21a]/10 border border-[#ffc21a]/20 text-[#ffc21a] flex items-center justify-center mx-auto mb-2">
+                    <div className="w-12 h-12 rounded-2xl bg-[#F6F0FE] border border-[#EDE0FD] text-[#7137D8] flex items-center justify-center mx-auto mb-2">
                       <Boxes className="w-6 h-6" />
                     </div>
-                    <h3 className="text-base font-bold text-white">No active widgets yet</h3>
-                    <p className="text-xs text-[#9a9aa3] max-w-md mx-auto">
+                    <h3 className="text-base font-bold text-[#111827]">No active widgets yet</h3>
+                    <p className="text-xs text-[#64748B] max-w-md mx-auto">
                       You haven&apos;t created any widgets yet. Choose a widget from the catalog to boost your website&apos;s conversions.
                     </p>
                     <button
                       type="button"
                       onClick={() => setViewMode("catalog")}
-                      className="py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs inline-flex cursor-pointer shadow-md mt-2"
+                      className="py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#7137D8] to-[#8B5CF6] hover:from-[#6025C5] hover:to-[#7C3AED] text-white font-bold text-xs inline-flex cursor-pointer shadow-sm mt-2"
                     >
                       Browse Widget Catalog →
                     </button>
                   </div>
                 ) : filteredActiveWidgets.length === 0 ? (
                   <div className="p-12 text-center space-y-3">
-                    <div className="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/10 text-[#9a9aa3] flex items-center justify-center mx-auto mb-2">
+                    <div className="w-12 h-12 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] flex items-center justify-center mx-auto mb-2">
                       <Filter className="w-5 h-5" />
                     </div>
-                    <h3 className="text-base font-bold text-white">No widgets match your filters</h3>
-                    <p className="text-xs text-[#9a9aa3] max-w-sm mx-auto">
+                    <h3 className="text-base font-bold text-[#111827]">No widgets match your filters</h3>
+                    <p className="text-xs text-[#64748B] max-w-sm mx-auto">
                       No widget instances matched your current search query or filter combination.
                     </p>
                     <button
                       type="button"
                       onClick={resetAllFilters}
-                      className="py-2 px-4 rounded-xl bg-white/[0.07] hover:bg-white/[0.12] text-white font-bold text-xs inline-flex cursor-pointer transition border border-white/10 mt-1"
+                      className="py-2 px-4 rounded-xl bg-white hover:bg-[#F8FAFC] text-[#111827] font-bold text-xs inline-flex cursor-pointer transition border border-[#E2E8F0] mt-1 shadow-2xs"
                     >
                       Reset All Filters
                     </button>
@@ -2696,7 +2745,7 @@ function DashboardWidgetsPage() {
                     <div className="overflow-x-auto">
                       <table className="w-full text-left border-collapse text-xs">
                         <thead>
-                          <tr className="border-b border-white/[0.06] text-[11px] font-bold uppercase tracking-wider text-[#6b6b74] bg-[#111114]/40">
+                          <tr className="border-b border-[#E2E8F0] text-[11px] font-bold uppercase tracking-wider text-[#64748B] bg-[#F8FAFC]">
                             <th className="py-3 px-5">Widget</th>
                             <th className="py-3 px-5">Website</th>
                             <th className="py-3 px-5">Views</th>
@@ -2705,7 +2754,7 @@ function DashboardWidgetsPage() {
                             <th className="py-3 px-5 text-right">Actions</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/[0.04]">
+                        <tbody className="divide-y divide-[#E2E8F0]">
                           {paginatedWidgets.map((w, idx) => {
                             const isCountdown = w.type === "countdown";
                             const isAnnouncement = w.type === "announcement_popup";
@@ -2732,21 +2781,21 @@ function DashboardWidgetsPage() {
                               : `/dashboard/widgets/google-reviews/${w.id}`;
 
                             return (
-                              <tr key={w.id} className="hover:bg-white/[0.02] transition">
+                              <tr key={w.id} className="hover:bg-[#F8FAFC] transition">
                                 {/* 1. Widget Name & Details */}
                                 <td className="py-3.5 px-5">
                                   {(() => {
                                     const meta = getWidgetDisplayMeta(w.type, false, w.config);
                                     return (
                                       <div className="flex items-center gap-3">
-                                        <div className={`w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 shadow-sm ${meta.containerClass}`}>
+                                        <div className={`w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 shadow-2xs ${meta.containerClass}`}>
                                           {meta.icon}
                                         </div>
                                         <div>
-                                          <strong className="block text-sm font-bold text-white leading-tight">
+                                          <strong className="block text-sm font-bold text-[#111827] leading-tight">
                                             {w.name}
                                           </strong>
-                                          <small className="block text-[11px] text-[#8a8a93] leading-tight mt-0.5 font-medium">
+                                          <small className="block text-[11px] text-[#64748B] leading-tight mt-0.5 font-medium">
                                             {meta.label}
                                           </small>
                                         </div>
@@ -2759,10 +2808,10 @@ function DashboardWidgetsPage() {
                                 <td className="py-3.5 px-5">
                                   {siteInfo.isLinked ? (
                                     <div className="space-y-0.5">
-                                      <strong className="block text-xs font-bold text-white leading-tight truncate max-w-[220px]">
+                                      <strong className="block text-xs font-bold text-[#111827] leading-tight truncate max-w-[220px]">
                                         {siteInfo.name}
                                       </strong>
-                                      <div className="flex items-center gap-1.5 text-[11px] text-[#9a9aa3]">
+                                      <div className="flex items-center gap-1.5 text-[11px] text-[#64748B]">
                                         <span className="truncate max-w-[170px]">{siteInfo.domain}</span>
                                         {siteInfo.url && (
                                           <a
@@ -2770,7 +2819,7 @@ function DashboardWidgetsPage() {
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             title={`Open ${siteInfo.name} in new tab`}
-                                            className="p-0.5 text-[#9a9aa3] hover:text-[#ffc21a] transition"
+                                            className="p-0.5 text-[#64748B] hover:text-[#7137D8] transition"
                                           >
                                             <ExternalLink className="w-3 h-3" />
                                           </a>
@@ -2782,7 +2831,7 @@ function DashboardWidgetsPage() {
                                             setWebsitePickerSelectedId(w.projectId || "");
                                             setWebsitePickerSearch("");
                                           }}
-                                          className="text-[10px] text-zinc-500 hover:text-[#ffc21a] underline ml-1 cursor-pointer transition"
+                                          className="text-[10px] text-[#7137D8] hover:underline ml-1 cursor-pointer transition font-medium"
                                           title="Change website link"
                                         >
                                           Change
@@ -2791,7 +2840,7 @@ function DashboardWidgetsPage() {
                                     </div>
                                   ) : (
                                     <div>
-                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/25">
+                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 text-amber-600 border border-amber-200">
                                         <AlertCircle className="w-3 h-3 shrink-0" />
                                         <span>Website not linked</span>
                                       </span>
@@ -2802,7 +2851,7 @@ function DashboardWidgetsPage() {
                                           setWebsitePickerSelectedId("");
                                           setWebsitePickerSearch("");
                                         }}
-                                        className="block mt-1 text-[11px] font-semibold text-[#ffc21a] hover:underline cursor-pointer"
+                                        className="block mt-1 text-[11px] font-semibold text-[#7137D8] hover:underline cursor-pointer"
                                       >
                                         + Link website
                                       </button>
@@ -2811,7 +2860,7 @@ function DashboardWidgetsPage() {
                                 </td>
 
                                 {/* 3. Views Count */}
-                                <td className="py-3.5 px-5 font-bold text-white">
+                                <td className="py-3.5 px-5 font-bold text-[#111827]">
                                   {viewsCount.toLocaleString()}
                                 </td>
 
@@ -2820,13 +2869,13 @@ function DashboardWidgetsPage() {
                                   <span
                                     className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold ${
                                       isPublished
-                                        ? "bg-[#22c55e]/10 text-[#22c55e] border border-[#22c55e]/25"
-                                        : "bg-white/[0.06] text-[#9a9aa3]"
+                                        ? "bg-[#DCFCE7] text-[#16A34A] border border-[#BBF7D0]"
+                                        : "bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0]"
                                     }`}
                                   >
                                     <span
                                       className={`w-1.5 h-1.5 rounded-full ${
-                                        isPublished ? "bg-[#22c55e]" : "bg-[#9a9aa3]"
+                                        isPublished ? "bg-[#16A34A]" : "bg-[#94A3B8]"
                                       }`}
                                     />
                                     {isPublished ? "Live" : "Draft"}
@@ -2842,7 +2891,7 @@ function DashboardWidgetsPage() {
                                       aria-checked={isEnabled}
                                       onClick={() => handleToggleWidgetActive(w)}
                                       className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                                        isEnabled ? "bg-[#22c55e]" : "bg-zinc-700"
+                                        isEnabled ? "bg-[#16A34A]" : "bg-slate-300"
                                       }`}
                                       title={
                                         isEnabled
@@ -2858,7 +2907,7 @@ function DashboardWidgetsPage() {
                                     </button>
                                     <span
                                       className={`text-[11px] font-extrabold ${
-                                        isEnabled ? "text-[#22c55e]" : "text-zinc-500"
+                                        isEnabled ? "text-[#16A34A]" : "text-[#94A3B8]"
                                       }`}
                                     >
                                       {isEnabled ? "ON" : "OFF"}
@@ -2872,17 +2921,17 @@ function DashboardWidgetsPage() {
                                     <button
                                       type="button"
                                       onClick={() => setEmbedModalWidget(w)}
-                                      className="px-2.5 py-1.5 rounded-lg bg-[#1f1f25] hover:bg-[#282830] border border-white/10 text-white font-bold text-xs transition cursor-pointer flex items-center gap-1.5"
+                                      className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] text-[#111827] font-bold text-xs transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
                                       title="Get Embed Code"
                                     >
-                                      <Code2 className="w-3.5 h-3.5 text-[#ffc21a]" />
+                                      <Code2 className="w-3.5 h-3.5 text-[#7137D8]" />
                                       <span>Embed</span>
                                     </button>
 
                                     <button
                                       type="button"
                                       onClick={() => navigate({ to: studioRoute as any })}
-                                      className="p-1.5 rounded-lg bg-[#ffc21a] hover:bg-[#ffc21a]/90 text-[#1a1400] transition cursor-pointer"
+                                      className="p-1.5 rounded-lg bg-[#7137D8] hover:bg-[#6025C5] text-white transition cursor-pointer shadow-2xs"
                                       title="Edit in Studio"
                                     >
                                       <Edit3 className="w-3.5 h-3.5" />
@@ -2891,7 +2940,7 @@ function DashboardWidgetsPage() {
                                     <button
                                       type="button"
                                       onClick={() => handleDuplicate(w.id)}
-                                      className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-[#9a9aa3] hover:text-white transition cursor-pointer"
+                                      className="p-1.5 rounded-lg bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:text-[#111827] transition cursor-pointer shadow-2xs"
                                       title="Duplicate"
                                     >
                                       <Copy className="w-3.5 h-3.5" />
@@ -2900,7 +2949,7 @@ function DashboardWidgetsPage() {
                                     <button
                                       type="button"
                                       onClick={() => handleDelete(w.id, w.name)}
-                                      className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-red-500/10 text-[#9a9aa3] hover:text-red-400 transition cursor-pointer"
+                                      className="p-1.5 rounded-lg bg-white hover:bg-rose-50 border border-[#E2E8F0] text-[#64748B] hover:text-rose-600 transition cursor-pointer shadow-2xs"
                                       title="Delete"
                                     >
                                       <Trash2 className="w-3.5 h-3.5" />
@@ -2915,27 +2964,27 @@ function DashboardWidgetsPage() {
                     </div>
 
                     {/* Pagination Bar */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 border-t border-white/[0.06] bg-[#111114]/40 text-xs">
-                      <div className="text-[#9a9aa3]">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 border-t border-[#E2E8F0] bg-[#F8FAFC] text-xs">
+                      <div className="text-[#64748B]">
                         Showing{" "}
-                        <strong className="text-white">
+                        <strong className="text-[#111827]">
                           {totalWidgetsCount === 0 ? 0 : (safeCurrentPage - 1) * pageSize + 1}
                         </strong>{" "}
                         to{" "}
-                        <strong className="text-white">
+                        <strong className="text-[#111827]">
                           {Math.min(safeCurrentPage * pageSize, totalWidgetsCount)}
                         </strong>{" "}
-                        of <strong className="text-white">{totalWidgetsCount}</strong> widgets
+                        of <strong className="text-[#111827]">{totalWidgetsCount}</strong> widgets
                       </div>
 
                       <div className="flex items-center gap-2">
                         {/* Page Size Selector */}
-                        <div className="flex items-center gap-1.5 mr-2 text-[#9a9aa3]">
+                        <div className="flex items-center gap-1.5 mr-2 text-[#64748B]">
                           <span>Per page:</span>
                           <select
                             value={pageSize}
                             onChange={(e) => setPageSize(Number(e.target.value))}
-                            className="bg-[#18181c] border border-white/10 rounded-lg px-2 py-1 text-white focus:outline-none focus:border-[#ffc21a]/50 cursor-pointer"
+                            className="bg-white border border-[#E2E8F0] rounded-lg px-2 py-1 text-[#111827] focus:outline-none focus:border-[#7137D8] cursor-pointer"
                           >
                             <option value={10}>10</option>
                             <option value={25}>25</option>
@@ -2949,21 +2998,21 @@ function DashboardWidgetsPage() {
                           type="button"
                           disabled={safeCurrentPage <= 1}
                           onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                          className="px-2.5 py-1.5 rounded-lg bg-[#18181c] border border-white/10 text-white font-bold disabled:opacity-40 hover:bg-[#202026] transition cursor-pointer disabled:cursor-not-allowed"
+                          className="px-2.5 py-1.5 rounded-lg bg-white border border-[#E2E8F0] text-[#111827] font-bold disabled:opacity-40 hover:bg-[#F8FAFC] transition cursor-pointer disabled:cursor-not-allowed shadow-2xs"
                         >
                           <ChevronLeft className="w-3.5 h-3.5" />
                         </button>
 
-                        <div className="text-[#9a9aa3] font-semibold px-2">
-                          Page <strong className="text-white">{safeCurrentPage}</strong> of{" "}
-                          <strong className="text-white">{totalPages}</strong>
+                        <div className="text-[#64748B] font-semibold px-2">
+                          Page <strong className="text-[#111827]">{safeCurrentPage}</strong> of{" "}
+                          <strong className="text-[#111827]">{totalPages}</strong>
                         </div>
 
                         <button
                           type="button"
                           disabled={safeCurrentPage >= totalPages}
                           onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                          className="px-2.5 py-1.5 rounded-lg bg-[#18181c] border border-white/10 text-white font-bold disabled:opacity-40 hover:bg-[#202026] transition cursor-pointer disabled:cursor-not-allowed"
+                          className="px-2.5 py-1.5 rounded-lg bg-white border border-[#E2E8F0] text-[#111827] font-bold disabled:opacity-40 hover:bg-[#F8FAFC] transition cursor-pointer disabled:cursor-not-allowed shadow-2xs"
                         >
                           <ChevronRight className="w-3.5 h-3.5" />
                         </button>
@@ -2974,16 +3023,16 @@ function DashboardWidgetsPage() {
                   /* ================= 2. GROUP BY WEBSITE COLLAPSIBLE VIEW ================= */
                   <div className="p-4 sm:p-5 space-y-4">
                     {/* Top Group Summary Bar */}
-                    <div className="flex items-center justify-between text-xs text-[#9a9aa3] pb-1 border-b border-white/[0.04]">
+                    <div className="flex items-center justify-between text-xs text-[#64748B] pb-1 border-b border-[#E2E8F0]">
                       <div>
-                        Grouped into <strong className="text-white">{groupedActiveWebsites.length}</strong> website{" "}
+                        Grouped into <strong className="text-[#111827]">{groupedActiveWebsites.length}</strong> website{" "}
                         {groupedActiveWebsites.length === 1 ? "group" : "groups"}
                       </div>
                       <div className="flex items-center gap-2">
                         <button
                           type="button"
                           onClick={() => expandAllGroups(groupedActiveWebsites.map((g) => g.key))}
-                          className="text-[11px] font-semibold text-[#ffc21a] hover:underline cursor-pointer"
+                          className="text-[11px] font-semibold text-[#7137D8] hover:underline cursor-pointer"
                         >
                           Expand all
                         </button>
@@ -2991,7 +3040,7 @@ function DashboardWidgetsPage() {
                         <button
                           type="button"
                           onClick={() => collapseAllGroups(groupedActiveWebsites.map((g) => g.key))}
-                          className="text-[11px] font-semibold text-[#9a9aa3] hover:text-white cursor-pointer"
+                          className="text-[11px] font-semibold text-[#64748B] hover:text-[#111827] cursor-pointer"
                         >
                           Collapse all
                         </button>
@@ -3005,15 +3054,15 @@ function DashboardWidgetsPage() {
                       return (
                         <div
                           key={group.key}
-                          className="rounded-xl bg-[#0f0f13] border border-white/[0.07] overflow-hidden shadow-md transition"
+                          className="rounded-xl bg-white border border-[#E2E8F0] overflow-hidden shadow-2xs transition"
                         >
                           {/* Accordion Header */}
                           <div
                             onClick={() => toggleGroupCollapse(group.key)}
-                            className="flex items-center justify-between gap-3 p-4 bg-[#141418] hover:bg-[#18181e] cursor-pointer transition select-none"
+                            className="flex items-center justify-between gap-3 p-4 bg-[#F8FAFC] hover:bg-[#F1F5F9] cursor-pointer transition select-none"
                           >
                             <div className="flex items-center gap-3 min-w-0">
-                              <span className="p-1 rounded-lg bg-white/[0.04] text-[#9a9aa3]">
+                              <span className="p-1 rounded-lg bg-white border border-[#E2E8F0] text-[#64748B]">
                                 {isCollapsed ? (
                                   <ChevronRight className="w-4 h-4" />
                                 ) : (
@@ -3024,8 +3073,8 @@ function DashboardWidgetsPage() {
                               <div
                                 className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
                                   group.isLinked
-                                    ? "bg-[#ffc21a]/10 text-[#ffc21a] border border-[#ffc21a]/25"
-                                    : "bg-amber-500/10 text-amber-400 border border-amber-500/25"
+                                    ? "bg-[#F6F0FE] text-[#7137D8] border border-[#EDE0FD]"
+                                    : "bg-amber-50 text-amber-600 border border-amber-200"
                                 }`}
                               >
                                 {group.isLinked ? (
@@ -3037,14 +3086,14 @@ function DashboardWidgetsPage() {
 
                               <div className="min-w-0">
                                 <div className="flex items-center gap-2">
-                                  <h3 className="font-bold text-white text-sm truncate">
+                                  <h3 className="font-bold text-[#111827] text-sm truncate">
                                     {group.name}
                                   </h3>
-                                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/[0.06] text-[#9a9aa3] border border-white/5">
+                                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white text-[#64748B] border border-[#E2E8F0]">
                                     {group.items.length} {group.items.length === 1 ? "widget" : "widgets"}
                                   </span>
                                 </div>
-                                <div className="flex items-center gap-1.5 text-[11px] text-[#6b6b74] mt-0.5">
+                                <div className="flex items-center gap-1.5 text-[11px] text-[#64748B] mt-0.5">
                                   <span className="truncate">{group.domain || "No domain set"}</span>
                                   {group.url && (
                                     <a
@@ -3053,7 +3102,7 @@ function DashboardWidgetsPage() {
                                       rel="noopener noreferrer"
                                       onClick={(e) => e.stopPropagation()}
                                       title={`Open ${group.name}`}
-                                      className="p-0.5 text-[#9a9aa3] hover:text-[#ffc21a] transition"
+                                      className="p-0.5 text-[#64748B] hover:text-[#7137D8] transition"
                                     >
                                       <ExternalLink className="w-3 h-3" />
                                     </a>
@@ -3069,7 +3118,7 @@ function DashboardWidgetsPage() {
                                   e.stopPropagation();
                                   setViewMode("catalog");
                                 }}
-                                className="hidden sm:inline-flex items-center gap-1 py-1.5 px-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white font-bold text-xs border border-white/10 transition cursor-pointer"
+                                className="hidden sm:inline-flex items-center gap-1 py-1.5 px-3 rounded-lg bg-white hover:bg-[#F8FAFC] text-[#111827] font-bold text-xs border border-[#E2E8F0] shadow-2xs transition cursor-pointer"
                               >
                                 <span>+ Add widget</span>
                               </button>
@@ -3078,10 +3127,10 @@ function DashboardWidgetsPage() {
 
                           {/* Accordion Table Body */}
                           {!isCollapsed && (
-                            <div className="border-t border-white/[0.06] overflow-x-auto">
+                            <div className="border-t border-[#E2E8F0] overflow-x-auto">
                               <table className="w-full text-left border-collapse text-xs">
                                 <thead>
-                                  <tr className="border-b border-white/[0.04] text-[10px] font-bold uppercase tracking-wider text-[#6b6b74] bg-[#0c0c0f]">
+                                  <tr className="border-b border-[#E2E8F0] text-[10px] font-bold uppercase tracking-wider text-[#64748B] bg-[#F8FAFC]">
                                     <th className="py-2.5 px-4">Widget</th>
                                     <th className="py-2.5 px-4">Views</th>
                                     <th className="py-2.5 px-4">Status</th>
@@ -3089,7 +3138,7 @@ function DashboardWidgetsPage() {
                                     <th className="py-2.5 px-4 text-right">Actions</th>
                                   </tr>
                                 </thead>
-                                <tbody className="divide-y divide-white/[0.03]">
+                                <tbody className="divide-y divide-[#E2E8F0]">
                                   {group.items.map((w) => {
                                     const isCountdown = w.type === "countdown";
                                     const isAnnouncement = w.type === "announcement_popup";
@@ -3115,21 +3164,21 @@ function DashboardWidgetsPage() {
                                       : `/dashboard/widgets/google-reviews/${w.id}`;
 
                                     return (
-                                      <tr key={w.id} className="hover:bg-white/[0.02] transition">
+                                      <tr key={w.id} className="hover:bg-[#F8FAFC] transition">
                                         {/* Widget */}
                                         <td className="py-3 px-4">
                                           {(() => {
                                             const meta = getWidgetDisplayMeta(w.type, true, w.config);
                                             return (
                                               <div className="flex items-center gap-3">
-                                                <div className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 shadow-sm ${meta.containerClass}`}>
+                                                <div className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 shadow-2xs ${meta.containerClass}`}>
                                                   {meta.icon}
                                                 </div>
                                                 <div>
-                                                  <strong className="block text-xs font-bold text-white leading-tight">
+                                                  <strong className="block text-xs font-bold text-[#111827] leading-tight">
                                                     {w.name}
                                                   </strong>
-                                                  <small className="block text-[10px] text-[#8a8a93] leading-tight mt-0.5 font-medium">
+                                                  <small className="block text-[10px] text-[#64748B] leading-tight mt-0.5 font-medium">
                                                     {meta.label}
                                                   </small>
                                                 </div>
@@ -3139,7 +3188,7 @@ function DashboardWidgetsPage() {
                                         </td>
 
                                         {/* Views */}
-                                        <td className="py-3 px-4 font-bold text-white">
+                                        <td className="py-3 px-4 font-bold text-[#111827]">
                                           {viewsCount.toLocaleString()}
                                         </td>
 
@@ -3148,13 +3197,13 @@ function DashboardWidgetsPage() {
                                           <span
                                             className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
                                               isPublished
-                                                ? "bg-[#22c55e]/10 text-[#22c55e] border border-[#22c55e]/25"
-                                                : "bg-white/[0.06] text-[#9a9aa3]"
+                                                ? "bg-[#DCFCE7] text-[#16A34A] border border-[#BBF7D0]"
+                                                : "bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0]"
                                             }`}
                                           >
                                             <span
                                               className={`w-1.5 h-1.5 rounded-full ${
-                                                isPublished ? "bg-[#22c55e]" : "bg-[#9a9aa3]"
+                                                isPublished ? "bg-[#16A34A]" : "bg-[#94A3B8]"
                                               }`}
                                             />
                                             {isPublished ? "Live" : "Draft"}
@@ -3170,7 +3219,7 @@ function DashboardWidgetsPage() {
                                               aria-checked={isEnabled}
                                               onClick={() => handleToggleWidgetActive(w)}
                                               className={`relative inline-flex h-4 w-8 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                                                isEnabled ? "bg-[#22c55e]" : "bg-zinc-700"
+                                                isEnabled ? "bg-[#16A34A]" : "bg-slate-300"
                                               }`}
                                             >
                                               <span
@@ -3181,7 +3230,7 @@ function DashboardWidgetsPage() {
                                             </button>
                                             <span
                                               className={`text-[10px] font-extrabold ${
-                                                isEnabled ? "text-[#22c55e]" : "text-zinc-500"
+                                                isEnabled ? "text-[#16A34A]" : "text-[#94A3B8]"
                                               }`}
                                             >
                                               {isEnabled ? "ON" : "OFF"}
@@ -3199,7 +3248,7 @@ function DashboardWidgetsPage() {
                                                 setWebsitePickerSelectedId(w.projectId || "");
                                                 setWebsitePickerSearch("");
                                               }}
-                                              className="p-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-[#9a9aa3] hover:text-[#ffc21a] transition cursor-pointer"
+                                              className="p-1 rounded-lg bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:text-[#7137D8] transition cursor-pointer shadow-2xs"
                                               title={group.isLinked ? "Change linked website" : "Link to website"}
                                             >
                                               <Link2 className="w-3.5 h-3.5" />
@@ -3208,17 +3257,17 @@ function DashboardWidgetsPage() {
                                             <button
                                               type="button"
                                               onClick={() => setEmbedModalWidget(w)}
-                                              className="px-2 py-1 rounded-lg bg-[#1f1f25] hover:bg-[#282830] border border-white/10 text-white font-bold text-[11px] transition cursor-pointer flex items-center gap-1"
+                                              className="px-2 py-1 rounded-lg bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] text-[#111827] font-bold text-[11px] transition cursor-pointer flex items-center gap-1 shadow-2xs"
                                               title="Embed snippet"
                                             >
-                                              <Code2 className="w-3 h-3 text-[#ffc21a]" />
+                                              <Code2 className="w-3 h-3 text-[#7137D8]" />
                                               <span>Embed</span>
                                             </button>
 
                                             <button
                                               type="button"
                                               onClick={() => navigate({ to: studioRoute as any })}
-                                              className="p-1 rounded-lg bg-[#ffc21a] hover:bg-[#ffc21a]/90 text-[#1a1400] transition cursor-pointer"
+                                              className="p-1 rounded-lg bg-[#7137D8] hover:bg-[#6025C5] text-white transition cursor-pointer shadow-2xs"
                                               title="Edit in Studio"
                                             >
                                               <Edit3 className="w-3.5 h-3.5" />
@@ -3227,7 +3276,7 @@ function DashboardWidgetsPage() {
                                             <button
                                               type="button"
                                               onClick={() => handleDuplicate(w.id)}
-                                              className="p-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-[#9a9aa3] hover:text-white transition cursor-pointer"
+                                              className="p-1 rounded-lg bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:text-[#111827] transition cursor-pointer shadow-2xs"
                                               title="Duplicate"
                                             >
                                               <Copy className="w-3.5 h-3.5" />
@@ -3236,7 +3285,7 @@ function DashboardWidgetsPage() {
                                             <button
                                               type="button"
                                               onClick={() => handleDelete(w.id, w.name)}
-                                              className="p-1 rounded-lg bg-white/[0.04] hover:bg-red-500/10 text-[#9a9aa3] hover:text-red-400 transition cursor-pointer"
+                                              className="p-1 rounded-lg bg-white hover:bg-rose-50 border border-[#E2E8F0] text-[#64748B] hover:text-rose-600 transition cursor-pointer shadow-2xs"
                                               title="Delete"
                                             >
                                               <Trash2 className="w-3.5 h-3.5" />
@@ -3263,17 +3312,17 @@ function DashboardWidgetsPage() {
 
       {/* ================= EMBED CODE MODAL ================= */}
       {embedModalWidget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="relative w-full max-w-2xl rounded-3xl bg-[#111114] border border-white/[0.08] shadow-[0_32px_80px_rgba(0,0,0,0.8)] overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative w-full max-w-2xl rounded-3xl bg-white border border-[#E2E8F0] shadow-2xl overflow-hidden">
 
             {/* Glow accent bar */}
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#ffc21a]/60 to-transparent" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#7137D8] via-[#D52BBD] to-[#3478F6]" />
 
             {/* Header */}
-            <div className="px-8 pt-8 pb-6 border-b border-white/[0.06]">
+            <div className="px-8 pt-8 pb-6 border-b border-[#E2E8F0]">
               <button
                 type="button"
-                className="absolute top-5 right-5 p-2 rounded-xl text-[#9a9aa3] hover:text-white hover:bg-white/[0.07] transition cursor-pointer"
+                className="absolute top-5 right-5 p-2 rounded-xl text-[#64748B] hover:text-[#111827] hover:bg-[#F1F5F9] transition cursor-pointer"
                 onClick={() => setEmbedModalWidget(null)}
                 aria-label="Close"
               >
@@ -3281,19 +3330,19 @@ function DashboardWidgetsPage() {
               </button>
 
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#ffc21a]/20 to-[#ff9f0a]/10 border border-[#ffc21a]/25 flex items-center justify-center text-[#ffc21a] shadow-lg shadow-[#ffc21a]/10">
+                <div className="w-14 h-14 rounded-2xl bg-[#F6F0FE] border border-[#EDE0FD] flex items-center justify-center text-[#7137D8] shadow-sm">
                   <Code2 className="w-7 h-7" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-black text-white tracking-tight">Embed your widget</h3>
-                  <p className="text-sm text-[#9a9aa3] mt-0.5">Drop one snippet — works everywhere.</p>
+                  <h3 className="text-2xl font-black text-[#111827] tracking-tight">Embed your widget</h3>
+                  <p className="text-sm text-[#64748B] mt-0.5">Drop one snippet — works everywhere.</p>
                 </div>
               </div>
 
               {/* Platform badges */}
               <div className="flex flex-wrap gap-2 mt-1">
                 {["WordPress", "Shopify", "Webflow", "Wix", "Custom HTML"].map((p) => (
-                  <span key={p} className="px-2.5 py-1 rounded-lg bg-white/[0.05] border border-white/[0.08] text-[11px] font-semibold text-[#9a9aa3]">
+                  <span key={p} className="px-2.5 py-1 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] text-[11px] font-semibold text-[#64748B]">
                     {p}
                   </span>
                 ))}
@@ -3302,20 +3351,20 @@ function DashboardWidgetsPage() {
 
             {/* Code block */}
             <div className="px-8 py-6">
-              <div className="relative group rounded-2xl bg-[#0a0a0c] border border-white/[0.07] overflow-hidden">
+              <div className="relative group rounded-2xl bg-[#0F172A] border border-[#1E293B] overflow-hidden">
                 {/* Top bar */}
-                <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.06] bg-white/[0.02]">
+                <div className="flex items-center justify-between px-5 py-3 border-b border-[#1E293B] bg-[#1E293B]/40">
                   <div className="flex items-center gap-1.5">
                     <span className="w-3 h-3 rounded-full bg-[#ff5f57]" />
                     <span className="w-3 h-3 rounded-full bg-[#febc2e]" />
                     <span className="w-3 h-3 rounded-full bg-[#28c840]" />
                   </div>
-                  <span className="text-[11px] font-mono text-[#9a9aa3]/60 tracking-widest uppercase">HTML Snippet</span>
+                  <span className="text-[11px] font-mono text-slate-400 tracking-widest uppercase">HTML Snippet</span>
                   <div className="w-16" />
                 </div>
 
                 {/* Code content */}
-                <pre className="px-6 py-5 overflow-x-auto text-sm font-mono text-[#a8d8a8] leading-7 whitespace-pre-wrap break-all">
+                <pre className="px-6 py-5 overflow-x-auto text-sm font-mono text-emerald-400 leading-7 whitespace-pre-wrap break-all">
                   <code>{embedCodeString}</code>
                 </pre>
               </div>
@@ -3326,7 +3375,7 @@ function DashboardWidgetsPage() {
               <button
                 type="button"
                 onClick={copyEmbedCode}
-                className="flex-1 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-sm shadow-lg shadow-[#ffc21a]/20 hover:shadow-[#ffc21a]/40 hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 cursor-pointer"
+                className="flex-1 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#7137D8] to-[#8B5CF6] hover:from-[#6025C5] hover:to-[#7C3AED] text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2.5 cursor-pointer"
               >
                 {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
                 <span>{copied ? "Copied!" : "Copy code"}</span>
@@ -3334,7 +3383,7 @@ function DashboardWidgetsPage() {
               <button
                 type="button"
                 onClick={() => setEmbedModalWidget(null)}
-                className="py-3.5 px-6 rounded-2xl bg-white/[0.05] border border-white/[0.1] text-white font-bold text-sm hover:bg-white/[0.09] active:scale-[0.98] transition-all cursor-pointer"
+                className="py-3.5 px-6 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#111827] font-bold text-sm hover:bg-[#F1F5F9] active:scale-[0.98] transition-all cursor-pointer"
               >
                 Done
               </button>
@@ -3345,12 +3394,12 @@ function DashboardWidgetsPage() {
 
       {/* ================= DELETE CONFIRMATION MODAL ================= */}
       {deletingWidget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="relative w-full max-w-md p-6 rounded-2xl bg-[#151518] border border-white/10 shadow-2xl shadow-black/80 transform scale-100 transition-all">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md p-6 rounded-2xl bg-white border border-[#E2E8F0] shadow-2xl transform scale-100 transition-all">
             {/* Close button */}
             <button
               type="button"
-              className="absolute top-4 right-4 p-1.5 rounded-lg text-[#9a9aa3] hover:text-white hover:bg-white/[0.06] transition cursor-pointer"
+              className="absolute top-4 right-4 p-1.5 rounded-lg text-[#64748B] hover:text-[#111827] hover:bg-[#F1F5F9] transition cursor-pointer"
               onClick={() => !isDeleting && setDeletingWidget(null)}
               aria-label="Close"
               disabled={isDeleting}
@@ -3359,16 +3408,16 @@ function DashboardWidgetsPage() {
             </button>
 
             {/* Glowing Icon Header */}
-            <div className="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-4 text-red-400 shadow-lg shadow-red-500/5">
+            <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center mb-4 text-rose-600 shadow-sm">
               <Trash2 className="w-6 h-6 stroke-[2.2]" />
             </div>
 
             {/* Modal Content */}
-            <h3 className="text-lg font-black text-white tracking-tight">Delete Widget</h3>
-            <p className="text-xs text-[#9a9aa3] mt-2 leading-relaxed">
-              Are you sure you want to delete <span className="font-semibold text-white">&quot;{deletingWidget.name}&quot;</span>?
+            <h3 className="text-lg font-black text-[#111827] tracking-tight">Delete Widget</h3>
+            <p className="text-xs text-[#64748B] mt-2 leading-relaxed">
+              Are you sure you want to delete <span className="font-semibold text-[#111827]">&quot;{deletingWidget.name}&quot;</span>?
             </p>
-            <p className="text-[11px] text-zinc-500 mt-1 leading-normal">
+            <p className="text-[11px] text-[#94A3B8] mt-1 leading-normal">
               This action cannot be undone. Any live site embedding this widget will no longer display it.
             </p>
 
@@ -3378,7 +3427,7 @@ function DashboardWidgetsPage() {
                 type="button"
                 onClick={() => setDeletingWidget(null)}
                 disabled={isDeleting}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-[#1f1f25] border border-white/10 text-white font-bold text-xs hover:bg-[#282830] transition cursor-pointer disabled:opacity-50"
+                className="flex-1 py-2.5 px-4 rounded-xl bg-white border border-[#E2E8F0] text-[#475569] font-bold text-xs hover:bg-[#F8FAFC] transition cursor-pointer disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -3386,7 +3435,7 @@ function DashboardWidgetsPage() {
                 type="button"
                 onClick={handleConfirmDelete}
                 disabled={isDeleting}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black text-xs shadow-lg shadow-red-600/30 transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold text-xs shadow-md shadow-red-600/20 transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 {isDeleting ? (
                   <>
@@ -3407,16 +3456,16 @@ function DashboardWidgetsPage() {
 
       {/* ================= COMING SOON PREVIEW MODAL ================= */}
       {comingSoonModalWidget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="relative w-full max-w-lg rounded-3xl bg-[#111114] border border-white/[0.1] shadow-[0_32px_80px_rgba(0,0,0,0.85)] overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative w-full max-w-lg rounded-3xl bg-white border border-[#E2E8F0] shadow-2xl overflow-hidden">
             {/* Accent glow bar */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#ffc21a]/80 to-transparent" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#7137D8] via-[#D52BBD] to-[#3478F6]" />
 
             {/* Close button */}
             <button
               type="button"
               onClick={() => setComingSoonModalWidget(null)}
-              className="absolute top-4 right-4 p-2 rounded-xl text-[#9a9aa3] hover:text-white hover:bg-white/[0.07] transition cursor-pointer"
+              className="absolute top-4 right-4 p-2 rounded-xl text-[#64748B] hover:text-[#111827] hover:bg-[#F1F5F9] transition cursor-pointer"
               aria-label="Close"
             >
               <X className="w-5 h-5" />
@@ -3426,34 +3475,34 @@ function DashboardWidgetsPage() {
               {/* Header with Icon, Title, and Badge */}
               <div className="flex items-center gap-4">
                 <div
-                  className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ${comingSoonModalWidget.iconBgClass}`}
+                  className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${comingSoonModalWidget.iconBgClass}`}
                 >
                   {renderItemIcon(comingSoonModalWidget.iconType)}
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="text-xl font-black text-white tracking-tight truncate">
+                    <h3 className="text-xl font-black text-[#111827] tracking-tight truncate">
                       {comingSoonModalWidget.title}
                     </h3>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#ffc21a]/15 text-[#ffc21a] border border-[#ffc21a]/30 shrink-0">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0] shrink-0">
                       Coming Soon
                     </span>
                   </div>
-                  <p className="text-xs text-[#9a9aa3] mt-1 leading-relaxed">
+                  <p className="text-xs text-[#64748B] mt-1 leading-relaxed">
                     {comingSoonModalWidget.description}
                   </p>
                 </div>
               </div>
 
               {/* Planned Features */}
-              <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4 space-y-2.5">
-                <h4 className="text-[11px] font-bold text-white uppercase tracking-wider text-[#9a9aa3]">
+              <div className="rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] p-4 space-y-2.5">
+                <h4 className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
                   Planned Features for Release
                 </h4>
                 <ul className="space-y-2">
                   {comingSoonModalWidget.features.map((feat, idx) => (
-                    <li key={idx} className="flex items-start gap-2 text-xs text-zinc-300">
-                      <span className="text-[#22c55e] font-bold mt-0.5">✓</span>
+                    <li key={idx} className="flex items-start gap-2 text-xs text-[#334155]">
+                      <span className="text-[#16A34A] font-bold mt-0.5">✓</span>
                       <span>{feat}</span>
                     </li>
                   ))}
@@ -3461,12 +3510,12 @@ function DashboardWidgetsPage() {
               </div>
 
               {/* Priority Waitlist Form */}
-              <div className="rounded-2xl bg-gradient-to-br from-[#1a1811] to-[#141419] border border-[#ffc21a]/20 p-4 space-y-3">
+              <div className="rounded-2xl bg-gradient-to-br from-[#F6F0FE] to-[#FDF2F8] border border-[#EDE0FD] p-4 space-y-3">
                 <div className="flex items-center gap-2">
-                  <Bell className="w-4 h-4 text-[#ffc21a]" />
-                  <h4 className="text-xs font-black text-white">Get Priority Early Access</h4>
+                  <Bell className="w-4 h-4 text-[#7137D8]" />
+                  <h4 className="text-xs font-black text-[#111827]">Get Priority Early Access</h4>
                 </div>
-                <p className="text-[11px] text-[#9a9aa3] leading-relaxed">
+                <p className="text-[11px] text-[#64748B] leading-relaxed">
                   Be the first to test this widget when the beta drops. We&apos;ll notify you with an instant activation link.
                 </p>
 
@@ -3476,11 +3525,11 @@ function DashboardWidgetsPage() {
                     value={notifyEmail}
                     onChange={(e) => setNotifyEmail(e.target.value)}
                     placeholder="Enter your email for notification..."
-                    className="flex-1 bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder:text-zinc-500 outline-none focus:border-[#ffc21a]"
+                    className="flex-1 bg-white border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs text-[#111827] placeholder:text-[#94A3B8] outline-none focus:border-[#7137D8]"
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs hover:opacity-95 shadow-md transition cursor-pointer shrink-0"
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#7137D8] to-[#8B5CF6] hover:from-[#6025C5] hover:to-[#7C3AED] text-white font-bold text-xs shadow-xs transition cursor-pointer shrink-0"
                   >
                     Notify Me
                   </button>
@@ -3492,7 +3541,7 @@ function DashboardWidgetsPage() {
                 <button
                   type="button"
                   onClick={() => setComingSoonModalWidget(null)}
-                  className="text-xs text-[#9a9aa3] hover:text-white transition cursor-pointer"
+                  className="text-xs text-[#64748B] hover:text-[#111827] transition cursor-pointer"
                 >
                   ← Back to Catalog
                 </button>
@@ -3502,7 +3551,7 @@ function DashboardWidgetsPage() {
                     setComingSoonModalWidget(null);
                     setSelectedCategory("urgency");
                   }}
-                  className="text-xs font-bold text-[#ffc21a] hover:underline transition cursor-pointer"
+                  className="text-xs font-bold text-[#7137D8] hover:underline transition cursor-pointer"
                 >
                   Explore Ready Widgets →
                 </button>
@@ -3514,17 +3563,17 @@ function DashboardWidgetsPage() {
 
       {/* ================= WEBSITE LINK MODAL ================= */}
       {linkModalWidget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="relative w-full max-w-lg rounded-2xl bg-[#151518] border border-white/10 shadow-2xl overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative w-full max-w-lg rounded-2xl bg-white border border-[#E2E8F0] shadow-2xl overflow-hidden">
             {/* Header */}
-            <div className="p-6 border-b border-white/[0.08] flex items-start justify-between gap-4">
+            <div className="p-6 border-b border-[#E2E8F0] flex items-start justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#ffc21a]/15 text-[#ffc21a] border border-[#ffc21a]/30 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-[#F6F0FE] text-[#7137D8] border border-[#EDE0FD] flex items-center justify-center">
                   <Globe className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-extrabold text-white">Link Widget to Website</h3>
-                  <p className="text-xs text-[#9a9aa3] mt-0.5">
+                  <h3 className="text-base font-extrabold text-[#111827]">Link Widget to Website</h3>
+                  <p className="text-xs text-[#64748B] mt-0.5">
                     Associate &quot;{linkModalWidget.name}&quot; with one of your websites.
                   </p>
                 </div>
@@ -3532,7 +3581,7 @@ function DashboardWidgetsPage() {
               <button
                 type="button"
                 onClick={() => setLinkModalWidget(null)}
-                className="p-1.5 rounded-lg text-[#9a9aa3] hover:text-white hover:bg-white/[0.06] transition cursor-pointer"
+                className="p-1.5 rounded-lg text-[#64748B] hover:text-[#111827] hover:bg-[#F1F5F9] transition cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -3542,13 +3591,13 @@ function DashboardWidgetsPage() {
             <div className="p-6 space-y-4">
               {/* Search Websites */}
               <div className="relative">
-                <Search className="w-4 h-4 text-[#9a9aa3] absolute left-3 top-1/2 -translate-y-1/2" />
+                <Search className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={websitePickerSearch}
                   onChange={(e) => setWebsitePickerSearch(e.target.value)}
                   placeholder="Filter your websites…"
-                  className="w-full bg-[#111114] border border-white/10 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-[#6b6b74] focus:outline-none focus:border-[#ffc21a]/50"
+                  className="w-full bg-white border border-[#E2E8F0] rounded-xl pl-9 pr-3 py-2 text-xs text-[#111827] placeholder-[#94A3B8] focus:outline-none focus:border-[#7137D8]"
                 />
               </div>
 
@@ -3558,8 +3607,8 @@ function DashboardWidgetsPage() {
                 <label
                   className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition ${
                     websitePickerSelectedId === ""
-                      ? "bg-[#ffc21a]/10 border-[#ffc21a]/50 text-white"
-                      : "bg-[#111114] border-white/5 hover:border-white/15 text-[#9a9aa3]"
+                      ? "bg-[#F6F0FE] border-[#7137D8] text-[#111827]"
+                      : "bg-[#F8FAFC] border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#64748B]"
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
@@ -3568,14 +3617,14 @@ function DashboardWidgetsPage() {
                       name="selected_website"
                       checked={websitePickerSelectedId === ""}
                       onChange={() => setWebsitePickerSelectedId("")}
-                      className="accent-[#ffc21a]"
+                      className="accent-[#7137D8]"
                     />
                     <div>
-                      <span className="text-xs font-bold text-white block">Unlink from Website</span>
-                      <span className="text-[11px] text-[#6b6b74]">Display as &quot;Website not linked&quot;</span>
+                      <span className="text-xs font-bold text-[#111827] block">Unlink from Website</span>
+                      <span className="text-[11px] text-[#64748B]">Display as &quot;Website not linked&quot;</span>
                     </div>
                   </div>
-                  <Unlink className="w-4 h-4 text-zinc-500" />
+                  <Unlink className="w-4 h-4 text-[#94A3B8]" />
                 </label>
 
                 {/* Filtered Projects */}
@@ -3596,8 +3645,8 @@ function DashboardWidgetsPage() {
                         key={p.id}
                         className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition ${
                           isSelected
-                            ? "bg-[#ffc21a]/10 border-[#ffc21a]/50 text-white"
-                            : "bg-[#111114] border-white/5 hover:border-white/15 text-[#9a9aa3]"
+                            ? "bg-[#F6F0FE] border-[#7137D8] text-[#111827]"
+                            : "bg-[#F8FAFC] border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#64748B]"
                         }`}
                       >
                         <div className="flex items-center gap-2.5 min-w-0">
@@ -3606,18 +3655,18 @@ function DashboardWidgetsPage() {
                             name="selected_website"
                             checked={isSelected}
                             onChange={() => setWebsitePickerSelectedId(p.id)}
-                            className="accent-[#ffc21a]"
+                            className="accent-[#7137D8]"
                           />
                           <div className="min-w-0">
-                            <span className="text-xs font-bold text-white block truncate">
+                            <span className="text-xs font-bold text-[#111827] block truncate">
                               {p.name || "Untitled Website"}
                             </span>
-                            <span className="text-[11px] text-[#9a9aa3] block truncate">
+                            <span className="text-[11px] text-[#64748B] block truncate">
                               {domain}
                             </span>
                           </div>
                         </div>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white/[0.04] text-zinc-400 border border-white/5 shrink-0">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white text-[#64748B] border border-[#E2E8F0] shrink-0">
                           {p.status === "published" || (p as any).publishedUrl ? "Live" : "Draft"}
                         </span>
                       </label>
@@ -3625,7 +3674,7 @@ function DashboardWidgetsPage() {
                   })}
 
                 {projects.length === 0 && (
-                  <div className="p-4 text-center text-xs text-[#9a9aa3] bg-[#111114] rounded-xl border border-white/5">
+                  <div className="p-4 text-center text-xs text-[#64748B] bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]">
                     No websites found in your account yet.
                   </div>
                 )}
@@ -3633,11 +3682,11 @@ function DashboardWidgetsPage() {
             </div>
 
             {/* Footer */}
-            <div className="p-4 border-t border-white/[0.08] flex items-center justify-end gap-2 bg-[#111114]/50">
+            <div className="p-4 border-t border-[#E2E8F0] flex items-center justify-end gap-2 bg-[#F8FAFC]">
               <button
                 type="button"
                 onClick={() => setLinkModalWidget(null)}
-                className="py-2 px-4 rounded-xl text-xs font-bold text-[#9a9aa3] hover:text-white hover:bg-white/[0.05] transition cursor-pointer"
+                className="py-2 px-4 rounded-xl text-xs font-bold text-[#64748B] hover:text-[#111827] hover:bg-[#F1F5F9] transition cursor-pointer"
               >
                 Cancel
               </button>
@@ -3645,16 +3694,104 @@ function DashboardWidgetsPage() {
                 type="button"
                 disabled={isLinkingWebsite}
                 onClick={() => handleLinkWebsite(linkModalWidget.id, websitePickerSelectedId || null)}
-                className="py-2 px-4 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md transition flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                className="py-2 px-4 rounded-xl bg-gradient-to-r from-[#7137D8] to-[#8B5CF6] hover:from-[#6025C5] hover:to-[#7C3AED] text-white font-bold text-xs shadow-xs transition flex items-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 {isLinkingWebsite ? (
                   <>
-                    <div className="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                    <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     <span>Saving…</span>
                   </>
                 ) : (
                   <span>Save Association</span>
                 )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ================= QUICK PREVIEW MODAL ================= */}
+      {previewModalWidget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl border border-[#E2E8F0] w-full max-w-lg shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b border-[#E2E8F0]">
+              <div className="flex items-center gap-3">
+                <div
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center text-white ${previewModalWidget.iconBgClass || "bg-[#7137D8]"}`}
+                >
+                  {renderItemIcon(previewModalWidget.iconType)}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base font-bold text-[#111827]">{previewModalWidget.title}</h3>
+                    {previewModalWidget.badge && (
+                      <span
+                        className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded-full uppercase tracking-wider ${
+                          previewModalWidget.badge.toLowerCase() === "popular"
+                            ? "bg-[#FFE4E6] text-[#E11D48]"
+                            : "bg-[#F3E8FF] text-[#7137D8]"
+                        }`}
+                      >
+                        {previewModalWidget.badge.toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-[#64748B] capitalize">{previewModalWidget.marketplaceCategory || previewModalWidget.categoryId}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPreviewModalWidget(null)}
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-[#64748B] hover:text-[#111827] hover:bg-[#F1F5F9] transition cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Body with Miniature Preview */}
+            <div className="p-6 space-y-4">
+              <div className="bg-[#F8FAFC] p-4 rounded-xl border border-[#E2E8F0]">
+                <div className="text-[11px] font-bold text-[#94A3B8] uppercase tracking-wider mb-2">
+                  Live Component Preview
+                </div>
+                <div className="bg-white rounded-lg p-2 border border-[#E2E8F0] shadow-2xs">
+                  <WidgetMiniaturePreview widgetId={previewModalWidget.id} />
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-xs font-bold text-[#111827] mb-1">About this widget</h4>
+                <p className="text-xs text-[#64748B] leading-relaxed">
+                  {previewModalWidget.description}
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between text-xs py-2 px-3 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0]">
+                <span className="text-[#64748B] font-medium">Available Templates</span>
+                <span className="font-bold text-[#7137D8]">{previewModalWidget.designsCount || "3+ Designs"}</span>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-[#E2E8F0] flex items-center justify-end gap-2 bg-[#F8FAFC]">
+              <button
+                type="button"
+                onClick={() => setPreviewModalWidget(null)}
+                className="py-2 px-4 rounded-xl text-xs font-bold text-[#64748B] hover:text-[#111827] hover:bg-[#F1F5F9] transition cursor-pointer"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const id = previewModalWidget.id;
+                  setPreviewModalWidget(null);
+                  handleWidgetClick(id);
+                }}
+                className="py-2 px-5 rounded-xl bg-gradient-to-r from-[#7137D8] to-[#8B5CF6] hover:from-[#6025C5] hover:to-[#7C3AED] text-white font-bold text-xs shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add widget to site</span>
               </button>
             </div>
           </div>

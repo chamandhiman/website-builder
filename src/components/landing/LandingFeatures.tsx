@@ -1,3 +1,13 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPenToSquare,
+  faCode,
+  faAtom,
+  faTableCellsLarge,
+  faLayerGroup,
+  faRocket,
+} from "@fortawesome/free-solid-svg-icons";
+
 export function LandingFeatures() {
   return (
     <section className="sec alt" id="features">
@@ -15,10 +25,8 @@ export function LandingFeatures() {
         <div className="feat">
           {/* Bento Card 1: Live edit in browser */}
           <div className="fc rv in">
-            <div className="ico">
-              <svg className="ic">
-                <use href="#i-edit" />
-              </svg>
+            <div className="fc-icon-box" style={{ backgroundColor: "#8B5CF6" }}>
+              <FontAwesomeIcon icon={faPenToSquare} className="fc-fa-icon" />
             </div>
             <h3>Live edit in your browser</h3>
             <p>
@@ -35,10 +43,8 @@ export function LandingFeatures() {
 
           {/* Bento Card 2: Download clean HTML */}
           <div className="fc rv in">
-            <div className="ico">
-              <svg className="ic">
-                <use href="#i-download" />
-              </svg>
+            <div className="fc-icon-box" style={{ backgroundColor: "#10B981" }}>
+              <FontAwesomeIcon icon={faCode} className="fc-fa-icon" />
             </div>
             <h3>Download clean HTML</h3>
             <p>
@@ -59,10 +65,8 @@ export function LandingFeatures() {
 
           {/* Bento Card 3: Download React version */}
           <div className="fc rv in">
-            <div className="ico">
-              <svg className="ic">
-                <use href="#i-react" />
-              </svg>
+            <div className="fc-icon-box" style={{ backgroundColor: "#0EA5E9" }}>
+              <FontAwesomeIcon icon={faAtom} className="fc-fa-icon" />
             </div>
             <h3>Download React version</h3>
             <p>Export your site as reusable React components.</p>
@@ -78,10 +82,8 @@ export function LandingFeatures() {
 
           {/* Bento Card 4: Premium widgets */}
           <div className="fc rv in">
-            <div className="ico">
-              <svg className="ic">
-                <use href="#i-grid" />
-              </svg>
+            <div className="fc-icon-box" style={{ backgroundColor: "#F59E0B" }}>
+              <FontAwesomeIcon icon={faTableCellsLarge} className="fc-fa-icon" />
             </div>
             <h3>Premium widgets</h3>
             <p>
@@ -91,10 +93,8 @@ export function LandingFeatures() {
 
           {/* Bento Card 5: 120+ templates */}
           <div className="fc rv in">
-            <div className="ico">
-              <svg className="ic">
-                <use href="#i-layout" />
-              </svg>
+            <div className="fc-icon-box" style={{ backgroundColor: "#F43F5E" }}>
+              <FontAwesomeIcon icon={faLayerGroup} className="fc-fa-icon" />
             </div>
             <h3>120+ templates</h3>
             <p>
@@ -105,10 +105,8 @@ export function LandingFeatures() {
 
           {/* Bento Card 6: Mobile + SEO ready */}
           <div className="fc rv in">
-            <div className="ico">
-              <svg className="ic">
-                <use href="#i-zap" />
-              </svg>
+            <div className="fc-icon-box" style={{ backgroundColor: "#3B82F6" }}>
+              <FontAwesomeIcon icon={faRocket} className="fc-fa-icon" />
             </div>
             <h3>Mobile + SEO ready</h3>
             <p>

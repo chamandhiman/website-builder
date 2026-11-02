@@ -332,54 +332,54 @@ function TemplatesPage() {
   return (
     <div className="w-full max-w-[1400px] mx-auto p-6 lg:p-8 space-y-6">
       {/* ================= HERO BANNER ================= */}
-      <section className="relative rounded-[22px] bg-gradient-to-br from-[#17150f] via-[#141418] to-[#121215] border border-white/[0.07] p-8 overflow-hidden flex flex-col md:flex-row items-start md:items-end justify-between gap-6 shadow-2xl">
+      <section className="relative rounded-[22px] bg-white border border-[#E2E8F0] p-8 overflow-hidden flex flex-col md:flex-row items-start md:items-end justify-between gap-6 shadow-xs">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-24 right-1/4 w-80 h-80 rounded-full bg-[#ffc21a]/15 blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-24 right-1/3 w-64 h-64 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
+          <div className="absolute -top-24 right-1/4 w-80 h-80 rounded-full bg-[#7137D8]/8 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 right-1/3 w-64 h-64 rounded-full bg-[#3478F6]/8 blur-3xl pointer-events-none" />
         </div>
 
         <div className="relative z-10 max-w-xl">
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ffc21a]/10 border border-[#ffc21a]/25 text-[#ffc21a] text-xs font-bold mb-3.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#ffc21a] animate-pulse" />
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#7137D8]/10 border border-[#7137D8]/20 text-[#7137D8] text-xs font-bold mb-3.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#7137D8] animate-pulse" />
             11 ready-made designs
           </span>
-          <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight leading-tight mb-2">
-            Website <span className="text-[#ffc21a]">Templates</span>
+          <h1 className="text-3xl md:text-4xl font-black text-[#111827] tracking-tight leading-tight mb-2">
+            Website <span className="text-[#7137D8]">Templates</span>
           </h1>
-          <p className="text-sm text-[#9a9aa3] leading-relaxed">
+          <p className="text-sm text-[#475569] leading-relaxed">
             Pick a professionally designed template, customise it in minutes and publish — fully responsive and SEO-ready.
           </p>
         </div>
 
         {/* 3 Metric Pills */}
         <div className="relative z-10 flex items-center gap-2 shrink-0">
-          <div className="px-4 py-2.5 rounded-xl bg-black/40 border border-white/[0.08] text-center min-w-[70px]">
-            <div className="text-base font-black text-[#ffc21a] leading-tight">6</div>
-            <div className="text-[10px] text-[#9a9aa3] uppercase font-bold">Free</div>
+          <div className="px-4 py-2.5 rounded-xl bg-[#F6F0FE] border border-[#E9D8FD] text-center min-w-[70px]">
+            <div className="text-base font-black text-[#7137D8] leading-tight">6</div>
+            <div className="text-[10px] text-[#5B21B6] uppercase font-bold">Free</div>
           </div>
-          <div className="px-4 py-2.5 rounded-xl bg-black/40 border border-white/[0.08] text-center min-w-[70px]">
-            <div className="text-base font-black text-[#ffc21a] leading-tight">5</div>
-            <div className="text-[10px] text-[#9a9aa3] uppercase font-bold">Premium</div>
+          <div className="px-4 py-2.5 rounded-xl bg-[#FDF2F8] border border-[#FBCFE8] text-center min-w-[70px]">
+            <div className="text-base font-black text-[#D52BBD] leading-tight">5</div>
+            <div className="text-[10px] text-[#BE185D] uppercase font-bold">Premium</div>
           </div>
-          <div className="px-4 py-2.5 rounded-xl bg-black/40 border border-white/[0.08] text-center min-w-[70px]">
-            <div className="text-base font-black text-[#ffc21a] leading-tight">20</div>
-            <div className="text-[10px] text-[#9a9aa3] uppercase font-bold">Categories</div>
+          <div className="px-4 py-2.5 rounded-xl bg-[#EEF6FE] border border-[#CDE5FE] text-center min-w-[70px]">
+            <div className="text-base font-black text-[#3478F6] leading-tight">20</div>
+            <div className="text-[10px] text-[#1D4ED8] uppercase font-bold">Categories</div>
           </div>
         </div>
       </section>
 
       {/* ================= CATEGORY FILTER SECTION ================= */}
-      <section className="space-y-4 rounded-2xl bg-[#151518] border border-white/[0.07] p-5">
+      <section className="space-y-4 rounded-2xl bg-white border border-[#E2E8F0] p-5 shadow-xs">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-xs font-bold text-white">
-            <Filter className="w-3.5 h-3.5 text-[#ffc21a]" />
+          <div className="flex items-center gap-2 text-xs font-bold text-[#111827]">
+            <Filter className="w-3.5 h-3.5 text-[#7137D8]" />
             <span>Filter by category</span>
-            <span className="text-[#6b6b74] font-normal">({CATEGORIES_LIST.length} categories)</span>
+            <span className="text-[#64748B] font-normal">({CATEGORIES_LIST.length} categories)</span>
           </div>
           <button
             type="button"
             onClick={() => setSelectedCategory("All")}
-            className="text-xs font-bold text-[#ffc21a] hover:underline flex items-center gap-1 cursor-pointer"
+            className="text-xs font-bold text-[#7137D8] hover:text-[#5B21B6] hover:underline flex items-center gap-1 cursor-pointer transition-colors"
           >
             <span>Show all</span>
             <ChevronDown className="w-3.5 h-3.5" />
@@ -397,15 +397,15 @@ function TemplatesPage() {
                 onClick={() => setSelectedCategory(cat.name)}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs transition cursor-pointer ${
                   isActive
-                    ? "bg-[#ffc21a] text-[#1a1400] font-black shadow-md shadow-[#ffc21a]/25"
-                    : "bg-[#111114] border border-white/[0.08] text-[#9a9aa3] hover:text-white font-medium"
+                    ? "bg-[#7137D8] text-white font-bold shadow-md shadow-[#7137D8]/25"
+                    : "bg-[#F8FAFC] border border-[#E2E8F0] text-[#475569] hover:text-[#111827] hover:bg-[#F1F5F9] font-medium"
                 }`}
               >
                 <span>{cat.name}</span>
                 {cat.count > 0 && (
                   <span
                     className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
-                      isActive ? "bg-black/20 text-[#1a1400]" : "bg-white/10 text-[#9a9aa3]"
+                      isActive ? "bg-white/20 text-white" : "bg-slate-200/80 text-[#475569]"
                     }`}
                   >
                     {cat.count}
@@ -437,14 +437,14 @@ function TemplatesPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-[#111114] border border-white/10 focus-within:border-[#ffc21a]/50 rounded-lg px-2.5 py-1 text-xs text-white">
-              <Search className="w-3.5 h-3.5 text-[#6b6b74]" />
+            <div className="flex items-center gap-2 bg-[#F8FAFC] border border-[#E2E8F0] focus-within:border-[#7137D8]/50 rounded-lg px-2.5 py-1 text-xs text-[#111827]">
+              <Search className="w-3.5 h-3.5 text-[#64748B]" />
               <input
                 type="search"
                 placeholder="Search templates..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-transparent border-0 outline-none text-xs text-white placeholder:text-[#6b6b74] w-36 sm:w-44"
+                className="bg-transparent border-0 outline-none text-xs text-[#111827] placeholder:text-[#64748B] w-36 sm:w-44"
               />
             </div>
 
@@ -484,20 +484,20 @@ function TemplatesPage() {
             return (
               <div
                 key={t.id}
-                className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/30 transition overflow-hidden flex flex-col justify-between group shadow-lg"
+                className="rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#7137D8]/40 hover:shadow-md hover:shadow-purple-500/10 transition-all duration-200 overflow-hidden flex flex-col justify-between group shadow-xs"
               >
                 {/* Mock Browser Chrome + Thumbnail */}
                 <div
-                  className="relative h-48 overflow-hidden bg-[#0d0d10] cursor-pointer"
+                  className="relative h-48 overflow-hidden bg-slate-900 cursor-pointer"
                   onClick={() => handleOpenPreview(t)}
                   title="Click to preview template"
                 >
                   {/* Browser Chrome Header */}
-                  <div className="h-6 bg-[#18181c] border-b border-white/[0.06] flex items-center px-3 gap-1.5 z-10 relative">
-                    <span className="w-2 h-2 rounded-full bg-white/20" />
-                    <span className="w-2 h-2 rounded-full bg-white/20" />
-                    <span className="w-2 h-2 rounded-full bg-white/20" />
-                    <span className="ml-auto w-14 h-2 rounded-full bg-white/10" />
+                  <div className="h-6 bg-slate-100 border-b border-slate-200 flex items-center px-3 gap-1.5 z-10 relative">
+                    <span className="w-2 h-2 rounded-full bg-slate-300" />
+                    <span className="w-2 h-2 rounded-full bg-slate-300" />
+                    <span className="w-2 h-2 rounded-full bg-slate-300" />
+                    <span className="ml-auto w-14 h-2 rounded-full bg-slate-200" />
                   </div>
 
                   <img
@@ -517,11 +517,11 @@ function TemplatesPage() {
                   {/* Free / Premium Badge */}
                   <div className="absolute left-3 top-9">
                     {t.isPremium ? (
-                      <span className="px-2 py-0.5 rounded-md bg-[#ffc21a] text-[#1a1400] font-black text-[10px] shadow">
+                      <span className="px-2 py-0.5 rounded-md bg-[#7137D8] text-white font-black text-[10px] shadow-xs">
                         ★ Premium
                       </span>
                     ) : (
-                      <span className="px-2 py-0.5 rounded-md bg-[#22c55e] text-[#04130d] font-black text-[10px] shadow">
+                      <span className="px-2 py-0.5 rounded-md bg-[#16A34A] text-white font-black text-[10px] shadow-xs">
                         Free
                       </span>
                     )}
@@ -536,7 +536,7 @@ function TemplatesPage() {
                   >
                     <Heart
                       className={`w-3.5 h-3.5 ${
-                        isFav ? "fill-[#ffc21a] text-[#ffc21a]" : "text-white"
+                        isFav ? "fill-[#D52BBD] text-[#D52BBD]" : "text-white"
                       }`}
                     />
                   </button>
@@ -545,15 +545,15 @@ function TemplatesPage() {
                 {/* Card Details */}
                 <div className="p-4 space-y-3">
                   <div>
-                    <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase">
+                    <p className="text-[10px] font-extrabold tracking-wider text-[#64748B] uppercase">
                       {t.categoryDisplay} · {t.pageTypeDisplay}
                     </p>
-                    <h3 className="font-extrabold text-white text-base group-hover:text-[#ffc21a] transition truncate mt-0.5">
+                    <h3 className="font-extrabold text-[#111827] text-base group-hover:text-[#7137D8] transition-colors truncate mt-0.5">
                       {t.name}
                     </h3>
                   </div>
 
-                  <div className="flex items-center justify-between text-[11px] text-[#6b6b74]">
+                  <div className="flex items-center justify-between text-[11px] text-[#64748B]">
                     <span className="flex items-center gap-1">
                       <User className="w-3 h-3" />
                       <span>{t.uses}</span>
@@ -562,11 +562,11 @@ function TemplatesPage() {
                   </div>
 
                   {/* Card Actions */}
-                  <div className="pt-3 border-t border-white/[0.06] flex items-center gap-2">
+                  <div className="pt-3 border-t border-[#F1F5F9] flex items-center gap-2">
                     <button
                       type="button"
                       onClick={() => handleOpenPreview(t)}
-                      className="w-9 h-9 rounded-xl bg-[#1f1f25] border border-white/10 hover:border-[#ffc21a]/40 text-[#9a9aa3] hover:text-[#ffc21a] flex items-center justify-center transition cursor-pointer shrink-0"
+                      className="w-9 h-9 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#7137D8]/40 text-[#64748B] hover:text-[#7137D8] flex items-center justify-center transition-colors cursor-pointer shrink-0"
                       title="Preview"
                     >
                       <Eye className="w-4 h-4" />
@@ -575,9 +575,10 @@ function TemplatesPage() {
                       type="button"
                       disabled={loadingId === t.id}
                       onClick={() => handleUseTemplate(t)}
-                      className="flex-1 py-2 px-3.5 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md shadow-[#ffc21a]/20 hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer"
+                      style={{ color: "#FFFFFF" }}
+                      className="flex-1 py-2 px-3.5 rounded-xl bg-gradient-to-r from-[#7137D8] to-[#8B5CF6] hover:from-[#6025C5] hover:to-[#7C3AED] !text-white font-bold text-xs shadow-md shadow-[#7137D8]/20 hover:shadow-lg hover:shadow-[#7137D8]/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      <span>{loadingId === t.id ? "Loading…" : "Use template →"}</span>
+                      <span style={{ color: "#FFFFFF" }} className="!text-white">{loadingId === t.id ? "Loading…" : "Use template →"}</span>
                     </button>
                   </div>
                 </div>

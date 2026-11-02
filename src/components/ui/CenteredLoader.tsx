@@ -1,267 +1,177 @@
-import { useEffect, useState, type ReactNode } from "react";
-import aiLoaderRobot from "../../assets/images/ai-robot.png";
-import bgLoader from "../../assets/images/bg-loader.png";
+import React, { type ReactNode } from "react";
 
-interface CenteredLoaderProps {
-  message?: string;
+export interface CenteredLoaderProps {
+  /** Main loading title (defaults to "Getting things ready...") */
+  message?: ReactNode;
+  /** Supporting message (defaults to "Please wait a moment while we prepare your workspace.") */
   details?: ReactNode;
+  /** Optional deterministic progress 0–100. If omitted, a smooth indeterminate bar is displayed */
+  progress?: number;
+  /** Additional wrapper CSS classes */
   className?: string;
 }
 
 export function CenteredLoader({
-  message = "Preparing your website builder…",
-  details = "This will take only a moment.",
+  message = "Getting things ready...",
+  details = "Please wait a moment while we prepare your workspace.",
+  progress,
   className = "",
 }: CenteredLoaderProps) {
-  const [dotCount, setDotCount] = useState(1);
-
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      setDotCount((count) => (count % 3) + 1);
-    }, 450);
-
-    return () => window.clearInterval(interval);
-  }, []);
+  const hasProgress = typeof progress === "number" && !Number.isNaN(progress);
+  const clampedProgress = hasProgress ? Math.min(100, Math.max(0, progress)) : 0;
 
   return (
-    <div className={`fixed inset-0 z-50 flex min-h-screen min-w-screen items-center justify-center overflow-hidden bg-[#07091a] text-white ${className}`}>
+    <div
+      role="status"
+      aria-live="polite"
+      className={`fixed inset-0 z-50 flex min-h-screen w-full items-center justify-center overflow-hidden bg-white text-[#111827] select-none ${className}`}
+    >
       <style>{`
-        @keyframes premium-drift {
-          0%, 100% { transform: translate(0, 0); opacity: 0.7; }
-          50% { transform: translate(18px, -14px); opacity: 0.55; }
-        }
-        @keyframes premium-drift-opposite {
-          0%, 100% { transform: translate(0, 0); opacity: 0.68; }
-          50% { transform: translate(-20px, 16px); opacity: 0.52; }
-        }
-        @keyframes premium-grid-fade {
-          0%, 100% { opacity: 0.24; }
-          50% { opacity: 0.14; }
-        }
-        @keyframes premium-particle {
-          0%, 100% { transform: translate(0, 0); opacity: 0.85; }
-          50% { transform: translate(0, -18px); opacity: 0.45; }
-        }
-        @keyframes premium-spin-slow {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        @keyframes premium-rotate {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        @keyframes premium-rotate-reverse {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(-360deg); }
-        }
-        @keyframes premium-float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
-        }
-        @keyframes premium-progress-shift {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-        @keyframes premium-progress-shine {
-          0% { transform: translateX(-120%); opacity: 0; }
-          40% { opacity: 0.8; }
-          100% { transform: translateX(120%); opacity: 0; }
-        }
-        @keyframes premium-panel-float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
-        }
-        @keyframes premium-robot-float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
-        }
-        @keyframes premium-ring-rotate {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        @keyframes premium-ring-reverse {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(-360deg); }
-        }
-        @keyframes premium-bar-fill {
-          0%, 12% { width: 0%; }
-          40%, 80% { width: 100%; }
-          100% { width: 0%; }
-        }
-        .ai-robot-orbit {
-          position: relative;
-          width: 260px;
-          height: 260px;
-          display: grid;
-          place-items: center;
-          isolation: isolate;
-          pointer-events: none;
+        /* Smooth continuous 3D Y-axis flip with elegant pause */
+        @keyframes wto-logo-flip {
+          0% {
+            transform: perspective(600px) rotateY(0deg);
+          }
+          /* One complete flip in ~1.35 seconds (40% of 3.4s cycle) */
+          40% {
+            transform: perspective(600px) rotateY(360deg);
+          }
+          /* Pause/rest stationary for ~2 seconds before next flip */
+          100% {
+            transform: perspective(600px) rotateY(360deg);
+          }
         }
 
-        .orbit-ring,
-        .robot-glow {
+        .wto-logo-flip-icon {
+          transform-style: preserve-3d;
+          backface-visibility: visible;
+          will-change: transform;
+          animation: wto-logo-flip 3.4s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+        }
+
+        /* Smooth indeterminate progress slide */
+        @keyframes wto-indeterminate-slide {
+          0% {
+            left: -35%;
+            width: 35%;
+          }
+          50% {
+            left: 30%;
+            width: 50%;
+          }
+          100% {
+            left: 100%;
+            width: 35%;
+          }
+        }
+
+        .wto-indeterminate-bar {
           position: absolute;
-          border-radius: 50%;
-          pointer-events: none;
+          top: 0;
+          bottom: 0;
+          border-radius: 9999px;
+          animation: wto-indeterminate-slide 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
 
-        .orbit-ring-outer {
-          width: 260px;
-          height: 260px;
-          border: 1px solid rgba(143, 92, 255, 0.45);
-          animation: orbitSpin 20s linear infinite;
-          opacity: 0.6;
-        }
-
-        .orbit-ring-middle {
-          width: 220px;
-          height: 220px;
-          padding: 5px;
-          background:
-            conic-gradient(
-              from 20deg,
-              transparent 0deg 45deg,
-              #ff9f1c 70deg,
-              #ff5d8f 145deg,
-              #a855f7 220deg,
-              transparent 250deg 360deg
-            );
-          -webkit-mask:
-            linear-gradient(#000 0 0) content-box,
-            linear-gradient(#000 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          animation: orbitSpin 5s linear infinite;
-          opacity: 0.95;
-        }
-
-        .orbit-ring-inner {
-          width: 180px;
-          height: 180px;
-          border: 1px dashed rgba(168, 85, 247, 0.55);
-          animation: orbitSpinReverse 12s linear infinite;
-          opacity: 0.8;
-        }
-
-        .robot-glow {
-          width: 150px;
-          height: 150px;
-          background: radial-gradient(
-            circle,
-            rgba(255, 136, 50, 0.45),
-            rgba(168, 85, 247, 0.2) 45%,
-            transparent 72%
-          );
-          filter: blur(18px);
-          animation: robotGlow 3.5s ease-in-out infinite;
-          opacity: 0.5;
-        }
-
-        .ai-loader-robot {
-          position: relative;
-          z-index: 5;
-          width: 130px;
-          height: auto;
-          object-fit: contain;
-          animation: robotFloat 3.5s ease-in-out infinite;
-        }
-
-        @keyframes orbitSpin {
-          to {
-            transform: rotate(360deg);
+        /* Respect prefers-reduced-motion: disable 3D flip and sliding */
+        @media (prefers-reduced-motion: reduce) {
+          .wto-logo-flip-icon {
+            animation: none !important;
+            transform: none !important;
           }
-        }
-
-        @keyframes orbitSpinReverse {
-          to {
-            transform: rotate(-360deg);
-          }
-        }
-
-        @keyframes robotFloat {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-
-          50% {
-            transform: translateY(-8px);
-          }
-        }
-
-        @keyframes robotGlow {
-          0%,
-          100% {
-            opacity: 0.45;
-            transform: scale(0.92);
-          }
-
-          50% {
-            opacity: 0.8;
-            transform: scale(1.08);
-          }
-        }
-
-        @media (max-width: 640px) {
-          .ai-robot-orbit {
-            transform: scale(0.72);
-            margin: -42px 0;
+          .wto-indeterminate-bar {
+            animation: none !important;
+            left: 0 !important;
+            width: 60% !important;
           }
         }
       `}</style>
 
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url(${bgLoader})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}
-        />
-        <div className="absolute inset-0 bg-[#07091a]/60" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.16),transparent_55%)]" />
-      </div>
-
-      <div className="relative z-10 flex w-full max-w-5xl flex-col items-center gap-6 px-5 py-8 sm:px-6 sm:py-8 lg:px-10">
-        <div className="ai-robot-orbit">
-          <div className="orbit-ring orbit-ring-outer" />
-          <div className="orbit-ring orbit-ring-middle" />
-          <div className="orbit-ring orbit-ring-inner" />
-          <div className="robot-glow" />
-          <img src={aiLoaderRobot} alt="AI assistant" className="ai-loader-robot" />
-        </div>
-
-        <div className="max-w-2xl text-center">
-          <h1 className="text-[28px] font-semibold tracking-tight text-white sm:text-[32px] md:text-[34px]">
-            Preparing your <span className="bg-gradient-to-r from-orange-400 via-pink-500 to-fuchsia-500 bg-clip-text text-transparent">website builder</span>…
-          </h1>
-          <p className="mt-3 text-base text-slate-300 sm:text-lg">This will take only a moment.</p>
-        </div>
-
-        <div className="mt-6 w-full max-w-[420px]">
-          <div className="relative h-3 overflow-hidden rounded-full bg-slate-900/65 shadow-[0_0_28px_rgba(59,130,246,0.16)]">
-            <div
-              className="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-orange-400 via-pink-500 to-violet-500"
-              style={{ width: "0%", animation: "premium-bar-fill 4.8s ease-in-out infinite" }}
-            />
-            <div
-              className="absolute left-0 top-0 h-full w-full rounded-full bg-[linear-gradient(120deg,rgba(255,255,255,0.45),rgba(255,255,255,0.05),rgba(255,255,255,0.25))] opacity-0"
-              style={{ animation: "premium-progress-shine 3.6s ease-in-out infinite" }}
+      {/* Center Branding & Loading Status Container */}
+      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-lg w-full -mt-6 sm:-mt-10">
+        
+        {/* Soft squircle icon card with delicate lavender shadow */}
+        <div className="relative flex items-center justify-center w-24 h-24 sm:w-28 sm:h-28 rounded-[26px] sm:rounded-[30px] bg-white border border-[#EDE9FE]/90 shadow-[0_16px_36px_-6px_rgba(113,55,216,0.18),0_6px_18px_-4px_rgba(213,43,189,0.10)] mb-6 sm:mb-7">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center" style={{ perspective: "600px" }}>
+            <img
+              src="/logo-icon.png"
+              alt="Website Builder Icon"
+              className="w-14 h-14 sm:w-16 sm:h-16 object-contain wto-logo-flip-icon pointer-events-none drop-shadow-xs"
+              loading="eager"
+              decoding="async"
             />
           </div>
         </div>
 
-        <div className="mt-3 text-sm text-slate-400 sm:text-base">
-          <span className="font-medium text-white">⚡ Initializing AI engine</span>
-          <span className="inline-flex items-center">
-            {Array.from({ length: dotCount }).map((_, index) => (
-              <span key={index} className="ml-1 text-slate-400">.</span>
-            ))}
+        {/* Brand name */}
+        <h1 className="text-3xl sm:text-[38px] font-extrabold tracking-tight text-[#0F172A] leading-tight">
+          Website{" "}
+          <span className="bg-gradient-to-r from-[#7137D8] via-[#D52BBD] to-[#FF6B2B] bg-clip-text text-transparent">
+            Builder
           </span>
+        </h1>
+        <p className="mt-1.5 text-sm sm:text-base font-medium text-[#64748B] tracking-wide">
+          by WebToolOcean
+        </p>
+
+        {/* Slim horizontal progress bar */}
+        <div className="mt-8 sm:mt-9 w-full max-w-[340px] sm:max-w-[380px] h-2 sm:h-2.5 rounded-full bg-[#EDE9FE] overflow-hidden relative shadow-inner">
+          {hasProgress ? (
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-[#7137D8] via-[#D52BBD] to-[#F43F5E] transition-all duration-300 ease-out"
+              style={{ width: `${clampedProgress}%` }}
+            />
+          ) : (
+            <div className="wto-indeterminate-bar rounded-full bg-gradient-to-r from-[#7137D8] via-[#D52BBD] to-[#F43F5E]" />
+          )}
         </div>
 
+        {/* Loading Headings */}
+        <h2 className="mt-7 sm:mt-8 text-xl sm:text-[22px] font-bold text-[#111827] tracking-tight">
+          {message}
+        </h2>
+        <p className="mt-2 text-sm sm:text-base text-[#64748B] max-w-sm font-normal leading-relaxed">
+          {details}
+        </p>
+      </div>
+
+      {/* Pastel lavender & pink bottom wave shapes (matching reference mockup) */}
+      <div className="absolute bottom-0 left-0 right-0 w-full pointer-events-none overflow-hidden leading-none z-0">
+        <svg
+          className="relative block w-full h-[120px] sm:h-[180px] md:h-[220px]"
+          viewBox="0 0 1440 260"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            {/* Layer 1: Soft blush & lavender gradient */}
+            <linearGradient id="wto-wave-grad-1" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#FCE7F3" stopOpacity="0.65" />
+              <stop offset="45%" stopColor="#F3E8FF" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="#EDE9FE" stopOpacity="0.75" />
+            </linearGradient>
+
+            {/* Layer 2: Soft lavender & violet gradient */}
+            <linearGradient id="wto-wave-grad-2" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#EDE9FE" stopOpacity="0.75" />
+              <stop offset="55%" stopColor="#FCE7F3" stopOpacity="0.45" />
+              <stop offset="100%" stopColor="#DDD6FE" stopOpacity="0.7" />
+            </linearGradient>
+          </defs>
+
+          {/* Back wave: rises softly on the left and swells into the right */}
+          <path
+            d="M0,140 C280,70 520,210 820,190 C1120,170 1280,95 1440,70 L1440,260 L0,260 Z"
+            fill="url(#wto-wave-grad-1)"
+          />
+
+          {/* Front wave: gentle flowing curves with soft pink and lavender overlap */}
+          <path
+            d="M0,180 C260,110 480,240 760,220 C1060,200 1260,130 1440,110 L1440,260 L0,260 Z"
+            fill="url(#wto-wave-grad-2)"
+          />
+        </svg>
       </div>
     </div>
   );

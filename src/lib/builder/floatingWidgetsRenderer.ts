@@ -134,16 +134,7 @@ export function renderFloatingWidgetsOverlay(
       ? `data-wto-floating-widget="1" data-wto-floating-id="${widget.id}" data-wto-floating-type="${widget.type}" title="${widget.name} (Click to configure)"`
       : "";
 
-    const editorControls = editorMode
-      ? `
-        <div class="wto-floating-editor-badge" style="position: absolute; top: -24px; ${pos.includes("left") ? "left: 0" : pos.includes("center") ? "left: 50%; transform: translateX(-50%)" : "right: 0"}; display: flex; align-items: center; gap: 5px; background: #18181B; border: 1px solid #FACC15; padding: 2px 6px; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); z-index: 100000; pointer-events: auto;">
-          <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #FACC15;"></span>
-          <span style="font-family: system-ui, sans-serif; font-size: 10px; font-weight: 700; color: #FACC15; white-space: nowrap;">${widget.name || widget.type}</span>
-          <button type="button" data-wto-floating-act="edit" data-wto-floating-id="${widget.id}" style="all: unset; cursor: pointer; padding: 1px 4px; border-radius: 3px; background: rgba(255,255,255,0.12); color: #ffffff; font-size: 9px; font-weight: 600;">Edit</button>
-          <button type="button" data-wto-floating-act="delete" data-wto-floating-id="${widget.id}" style="all: unset; cursor: pointer; padding: 1px 4px; border-radius: 3px; background: rgba(239,68,68,0.25); color: #fca5a5; font-size: 9px; font-weight: 600;">Delete</button>
-        </div>
-      `
-      : "";
+    const editorControls = "";
 
     switch (widget.type) {
       case "whatsapp_chat": {
@@ -470,7 +461,40 @@ export function renderFloatingWidgetsOverlay(
       }
 
       case "custom_embed": {
-        const snippet = widget.snippetHtml || "";
+        const snippet = widget.snippetHtml || widget.config?.html || "";
+        const isWa = /whatsapp(\.min)?\.js|wa\.me|whatsapp_chat/i.test(snippet) || (widget.name || "").toLowerCase().includes("whatsapp");
+
+        if (isWa) {
+          const phone = String(widget.config?.phoneNumber || "").replace(/[^\d+]/g, "");
+          const rawMsg = widget.config?.prefilledMessage || widget.config?.greetingText || "";
+          const waUrl = phone ? `https://wa.me/${phone.replace(/^\+/, "")}?text=${encodeURIComponent(rawMsg)}` : "javascript:void(0)";
+          const btnColor = widget.config?.buttonColor || "#25D366";
+          const isWhite = btnColor.toLowerCase() === "#ffffff";
+          const iconTextColor = isWhite ? "#111111" : "#ffffff";
+          const agentName = widget.config?.agentName || "Customer Support";
+          const greeting = widget.config?.tooltipText || widget.config?.greetingText || rawMsg || "Hi! How can we help you?";
+          const btnLabel = widget.config?.buttonLabel || "Chat with us";
+          const isLeft = pos.includes("left");
+          const iconHtml = getWhatsAppButtonIconSvg("whatsapp_standard", iconTextColor);
+
+          htmlParts.push(`
+            <div class="wto-floating-item wto-floating-whatsapp" ${editAttrs} style="position: fixed !important; ${posStyle} z-index: 99999 !important; pointer-events: auto !important;">
+              ${editorControls}
+              <div class="wto-wa-container" style="display: flex; flex-direction: ${pos.startsWith("middle") ? (isLeft ? "row" : "row-reverse") : "column"}; align-items: ${isLeft ? "flex-start" : "flex-end"}; gap: 10px;">
+                <div class="wto-wa-bubble" style="background: #ffffff; color: #1f2937; padding: 10px 14px; border-radius: 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 500; box-shadow: 0 6px 22px rgba(0,0,0,0.22); max-width: 240px; border-bottom-${isLeft ? "left" : "right"}-radius: 4px; display: flex; flex-direction: column; gap: 2px;">
+                  <span style="font-size: 10px; color: #059669; font-weight: 700; text-transform: uppercase;">${agentName}</span>
+                  <span>${greeting}</span>
+                </div>
+                <a href="${editorMode ? "javascript:void(0)" : waUrl}" target="_blank" rel="noopener noreferrer" class="wto-wa-btn" style="position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 14px; border-radius: 999px; background: ${btnColor}; color: ${iconTextColor}; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; font-weight: 700; box-shadow: 0 8px 24px rgba(37,211,102,0.4); border: ${isWhite ? "1px solid #e4e4e7" : "none"}; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                  ${iconHtml}
+                  <span style="position: absolute; top: -3px; right: -3px; width: 18px; height: 18px; background: #EF4444; color: #FFFFFF; font-size: 10px; font-weight: bold; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">1</span>
+                </a>
+              </div>
+            </div>
+          `);
+          break;
+        }
+
         htmlParts.push(`
           <div class="wto-floating-item wto-floating-custom-embed" ${editAttrs} style="position: fixed; ${posStyle} z-index: 99994; pointer-events: auto;">
             ${editorControls}
@@ -755,6 +779,15 @@ export function renderFloatingWidgetsOverlay(
             e.stopPropagation();
             var wid = target.getAttribute('data-wto-floating-id');
             var wtype = target.getAttribute('data-wto-floating-type');
+
+            var waBtn = e.target && e.target.closest ? e.target.closest('.wto-wa-btn') : null;
+            if (waBtn) {
+              var bubble = target.querySelector('.wto-wa-bubble');
+              if (bubble) {
+                bubble.style.display = bubble.style.display === 'none' ? 'flex' : (bubble.style.display ? '' : 'none');
+              }
+            }
+
             window.parent.postMessage({ type: 'WTO_SELECT_FLOATING_WIDGET', widgetId: wid, widgetType: wtype }, '*');
           }
         }, true);

@@ -28,8 +28,8 @@ function NotFoundComponent() {
 
   if (pathname === "/login" || pathname === "/login/" || pathname === "/register") {
     return (
-      <div className="min-h-screen bg-[#10110e] flex items-center justify-center">
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#facc15] border-t-transparent" />
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#7137D8] border-t-transparent" />
       </div>
     );
   }
@@ -102,16 +102,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Build beautiful, responsive websites without code. Drag pre-built HTML sections, edit inline, and export production-ready HTML, CSS, and JavaScript." },
       { name: "author", content: "Lovable" },
       { name: "google-site-verification", content: "Y4ZO2trgDXbKzMA1yC5bmxoSYw3063IMwh9C3Mk6roA" },
-      { property: "og:title", content: "WebToolOcean — Drag & Drop Website Builder" },
+      { property: "og:title", content: "Website Builder by WebToolOcean — Drag & Drop Visual Builder" },
       { property: "og:description", content: "Build beautiful, responsive websites without code. Drag pre-built HTML sections, edit inline, and export production-ready HTML, CSS, and JavaScript." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://builder.webtoolocean.com/" },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d85a05a9-c71b-4775-88b8-cb73c6849803/id-preview-56fcb52b--36d1ad9a-6d64-4ba7-ae4f-8fde04af296f.lovable.app-1783423688753.png" },
+      { property: "og:image", content: "https://builder.webtoolocean.com/logo.png" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@WebToolOcean" },
-      { name: "twitter:title", content: "WebToolOcean — Drag & Drop Website Builder" },
+      { name: "twitter:title", content: "Website Builder by WebToolOcean — Drag & Drop Visual Builder" },
       { name: "twitter:description", content: "Build beautiful, responsive websites without code. Drag pre-built HTML sections, edit inline, and export production-ready HTML, CSS, and JavaScript." },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d85a05a9-c71b-4775-88b8-cb73c6849803/id-preview-56fcb52b--36d1ad9a-6d64-4ba7-ae4f-8fde04af296f.lovable.app-1783423688753.png" },
+      { name: "twitter:image", content: "https://builder.webtoolocean.com/logo.png" },
     ],
     links: [
       {
@@ -147,7 +147,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "/style.css",
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.ico", sizes: "any" },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/favicon.png" },
+      { rel: "manifest", href: "/manifest.json" },
     ],
     scripts: [
       { src: "https://www.googletagmanager.com/gtag/js?id=G-4C1PP726EZ", async: true },
@@ -161,7 +164,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="light" style={{ colorScheme: "light" }} suppressHydrationWarning>
       <head suppressHydrationWarning>
         {/* This in the header, is part of the Website Builder web application, NOT the HTML pages. */}
         <HeadContent />
@@ -181,6 +184,14 @@ function RootComponent() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       (window as any).__WTO_ROUTER = router;
+      document.documentElement.classList.remove("dark");
+      document.documentElement.setAttribute("data-dashboard-theme", "light");
+      delete document.documentElement.dataset.theme;
+      try {
+        localStorage.removeItem("wto_dashboard_theme");
+        localStorage.removeItem("wto-theme2");
+        localStorage.removeItem("theme");
+      } catch {}
     }
   }, [router]);
 

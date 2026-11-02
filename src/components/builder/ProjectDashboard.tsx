@@ -70,7 +70,7 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
     }
   };
 
-  // Curated demo/real projects matching Screenshot 1
+  // Curated demo/real projects
   const displayProjects = useMemo(() => {
     const defaultList = [
       {
@@ -139,7 +139,7 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
     return defaultList;
   }, [user, cloudProjects, localProjects]);
 
-  // Curated templates matching Screenshot 1
+  // Curated templates
   const recentTemplates = [
     {
       id: "tpl-saffron-ember-restaurant",
@@ -185,79 +185,77 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
     <div className="w-full max-w-[1400px] mx-auto p-6 lg:p-8 space-y-6">
       <CreateProjectDialog open={createOpen} onOpenChange={setCreateOpen} />
 
-      {/* ================= HERO GREETING BANNER WITH 2x2 STATS GRID ================= */}
-      <section className="relative rounded-[22px] bg-gradient-to-br from-[#17150f] via-[#141418] to-[#121215] border border-white/[0.07] p-6 lg:p-7 overflow-hidden shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      {/* ================= HERO GREETING BANNER WITH REDESIGNED 2x2 STATS CARDS ================= */}
+      <section className="relative rounded-[22px] bg-white border border-[#E2E8F0] p-6 lg:p-7 overflow-hidden shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-24 right-1/4 w-80 h-80 rounded-full bg-[#ffc21a]/15 blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-24 right-1/3 w-64 h-64 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
+          <div className="absolute -top-24 right-1/4 w-80 h-80 rounded-full bg-[#7137D8]/8 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 right-1/3 w-64 h-64 rounded-full bg-[#3478F6]/8 blur-3xl pointer-events-none" />
         </div>
 
         {/* Left: Greeting & summary */}
         <div className="relative z-10 flex-1 min-w-0 max-w-xl">
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ffc21a]/10 border border-[#ffc21a]/25 text-[#ffc21a] text-xs font-bold mb-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#ffc21a] animate-pulse" />
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#7137D8]/10 border border-[#7137D8]/20 text-[#7137D8] text-xs font-bold mb-3 shadow-2xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#7137D8] animate-pulse" />
             Thursday, 8 October
           </span>
-          <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight leading-tight mb-2">
-            Good evening, <span className="text-[#ffc21a]">{displayName}</span> 👋
+          <h1 className="text-2xl md:text-3xl font-black text-[#111827] tracking-tight leading-tight mb-2">
+            Good evening, <span className="text-[#7137D8]">{displayName}</span> 👋
           </h1>
-          <p className="text-xs md:text-sm text-[#9a9aa3] leading-relaxed">
+          <p className="text-xs md:text-sm text-[#475569] leading-relaxed font-medium">
             You have 2 sites live and 2 drafts in progress. Pick up where you left off or start something new.
           </p>
         </div>
 
-        {/* Right: 2x2 Grid of Square Stats Boxes */}
-        <div className="relative z-10 shrink-0 grid grid-cols-2 gap-2.5 sm:gap-3 w-full md:w-auto">
-          {/* Total projects */}
-          <div className="flex flex-col justify-between p-3 sm:p-3.5 rounded-xl bg-black/40 border border-white/[0.08] backdrop-blur-md w-full sm:w-[136px] sm:h-[96px] hover:border-[#ffc21a]/40 transition group">
+        {/* Right: 4 Visually Distinct, Tinted Statistic Cards */}
+        <div className="relative z-10 shrink-0 grid grid-cols-2 gap-3 sm:gap-3.5 w-full md:w-auto">
+          {/* Card 1: Total projects (Light Purple) */}
+          <div className="flex flex-col justify-between p-3.5 sm:p-4 rounded-xl bg-[#F6F0FE] border border-[#E9D8FD] shadow-xs hover:border-[#D6BCFA] hover:shadow-md hover:shadow-purple-500/10 hover:-translate-y-0.5 transition-all duration-200 w-full sm:w-[142px] sm:h-[100px] group cursor-default">
             <div className="flex items-center justify-between">
-              <span className="w-7 h-7 rounded-lg bg-[#ffc21a]/15 text-[#ffc21a] flex items-center justify-center">
-                <Folder className="w-4 h-4" />
+              <span className="w-8 h-8 rounded-lg bg-[#EDE0FD] text-[#7137D8] flex items-center justify-center shadow-xs">
+                <Folder className="w-4 h-4 text-[#7137D8]" />
               </span>
-              <span className="text-xl font-black text-white group-hover:text-[#ffc21a] transition">4</span>
+              <span className="text-2xl font-black text-[#111827] group-hover:text-[#7137D8] transition-colors">4</span>
             </div>
-            <div className="text-[11px] font-semibold text-[#9a9aa3] mt-2 truncate">Total projects</div>
+            <div className="text-[11.5px] font-bold text-[#5B21B6] mt-2 truncate">Total projects</div>
           </div>
 
-          {/* Published sites */}
-          <div className="flex flex-col justify-between p-3 sm:p-3.5 rounded-xl bg-black/40 border border-white/[0.08] backdrop-blur-md w-full sm:w-[136px] sm:h-[96px] hover:border-[#22c55e]/40 transition group">
+          {/* Card 2: Published sites (Light Green) */}
+          <div className="flex flex-col justify-between p-3.5 sm:p-4 rounded-xl bg-[#EDFDF2] border border-[#C6F6D5] shadow-xs hover:border-[#9AE6B4] hover:shadow-md hover:shadow-emerald-500/10 hover:-translate-y-0.5 transition-all duration-200 w-full sm:w-[142px] sm:h-[100px] group cursor-default">
             <div className="flex items-center justify-between">
-              <span className="w-7 h-7 rounded-lg bg-[#22c55e]/15 text-[#22c55e] flex items-center justify-center">
-                <Globe className="w-4 h-4" />
+              <span className="w-8 h-8 rounded-lg bg-[#D3F9DE] text-[#16A34A] flex items-center justify-center shadow-xs">
+                <Globe className="w-4 h-4 text-[#16A34A]" />
               </span>
-              <span className="text-xl font-black text-white group-hover:text-[#22c55e] transition">2</span>
+              <span className="text-2xl font-black text-[#111827] group-hover:text-[#16A34A] transition-colors">2</span>
             </div>
-            <div className="text-[11px] font-semibold text-[#9a9aa3] mt-2 truncate">Published sites</div>
+            <div className="text-[11.5px] font-bold text-[#15803D] mt-2 truncate">Published sites</div>
           </div>
 
-          {/* Active widgets */}
-          <div className="flex flex-col justify-between p-3 sm:p-3.5 rounded-xl bg-black/40 border border-white/[0.08] backdrop-blur-md w-full sm:w-[136px] sm:h-[96px] hover:border-[#60a5fa]/40 transition group">
+          {/* Card 3: Active widgets (Light Blue) */}
+          <div className="flex flex-col justify-between p-3.5 sm:p-4 rounded-xl bg-[#EEF6FE] border border-[#CDE5FE] shadow-xs hover:border-[#A4CEFE] hover:shadow-md hover:shadow-sky-500/10 hover:-translate-y-0.5 transition-all duration-200 w-full sm:w-[142px] sm:h-[100px] group cursor-default">
             <div className="flex items-center justify-between">
-              <span className="w-7 h-7 rounded-lg bg-[#60a5fa]/15 text-[#60a5fa] flex items-center justify-center">
-                <Grid2x2 className="w-4 h-4" />
+              <span className="w-8 h-8 rounded-lg bg-[#DBEDFE] text-[#3478F6] flex items-center justify-center shadow-xs">
+                <Grid2x2 className="w-4 h-4 text-[#3478F6]" />
               </span>
-              <span className="text-xl font-black text-white group-hover:text-[#60a5fa] transition">4</span>
+              <span className="text-2xl font-black text-[#111827] group-hover:text-[#3478F6] transition-colors">4</span>
             </div>
-            <div className="text-[11px] font-semibold text-[#9a9aa3] mt-2 truncate">Active widgets</div>
+            <div className="text-[11.5px] font-bold text-[#1D4ED8] mt-2 truncate">Active widgets</div>
           </div>
 
-          {/* Visitors this month */}
-          <div className="flex flex-col justify-between p-3 sm:p-3.5 rounded-xl bg-black/40 border border-white/[0.08] backdrop-blur-md w-full sm:w-[136px] sm:h-[96px] hover:border-[#a78bfa]/40 transition group">
+          {/* Card 4: Visitors this month (Light Pink / Magenta) */}
+          <div className="flex flex-col justify-between p-3.5 sm:p-4 rounded-xl bg-[#FDF2F8] border border-[#FBCFE8] shadow-xs hover:border-[#F472B6] hover:shadow-md hover:shadow-pink-500/10 hover:-translate-y-0.5 transition-all duration-200 w-full sm:w-[142px] sm:h-[100px] group cursor-default">
             <div className="flex items-center justify-between">
-              <span className="w-7 h-7 rounded-lg bg-[#a78bfa]/15 text-[#a78bfa] flex items-center justify-center">
-                <Eye className="w-4 h-4" />
+              <span className="w-8 h-8 rounded-lg bg-[#FCE7F3] text-[#D52BBD] flex items-center justify-center shadow-xs">
+                <Eye className="w-4 h-4 text-[#D52BBD]" />
               </span>
               <div className="text-right">
-                <span className="text-lg font-black text-white group-hover:text-[#a78bfa] transition leading-none">12.4k</span>
-                <span className="text-[9px] font-bold text-[#22c55e] block leading-none mt-0.5">↑ 18%</span>
+                <span className="text-xl font-black text-[#111827] group-hover:text-[#D52BBD] transition-colors leading-none">12.4k</span>
+                <span className="text-[9.5px] font-extrabold text-[#16A34A] block leading-none mt-0.5">↑ 18%</span>
               </div>
             </div>
-            <div className="text-[11px] font-semibold text-[#9a9aa3] mt-2 truncate">Visitors this month</div>
+            <div className="text-[11.5px] font-bold text-[#BE185D] mt-2 truncate">Visitors this month</div>
           </div>
         </div>
       </section>
-
-
 
       {/* ================= MAIN 2-COLUMN SECTION ================= */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
@@ -267,13 +265,13 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
           <section className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-base font-extrabold text-white">Recent projects</h2>
-                <p className="text-xs text-[#9a9aa3]">Your latest websites and drafts.</p>
+                <h2 className="text-base font-extrabold text-[#111827]">Recent projects</h2>
+                <p className="text-xs text-[#64748B]">Your latest websites and drafts.</p>
               </div>
               <button
                 type="button"
                 onClick={() => navigate({ to: "/dashboard/projects" as never })}
-                className="text-xs font-bold text-[#ffc21a] hover:underline flex items-center gap-1 cursor-pointer"
+                className="text-xs font-bold text-[#7137D8] hover:text-[#5B21B6] hover:underline flex items-center gap-1 cursor-pointer transition-colors"
               >
                 <span>View all projects</span>
                 <span>→</span>
@@ -287,16 +285,16 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
                   <div
                     key={p.id}
                     onClick={() => openProject(p.id)}
-                    className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/40 transition overflow-hidden flex flex-col justify-between group cursor-pointer shadow-lg"
+                    className="rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#7137D8]/40 hover:shadow-md hover:shadow-purple-500/10 transition-all duration-200 overflow-hidden flex flex-col justify-between group cursor-pointer shadow-xs"
                   >
                     {/* Mock Browser Frame with Image */}
-                    <div className="relative h-44 overflow-hidden bg-[#0d0d10]">
+                    <div className="relative h-44 overflow-hidden bg-slate-900">
                       {/* Browser Chrome Header */}
-                      <div className="h-6 bg-[#18181c] border-b border-white/[0.06] flex items-center px-3 gap-1.5 z-10 relative">
-                        <span className="w-2 h-2 rounded-full bg-white/20" />
-                        <span className="w-2 h-2 rounded-full bg-white/20" />
-                        <span className="w-2 h-2 rounded-full bg-white/20" />
-                        <span className="ml-auto w-14 h-2 rounded-full bg-white/10" />
+                      <div className="h-6 bg-slate-100 border-b border-slate-200 flex items-center px-3 gap-1.5 z-10 relative">
+                        <span className="w-2 h-2 rounded-full bg-slate-300" />
+                        <span className="w-2 h-2 rounded-full bg-slate-300" />
+                        <span className="w-2 h-2 rounded-full bg-slate-300" />
+                        <span className="ml-auto w-14 h-2 rounded-full bg-slate-200" />
                       </div>
 
                       <img
@@ -316,11 +314,11 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
                       {/* Status badge */}
                       <div className="absolute left-3 top-9">
                         {isPublished ? (
-                          <span className="px-2 py-0.5 rounded-md bg-[#22c55e] text-[#04130d] font-black text-[10px] shadow">
+                          <span className="px-2 py-0.5 rounded-md bg-[#16A34A] text-white font-black text-[10px] shadow-xs">
                             ● Published
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded-md bg-[#ffc21a] text-[#1a1400] font-black text-[10px] shadow">
+                          <span className="px-2 py-0.5 rounded-md bg-[#475569] text-white font-black text-[10px] shadow-xs">
                             ● Draft
                           </span>
                         )}
@@ -330,15 +328,15 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
                     {/* Card Body */}
                     <div className="p-4 space-y-3">
                       <div>
-                        <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase truncate">
+                        <p className="text-[10px] font-extrabold tracking-wider text-[#64748B] uppercase truncate">
                           CUSTOM TEMPLATE · {p.domain}
                         </p>
-                        <h3 className="font-extrabold text-white text-base group-hover:text-[#ffc21a] transition truncate mt-0.5">
+                        <h3 className="font-extrabold text-[#111827] text-base group-hover:text-[#7137D8] transition-colors truncate mt-0.5">
                           {p.name}
                         </h3>
                       </div>
 
-                      <div className="flex items-center justify-between text-[11px] text-[#6b6b74]">
+                      <div className="flex items-center justify-between text-[11px] text-[#64748B]">
                         <span>{p.edited}</span>
                         <span className="flex items-center gap-1">
                           <Eye className="w-3 h-3" />
@@ -347,14 +345,14 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
                       </div>
 
                       {/* Card actions */}
-                      <div className="pt-3 border-t border-white/[0.06] flex items-center gap-2">
+                      <div className="pt-3 border-t border-[#F1F5F9] flex items-center gap-2">
                         <button
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
                             openProject(p.id);
                           }}
-                          className="w-9 h-9 rounded-xl bg-[#1f1f25] border border-white/10 hover:border-[#ffc21a]/40 text-[#9a9aa3] hover:text-[#ffc21a] flex items-center justify-center transition cursor-pointer shrink-0"
+                          className="w-9 h-9 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#7137D8]/40 text-[#64748B] hover:text-[#7137D8] flex items-center justify-center transition-colors cursor-pointer shrink-0"
                           title="Preview"
                         >
                           <Eye className="w-4 h-4" />
@@ -365,9 +363,10 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
                             e.stopPropagation();
                             openProject(p.id);
                           }}
-                          className="flex-1 py-2 px-3.5 rounded-xl bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md shadow-[#ffc21a]/20 hover:opacity-95 transition flex items-center justify-center gap-1.5 cursor-pointer"
+                          style={{ color: "#FFFFFF" }}
+                          className="flex-1 py-2 px-3.5 rounded-xl bg-gradient-to-r from-[#7137D8] to-[#8B5CF6] hover:from-[#6025C5] hover:to-[#7C3AED] !text-white font-bold text-xs shadow-md shadow-[#7137D8]/20 hover:shadow-lg hover:shadow-[#7137D8]/30 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                         >
-                          <span>Edit project →</span>
+                          <span style={{ color: "#FFFFFF" }} className="!text-white">Edit project →</span>
                         </button>
                       </div>
                     </div>
@@ -381,13 +380,13 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
           <section className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-base font-extrabold text-white">Recent templates</h2>
-                <p className="text-xs text-[#9a9aa3]">Freshly added designs ready to use.</p>
+                <h2 className="text-base font-extrabold text-[#111827]">Recent templates</h2>
+                <p className="text-xs text-[#64748B]">Freshly added designs ready to use.</p>
               </div>
               <button
                 type="button"
                 onClick={() => navigate({ to: "/dashboard/templates" as never })}
-                className="text-xs font-bold text-[#ffc21a] hover:underline flex items-center gap-1 cursor-pointer"
+                className="text-xs font-bold text-[#7137D8] hover:text-[#5B21B6] hover:underline flex items-center gap-1 cursor-pointer transition-colors"
               >
                 <span>View all templates</span>
                 <span>→</span>
@@ -398,14 +397,14 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
               {recentTemplates.slice(0, 3).map((t) => (
                 <div
                   key={t.id}
-                  className="rounded-2xl bg-[#151518] border border-white/[0.08] hover:border-[#ffc21a]/30 transition overflow-hidden flex flex-col justify-between group shadow-lg"
+                  className="rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#7137D8]/40 hover:shadow-md hover:shadow-purple-500/10 transition-all duration-200 overflow-hidden flex flex-col justify-between group shadow-xs"
                 >
                   {/* Browser Chrome Header + Image */}
-                  <div className="relative h-36 overflow-hidden bg-[#0d0d10]">
-                    <div className="h-5 bg-[#18181c] border-b border-white/[0.06] flex items-center px-2.5 gap-1 z-10 relative">
-                      <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
-                      <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
-                      <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
+                  <div className="relative h-36 overflow-hidden bg-slate-900">
+                    <div className="h-5 bg-slate-100 border-b border-slate-200 flex items-center px-2.5 gap-1 z-10 relative">
+                      <span className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-slate-300" />
                     </div>
                     <img
                       src={t.image}
@@ -413,26 +412,26 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
                       className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                    <span className="absolute left-2.5 bottom-2.5 px-2 py-0.5 rounded-md bg-[#22c55e] text-[#04130d] font-extrabold text-[10px]">
+                    <span className="absolute left-2.5 bottom-2.5 px-2 py-0.5 rounded-md bg-[#16A34A] text-white font-extrabold text-[10px]">
                       {t.tag}
                     </span>
                   </div>
 
                   <div className="p-4 space-y-3">
                     <div>
-                      <p className="text-[10px] font-extrabold tracking-wider text-[#6b6b74] uppercase truncate">
+                      <p className="text-[10px] font-extrabold tracking-wider text-[#64748B] uppercase truncate">
                         {t.category}
                       </p>
-                      <h3 className="font-extrabold text-white text-sm group-hover:text-[#ffc21a] transition truncate">
+                      <h3 className="font-extrabold text-[#111827] text-sm group-hover:text-[#7137D8] transition-colors truncate">
                         {t.title}
                       </h3>
                     </div>
 
-                    <div className="pt-2 border-t border-white/[0.06] flex items-center gap-2">
+                    <div className="pt-2 border-t border-[#F1F5F9] flex items-center gap-2">
                       <button
                         type="button"
                         onClick={() => handleUseTemplate(t.id)}
-                        className="w-8 h-8 rounded-lg bg-[#1f1f25] border border-white/10 hover:border-[#ffc21a]/40 text-[#9a9aa3] hover:text-[#ffc21a] flex items-center justify-center transition cursor-pointer shrink-0"
+                        className="w-8 h-8 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#7137D8]/40 text-[#64748B] hover:text-[#7137D8] flex items-center justify-center transition-colors cursor-pointer shrink-0"
                         title="Preview"
                       >
                         <Eye className="w-3.5 h-3.5" />
@@ -440,9 +439,10 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
                       <button
                         type="button"
                         onClick={() => handleUseTemplate(t.id)}
-                        className="flex-1 py-1.5 px-3 rounded-lg bg-gradient-to-r from-[#ffc21a] to-[#ff9f0a] text-[#1a1400] font-black text-xs shadow-md shadow-[#ffc21a]/20 hover:opacity-95 transition cursor-pointer"
+                        style={{ color: "#FFFFFF" }}
+                        className="flex-1 py-1.5 px-3 rounded-lg bg-gradient-to-r from-[#7137D8] to-[#8B5CF6] hover:from-[#6025C5] hover:to-[#7C3AED] !text-white font-bold text-xs shadow-md shadow-[#7137D8]/20 hover:shadow-lg hover:shadow-[#7137D8]/30 transition-all cursor-pointer"
                       >
-                        Use template →
+                        <span style={{ color: "#FFFFFF" }} className="!text-white">Use template →</span>
                       </button>
                     </div>
                   </div>
@@ -455,56 +455,56 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
         {/* Right Column (4 cols): Activity + Free Plan + Onboarding */}
         <div className="lg:col-span-4 space-y-5">
           {/* Recent activity card */}
-          <div className="rounded-2xl p-5 bg-[#151518] border border-white/[0.07] space-y-4">
-            <h3 className="font-extrabold text-white text-sm">Recent activity</h3>
+          <div className="rounded-2xl p-5 bg-white border border-[#E2E8F0] shadow-xs space-y-4">
+            <h3 className="font-extrabold text-[#111827] text-sm">Recent activity</h3>
 
             <div className="space-y-3.5 text-xs">
               {/* Activity 1 */}
               <div className="flex items-start gap-3">
-                <span className="w-2 h-2 rounded-full bg-[#22c55e] mt-1.5 shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-[#16A34A] mt-1.5 shrink-0" />
                 <div className="leading-snug">
-                  <span className="font-bold text-white">Spice Route Restaurant</span> was published
-                  <small className="block text-[11px] text-[#6b6b74] mt-0.5">2 hours ago</small>
+                  <span className="font-bold text-[#111827]">Spice Route Restaurant</span> was published
+                  <small className="block text-[11px] text-[#64748B] mt-0.5">2 hours ago</small>
                 </div>
               </div>
 
               {/* Activity 2 */}
               <div className="flex items-start gap-3">
-                <span className="w-2 h-2 rounded-full bg-[#ffc21a] mt-1.5 shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-[#7137D8] mt-1.5 shrink-0" />
                 <div className="leading-snug">
-                  Countdown widget added to <span className="font-bold text-white">shop.example.in</span>
-                  <small className="block text-[11px] text-[#6b6b74] mt-0.5">5 hours ago</small>
+                  Countdown widget added to <span className="font-bold text-[#111827]">shop.example.in</span>
+                  <small className="block text-[11px] text-[#64748B] mt-0.5">5 hours ago</small>
                 </div>
               </div>
 
               {/* Activity 3 */}
               <div className="flex items-start gap-3">
-                <span className="w-2 h-2 rounded-full bg-[#60a5fa] mt-1.5 shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-[#3478F6] mt-1.5 shrink-0" />
                 <div className="leading-snug">
-                  You started <span className="font-bold text-white">IronPulse Noida</span> from a template
-                  <small className="block text-[11px] text-[#6b6b74] mt-0.5">3 days ago</small>
+                  You started <span className="font-bold text-[#111827]">IronPulse Noida</span> from a template
+                  <small className="block text-[11px] text-[#64748B] mt-0.5">3 days ago</small>
                 </div>
               </div>
 
               {/* Activity 4 */}
               <div className="flex items-start gap-3">
-                <span className="w-2 h-2 rounded-full bg-[#a78bfa] mt-1.5 shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-[#D52BBD] mt-1.5 shrink-0" />
                 <div className="leading-snug">
-                  New template <span className="font-bold text-white">Rosé Atelier</span> available
-                  <small className="block text-[11px] text-[#6b6b74] mt-0.5">Today</small>
+                  New template <span className="font-bold text-[#111827]">Rosé Atelier</span> available
+                  <small className="block text-[11px] text-[#64748B] mt-0.5">Today</small>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Free plan usage card */}
-          <div className="rounded-2xl p-5 bg-[#151518] border border-white/[0.07] space-y-4">
+          <div className="rounded-2xl p-5 bg-white border border-[#E2E8F0] shadow-xs space-y-4">
             <div className="flex items-center justify-between">
-              <strong className="text-sm font-extrabold text-white">Free plan</strong>
+              <strong className="text-sm font-extrabold text-[#111827]">Free plan</strong>
               <button
                 type="button"
                 onClick={() => toast.info("Pro plans are coming soon! Stay tuned.")}
-                className="text-xs font-bold text-[#ffc21a] hover:underline cursor-pointer"
+                className="text-xs font-bold text-[#7137D8] hover:text-[#5B21B6] hover:underline cursor-pointer transition-colors"
               >
                 Upgrade
               </button>
@@ -513,52 +513,53 @@ export function ProjectDashboard({ onOpenEditor }: ProjectDashboardProps) {
             <div className="space-y-3 text-xs">
               {/* Projects */}
               <div>
-                <div className="flex justify-between text-[11px] text-[#9a9aa3] mb-1">
+                <div className="flex justify-between text-[11px] text-[#64748B] mb-1">
                   <span>Projects</span>
-                  <span className="font-bold text-white">4 / 5</span>
+                  <span className="font-bold text-[#111827]">4 / 5</span>
                 </div>
-                <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
-                  <div className="w-[80%] h-full rounded-full bg-[#ffc21a]" />
+                <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                  <div className="w-[80%] h-full rounded-full bg-gradient-to-r from-[#7137D8] to-[#D52BBD]" />
                 </div>
               </div>
 
               {/* Storage */}
               <div>
-                <div className="flex justify-between text-[11px] text-[#9a9aa3] mb-1">
+                <div className="flex justify-between text-[11px] text-[#64748B] mb-1">
                   <span>Storage</span>
-                  <span className="font-bold text-white">1.2 / 2 GB</span>
+                  <span className="font-bold text-[#111827]">1.2 / 2 GB</span>
                 </div>
-                <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
-                  <div className="w-[60%] h-full rounded-full bg-[#ffc21a]" />
+                <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                  <div className="w-[60%] h-full rounded-full bg-gradient-to-r from-[#7137D8] to-[#D52BBD]" />
                 </div>
               </div>
 
               {/* Widgets */}
               <div>
-                <div className="flex justify-between text-[11px] text-[#9a9aa3] mb-1">
+                <div className="flex justify-between text-[11px] text-[#64748B] mb-1">
                   <span>Widgets</span>
-                  <span className="font-bold text-white">4 / 6</span>
+                  <span className="font-bold text-[#111827]">4 / 6</span>
                 </div>
-                <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
-                  <div className="w-[66%] h-full rounded-full bg-[#ffc21a]" />
+                <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                  <div className="w-[66%] h-full rounded-full bg-gradient-to-r from-[#7137D8] to-[#D52BBD]" />
                 </div>
               </div>
             </div>
           </div>
 
           {/* New to WebToolOcean? Onboarding Card */}
-          <div className="rounded-2xl p-5 bg-gradient-to-b from-[#18161f] to-[#141418] border border-white/[0.07] space-y-3">
+          <div className="rounded-2xl p-5 bg-gradient-to-b from-[#FAF5FF] to-[#F3E8FF] border border-purple-200/70 shadow-xs space-y-3">
             <span className="text-xl">🎓</span>
-            <strong className="block text-sm font-bold text-white">New to WebToolOcean?</strong>
-            <p className="text-xs text-[#9a9aa3] leading-relaxed">
+            <strong className="block text-sm font-bold text-[#111827]">New to WebToolOcean?</strong>
+            <p className="text-xs text-[#475569] leading-relaxed font-medium">
               Watch the 3-minute tour and launch your first site today.
             </p>
             <button
               type="button"
               onClick={() => toast.info("Tour video opening soon!")}
-              className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-lg bg-white/10 hover:bg-white/15 text-white font-bold text-xs transition cursor-pointer"
+              style={{ color: "#FFFFFF" }}
+              className="inline-flex items-center gap-1.5 py-1.5 px-3.5 rounded-lg bg-[#7137D8] hover:bg-[#5B21B6] !text-white font-bold text-xs transition-colors shadow-xs shadow-purple-500/20 cursor-pointer"
             >
-              <span>▶ Watch tour</span>
+              <span style={{ color: "#FFFFFF" }} className="!text-white">▶ Watch tour</span>
             </button>
           </div>
         </div>
