@@ -1360,7 +1360,8 @@ function DashboardWidgetsPage() {
   const [isDeleting, setIsDeleting] = useState(false);
 
   // Cloud websites / projects owned by current user
-  const { projects, loading: projectsLoading } = useCloudProjects();
+  const { projects: rawProjects, loading: projectsLoading } = useCloudProjects();
+  const projects = useMemo(() => rawProjects || [], [rawProjects]);
 
   // Active Widgets view mode & filter states (supports 100+ websites)
   const [activeViewLayout, setActiveViewLayout] = useState<"all" | "grouped">("all");
@@ -1653,7 +1654,12 @@ function DashboardWidgetsPage() {
     }
   };
 
-  const handleWidgetClick = (item: CatalogWidgetItem) => {
+  const handleWidgetClick = (itemOrId: CatalogWidgetItem | string) => {
+    const item = typeof itemOrId === "string"
+      ? CATALOG_WIDGETS.find((w) => w.id === itemOrId)
+      : itemOrId;
+    if (!item) return;
+
     if (item.status === "ready") {
       if (item.id === "countdown_timer") {
         setViewMode("choose_countdown");
@@ -2478,7 +2484,7 @@ function DashboardWidgetsPage() {
                               {/* + Add widget button */}
                               <button
                                 type="button"
-                                onClick={() => handleWidgetClick(item.id)}
+                                onClick={() => handleWidgetClick(item)}
                                 className="px-3 py-1.5 rounded-lg bg-[#F8FAFC] hover:bg-[#7137D8] text-[#111827] hover:text-white border border-[#E2E8F0] hover:border-[#7137D8] text-xs font-semibold transition cursor-pointer flex items-center gap-1"
                               >
                                 <Plus className="w-3 h-3" />
@@ -3500,7 +3506,7 @@ function DashboardWidgetsPage() {
                   Planned Features for Release
                 </h4>
                 <ul className="space-y-2">
-                  {comingSoonModalWidget.features.map((feat, idx) => (
+                  {(comingSoonModalWidget.features || []).map((feat, idx) => (
                     <li key={idx} className="flex items-start gap-2 text-xs text-[#334155]">
                       <span className="text-[#16A34A] font-bold mt-0.5">✓</span>
                       <span>{feat}</span>
@@ -3784,9 +3790,9 @@ function DashboardWidgetsPage() {
               <button
                 type="button"
                 onClick={() => {
-                  const id = previewModalWidget.id;
+                  const target = previewModalWidget;
                   setPreviewModalWidget(null);
-                  handleWidgetClick(id);
+                  if (target) handleWidgetClick(target);
                 }}
                 className="py-2 px-5 rounded-xl bg-gradient-to-r from-[#7137D8] to-[#8B5CF6] hover:from-[#6025C5] hover:to-[#7C3AED] text-white font-bold text-xs shadow-xs transition flex items-center gap-1.5 cursor-pointer"
               >
