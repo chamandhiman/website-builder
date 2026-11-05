@@ -20,7 +20,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
-import { LogOut, User as UserIcon, Home, X, Menu, Puzzle } from "lucide-react";
+import { LogOut, User as UserIcon, Home, X, Menu, Puzzle, Plus } from "lucide-react";
 
 export function AppSidebarNav({
   className = "",
@@ -326,15 +326,15 @@ export function AppSidebarNav({
                   type="button"
                   onClick={() => setCreateOpen(true)}
                   aria-label="Create New Project"
-                  className="w-10 h-10 flex items-center justify-center rounded-xl border border-dashed border-[#7137D8]/40 hover:border-[#7137D8] text-[#7137D8] bg-[#7137D8]/[0.04] hover:bg-[#7137D8]/[0.10] transition text-xl font-bold cursor-pointer outline-none"
+                  className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#7137D8] hover:bg-[#5f28c2] text-white transition text-lg font-bold cursor-pointer outline-none shadow-xs"
                 >
-                  <span>+</span>
+                  <Plus className="w-5 h-5 text-white" strokeWidth={2.5} />
                 </button>
               </TooltipTrigger>
               <TooltipContent
                 side="right"
                 sideOffset={14}
-                className="bg-[#111827] text-white font-semibold text-xs px-2.5 py-1.5 rounded-lg shadow-xl z-50 pointer-events-none"
+                className="bg-[#000000] text-white font-semibold text-xs px-2.5 py-1.5 rounded-lg shadow-xl z-50 pointer-events-none"
               >
                 Create New Project
               </TooltipContent>
@@ -343,10 +343,10 @@ export function AppSidebarNav({
             <button
               type="button"
               onClick={() => setCreateOpen(true)}
-              className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-dashed border-[#7137D8]/30 hover:border-[#7137D8] text-[#475569] hover:text-[#111827] bg-[#7137D8]/[0.03] hover:bg-[#7137D8]/[0.08] transition text-sm font-semibold cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-[#7137D8] hover:bg-[#5f28c2] text-white shadow-xs hover:shadow-sm transition text-sm font-bold cursor-pointer"
             >
-              <span className="text-[#7137D8] text-lg font-bold leading-none">+</span>
-              <span>New project</span>
+              <Plus className="w-4 h-4 text-white" strokeWidth={2.5} />
+              <span className="text-white font-bold">New project</span>
             </button>
           )}
         </div>
@@ -358,7 +358,7 @@ export function AppSidebarNav({
           }`}
         >
           {!isCompact && (
-            <p className="text-[11px] font-extrabold tracking-wider text-[#64748B] uppercase px-3 pt-2 pb-1">
+            <p className="text-[11px] font-black tracking-wider text-[#000000] uppercase px-3 pt-2 pb-1" style={{ color: "#000000" }}>
               Workspace
             </p>
           )}
@@ -375,20 +375,20 @@ export function AppSidebarNav({
                       aria-label={item.label}
                       className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition cursor-pointer outline-none ${
                         isActive
-                          ? "bg-[#7137D8]/10 text-[#7137D8] font-bold"
-                          : "text-[#475569] hover:text-[#111827] hover:bg-[#F1F5F9]"
+                          ? "bg-[#EDE9FE] text-[#000000] font-black"
+                          : "text-[#000000] hover:bg-[#F1F5F9]"
                       }`}
                     >
                       {isActive && (
                         <span className="absolute left-0 top-2 bottom-2 w-[3px] bg-[#7137D8] rounded-r shadow-[0_0_8px_rgba(113,55,216,0.5)]" />
                       )}
-                      {item.icon}
+                      <span className={isActive ? "text-[#7137D8]" : "text-[#000000]"}>{item.icon}</span>
                     </button>
                   </TooltipTrigger>
                   <TooltipContent
                     side="right"
                     sideOffset={14}
-                    className="bg-[#111827] text-white font-semibold text-xs px-2.5 py-1.5 rounded-lg shadow-xl z-50 pointer-events-none"
+                    className="bg-[#000000] text-white font-semibold text-xs px-2.5 py-1.5 rounded-lg shadow-xl z-50 pointer-events-none"
                   >
                     {item.label}
                   </TooltipContent>
@@ -403,21 +403,18 @@ export function AppSidebarNav({
                 onClick={() => handleNav(item.route)}
                 className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition text-left cursor-pointer ${
                   isActive
-                    ? "bg-[#7137D8]/10 text-[#7137D8] font-bold"
-                    : "text-[#475569] hover:text-[#111827] hover:bg-[#F1F5F9]"
+                    ? "bg-[#EDE9FE] text-[#000000] font-black shadow-2xs border-l-[3px] border-[#7137D8]"
+                    : "text-[#000000] hover:bg-[#F1F5F9] font-bold"
                 }`}
               >
-                {isActive && (
-                  <span className="absolute left-0 top-2 bottom-2 w-[3px] bg-[#7137D8] rounded-r shadow-[0_0_8px_rgba(113,55,216,0.5)]" />
-                )}
-                {item.icon}
-                <span>{item.label}</span>
+                <span className={isActive ? "text-[#7137D8] shrink-0" : "text-[#000000] shrink-0"}>{item.icon}</span>
+                <span className="text-[#000000] font-extrabold" style={{ color: "#000000" }}>{item.label}</span>
                 {item.count !== null && (
                   <span
                     className={`ml-auto text-[11px] px-2 py-0.5 rounded-full ${
                       isActive
-                        ? "bg-[#7137D8] text-white font-extrabold"
-                        : "bg-[#F1F5F9] text-[#64748B] font-bold"
+                        ? "bg-[#7137D8] text-white font-black"
+                        : "bg-[#E2E8F0] text-[#000000] font-bold"
                     }`}
                   >
                     {item.count}
@@ -430,7 +427,7 @@ export function AppSidebarNav({
           {isCompact ? (
             <div className="w-6 h-[1px] bg-[#E2E8F0] my-1.5 mx-auto" />
           ) : (
-            <p className="text-[11px] font-extrabold tracking-wider text-[#64748B] uppercase px-3 pt-3 pb-1">
+            <p className="text-[11px] font-black tracking-wider text-[#000000] uppercase px-3 pt-3 pb-1" style={{ color: "#000000" }}>
               Library
             </p>
           )}
@@ -447,20 +444,20 @@ export function AppSidebarNav({
                       aria-label={item.label}
                       className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition cursor-pointer outline-none ${
                         isActive
-                          ? "bg-[#7137D8]/10 text-[#7137D8] font-bold"
-                          : "text-[#475569] hover:text-[#111827] hover:bg-[#F1F5F9]"
+                          ? "bg-[#EDE9FE] text-[#000000] font-black"
+                          : "text-[#000000] hover:bg-[#F1F5F9]"
                       }`}
                     >
                       {isActive && (
                         <span className="absolute left-0 top-2 bottom-2 w-[3px] bg-[#7137D8] rounded-r shadow-[0_0_8px_rgba(113,55,216,0.5)]" />
                       )}
-                      {item.icon}
+                      <span className={isActive ? "text-[#7137D8]" : "text-[#000000]"}>{item.icon}</span>
                     </button>
                   </TooltipTrigger>
                   <TooltipContent
                     side="right"
                     sideOffset={14}
-                    className="bg-[#111827] text-white font-semibold text-xs px-2.5 py-1.5 rounded-lg shadow-xl z-50 pointer-events-none"
+                    className="bg-[#000000] text-white font-semibold text-xs px-2.5 py-1.5 rounded-lg shadow-xl z-50 pointer-events-none"
                   >
                     {item.label}
                   </TooltipContent>
@@ -475,21 +472,18 @@ export function AppSidebarNav({
                 onClick={() => handleNav(item.route)}
                 className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition text-left cursor-pointer ${
                   isActive
-                    ? "bg-[#7137D8]/10 text-[#7137D8] font-bold"
-                    : "text-[#475569] hover:text-[#111827] hover:bg-[#F1F5F9]"
+                    ? "bg-[#EDE9FE] text-[#000000] font-black shadow-2xs border-l-[3px] border-[#7137D8]"
+                    : "text-[#000000] hover:bg-[#F1F5F9] font-bold"
                 }`}
               >
-                {isActive && (
-                  <span className="absolute left-0 top-2 bottom-2 w-[3px] bg-[#7137D8] rounded-r shadow-[0_0_8px_rgba(113,55,216,0.5)]" />
-                )}
-                {item.icon}
-                <span>{item.label}</span>
+                <span className={isActive ? "text-[#7137D8] shrink-0" : "text-[#000000] shrink-0"}>{item.icon}</span>
+                <span className="text-[#000000] font-extrabold" style={{ color: "#000000" }}>{item.label}</span>
                 {item.count !== null && (
                   <span
                     className={`ml-auto text-[11px] font-bold px-2 py-0.5 rounded-full ${
                       item.isTrash
                         ? "bg-[#EF4444]/15 text-[#EF4444]"
-                        : "bg-[#F1F5F9] text-[#64748B]"
+                        : "bg-[#E2E8F0] text-[#000000]"
                     }`}
                   >
                     {item.count}
@@ -501,7 +495,7 @@ export function AppSidebarNav({
         </nav>
 
         {/* Pinned Bottom Footer (Sticks to bottom) */}
-        <div className={`shrink-0 w-full pt-1.5 mt-auto flex flex-col gap-1 border-t border-white/[0.08] ${isCompact ? "items-center" : ""}`}>
+        <div className={`shrink-0 w-full pt-1.5 mt-auto flex flex-col gap-1 border-t border-[#E2E8F0] ${isCompact ? "items-center" : ""}`}>
           {/* Exit Dashboard to Landing Page */}
           {isCompact ? (
             <Tooltip>
@@ -509,7 +503,7 @@ export function AppSidebarNav({
                 <button
                   type="button"
                   onClick={() => navigate({ to: "/" })}
-                  className="w-10 h-10 flex items-center justify-center rounded-xl text-[#475569] hover:text-[#7137D8] hover:bg-[#F1F5F9] transition cursor-pointer outline-none"
+                  className="w-10 h-10 flex items-center justify-center rounded-xl text-[#000000] hover:text-[#7137D8] hover:bg-[#F1F5F9] transition cursor-pointer outline-none"
                   aria-label="Exit Dashboard"
                 >
                   <Home className="w-4 h-4 text-[#7137D8]" />
@@ -518,7 +512,7 @@ export function AppSidebarNav({
               <TooltipContent
                 side="right"
                 sideOffset={14}
-                className="bg-[#111827] text-white font-semibold text-xs px-2.5 py-1.5 rounded-lg shadow-xl z-50 pointer-events-none"
+                className="bg-[#000000] text-white font-semibold text-xs px-2.5 py-1.5 rounded-lg shadow-xl z-50 pointer-events-none"
               >
                 Exit Dashboard (Landing Page)
               </TooltipContent>
@@ -527,10 +521,10 @@ export function AppSidebarNav({
             <button
               type="button"
               onClick={() => navigate({ to: "/" })}
-              className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-[#475569] hover:text-[#111827] hover:bg-[#F1F5F9] transition cursor-pointer"
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-[#000000] hover:bg-[#F1F5F9] transition cursor-pointer"
             >
               <Home className="w-4 h-4 shrink-0 text-[#7137D8]" />
-              <span>Exit Dashboard</span>
+              <span className="text-[#000000] font-bold" style={{ color: "#000000" }}>Exit Dashboard</span>
             </button>
           )}
 
@@ -556,8 +550,8 @@ export function AppSidebarNav({
                       {avatarChar}
                     </span>
                     <div className="flex-1 min-w-0 text-left">
-                      <strong className="block text-xs font-bold text-[#111827] truncate">{displayName}</strong>
-                      <small className="block text-[11px] text-[#64748B] truncate">{userEmail}</small>
+                      <strong className="block text-xs font-black text-[#000000] truncate" style={{ color: "#000000" }}>{displayName}</strong>
+                      <small className="block text-[11px] text-[#000000] truncate font-semibold" style={{ color: "#000000" }}>{userEmail}</small>
                     </div>
                     <svg
                       width="14"

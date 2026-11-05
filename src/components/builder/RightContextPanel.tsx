@@ -153,7 +153,7 @@ function getSectionVisual(section: PageSection) {
       Icon: PanelTop,
       name: section.name || "Header",
       iconBg: "bg-[#202024] border border-[#2F2F36]",
-      iconColor: "text-amber-400",
+      iconColor: "text-[#7137D8]",
     };
   }
   if (isFooter) {
@@ -161,7 +161,7 @@ function getSectionVisual(section: PageSection) {
       Icon: PanelBottom,
       name: section.name || "Footer",
       iconBg: "bg-[#202024] border border-[#2F2F36]",
-      iconColor: "text-amber-400",
+      iconColor: "text-[#7137D8]",
     };
   }
 
@@ -175,7 +175,7 @@ function getSectionVisual(section: PageSection) {
       Icon: Code2,
       name: section.name || "Custom HTML",
       iconBg: "bg-[#202024] border border-[#2F2F36]",
-      iconColor: "text-amber-400",
+      iconColor: "text-[#7137D8]",
     };
   }
 
@@ -195,7 +195,7 @@ function getSectionVisual(section: PageSection) {
       Icon: Mail,
       name: section.name || "Contact",
       iconBg: "bg-[#202024] border border-[#2F2F36]",
-      iconColor: "text-amber-400",
+      iconColor: "text-[#7137D8]",
     };
   }
 
@@ -205,7 +205,7 @@ function getSectionVisual(section: PageSection) {
       Icon: Users,
       name: section.name || "Team",
       iconBg: "bg-[#202024] border border-[#2F2F36]",
-      iconColor: "text-amber-400",
+      iconColor: "text-[#7137D8]",
     };
   }
 
@@ -215,7 +215,7 @@ function getSectionVisual(section: PageSection) {
       Icon: Sparkles,
       name: section.name || "Banner",
       iconBg: "bg-[#202024] border border-[#2F2F36]",
-      iconColor: "text-amber-400",
+      iconColor: "text-[#7137D8]",
     };
   }
 
@@ -225,7 +225,7 @@ function getSectionVisual(section: PageSection) {
       Icon: UserCheck,
       name: section.name || "About Us",
       iconBg: "bg-[#202024] border border-[#2F2F36]",
-      iconColor: "text-amber-400",
+      iconColor: "text-[#7137D8]",
     };
   }
 
@@ -235,7 +235,7 @@ function getSectionVisual(section: PageSection) {
       Icon: Briefcase,
       name: section.name || "Services",
       iconBg: "bg-[#202024] border border-[#2F2F36]",
-      iconColor: "text-amber-400",
+      iconColor: "text-[#7137D8]",
     };
   }
 
@@ -245,7 +245,7 @@ function getSectionVisual(section: PageSection) {
       Icon: HelpCircle,
       name: section.name || "FAQ",
       iconBg: "bg-[#202024] border border-[#2F2F36]",
-      iconColor: "text-amber-400",
+      iconColor: "text-[#7137D8]",
     };
   }
 
@@ -255,7 +255,7 @@ function getSectionVisual(section: PageSection) {
       Icon: ImageIcon,
       name: section.name || "Gallery",
       iconBg: "bg-[#202024] border border-[#2F2F36]",
-      iconColor: "text-amber-400",
+      iconColor: "text-[#7137D8]",
     };
   }
 
@@ -265,7 +265,7 @@ function getSectionVisual(section: PageSection) {
       Icon: SlidersHorizontal,
       name: section.name || "Carousel",
       iconBg: "bg-[#202024] border border-[#2F2F36]",
-      iconColor: "text-amber-400",
+      iconColor: "text-[#7137D8]",
     };
   }
 
@@ -305,7 +305,7 @@ function getSectionVisual(section: PageSection) {
       Icon: Quote,
       name: section.name || "Testimonials",
       iconBg: "bg-[#202024] border border-[#2F2F36]",
-      iconColor: "text-amber-400",
+      iconColor: "text-[#7137D8]",
     };
   }
 
@@ -315,7 +315,7 @@ function getSectionVisual(section: PageSection) {
       Icon: Sparkles,
       name: section.name || "Call to Action",
       iconBg: "bg-[#202024] border border-[#2F2F36]",
-      iconColor: "text-amber-400",
+      iconColor: "text-[#7137D8]",
     };
   }
 
@@ -325,7 +325,7 @@ function getSectionVisual(section: PageSection) {
       Icon: Star,
       name: section.name || "Features",
       iconBg: "bg-[#202024] border border-[#2F2F36]",
-      iconColor: "text-amber-400",
+      iconColor: "text-[#7137D8]",
     };
   }
 
@@ -334,7 +334,7 @@ function getSectionVisual(section: PageSection) {
     Icon: Layout,
     name: section.name || "Section",
     iconBg: "bg-[#202024] border border-[#2F2F36]",
-    iconColor: "text-amber-400",
+    iconColor: "text-[#7137D8]",
   };
 }
 
@@ -347,7 +347,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
   if (type === "navbar" || id.includes("navbar") || name.includes("header")) {
     return {
       Icon: PanelTop,
-      accentColor: "text-amber-400",
+      accentColor: "text-[#7137D8]",
       badgeBg: "bg-[#202024] border-[#2F2F36]",
       subtitle: "Navbar & brand navigation",
     };
@@ -356,7 +356,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
   if (type === "carousel" || id.includes("carousel")) {
     return {
       Icon: SlidersHorizontal,
-      accentColor: "text-amber-400",
+      accentColor: "text-[#7137D8]",
       badgeBg: "bg-[#202024] border-[#2F2F36]",
       subtitle: "Interactive image carousel slider",
     };
@@ -365,7 +365,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
   if (type === "hero" || id.includes("hero") || name === "banner") {
     return {
       Icon: Sparkles,
-      accentColor: "text-amber-400",
+      accentColor: "text-[#7137D8]",
       badgeBg: "bg-[#202024] border-[#2F2F36]",
       subtitle: "Hero banners & headline intros",
     };
@@ -374,7 +374,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
   if (type === "about" || id.includes("about")) {
     return {
       Icon: UserCheck,
-      accentColor: "text-amber-400",
+      accentColor: "text-[#7137D8]",
       badgeBg: "bg-[#202024] border-[#2F2F36]",
       subtitle: "Split story, features & imagery",
     };
@@ -383,7 +383,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
   if (type === "services" || id.includes("services")) {
     return {
       Icon: Briefcase,
-      accentColor: "text-amber-400",
+      accentColor: "text-[#7137D8]",
       badgeBg: "bg-[#202024] border-[#2F2F36]",
       subtitle: "Service cards & feature highlights",
     };
@@ -392,7 +392,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
   if (type === "team" || id.includes("team")) {
     return {
       Icon: Users,
-      accentColor: "text-amber-400",
+      accentColor: "text-[#7137D8]",
       badgeBg: "bg-[#202024] border-[#2F2F36]",
       subtitle: "Static grid or carousel slider",
     };
@@ -401,7 +401,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
   if (type === "faq" || id.includes("faq")) {
     return {
       Icon: HelpCircle,
-      accentColor: "text-amber-400",
+      accentColor: "text-[#7137D8]",
       badgeBg: "bg-[#202024] border-[#2F2F36]",
       subtitle: "Collapsible Q&A accordion",
     };
@@ -410,7 +410,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
   if (type === "cta" || id.includes("cta")) {
     return {
       Icon: Flame,
-      accentColor: "text-amber-400",
+      accentColor: "text-[#7137D8]",
       badgeBg: "bg-[#202024] border-[#2F2F36]",
       subtitle: "Conversion banners & actions",
     };
@@ -419,7 +419,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
   if (type === "pricing" || id.includes("pricing")) {
     return {
       Icon: CreditCard,
-      accentColor: "text-amber-400",
+      accentColor: "text-[#7137D8]",
       badgeBg: "bg-[#202024] border-[#2F2F36]",
       subtitle: "Pricing tiers & feature lists",
     };
@@ -428,7 +428,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
   if (type === "overlay-banner" || id.includes("overlay") || name.includes("overlay")) {
     return {
       Icon: Layers,
-      accentColor: "text-amber-400",
+      accentColor: "text-[#7137D8]",
       badgeBg: "bg-[#202024] border-[#2F2F36]",
       subtitle: "Background image with overlay text",
     };
@@ -437,7 +437,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
   if (type === "gallery" || id.includes("gallery")) {
     return {
       Icon: Images,
-      accentColor: "text-amber-400",
+      accentColor: "text-[#7137D8]",
       badgeBg: "bg-[#202024] border-[#2F2F36]",
       subtitle: "Photo gallery & showcase grid",
     };
@@ -446,7 +446,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
   if (type === "testimonials" || id.includes("testimonial")) {
     return {
       Icon: MessageSquareQuote,
-      accentColor: "text-amber-400",
+      accentColor: "text-[#7137D8]",
       badgeBg: "bg-[#202024] border-[#2F2F36]",
       subtitle: "Reviews in static grid or carousel",
     };
@@ -455,7 +455,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
   if (type === "google-reviews" || id.includes("google-review")) {
     return {
       Icon: Star,
-      accentColor: "text-amber-400",
+      accentColor: "text-[#7137D8]",
       badgeBg: "bg-[#202024] border-[#2F2F36]",
       subtitle: "Real-time Google Reviews & script widget",
     };
@@ -464,14 +464,14 @@ function getWidgetVisual(widget: WidgetRegistration) {
   if (type === "footer" || id.includes("footer")) {
     return {
       Icon: PanelBottom,
-      accentColor: "text-amber-400",
+      accentColor: "text-[#7137D8]",
       badgeBg: "bg-[#202024] border-[#2F2F36]",
       subtitle: "Site footer, columns & copyright",
     };
   }
   return {
     Icon: Boxes,
-    accentColor: "text-zinc-400",
+    accentColor: "text-[#64748B]",
     badgeBg: "bg-[#202024] border-[#2F2F36]",
     subtitle: "Section widget",
   };
@@ -791,7 +791,7 @@ export function RightContextPanel({
     >
       <div className="flex h-11 shrink-0 items-center justify-between border-b border-[#262626] bg-[#141414] px-2.5">
         {!collapsed || isMobile ? (
-          <div className="flex items-center gap-1 rounded-lg border border-[#262626] bg-[#171717] p-1">
+          <div className="flex items-center gap-1 rounded-lg border border-[#262626] bg-white p-1">
             {TABS.map(({ key, label, Icon }) => {
               const isActive = activeTab === key;
               return (
@@ -811,8 +811,8 @@ export function RightContextPanel({
                     <span
                       className={`ml-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
                         isActive
-                          ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                          : "bg-zinc-800 text-zinc-400"
+                          ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                          : "bg-[#F1F5F9] text-[#64748B]"
                       }`}
                     >
                       {totalTemplatesCount}
@@ -822,8 +822,8 @@ export function RightContextPanel({
                     <span
                       className={`ml-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
                         isActive
-                          ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                          : "bg-zinc-800 text-zinc-400"
+                          ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                          : "bg-[#F1F5F9] text-[#64748B]"
                       }`}
                     >
                       {customEmbedsCount}
@@ -890,7 +890,7 @@ export function RightContextPanel({
           {activeTab === "widgets" && (
             <div className="flex h-full flex-col overflow-hidden">
               {/* Secondary Navigation Bar: Active (N) | + Add New | Search Toggle */}
-              <div className="shrink-0 border-b border-[#222225] bg-[#141416] p-3 space-y-2.5">
+              <div className="shrink-0 border-b border-[#E2E8F0] bg-[#141416] p-3 space-y-2.5">
                 <div className="flex items-center gap-2">
                   {/* Active (N) Button */}
                   <button
@@ -899,10 +899,10 @@ export function RightContextPanel({
                     className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
                       sectionsSubTab === "active"
                         ? "border border-[#FACC15] bg-[#18181B] text-[#FACC15] shadow-xs"
-                        : "border border-zinc-800 bg-[#161618] text-zinc-400 hover:text-white hover:border-zinc-700"
+                        : "border border-[#E2E8F0] bg-[#161618] text-[#64748B] hover:text-white hover:border-[#CBD5E1]"
                     }`}
                   >
-                    <Layers className={`h-4 w-4 ${sectionsSubTab === "active" ? "text-[#FACC15]" : "text-zinc-400"}`} />
+                    <Layers className={`h-4 w-4 ${sectionsSubTab === "active" ? "text-[#FACC15]" : "text-[#64748B]"}`} />
                     <span>Active ({activeSections.length})</span>
                   </button>
 
@@ -912,8 +912,8 @@ export function RightContextPanel({
                     onClick={() => setSectionsSubTab("add_new")}
                     className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
                       sectionsSubTab === "add_new"
-                        ? "bg-[#FACC15] text-zinc-950 shadow-sm"
-                        : "bg-[#FACC15] text-zinc-950 hover:bg-[#FDE047] shadow-xs"
+                        ? "bg-[#7137D8] text-zinc-950 shadow-sm"
+                        : "bg-[#7137D8] text-zinc-950 hover:bg-[#6025C5] shadow-xs"
                     }`}
                   >
                     <Plus className="h-4 w-4 stroke-[2.5]" />
@@ -932,8 +932,8 @@ export function RightContextPanel({
                     }}
                     className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border transition-all ${
                       searchOpen || q
-                        ? "bg-[#FACC15] text-zinc-950 border-[#FACC15] shadow-xs"
-                        : "bg-[#161618] text-zinc-400 hover:text-white border-zinc-800 hover:border-zinc-700"
+                        ? "bg-[#7137D8] text-zinc-950 border-[#FACC15] shadow-xs"
+                        : "bg-[#161618] text-[#64748B] hover:text-white border-[#E2E8F0] hover:border-[#CBD5E1]"
                     }`}
                     title={searchOpen ? "Close search" : "Search sections"}
                     aria-label="Search sections"
@@ -945,19 +945,19 @@ export function RightContextPanel({
                 {/* Expandable Search Input */}
                 {(searchOpen || q) && (
                   <div className="relative flex items-center animate-in fade-in slide-in-from-top-1 duration-150">
-                    <Search className="pointer-events-none absolute left-3 h-3.5 w-3.5 text-zinc-500" />
+                    <Search className="pointer-events-none absolute left-3 h-3.5 w-3.5 text-[#94A3B8]" />
                     <input
                       ref={searchInputRef}
                       value={q}
                       onChange={(e) => setQ(e.target.value)}
                       placeholder={sectionsSubTab === "active" ? "Search active sections on this page..." : "Search sections & variants..."}
-                      className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] pl-8 pr-8 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
+                      className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] pl-8 pr-8 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
                     />
                     {q ? (
                       <button
                         type="button"
                         onClick={() => setQ("")}
-                        className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-full text-zinc-500 hover:text-white"
+                        className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-full text-[#94A3B8] hover:text-white"
                         title="Clear search"
                       >
                         <X className="h-3 w-3" />
@@ -969,7 +969,7 @@ export function RightContextPanel({
                           setSearchOpen(false);
                           setQ("");
                         }}
-                        className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-full text-zinc-500 hover:text-white"
+                        className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-full text-[#94A3B8] hover:text-white"
                         title="Close search"
                       >
                         <X className="h-3 w-3" />
@@ -979,7 +979,7 @@ export function RightContextPanel({
                 )}
 
                 {/* Subtitle count text (Image 2) */}
-                <p className="text-[11px] text-zinc-500 px-0.5">
+                <p className="text-[11px] text-[#94A3B8] px-0.5">
                   {sectionsSubTab === "active"
                     ? `${activeSections.length} active section${activeSections.length === 1 ? "" : "s"} on this page`
                     : `${totalTemplatesCount} section templates available`}
@@ -991,27 +991,27 @@ export function RightContextPanel({
                 <div className="flex-1 overflow-y-auto">
                   {/* Info Callout Banner (Image 2) */}
                   <div className="p-3 pb-1">
-                    <div className="flex items-center gap-2 rounded-xl bg-[#161618] border border-zinc-800/80 px-3 py-2 text-[11px] text-zinc-400">
-                      <Info className="h-3.5 w-3.5 text-zinc-500 shrink-0" />
+                    <div className="flex items-center gap-2 rounded-xl bg-[#161618] border border-[#E2E8F0]/80 px-3 py-2 text-[11px] text-[#64748B]">
+                      <Info className="h-3.5 w-3.5 text-[#94A3B8] shrink-0" />
                       <span>Click a section to select it in the editor</span>
                     </div>
                   </div>
 
                   {/* Active Sections Rows */}
                   {filteredActiveSections.length === 0 ? (
-                    <div className="my-8 flex flex-col items-center justify-center p-6 text-center rounded-2xl border border-dashed border-zinc-800 bg-[#161619] mx-3">
-                      <Layers className="h-8 w-8 text-zinc-600 mb-2" />
-                      <p className="text-xs font-semibold text-zinc-300">
+                    <div className="my-8 flex flex-col items-center justify-center p-6 text-center rounded-2xl border border-dashed border-[#E2E8F0] bg-[#161619] mx-3">
+                      <Layers className="h-8 w-8 text-[#94A3B8] mb-2" />
+                      <p className="text-xs font-semibold text-[#334155]">
                         {q ? "No matching active sections" : "No active sections on this page"}
                       </p>
-                      <p className="mt-1 text-[11px] text-zinc-500">
+                      <p className="mt-1 text-[11px] text-[#94A3B8]">
                         {q ? "Try clearing your search query" : "Switch to Add New to add sections to this page"}
                       </p>
                       {!q && (
                         <button
                           type="button"
                           onClick={() => setSectionsSubTab("add_new")}
-                          className="mt-3 flex items-center gap-1.5 rounded-lg bg-[#FACC15] px-3.5 py-1.5 text-xs font-bold text-zinc-950 transition hover:bg-[#FDE047]"
+                          className="mt-3 flex items-center gap-1.5 rounded-lg bg-[#7137D8] px-3.5 py-1.5 text-xs font-bold text-zinc-950 transition hover:bg-[#6025C5]"
                         >
                           <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
                           <span>Add Section</span>
@@ -1043,9 +1043,9 @@ export function RightContextPanel({
                           >
                             {/* Far Left: Drag Handle */}
                             <div
-                              className={`shrink-0 p-0.5 text-zinc-500 transition-colors ${
+                              className={`shrink-0 p-0.5 text-[#94A3B8] transition-colors ${
                                 !isShared
-                                  ? "cursor-grab active:cursor-grabbing hover:text-zinc-200"
+                                  ? "cursor-grab active:cursor-grabbing hover:text-[#111827]"
                                   : "opacity-30 cursor-not-allowed"
                               }`}
                               title={isShared ? "Global section cannot be reordered" : "Drag to reorder section"}
@@ -1056,7 +1056,7 @@ export function RightContextPanel({
 
                             {/* Section Icon: Compact 32px */}
                             <div
-                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#18181C] border border-zinc-800 text-[#FACC15] shadow-xs"
+                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F1F5F9] border border-[#E2E8F0] text-[#FACC15] shadow-xs"
                             >
                               <VisualIcon className="h-4 w-4" />
                             </div>
@@ -1064,7 +1064,7 @@ export function RightContextPanel({
                             {/* Full Section Name (flexible width, readable font) */}
                             <div className="min-w-0 flex-1">
                               <span
-                                className="block truncate text-[13px] font-medium text-zinc-100 group-hover:text-white leading-snug"
+                                className="block truncate text-[13px] font-medium text-[#111827] group-hover:text-white leading-snug"
                                 title={visual.name}
                               >
                                 {visual.name}
@@ -1082,7 +1082,7 @@ export function RightContextPanel({
                               <Switch
                                 checked={!section.hidden}
                                 onCheckedChange={() => toggleHidden(section.id)}
-                                className="data-[state=checked]:bg-[#FACC15] data-[state=checked]:border-[#FACC15] shrink-0 scale-90"
+                                className="data-[state=checked]:bg-[#7137D8] data-[state=checked]:border-[#FACC15] shrink-0 scale-90"
                                 title={section.hidden ? "Show section" : "Hide section"}
                               />
 
@@ -1091,7 +1091,7 @@ export function RightContextPanel({
                                 <DropdownMenuTrigger asChild>
                                   <button
                                     type="button"
-                                    className="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FACC15]"
+                                    className="flex h-7 w-7 items-center justify-center rounded-lg text-[#64748B] hover:text-white hover:bg-[#F1F5F9] transition focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FACC15]"
                                     title="More actions"
                                   >
                                     <MoreVertical className="h-4 w-4" />
@@ -1100,13 +1100,13 @@ export function RightContextPanel({
                                 <DropdownMenuContent
                                   align="end"
                                   sideOffset={4}
-                                  className="w-40 rounded-xl border border-zinc-800 bg-[#18181B]/98 backdrop-blur-xl p-1.5 shadow-2xl text-xs z-50 text-zinc-200"
+                                  className="w-40 rounded-xl border border-[#E2E8F0] bg-[#18181B]/98 backdrop-blur-xl p-1.5 shadow-2xl text-xs z-50 text-[#111827]"
                                 >
                                   <DropdownMenuItem
                                     onSelect={() => handleEditSection(section.id)}
-                                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white transition cursor-pointer"
+                                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[#334155] hover:bg-[#F1F5F9] hover:text-white focus:bg-[#F1F5F9] focus:text-white transition cursor-pointer"
                                   >
-                                    <Pencil className="h-3.5 w-3.5 text-zinc-400" />
+                                    <Pencil className="h-3.5 w-3.5 text-[#64748B]" />
                                     <span>Edit Section</span>
                                   </DropdownMenuItem>
 
@@ -1116,26 +1116,26 @@ export function RightContextPanel({
                                         duplicateSection(section.id);
                                         toast.success(`Duplicated "${visual.name}"`);
                                       }}
-                                      className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white transition cursor-pointer"
+                                      className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[#334155] hover:bg-[#F1F5F9] hover:text-white focus:bg-[#F1F5F9] focus:text-white transition cursor-pointer"
                                     >
-                                      <Copy className="h-3.5 w-3.5 text-zinc-400" />
+                                      <Copy className="h-3.5 w-3.5 text-[#64748B]" />
                                       <span>Duplicate</span>
                                     </DropdownMenuItem>
                                   )}
 
                                   <DropdownMenuItem
                                     onSelect={() => toggleHidden(section.id)}
-                                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white transition cursor-pointer"
+                                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[#334155] hover:bg-[#F1F5F9] hover:text-white focus:bg-[#F1F5F9] focus:text-white transition cursor-pointer"
                                   >
                                     {section.hidden ? (
-                                      <Eye className="h-3.5 w-3.5 text-zinc-400" />
+                                      <Eye className="h-3.5 w-3.5 text-[#64748B]" />
                                     ) : (
-                                      <EyeOff className="h-3.5 w-3.5 text-zinc-400" />
+                                      <EyeOff className="h-3.5 w-3.5 text-[#64748B]" />
                                     )}
                                     <span>{section.hidden ? "Show" : "Hide"}</span>
                                   </DropdownMenuItem>
 
-                                  <DropdownMenuSeparator className="my-1 bg-zinc-800" />
+                                  <DropdownMenuSeparator className="my-1 bg-[#F1F5F9]" />
 
                                   <DropdownMenuItem
                                     onSelect={() => {
@@ -1164,16 +1164,16 @@ export function RightContextPanel({
                 {/* Shortcut to Plugins Panel */}
                 <div
                   onClick={() => setActiveTab("embeds")}
-                  className="flex items-center justify-between rounded-xl border border-amber-400/25 bg-amber-400/5 p-2.5 transition hover:border-amber-400/50 hover:bg-amber-400/10 cursor-pointer shadow-xs group"
+                  className="flex items-center justify-between rounded-xl border border-[#7137D8]/25 bg-amber-400/5 p-2.5 transition hover:border-[#7137D8]/50 hover:bg-amber-400/10 cursor-pointer shadow-xs group"
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-400/15 border border-amber-400/30 text-amber-400">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-400/15 border border-[#7137D8]/30 text-[#7137D8]">
                       <Puzzle className="h-4 w-4" />
                     </span>
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[12px] font-bold text-white truncate">Plugins & Tools</span>
-                        <span className="rounded-full bg-amber-400/20 px-1.5 py-0.2 text-[9px] font-bold text-amber-400">
+                        <span className="text-[12px] font-bold text-[#111827] truncate">Plugins & Tools</span>
+                        <span className="rounded-full bg-amber-400/20 px-1.5 py-0.2 text-[9px] font-bold text-[#7137D8]">
                           {customEmbedsCount}
                         </span>
                       </div>
@@ -1182,7 +1182,7 @@ export function RightContextPanel({
                       </span>
                     </div>
                   </div>
-                  <span className="text-[11px] font-bold text-amber-400 flex items-center gap-0.5 shrink-0 ml-2 group-hover:translate-x-0.5 transition-transform">
+                  <span className="text-[11px] font-bold text-[#7137D8] flex items-center gap-0.5 shrink-0 ml-2 group-hover:translate-x-0.5 transition-transform">
                     <span>Manage</span>
                     <span>→</span>
                   </span>
@@ -1207,7 +1207,7 @@ export function RightContextPanel({
                               className={`overflow-hidden rounded-xl border transition-all duration-200 ${
                                 open
                                   ? "border-[#3F3F46] bg-[#18181B] shadow-sm"
-                                  : "border-[#262626] bg-[#161618] hover:border-[#38383D] hover:bg-[#1A1A1D]"
+                                  : "border-[#262626] bg-[#161618] hover:border-[#38383D] hover:bg-[#F8FAFC]"
                               }`}
                             >
                               <div
@@ -1282,14 +1282,14 @@ export function RightContextPanel({
                                             event.stopPropagation();
                                             endLibraryDrag();
                                           }}
-                                          className="group relative flex flex-col justify-between rounded-lg border border-[#27272A] bg-[#18181B] p-2 text-left cursor-grab transition-all duration-150 hover:border-[#3F3F46] hover:bg-[#202024] active:cursor-grabbing hover:shadow-xs"
+                                          className="group relative flex flex-col justify-between rounded-lg border border-[#E2E8F0] bg-[#18181B] p-2 text-left cursor-grab transition-all duration-150 hover:border-[#3F3F46] hover:bg-[#202024] active:cursor-grabbing hover:shadow-xs"
                                           title={`Drag to add "${variant}" to canvas`}
                                         >
                                           <div className="flex items-start justify-between gap-1">
                                             <span className="text-[11px] font-medium leading-snug text-[#E4E4E7] group-hover:text-[#F4F4F5] line-clamp-2">
                                               {variant}
                                             </span>
-                                            <span className="shrink-0 flex h-4 w-4 items-center justify-center rounded bg-[#27272A] text-[#A1A1AA] transition-colors group-hover:bg-[#FACC15] group-hover:text-[#111111]">
+                                            <span className="shrink-0 flex h-4 w-4 items-center justify-center rounded bg-[#27272A] text-[#A1A1AA] transition-colors group-hover:bg-[#7137D8] group-hover:text-[#111111]">
                                               <Plus className="h-2.5 w-2.5" />
                                             </span>
                                           </div>
@@ -1337,7 +1337,7 @@ export function RightContextPanel({
                                   }
                                 }}
                                 onDragEnd={endLibraryDrag}
-                                className="flex h-[52px] w-full cursor-grab items-center gap-3 rounded-xl border border-[#262626] bg-[#161618] px-3 transition-all hover:border-[#38383D] hover:bg-[#1A1A1D] select-none group active:cursor-grabbing"
+                                className="flex h-[52px] w-full cursor-grab items-center gap-3 rounded-xl border border-[#262626] bg-[#161618] px-3 transition-all hover:border-[#38383D] hover:bg-[#F8FAFC] select-none group active:cursor-grabbing"
 
                               >
                                 <span className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white ${item.iconBg}`}>
@@ -1352,7 +1352,7 @@ export function RightContextPanel({
                                   </span>
                                 </div>
                                 <span
-                                  className="shrink-0 flex h-6 w-6 items-center justify-center rounded-lg bg-[#202024] text-[#71717A] transition-colors group-hover:bg-[#FACC15] group-hover:text-[#111111]"
+                                  className="shrink-0 flex h-6 w-6 items-center justify-center rounded-lg bg-[#202024] text-[#71717A] transition-colors group-hover:bg-[#7137D8] group-hover:text-[#111111]"
                                   title={`Add ${item.label}`}
                                 >
                                   <Plus className="h-3.5 w-3.5" />

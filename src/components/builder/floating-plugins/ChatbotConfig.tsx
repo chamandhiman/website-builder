@@ -38,12 +38,12 @@ export function ChatbotConfig({ data, onChange }: ChatbotConfigProps) {
     <div className="space-y-6">
       {/* ── 1. BOT IDENTITY ───────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Chatbot Profile
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+            <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Assistant Name
             </span>
             <input
@@ -51,12 +51,12 @@ export function ChatbotConfig({ data, onChange }: ChatbotConfigProps) {
               value={data.botName}
               onChange={(e) => update({ botName: e.target.value })}
               placeholder="AI Assistant"
-              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-white placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
+              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
             />
           </div>
 
           <div>
-            <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+            <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Accent Color
             </span>
             <div className="flex items-center gap-2 flex-wrap pt-1.5">
@@ -68,7 +68,7 @@ export function ChatbotConfig({ data, onChange }: ChatbotConfigProps) {
                     type="button"
                     onClick={() => update({ primaryColor: swatch.value })}
                     style={{ backgroundColor: swatch.value }}
-                    className={`h-7 w-7 rounded-full border border-zinc-700 transition-transform ${
+                    className={`h-7 w-7 rounded-full border border-[#CBD5E1] transition-transform ${
                       isSelected
                         ? "ring-2 ring-offset-2 ring-offset-[#121215] ring-[#FACC15] scale-110"
                         : "hover:scale-105 opacity-90 hover:opacity-100"
@@ -83,7 +83,7 @@ export function ChatbotConfig({ data, onChange }: ChatbotConfigProps) {
 
         {/* Welcome Message */}
         <div>
-          <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+          <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
             Initial Welcome Greeting
           </span>
           <textarea
@@ -91,14 +91,14 @@ export function ChatbotConfig({ data, onChange }: ChatbotConfigProps) {
             onChange={(e) => update({ welcomeMessage: e.target.value })}
             placeholder="Hi there! How can I help you today?"
             rows={2}
-            className="w-full p-3 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-white placeholder-zinc-500 focus:outline-none focus:border-[#FACC15] resize-none"
+            className="w-full p-3 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15] resize-none"
           />
         </div>
       </div>
 
       {/* ── 2. BUTTON POSITION ────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Button Position
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -119,12 +119,12 @@ export function ChatbotConfig({ data, onChange }: ChatbotConfigProps) {
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition ${
                   isSelected
                     ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm text-white"
-                    : "border border-[#27272A] bg-[#151518] hover:border-zinc-600 text-zinc-400"
+                    : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 text-[#64748B]"
                 }`}
               >
                 <LayoutGrid
                   className={`h-4 w-4 shrink-0 ${
-                    isSelected ? "text-[#FACC15]" : "text-zinc-500"
+                    isSelected ? "text-[#FACC15]" : "text-[#94A3B8]"
                   }`}
                 />
                 <span className="text-xs font-semibold truncate">{posItem.label}</span>
@@ -136,34 +136,34 @@ export function ChatbotConfig({ data, onChange }: ChatbotConfigProps) {
 
       {/* ── 3. DISPLAY OPTIONS ────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Display Options
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#27272A]">
-            <span className="text-xs font-semibold text-zinc-200">Show on Desktop</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#111827]">Show on Desktop</span>
             <Switch
               checked={data.showOnDesktop}
               onCheckedChange={(checked) => update({ showOnDesktop: checked })}
-              className="data-[state=checked]:bg-[#FACC15]"
+              className="data-[state=checked]:bg-[#7137D8]"
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#27272A]">
-            <span className="text-xs font-semibold text-zinc-200">Show on Mobile</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#111827]">Show on Mobile</span>
             <Switch
               checked={data.showOnMobile}
               onCheckedChange={(checked) => update({ showOnMobile: checked })}
-              className="data-[state=checked]:bg-[#FACC15]"
+              className="data-[state=checked]:bg-[#7137D8]"
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#27272A]">
-            <span className="text-xs font-semibold text-zinc-200">Greeting Bubble</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#111827]">Greeting Bubble</span>
             <Switch
               checked={data.showWelcomeBubble}
               onCheckedChange={(checked) => update({ showWelcomeBubble: checked })}
-              className="data-[state=checked]:bg-[#FACC15]"
+              className="data-[state=checked]:bg-[#7137D8]"
             />
           </div>
         </div>
@@ -177,11 +177,11 @@ export function renderChatbotPreviewElement(data: ChatbotConfigData) {
     <div className="flex flex-col items-end gap-2 animate-in fade-in duration-200">
       {/* Welcome bubble */}
       {data.showWelcomeBubble && (
-        <div className="rounded-xl bg-[#18181B] text-white p-2.5 max-w-[190px] shadow-2xl border border-zinc-700 text-left">
+        <div className="rounded-xl bg-[#18181B] text-white p-2.5 max-w-[190px] shadow-2xl border border-[#CBD5E1] text-left">
           <div className="text-[9px] font-bold text-blue-400 uppercase tracking-wider mb-0.5">
             {data.botName || "AI Assistant"}
           </div>
-          <div className="text-[11px] leading-snug font-medium text-zinc-200">
+          <div className="text-[11px] leading-snug font-medium text-[#111827]">
             {data.welcomeMessage || "Hi there! How can I help you today?"}
           </div>
         </div>

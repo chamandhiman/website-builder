@@ -69,10 +69,10 @@ function SettingSwitch({
   description?: string;
 }) {
   return (
-    <div className="flex items-center justify-between py-2 border-b border-zinc-800/60 last:border-0">
+    <div className="flex items-center justify-between py-2 border-b border-[#E2E8F0] last:border-0">
       <div className="pr-3">
-        <div className="text-xs font-semibold text-zinc-200">{label}</div>
-        {description && <div className="text-[11px] text-zinc-400 mt-0.5">{description}</div>}
+        <div className="text-xs font-semibold text-[#111827]">{label}</div>
+        {description && <div className="text-[11px] text-[#64748B] mt-0.5">{description}</div>}
       </div>
       <button
         type="button"
@@ -80,11 +80,11 @@ function SettingSwitch({
         aria-checked={checked}
         onClick={() => onChange(!checked)}
         className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-          checked ? "bg-amber-400" : "bg-zinc-700"
+          checked ? "bg-[#7137D8]" : "bg-[#CBD5E1]"
         }`}
       >
         <span
-          className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-black shadow-lg ring-0 transition duration-200 ease-in-out ${
+          className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
             checked ? "translate-x-4" : "translate-x-0 bg-zinc-300"
           }`}
         />
@@ -104,14 +104,14 @@ function ColorField({
   onChange: (val: string) => void;
 }) {
   return (
-    <div className="flex items-center justify-between py-1.5 border-b border-zinc-850 last:border-0 text-xs">
-      <span className="text-zinc-300 font-medium">{label}</span>
+    <div className="flex items-center justify-between py-1.5 border-b border-[#E2E8F0] last:border-0 text-xs">
+      <span className="text-[#334155] font-medium">{label}</span>
       <div className="flex items-center gap-2">
         <input
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-20 px-2 py-1 bg-zinc-950 border border-zinc-700 rounded text-[11px] font-mono text-zinc-300 text-center uppercase"
+          className="w-20 px-2 py-1 bg-white border border-[#CBD5E1] rounded text-[11px] font-mono text-[#334155] text-center uppercase"
         />
         <div className="relative w-6 h-6 rounded-md border border-zinc-600 overflow-hidden shrink-0 cursor-pointer shadow-sm">
           <input
@@ -146,10 +146,10 @@ function RangeSliderField({
   onChange: (val: number) => void;
 }) {
   return (
-    <div className="py-2 border-b border-zinc-850 last:border-0 space-y-1.5">
+    <div className="py-2 border-b border-[#E2E8F0] last:border-0 space-y-1.5">
       <div className="flex items-center justify-between text-xs">
-        <span className="text-zinc-300 font-medium">{label}</span>
-        <span className="font-mono text-amber-300 font-bold text-[11px]">
+        <span className="text-[#334155] font-medium">{label}</span>
+        <span className="font-mono text-[#7137D8] font-bold text-[11px]">
           {value}
           {unit}
         </span>
@@ -427,15 +427,15 @@ function FaqAccordionStudioPage() {
 
   if (loading || !config || !widget) {
     return (
-      <div className="min-h-screen bg-[#141416] flex items-center justify-center text-zinc-400">
-        <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mr-3" />
+      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center text-[#64748B]">
+        <div className="w-8 h-8 border-2 border-[#7137D8] border-t-transparent rounded-full animate-spin mr-3" />
         Loading FAQ Accordion Studio…
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0e0e11] text-zinc-100 flex flex-col overflow-hidden font-sans select-none">
+    <div className="min-h-screen bg-[#0e0e11] text-[#111827] flex flex-col overflow-hidden font-sans select-none">
       {/* ================= TOP STUDIO APP BAR ================= */}
       <WidgetStudioHeader
         widgetName={widgetName}
@@ -460,9 +460,9 @@ function FaqAccordionStudioPage() {
       {/* ================= MAIN SPLIT VIEW (SETTINGS LEFT | PREVIEW RIGHT) ================= */}
       <div className="flex-1 flex overflow-hidden">
         {/* ================= LEFT CONFIGURATION PANEL ================= */}
-        <aside className="w-full md:w-[420px] lg:w-[460px] bg-[#141418] border-r border-zinc-800 flex flex-col shrink-0 overflow-hidden z-20">
+        <aside className="w-full md:w-[420px] lg:w-[460px] bg-[#141418] border-r border-[#E2E8F0] flex flex-col shrink-0 overflow-hidden z-20">
           {/* Tab Navigation */}
-          <div className="grid grid-cols-6 border-b border-zinc-800 bg-[#16161b] shrink-0 select-none overflow-hidden">
+          <div className="grid grid-cols-6 border-b border-[#E2E8F0] bg-[#16161b] shrink-0 select-none overflow-hidden">
             {[
               { id: "content", label: "Content", icon: MessageSquare },
               { id: "templates", label: "Templates", icon: Layers },
@@ -480,18 +480,18 @@ function FaqAccordionStudioPage() {
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`group flex flex-col items-center justify-center py-2.5 px-1 text-center border-b-2 transition cursor-pointer ${
                     isActive
-                      ? "border-amber-400 bg-amber-500/10 text-amber-300"
-                      : "border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40"
+                      ? "border-[#7137D8] bg-[#F6F0FE] text-[#7137D8]"
+                      : "border-transparent text-[#64748B] hover:text-[#111827] hover:bg-[#F8FAFC]"
                   }`}
                 >
                   <Icon
                     className={`w-5 h-5 transition-transform duration-150 group-hover:scale-110 ${
-                      isActive ? "text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.35)]" : "text-zinc-400 group-hover:text-zinc-200"
+                      isActive ? "text-[#7137D8]" : "text-[#64748B] group-hover:text-[#111827]"
                     }`}
                   />
                   <span
                     className={`text-[10px] font-semibold mt-1 tracking-tight truncate max-w-full leading-none ${
-                      isActive ? "text-amber-300 font-bold" : "text-zinc-400 group-hover:text-zinc-200"
+                      isActive ? "text-[#7137D8] font-bold" : "text-[#64748B] group-hover:text-[#111827]"
                     }`}
                   >
                     {tab.label}
@@ -507,9 +507,9 @@ function FaqAccordionStudioPage() {
             {activeTab === "content" && (
               <div className="space-y-6">
                 {/* Header & Subtitle Settings */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
-                  <div className="flex items-center justify-between pb-1 border-b border-zinc-800">
-                    <span className="text-xs font-bold text-white uppercase tracking-wider">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
+                  <div className="flex items-center justify-between pb-1 border-b border-[#E2E8F0]">
+                    <span className="text-xs font-bold text-[#111827] uppercase tracking-wider">
                       Section Header
                     </span>
                     <SettingSwitch
@@ -527,7 +527,7 @@ function FaqAccordionStudioPage() {
                   {config.layout.showHeader && (
                     <div className="space-y-3 pt-1">
                       <div>
-                        <label className="text-xs text-zinc-400 font-medium block mb-1">
+                        <label className="text-xs text-[#64748B] font-medium block mb-1">
                           Heading
                         </label>
                         <input
@@ -539,13 +539,13 @@ function FaqAccordionStudioPage() {
                               content: { ...c.content, heading: e.target.value },
                             }))
                           }
-                          className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-lg text-xs text-white focus:border-amber-400 outline-none"
+                          className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs text-white focus:border-[#7137D8] outline-none"
                           placeholder="e.g. Frequently Asked Questions"
                         />
                       </div>
 
                       <div>
-                        <label className="text-xs text-zinc-400 font-medium block mb-1">
+                        <label className="text-xs text-[#64748B] font-medium block mb-1">
                           Description / Subtitle
                         </label>
                         <textarea
@@ -557,7 +557,7 @@ function FaqAccordionStudioPage() {
                               content: { ...c.content, description: e.target.value },
                             }))
                           }
-                          className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-lg text-xs text-white focus:border-amber-400 outline-none resize-none leading-relaxed"
+                          className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs text-white focus:border-[#7137D8] outline-none resize-none leading-relaxed"
                           placeholder="Short description under the heading"
                         />
                       </div>
@@ -569,10 +569,10 @@ function FaqAccordionStudioPage() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                      <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider">
                         Questions &amp; Answers ({(config.items || []).length})
                       </h4>
-                      <p className="text-[11px] text-zinc-400">
+                      <p className="text-[11px] text-[#64748B]">
                         Add, edit, reorder, and duplicate your FAQ entries.
                       </p>
                     </div>
@@ -580,7 +580,7 @@ function FaqAccordionStudioPage() {
                     <button
                       type="button"
                       onClick={handleAddItem}
-                      className="px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs transition flex items-center gap-1 shadow-sm cursor-pointer"
+                      className="px-3 py-1.5 rounded-lg bg-[#7137D8] hover:bg-amber-300 text-black font-bold text-xs transition flex items-center gap-1 shadow-sm cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>Add Question</span>
@@ -596,8 +596,8 @@ function FaqAccordionStudioPage() {
                           key={item.id}
                           className={`rounded-xl border transition-all overflow-hidden ${
                             isEditing
-                              ? "bg-zinc-900 border-amber-400/80 shadow-md ring-1 ring-amber-400/20"
-                              : "bg-zinc-900/60 border-zinc-800 hover:border-zinc-700"
+                              ? "bg-[#F8FAFC] border-[#7137D8] shadow-md ring-1 ring-amber-400/20"
+                              : "bg-white border-[#E2E8F0] hover:border-[#CBD5E1]"
                           }`}
                         >
                           {/* Item Card Header */}
@@ -606,15 +606,15 @@ function FaqAccordionStudioPage() {
                             className="p-3 flex items-center justify-between gap-2 cursor-pointer select-none"
                           >
                             <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                              <span className="w-5 h-5 rounded-md bg-zinc-800 text-[10px] font-mono font-bold text-zinc-400 flex items-center justify-center shrink-0">
+                              <span className="w-5 h-5 rounded-md bg-[#F1F5F9] text-[10px] font-mono font-bold text-[#64748B] flex items-center justify-center shrink-0">
                                 {idx + 1}
                               </span>
                               <div className="min-w-0 flex-1">
-                                <div className="text-xs font-bold text-white truncate">
+                                <div className="text-xs font-bold text-[#111827] truncate">
                                   {item.question || "Untitled Question"}
                                 </div>
                                 {item.category && (
-                                  <span className="text-[10px] text-amber-300/80 font-medium">
+                                  <span className="text-[10px] text-[#7137D8]/80 font-medium">
                                     {item.category}
                                   </span>
                                 )}
@@ -630,7 +630,7 @@ function FaqAccordionStudioPage() {
                                 type="button"
                                 disabled={idx === 0}
                                 onClick={() => handleMoveItem(idx, "up")}
-                                className="p-1 rounded text-zinc-400 hover:text-white disabled:opacity-30 transition cursor-pointer"
+                                className="p-1 rounded text-[#64748B] hover:text-white disabled:opacity-30 transition cursor-pointer"
                                 title="Move up"
                               >
                                 <ChevronUp className="w-3.5 h-3.5" />
@@ -639,7 +639,7 @@ function FaqAccordionStudioPage() {
                                 type="button"
                                 disabled={idx === (config.items || []).length - 1}
                                 onClick={() => handleMoveItem(idx, "down")}
-                                className="p-1 rounded text-zinc-400 hover:text-white disabled:opacity-30 transition cursor-pointer"
+                                className="p-1 rounded text-[#64748B] hover:text-white disabled:opacity-30 transition cursor-pointer"
                                 title="Move down"
                               >
                                 <ChevronDown className="w-3.5 h-3.5" />
@@ -647,7 +647,7 @@ function FaqAccordionStudioPage() {
                               <button
                                 type="button"
                                 onClick={() => handleDuplicateItem(item)}
-                                className="p-1 rounded text-zinc-400 hover:text-amber-400 transition cursor-pointer"
+                                className="p-1 rounded text-[#64748B] hover:text-[#7137D8] transition cursor-pointer"
                                 title="Duplicate question"
                               >
                                 <Copy className="w-3.5 h-3.5" />
@@ -655,7 +655,7 @@ function FaqAccordionStudioPage() {
                               <button
                                 type="button"
                                 onClick={() => handleDeleteItem(item.id)}
-                                className="p-1 rounded text-zinc-400 hover:text-rose-400 transition cursor-pointer"
+                                className="p-1 rounded text-[#64748B] hover:text-rose-400 transition cursor-pointer"
                                 title="Delete question"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -665,9 +665,9 @@ function FaqAccordionStudioPage() {
 
                           {/* Item Expanded Form Editor */}
                           {isEditing && (
-                            <div className="p-3.5 pt-0 border-t border-zinc-800/80 space-y-3 mt-1 bg-zinc-950/40">
+                            <div className="p-3.5 pt-0 border-t border-[#E2E8F0] space-y-3 mt-1 bg-white/40">
                               <div>
-                                <label className="text-[11px] font-semibold text-zinc-400 block mb-1">
+                                <label className="text-[11px] font-semibold text-[#64748B] block mb-1">
                                   Question
                                 </label>
                                 <input
@@ -682,16 +682,16 @@ function FaqAccordionStudioPage() {
                                       ),
                                     }));
                                   }}
-                                  className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-lg text-xs text-white focus:border-amber-400 outline-none"
+                                  className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs text-white focus:border-[#7137D8] outline-none"
                                 />
                               </div>
 
                               <div>
                                 <div className="flex items-center justify-between mb-1">
-                                  <label className="text-[11px] font-semibold text-zinc-400">
+                                  <label className="text-[11px] font-semibold text-[#64748B]">
                                     Answer (Rich Text / HTML supported)
                                   </label>
-                                  <span className="text-[10px] text-zinc-500">
+                                  <span className="text-[10px] text-[#94A3B8]">
                                     Supports &lt;b&gt;, &lt;a&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;p&gt;
                                   </span>
                                 </div>
@@ -707,12 +707,12 @@ function FaqAccordionStudioPage() {
                                       ),
                                     }));
                                   }}
-                                  className="w-full p-2.5 bg-zinc-950 border border-zinc-700 rounded-lg text-xs text-zinc-200 focus:border-amber-400 outline-none leading-relaxed resize-y font-sans"
+                                  className="w-full p-2.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#111827] focus:border-[#7137D8] outline-none leading-relaxed resize-y font-sans"
                                 />
                               </div>
 
                               <div>
-                                <label className="text-[11px] font-semibold text-zinc-400 block mb-1">
+                                <label className="text-[11px] font-semibold text-[#64748B] block mb-1">
                                   Category / Group (Optional)
                                 </label>
                                 <input
@@ -728,7 +728,7 @@ function FaqAccordionStudioPage() {
                                     }));
                                   }}
                                   placeholder="e.g. Billing, General, Shipping, Account"
-                                  className="w-full px-3 py-1.5 bg-zinc-950 border border-zinc-700 rounded-lg text-xs text-white focus:border-amber-400 outline-none"
+                                  className="w-full px-3 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-white focus:border-[#7137D8] outline-none"
                                 />
                               </div>
                             </div>
@@ -746,10 +746,10 @@ function FaqAccordionStudioPage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                    <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider">
                       Ready-Made Templates (8)
                     </h4>
-                    <p className="text-[11px] text-zinc-400">
+                    <p className="text-[11px] text-[#64748B]">
                       Switch appearance and layouts instantly without losing your questions.
                     </p>
                   </div>
@@ -757,7 +757,7 @@ function FaqAccordionStudioPage() {
                   <button
                     type="button"
                     onClick={() => setShowResetModal(true)}
-                    className="text-[11px] text-zinc-400 hover:text-amber-300 flex items-center gap-1 transition cursor-pointer"
+                    className="text-[11px] text-[#64748B] hover:text-[#7137D8] flex items-center gap-1 transition cursor-pointer"
                     title="Reset to template defaults"
                   >
                     <RotateCcw className="w-3 h-3" />
@@ -774,8 +774,8 @@ function FaqAccordionStudioPage() {
                         onClick={() => handleSelectTemplate(tpl.key)}
                         className={`p-3 rounded-xl border cursor-pointer transition-all flex flex-col justify-between ${
                           isSelected
-                            ? "bg-zinc-900 border-amber-400 ring-2 ring-amber-400/20 shadow-md shadow-amber-500/10"
-                            : "bg-zinc-900/60 border-zinc-800 hover:border-zinc-700"
+                            ? "bg-[#F8FAFC] border-[#7137D8] ring-2 ring-amber-400/20 shadow-md shadow-amber-500/10"
+                            : "bg-white border-[#E2E8F0] hover:border-[#CBD5E1]"
                         }`}
                       >
                         <div>
@@ -783,20 +783,20 @@ function FaqAccordionStudioPage() {
                             <h5 className="font-bold text-xs text-white truncate">
                               {tpl.name}
                             </h5>
-                            <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-zinc-800 text-amber-300">
+                            <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#F1F5F9] text-[#7137D8]">
                               {tpl.badge}
                             </span>
                           </div>
-                          <p className="text-[11px] text-zinc-400 line-clamp-2 leading-relaxed">
+                          <p className="text-[11px] text-[#64748B] line-clamp-2 leading-relaxed">
                             {tpl.description}
                           </p>
                         </div>
 
-                        <div className="pt-2 mt-2 border-t border-zinc-800 flex items-center justify-between text-[11px]">
-                          <span className={isSelected ? "text-amber-400 font-bold" : "text-zinc-500 font-medium"}>
+                        <div className="pt-2 mt-2 border-t border-[#E2E8F0] flex items-center justify-between text-[11px]">
+                          <span className={isSelected ? "text-[#7137D8] font-bold" : "text-[#94A3B8] font-medium"}>
                             {isSelected ? "Active" : "Apply"}
                           </span>
-                          {isSelected && <Check className="w-3.5 h-3.5 text-amber-400 font-bold" />}
+                          {isSelected && <Check className="w-3.5 h-3.5 text-[#7137D8] font-bold" />}
                         </div>
                       </div>
                     );
@@ -808,14 +808,14 @@ function FaqAccordionStudioPage() {
             {/* ---------------- 3. LAYOUT TAB ---------------- */}
             {activeTab === "layout" && (
               <div className="space-y-5">
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-4">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider pb-1 border-b border-zinc-800">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-4">
+                  <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider pb-1 border-b border-[#E2E8F0]">
                     Grid &amp; Alignment
                   </h4>
 
                   {/* Columns */}
                   <div>
-                    <label className="text-xs text-zinc-300 font-medium block mb-2">
+                    <label className="text-xs text-[#334155] font-medium block mb-2">
                       Columns Layout
                     </label>
                     <div className="grid grid-cols-2 gap-2">
@@ -834,8 +834,8 @@ function FaqAccordionStudioPage() {
                           }
                           className={`py-2 px-3 rounded-lg text-xs font-bold transition border ${
                             config.layout.columns === opt.val
-                              ? "bg-amber-400/10 border-amber-400 text-amber-300"
-                              : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white"
+                              ? "bg-[#7137D8]/10 border-[#7137D8] text-[#7137D8]"
+                              : "bg-white border-[#E2E8F0] text-[#64748B] hover:text-white"
                           }`}
                         >
                           {opt.label}
@@ -846,7 +846,7 @@ function FaqAccordionStudioPage() {
 
                   {/* Alignment */}
                   <div>
-                    <label className="text-xs text-zinc-300 font-medium block mb-2">
+                    <label className="text-xs text-[#334155] font-medium block mb-2">
                       Header Alignment
                     </label>
                     <div className="grid grid-cols-2 gap-2">
@@ -865,8 +865,8 @@ function FaqAccordionStudioPage() {
                           }
                           className={`py-2 px-3 rounded-lg text-xs font-bold transition border ${
                             config.layout.alignment === opt.val
-                              ? "bg-amber-400/10 border-amber-400 text-amber-300"
-                              : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white"
+                              ? "bg-[#7137D8]/10 border-[#7137D8] text-[#7137D8]"
+                              : "bg-white border-[#E2E8F0] text-[#64748B] hover:text-white"
                           }`}
                         >
                           {opt.label}
@@ -877,7 +877,7 @@ function FaqAccordionStudioPage() {
 
                   {/* Icon Position */}
                   <div>
-                    <label className="text-xs text-zinc-300 font-medium block mb-2">
+                    <label className="text-xs text-[#334155] font-medium block mb-2">
                       Expand / Collapse Icon Position
                     </label>
                     <div className="grid grid-cols-2 gap-2">
@@ -896,8 +896,8 @@ function FaqAccordionStudioPage() {
                           }
                           className={`py-2 px-3 rounded-lg text-xs font-bold transition border ${
                             config.layout.iconPosition === opt.val
-                              ? "bg-amber-400/10 border-amber-400 text-amber-300"
-                              : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white"
+                              ? "bg-[#7137D8]/10 border-[#7137D8] text-[#7137D8]"
+                              : "bg-white border-[#E2E8F0] text-[#64748B] hover:text-white"
                           }`}
                         >
                           {opt.label}
@@ -908,7 +908,7 @@ function FaqAccordionStudioPage() {
 
                   {/* Max Width */}
                   <div>
-                    <label className="text-xs text-zinc-300 font-medium block mb-1">
+                    <label className="text-xs text-[#334155] font-medium block mb-1">
                       Max Container Width
                     </label>
                     <input
@@ -921,14 +921,14 @@ function FaqAccordionStudioPage() {
                         }))
                       }
                       placeholder="e.g. 840px or 100%"
-                      className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-lg text-xs text-white focus:border-amber-400 outline-none font-mono"
+                      className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs text-white focus:border-[#7137D8] outline-none font-mono"
                     />
                   </div>
                 </div>
 
                 {/* Spacings and Padding */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-1">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider pb-2 border-b border-zinc-800">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1">
+                  <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider pb-2 border-b border-[#E2E8F0]">
                     Sizing &amp; Spacing
                   </h4>
 
@@ -990,8 +990,8 @@ function FaqAccordionStudioPage() {
             {/* ---------------- 4. BEHAVIOR TAB ---------------- */}
             {activeTab === "behavior" && (
               <div className="space-y-4">
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-2">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider pb-2 border-b border-zinc-800">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
+                  <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider pb-2 border-b border-[#E2E8F0]">
                     Accordion Mechanics
                   </h4>
 
@@ -1090,9 +1090,9 @@ function FaqAccordionStudioPage() {
                 </div>
 
                 {/* Support Banner / Contact Box */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
-                  <div className="flex items-center justify-between pb-1 border-b border-zinc-800">
-                    <span className="text-xs font-bold text-white uppercase tracking-wider">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
+                  <div className="flex items-center justify-between pb-1 border-b border-[#E2E8F0]">
+                    <span className="text-xs font-bold text-[#111827] uppercase tracking-wider">
                       Customer Support Link
                     </span>
                     <SettingSwitch
@@ -1110,7 +1110,7 @@ function FaqAccordionStudioPage() {
                   {config.behavior.showSupportLink && (
                     <div className="space-y-3 pt-1">
                       <div>
-                        <label className="text-xs text-zinc-400 font-medium block mb-1">
+                        <label className="text-xs text-[#64748B] font-medium block mb-1">
                           Support Banner Text
                         </label>
                         <input
@@ -1122,12 +1122,12 @@ function FaqAccordionStudioPage() {
                               behavior: { ...c.behavior, supportText: e.target.value },
                             }))
                           }
-                          className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-lg text-xs text-white focus:border-amber-400 outline-none"
+                          className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs text-white focus:border-[#7137D8] outline-none"
                         />
                       </div>
 
                       <div>
-                        <label className="text-xs text-zinc-400 font-medium block mb-1">
+                        <label className="text-xs text-[#64748B] font-medium block mb-1">
                           Support Button Label
                         </label>
                         <input
@@ -1139,12 +1139,12 @@ function FaqAccordionStudioPage() {
                               behavior: { ...c.behavior, supportButtonText: e.target.value },
                             }))
                           }
-                          className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-lg text-xs text-white focus:border-amber-400 outline-none"
+                          className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs text-white focus:border-[#7137D8] outline-none"
                         />
                       </div>
 
                       <div>
-                        <label className="text-xs text-zinc-400 font-medium block mb-1">
+                        <label className="text-xs text-[#64748B] font-medium block mb-1">
                           Contact / Support URL
                         </label>
                         <input
@@ -1157,7 +1157,7 @@ function FaqAccordionStudioPage() {
                             }))
                           }
                           placeholder="https://example.com/contact"
-                          className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-lg text-xs text-white focus:border-amber-400 outline-none font-mono"
+                          className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs text-white focus:border-[#7137D8] outline-none font-mono"
                         />
                       </div>
                     </div>
@@ -1170,19 +1170,19 @@ function FaqAccordionStudioPage() {
             {activeTab === "appearance" && (
               <div className="space-y-5">
                 {/* Colors */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
-                  <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
-                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0]">
+                    <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider">
                       Colors &amp; Theme
                     </h4>
-                    <span className="text-[10px] text-amber-400 font-semibold bg-amber-400/10 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] text-[#7137D8] font-semibold bg-[#7137D8]/10 px-2 py-0.5 rounded-full">
                       Auto-adapts to page
                     </span>
                   </div>
 
                   {/* Theme Presets */}
                   <div>
-                    <label className="text-xs text-zinc-400 font-medium block mb-1.5">
+                    <label className="text-xs text-[#64748B] font-medium block mb-1.5">
                       Theme Quick Presets
                     </label>
                     <div className="grid grid-cols-2 gap-2">
@@ -1211,7 +1211,7 @@ function FaqAccordionStudioPage() {
                             },
                           }))
                         }
-                        className="py-1.5 px-2.5 rounded-lg text-xs font-semibold bg-zinc-950 border border-zinc-700 text-zinc-200 hover:text-white hover:border-amber-400 transition flex items-center justify-center gap-1.5"
+                        className="py-1.5 px-2.5 rounded-lg text-xs font-semibold bg-white border border-[#CBD5E1] text-[#111827] hover:text-white hover:border-[#7137D8] transition flex items-center justify-center gap-1.5"
                       >
                         <span className="w-2.5 h-2.5 rounded-full bg-white border border-zinc-400" />
                         <span>Light Mode</span>
@@ -1241,15 +1241,15 @@ function FaqAccordionStudioPage() {
                             },
                           }))
                         }
-                        className="py-1.5 px-2.5 rounded-lg text-xs font-semibold bg-zinc-950 border border-zinc-700 text-zinc-200 hover:text-white hover:border-amber-400 transition flex items-center justify-center gap-1.5"
+                        className="py-1.5 px-2.5 rounded-lg text-xs font-semibold bg-white border border-[#CBD5E1] text-[#111827] hover:text-white hover:border-[#7137D8] transition flex items-center justify-center gap-1.5"
                       >
-                        <span className="w-2.5 h-2.5 rounded-full bg-zinc-900 border border-zinc-600" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#F8FAFC] border border-zinc-600" />
                         <span>Dark Mode</span>
                       </button>
                     </div>
                   </div>
 
-                  <div className="space-y-1 pt-1 border-t border-zinc-800/80">
+                  <div className="space-y-1 pt-1 border-t border-[#E2E8F0]">
                     <ColorField
                       label="Widget Background"
                       value={config.colors.widgetBg || config.colors.widgetBackground || "transparent"}
@@ -1363,8 +1363,8 @@ function FaqAccordionStudioPage() {
                 </div>
 
                 {/* Icon Style */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider pb-1 border-b border-zinc-800">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
+                  <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider pb-1 border-b border-[#E2E8F0]">
                     Icon Style
                   </h4>
 
@@ -1386,8 +1386,8 @@ function FaqAccordionStudioPage() {
                         }
                         className={`py-2 px-3 rounded-lg text-xs font-bold transition border ${
                           config.appearance?.iconStyle === opt.val
-                            ? "bg-amber-400/10 border-amber-400 text-amber-300"
-                            : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white"
+                            ? "bg-[#7137D8]/10 border-[#7137D8] text-[#7137D8]"
+                            : "bg-white border-[#E2E8F0] text-[#64748B] hover:text-white"
                         }`}
                       >
                         {opt.label}
@@ -1397,13 +1397,13 @@ function FaqAccordionStudioPage() {
                 </div>
 
                 {/* Typography */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider pb-1 border-b border-zinc-800">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
+                  <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider pb-1 border-b border-[#E2E8F0]">
                     Typography &amp; Fonts
                   </h4>
 
                   <div>
-                    <label className="text-xs text-zinc-400 font-medium block mb-1">
+                    <label className="text-xs text-[#64748B] font-medium block mb-1">
                       Font Family
                     </label>
                     <select
@@ -1414,7 +1414,7 @@ function FaqAccordionStudioPage() {
                           typography: { ...c.typography, fontFamily: e.target.value },
                         }))
                       }
-                      className="w-full py-2 px-3 bg-zinc-950 border border-zinc-700 rounded-lg text-xs text-white focus:border-amber-400 outline-none cursor-pointer"
+                      className="w-full py-2 px-3 bg-white border border-[#CBD5E1] rounded-lg text-xs text-white focus:border-[#7137D8] outline-none cursor-pointer"
                     >
                       <option value="inherit">Inherit from website (Recommended)</option>
                       <option value="Inter, sans-serif">Inter</option>
@@ -1427,7 +1427,7 @@ function FaqAccordionStudioPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs text-zinc-400 font-medium block mb-1">
+                    <label className="text-xs text-[#64748B] font-medium block mb-1">
                       Question Font Weight
                     </label>
                     <div className="grid grid-cols-4 gap-1.5">
@@ -1448,8 +1448,8 @@ function FaqAccordionStudioPage() {
                           }
                           className={`py-1.5 px-2 rounded-lg text-xs font-semibold transition border ${
                             (config.typography.fontWeight || "600") === w.val
-                              ? "bg-amber-400/10 border-amber-400 text-amber-300"
-                              : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white"
+                              ? "bg-[#7137D8]/10 border-[#7137D8] text-[#7137D8]"
+                              : "bg-white border-[#E2E8F0] text-[#64748B] hover:text-white"
                           }`}
                         >
                           {w.label}
@@ -1490,8 +1490,8 @@ function FaqAccordionStudioPage() {
             {/* ---------------- 6. ADVANCED TAB ---------------- */}
             {activeTab === "advanced" && (
               <div className="space-y-4">
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider pb-1 border-b border-zinc-800">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
+                  <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider pb-1 border-b border-[#E2E8F0]">
                     SEO &amp; Schema Structured Data
                   </h4>
 
@@ -1520,13 +1520,13 @@ function FaqAccordionStudioPage() {
                   />
                 </div>
 
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider pb-1 border-b border-zinc-800">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
+                  <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider pb-1 border-b border-[#E2E8F0]">
                     Developer &amp; Custom Classes
                   </h4>
 
                   <div>
-                    <label className="text-xs text-zinc-400 font-medium block mb-1">
+                    <label className="text-xs text-[#64748B] font-medium block mb-1">
                       Custom CSS Class Name
                     </label>
                     <input
@@ -1539,12 +1539,12 @@ function FaqAccordionStudioPage() {
                         }))
                       }
                       placeholder="e.g. my-custom-faq"
-                      className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-lg text-xs text-white focus:border-amber-400 outline-none font-mono"
+                      className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs text-white focus:border-[#7137D8] outline-none font-mono"
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs text-zinc-400 font-medium block mb-1">
+                    <label className="text-xs text-[#64748B] font-medium block mb-1">
                       Empty Search Results Message
                     </label>
                     <input
@@ -1557,7 +1557,7 @@ function FaqAccordionStudioPage() {
                         }))
                       }
                       placeholder="No matching questions found."
-                      className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-lg text-xs text-white focus:border-amber-400 outline-none"
+                      className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs text-white focus:border-[#7137D8] outline-none"
                     />
                   </div>
                 </div>
@@ -1572,7 +1572,7 @@ function FaqAccordionStudioPage() {
           <div
             className={`w-full transition-all duration-300 relative ${
               previewDevice === "mobile"
-                ? "max-w-[400px] border-8 border-zinc-800 rounded-[36px] bg-zinc-950 shadow-2xl p-4 my-auto min-h-[640px]"
+                ? "max-w-[400px] border-8 border-[#E2E8F0] rounded-[36px] bg-white shadow-2xl p-4 my-auto min-h-[640px]"
                 : "max-w-4xl"
             }`}
           >
@@ -1593,34 +1593,34 @@ function FaqAccordionStudioPage() {
       {/* ================= EMBED CODE MODAL ================= */}
       {embedModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#18181b] border border-zinc-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+          <div className="bg-[#18181b] border border-[#E2E8F0] rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-6">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
               <div className="flex items-center gap-2">
-                <Code2 className="w-5 h-5 text-amber-400" />
+                <Code2 className="w-5 h-5 text-[#7137D8]" />
                 <h3 className="font-bold text-white text-base">Embed FAQ Accordion</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setEmbedModalOpen(false)}
-                className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition cursor-pointer"
+                className="p-1 rounded-lg text-[#64748B] hover:text-white hover:bg-[#F1F5F9] transition cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="space-y-3">
-              <p className="text-xs text-zinc-300 leading-relaxed">
+              <p className="text-xs text-[#334155] leading-relaxed">
                 Copy and paste this snippet anywhere on your website (WordPress, Shopify, Webflow, or custom HTML):
               </p>
 
               <div className="relative">
-                <pre className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 font-mono text-xs text-amber-200 overflow-x-auto leading-relaxed select-all">
+                <pre className="p-4 rounded-xl bg-white border border-[#E2E8F0] font-mono text-xs text-amber-200 overflow-x-auto leading-relaxed select-all">
                   {embedSnippet}
                 </pre>
                 <button
                   type="button"
                   onClick={copyEmbedCode}
-                  className="absolute top-3 right-3 px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold flex items-center gap-1.5 transition shadow-sm active:scale-95 cursor-pointer"
+                  className="absolute top-3 right-3 px-3 py-1.5 rounded-lg bg-[#7137D8] hover:bg-amber-300 text-black text-xs font-bold flex items-center gap-1.5 transition shadow-sm active:scale-95 cursor-pointer"
                 >
                   {copiedEmbed ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedEmbed ? "Copied!" : "Copy Code"}</span>
@@ -1628,23 +1628,23 @@ function FaqAccordionStudioPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-zinc-400 pt-2 border-t border-zinc-800/80">
-              <div className="p-3 rounded-lg bg-zinc-900 border border-zinc-800">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-[#64748B] pt-2 border-t border-[#E2E8F0]">
+              <div className="p-3 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0]">
                 <strong className="text-white block mb-1">In WebToolOcean Builder:</strong>
                 <span>Add a Custom HTML element, click it, and paste this embed code.</span>
               </div>
-              <div className="p-3 rounded-lg bg-zinc-900 border border-zinc-800">
+              <div className="p-3 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0]">
                 <strong className="text-white block mb-1">On External Websites:</strong>
                 <span>Place the div where the FAQ should appear; the script handles hydration.</span>
               </div>
             </div>
 
             <div className="flex items-center justify-between pt-2">
-              <span className="text-[11px] text-zinc-500 font-mono">ID: {widgetId}</span>
+              <span className="text-[11px] text-[#94A3B8] font-mono">ID: {widgetId}</span>
               <button
                 type="button"
                 onClick={() => setEmbedModalOpen(false)}
-                className="px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-xs transition cursor-pointer"
+                className="px-4 py-2 rounded-lg bg-[#F1F5F9] hover:bg-zinc-700 text-white font-bold text-xs transition cursor-pointer"
               >
                 Done
               </button>
@@ -1659,14 +1659,14 @@ function FaqAccordionStudioPage() {
           <div className="relative w-full max-w-md p-6 rounded-2xl bg-[#151518] border border-white/10 shadow-2xl shadow-black/80">
             <button
               type="button"
-              className="absolute top-4 right-4 p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-white/[0.06] transition cursor-pointer"
+              className="absolute top-4 right-4 p-1.5 rounded-lg text-[#64748B] hover:text-white hover:bg-white/[0.06] transition cursor-pointer"
               onClick={() => setShowResetModal(false)}
               aria-label="Close"
             >
               <X className="w-4 h-4" />
             </button>
 
-            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-4 text-amber-400">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-4 text-[#7137D8]">
               <RotateCcw className="w-6 h-6 stroke-[2.2]" />
             </div>
 
@@ -1674,7 +1674,7 @@ function FaqAccordionStudioPage() {
             <p className="text-xs text-[#9a9aa3] mt-2 leading-relaxed">
               Are you sure you want to reset all settings, questions, and styling back to the template defaults?
             </p>
-            <p className="text-[11px] text-zinc-500 mt-1 leading-normal">
+            <p className="text-[11px] text-[#94A3B8] mt-1 leading-normal">
               Any custom edits you have made will be overwritten with the initial template configuration.
             </p>
 

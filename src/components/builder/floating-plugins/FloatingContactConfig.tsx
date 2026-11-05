@@ -106,7 +106,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
     <div className="space-y-6">
       {/* ── 1. BUTTON STYLE ───────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Button Style
         </label>
         <div className="grid grid-cols-5 gap-2 sm:gap-3">
@@ -117,7 +117,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             className={`flex flex-col items-center justify-center p-3 rounded-2xl transition ${
               data.style === "phone"
                 ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm"
-                : "border border-[#27272A] bg-[#151518] hover:border-zinc-600 hover:bg-[#1A1A1E]"
+                : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 hover:bg-white"
             }`}
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0284C7] text-white shadow-xs mb-1.5">
@@ -125,7 +125,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             </span>
             <span
               className={`text-xs font-semibold ${
-                data.style === "phone" ? "text-white" : "text-zinc-400"
+                data.style === "phone" ? "text-white" : "text-[#64748B]"
               }`}
             >
               Phone
@@ -139,7 +139,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             className={`flex flex-col items-center justify-center p-3 rounded-2xl transition ${
               data.style === "whatsapp"
                 ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm"
-                : "border border-[#27272A] bg-[#151518] hover:border-zinc-600 hover:bg-[#1A1A1E]"
+                : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 hover:bg-white"
             }`}
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xs mb-1.5">
@@ -147,7 +147,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             </span>
             <span
               className={`text-xs font-semibold ${
-                data.style === "whatsapp" ? "text-white" : "text-zinc-400"
+                data.style === "whatsapp" ? "text-white" : "text-[#64748B]"
               }`}
             >
               WhatsApp
@@ -161,7 +161,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             className={`flex flex-col items-center justify-center p-3 rounded-2xl transition ${
               data.style === "email"
                 ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm"
-                : "border border-[#27272A] bg-[#151518] hover:border-zinc-600 hover:bg-[#1A1A1E]"
+                : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 hover:bg-white"
             }`}
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0284C7] text-white shadow-xs mb-1.5">
@@ -169,7 +169,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             </span>
             <span
               className={`text-xs font-semibold ${
-                data.style === "email" ? "text-white" : "text-zinc-400"
+                data.style === "email" ? "text-white" : "text-[#64748B]"
               }`}
             >
               Email
@@ -183,7 +183,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             className={`flex flex-col items-center justify-center p-3 rounded-2xl transition ${
               data.style === "chat"
                 ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm"
-                : "border border-[#27272A] bg-[#151518] hover:border-zinc-600 hover:bg-[#1A1A1E]"
+                : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 hover:bg-white"
             }`}
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#7C3AED] text-white shadow-xs mb-1.5">
@@ -191,7 +191,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             </span>
             <span
               className={`text-xs font-semibold ${
-                data.style === "chat" ? "text-white" : "text-zinc-400"
+                data.style === "chat" ? "text-white" : "text-[#64748B]"
               }`}
             >
               Chat
@@ -205,7 +205,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             className={`flex flex-col items-center justify-center p-3 rounded-2xl transition ${
               data.style === "more"
                 ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm"
-                : "border border-[#27272A] bg-[#151518] hover:border-zinc-600 hover:bg-[#1A1A1E]"
+                : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 hover:bg-white"
             }`}
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#27272A] text-white shadow-xs mb-1.5">
@@ -213,7 +213,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             </span>
             <span
               className={`text-xs font-semibold ${
-                data.style === "more" ? "text-white" : "text-zinc-400"
+                data.style === "more" ? "text-white" : "text-[#64748B]"
               }`}
             >
               More
@@ -224,18 +224,18 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
 
       {/* ── 2. CONTACT DETAILS ─────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Contact Details
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Contact Type */}
           <div>
             <div className="flex items-center gap-1.5 mb-1.5">
-              <span className="text-[11px] font-semibold text-zinc-300">Contact Type</span>
+              <span className="text-[11px] font-semibold text-[#334155]">Contact Type</span>
               <span className="h-1.5 w-1.5 rounded-full bg-[#8B5CF6]" />
             </div>
             <div className="relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] pointer-events-none">
                 {data.contactType === "phone" ? (
                   <Phone className="h-4 w-4" />
                 ) : data.contactType === "whatsapp" ? (
@@ -249,7 +249,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
               <select
                 value={data.contactType}
                 onChange={(e) => update({ contactType: e.target.value as any })}
-                className="w-full h-11 pl-9 pr-8 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-white focus:outline-none focus:border-[#FACC15] appearance-none cursor-pointer"
+                className="w-full h-11 pl-9 pr-8 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] focus:outline-none focus:border-[#FACC15] appearance-none cursor-pointer"
               >
                 <option value="phone" className="bg-[#17171A] text-white">
                   Phone
@@ -264,14 +264,14 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
                   Custom Link / Chat
                 </option>
               </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 pointer-events-none" />
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#64748B] pointer-events-none" />
             </div>
           </div>
 
           {/* Contact Value / Phone Number */}
           <div>
             <div className="flex items-center gap-1.5 mb-1.5">
-              <span className="text-[11px] font-semibold text-zinc-300">
+              <span className="text-[11px] font-semibold text-[#334155]">
                 {data.contactType === "phone"
                   ? "Phone Number"
                   : data.contactType === "whatsapp"
@@ -283,7 +283,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
               <span className="h-1.5 w-1.5 rounded-full bg-[#8B5CF6]" />
             </div>
             <div className="relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] pointer-events-none">
                 {data.contactType === "email" ? (
                   <Mail className="h-4 w-4" />
                 ) : data.contactType === "url" ? (
@@ -305,7 +305,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
                     ? "support@example.com"
                     : "https://example.com"
                 }
-                className="w-full h-11 pl-9 pr-3 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-white placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
+                className="w-full h-11 pl-9 pr-3 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
               />
             </div>
           </div>
@@ -314,7 +314,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
 
       {/* ── 3. BUTTON POSITION ────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Button Position
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -335,12 +335,12 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition ${
                   isSelected
                     ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm text-white"
-                    : "border border-[#27272A] bg-[#151518] hover:border-zinc-600 text-zinc-400"
+                    : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 text-[#64748B]"
                 }`}
               >
                 <LayoutGrid
                   className={`h-4 w-4 shrink-0 ${
-                    isSelected ? "text-[#FACC15]" : "text-zinc-500"
+                    isSelected ? "text-[#FACC15]" : "text-[#94A3B8]"
                   }`}
                 />
                 <span className="text-xs font-semibold truncate">{posItem.label}</span>
@@ -352,14 +352,14 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
 
       {/* ── 4. APPEARANCE ─────────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Appearance
         </label>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Button Size */}
           <div>
-            <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+            <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Button Size
             </span>
             <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#17171A] border border-[#2B2B30]">
@@ -373,7 +373,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
                     className={`flex-1 py-1.5 rounded-lg text-xs font-semibold capitalize transition ${
                       isSelected
                         ? "border border-[#FACC15] bg-[#222228] text-white shadow-xs"
-                        : "text-zinc-400 hover:text-white"
+                        : "text-[#64748B] hover:text-white"
                     }`}
                   >
                     {sz}
@@ -385,7 +385,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
 
           {/* Button Color */}
           <div>
-            <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+            <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Button Color
             </span>
             <div className="flex items-center gap-2 flex-wrap pt-0.5">
@@ -431,7 +431,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
           {/* Tooltip Text */}
           <div>
             <div className="flex items-center gap-1.5 mb-1.5">
-              <span className="text-[11px] font-semibold text-zinc-300">Tooltip Text</span>
+              <span className="text-[11px] font-semibold text-[#334155]">Tooltip Text</span>
               <span className="h-1.5 w-1.5 rounded-full bg-[#8B5CF6]" />
             </div>
             <input
@@ -439,13 +439,13 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
               value={data.tooltipText}
               onChange={(e) => update({ tooltipText: e.target.value })}
               placeholder="Call Us"
-              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-white placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
+              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
             />
           </div>
 
           {/* Custom Icon (Optional) */}
           <div>
-            <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+            <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Custom Icon (Optional)
             </span>
             <input
@@ -457,18 +457,18 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             />
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="h-11 border border-dashed border-[#2E2E34] hover:border-zinc-500 rounded-xl bg-[#17171A] px-3 flex items-center justify-center gap-2 cursor-pointer transition text-zinc-400 hover:text-white"
+              className="h-11 border border-dashed border-[#2E2E34] hover:border-zinc-500 rounded-xl bg-[#17171A] px-3 flex items-center justify-center gap-2 cursor-pointer transition text-[#64748B] hover:text-white"
             >
               <Upload className="h-3.5 w-3.5" />
               <div className="text-left">
-                <span className="text-xs font-semibold block text-zinc-200">Upload Icon</span>
-                <span className="text-[9px] text-zinc-500 block leading-none">
+                <span className="text-xs font-semibold block text-[#111827]">Upload Icon</span>
+                <span className="text-[9px] text-[#94A3B8] block leading-none">
                   SVG, PNG, JPG (max 2MB)
                 </span>
               </div>
             </div>
             {data.customIconUrl && (
-              <div className="mt-1 flex items-center justify-between text-[11px] text-zinc-400">
+              <div className="mt-1 flex items-center justify-between text-[11px] text-[#64748B]">
                 <span className="text-emerald-400 font-semibold">Custom icon loaded</span>
                 <button
                   type="button"
@@ -485,37 +485,37 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
 
       {/* ── 5. DISPLAY OPTIONS ────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Display Options
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {/* Show on Desktop */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#27272A]">
-            <span className="text-xs font-semibold text-zinc-200">Show on Desktop</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#111827]">Show on Desktop</span>
             <Switch
               checked={data.showOnDesktop}
               onCheckedChange={(checked) => update({ showOnDesktop: checked })}
-              className="data-[state=checked]:bg-[#FACC15]"
+              className="data-[state=checked]:bg-[#7137D8]"
             />
           </div>
 
           {/* Show on Mobile */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#27272A]">
-            <span className="text-xs font-semibold text-zinc-200">Show on Mobile</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#111827]">Show on Mobile</span>
             <Switch
               checked={data.showOnMobile}
               onCheckedChange={(checked) => update({ showOnMobile: checked })}
-              className="data-[state=checked]:bg-[#FACC15]"
+              className="data-[state=checked]:bg-[#7137D8]"
             />
           </div>
 
           {/* Show Tooltip */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#27272A]">
-            <span className="text-xs font-semibold text-zinc-200">Show Tooltip</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#111827]">Show Tooltip</span>
             <Switch
               checked={data.showTooltip}
               onCheckedChange={(checked) => update({ showTooltip: checked })}
-              className="data-[state=checked]:bg-[#FACC15]"
+              className="data-[state=checked]:bg-[#7137D8]"
             />
           </div>
         </div>
@@ -561,7 +561,7 @@ export function renderFloatingContactPreviewElement(data: ContactButtonConfigDat
     <div className="flex flex-col items-end gap-1.5 animate-in fade-in duration-200">
       {/* Tooltip bubble */}
       {data.showTooltip && data.tooltipText && (
-        <div className="rounded-lg bg-[#0F172A] text-white px-2.5 py-1 text-[11px] font-bold shadow-xl border border-zinc-700/50 whitespace-nowrap">
+        <div className="rounded-lg bg-[#0F172A] text-white px-2.5 py-1 text-[11px] font-bold shadow-xl border border-[#CBD5E1]/50 whitespace-nowrap">
           {data.tooltipText}
         </div>
       )}

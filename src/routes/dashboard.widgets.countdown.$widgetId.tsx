@@ -74,7 +74,7 @@ function StudioSwitch({
   return (
     <div
       onClick={() => onChange(!checked)}
-      className="flex items-center justify-between py-2 px-1 cursor-pointer select-none group rounded-lg hover:bg-zinc-800/40 transition-colors"
+      className="flex items-center justify-between py-2 px-1 cursor-pointer select-none group rounded-lg hover:bg-[#F8FAFC] transition-colors"
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
@@ -85,15 +85,15 @@ function StudioSwitch({
       }}
     >
       <div className="pr-3">
-        <span className="text-zinc-200 group-hover:text-white font-medium text-xs transition-colors">
+        <span className="text-[#111827] group-hover:text-white font-medium text-xs transition-colors">
           {label}
         </span>
-        {description && <p className="text-[10px] text-zinc-500 mt-0.5">{description}</p>}
+        {description && <p className="text-[10px] text-[#94A3B8] mt-0.5">{description}</p>}
       </div>
       <div className="flex items-center gap-2 shrink-0">
         <span
           className={`text-[10px] font-bold tracking-wider uppercase transition-colors ${
-            checked ? "text-amber-400" : "text-zinc-500"
+            checked ? "text-[#7137D8]" : "text-[#94A3B8]"
           }`}
         >
           {checked ? "ON" : "OFF"}
@@ -103,11 +103,11 @@ function StudioSwitch({
           role="switch"
           aria-checked={checked}
           className={`w-10 h-5 flex items-center rounded-full p-0.5 transition-colors ${
-            checked ? "bg-amber-400" : "bg-zinc-700"
+            checked ? "bg-[#7137D8]" : "bg-[#CBD5E1]"
           }`}
         >
           <div
-            className={`bg-zinc-950 w-4 h-4 rounded-full shadow-md transform transition-transform ${
+            className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
               checked ? "translate-x-5 bg-black" : "translate-x-0 bg-zinc-300"
             }`}
           />
@@ -129,12 +129,12 @@ function ColorControl({
 }) {
   return (
     <div className="flex items-center justify-between py-1.5">
-      <span className="text-xs text-zinc-300">{label}</span>
+      <span className="text-xs text-[#334155]">{label}</span>
       <div className="flex items-center gap-2">
-        <span className="text-[11px] font-mono text-zinc-400">{value}</span>
+        <span className="text-[11px] font-mono text-[#64748B]">{value}</span>
         <label className="relative cursor-pointer">
           <div
-            className="w-7 h-7 rounded-lg border border-zinc-700 shadow-sm transition hover:scale-105"
+            className="w-7 h-7 rounded-lg border border-[#CBD5E1] shadow-sm transition hover:scale-105"
             style={{ backgroundColor: value || "#ffffff" }}
           />
           <input
@@ -400,9 +400,9 @@ function CountdownStudioPage() {
 
   if (loading || !widget) {
     return (
-      <div className="min-h-screen bg-[#121214] flex items-center justify-center text-zinc-400">
+      <div className="min-h-screen bg-[#121214] flex items-center justify-center text-[#64748B]">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-2 border-[#7137D8] border-t-transparent rounded-full animate-spin"></div>
           <span className="text-sm">Loading Countdown Studio…</span>
         </div>
       </div>
@@ -413,14 +413,14 @@ function CountdownStudioPage() {
   const isPublished = widget.status === "published";
 
   return (
-    <div className="h-screen w-full flex flex-col bg-[#121214] text-zinc-100 overflow-hidden select-none">
+    <div className="h-screen w-full flex flex-col bg-[#121214] text-[#111827] overflow-hidden select-none">
       {/* Top Studio Navbar */}
       <WidgetStudioHeader
         widgetName={widget.name}
         onWidgetNameChange={(name) => setWidget({ ...widget, name })}
         status={widget.status}
         icon={<Clock className="w-3.5 h-3.5" />}
-        iconBgClass="bg-amber-400/15 border-amber-400/30 text-amber-400"
+        iconBgClass="bg-[#7137D8]/10 border-[#7137D8]/30 text-[#7137D8]"
         previewDevice={previewDevice}
         onPreviewDeviceChange={setPreviewDevice}
         onResetPreview={handleResetPreview}
@@ -434,9 +434,9 @@ function CountdownStudioPage() {
       {/* Main Studio Body: Left Controls Sidebar + Right Live Preview */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left Control Panel */}
-        <aside className="w-[360px] md:w-[400px] border-r border-zinc-800 bg-[#151518] flex flex-col shrink-0 overflow-hidden">
+        <aside className="w-[360px] md:w-[400px] border-r border-[#E2E8F0] bg-[#151518] flex flex-col shrink-0 overflow-hidden">
           {/* Tabs Navigation */}
-          <div className="grid grid-cols-5 border-b border-zinc-800 bg-zinc-950 shrink-0 select-none overflow-hidden">
+          <div className="grid grid-cols-5 border-b border-[#E2E8F0] bg-white shadow-2xs shrink-0 select-none overflow-hidden">
             {[
               { id: "timer", label: "Timer", icon: Clock },
               { id: "content", label: "Content", icon: Type },
@@ -453,18 +453,18 @@ function CountdownStudioPage() {
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`group flex flex-col items-center justify-center py-2.5 px-1 text-center border-b-2 transition cursor-pointer ${
                     isActive
-                      ? "border-amber-400 bg-amber-500/10 text-amber-300"
-                      : "border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40"
+                      ? "border-[#7137D8] bg-[#F6F0FE] text-[#7137D8]"
+                      : "border-transparent text-[#64748B] hover:text-[#111827] hover:bg-[#F8FAFC]"
                   }`}
                 >
                   <Icon
                     className={`w-5 h-5 transition-transform duration-150 group-hover:scale-110 ${
-                      isActive ? "text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.35)]" : "text-zinc-400 group-hover:text-zinc-200"
+                      isActive ? "text-[#7137D8]" : "text-[#64748B] group-hover:text-[#111827]"
                     }`}
                   />
                   <span
                     className={`text-[10px] font-semibold mt-1 tracking-tight truncate max-w-full leading-none ${
-                      isActive ? "text-amber-300 font-bold" : "text-zinc-400 group-hover:text-zinc-200"
+                      isActive ? "text-[#7137D8] font-bold" : "text-[#64748B] group-hover:text-[#111827]"
                     }`}
                   >
                     {tab.label}
@@ -481,7 +481,7 @@ function CountdownStudioPage() {
               <div className="space-y-6">
                 {/* Timer Mode Selection */}
                 <div>
-                  <label className="text-xs font-semibold text-zinc-300 uppercase tracking-wider block mb-2.5">
+                  <label className="text-xs font-semibold text-[#334155] uppercase tracking-wider block mb-2.5">
                     Timer Mode
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -497,12 +497,12 @@ function CountdownStudioPage() {
                         onClick={() => updateConfig({ timerMode: mode.key as CountdownTimerMode })}
                         className={`p-2.5 rounded-xl border text-left transition ${
                           cfg.timerMode === mode.key
-                            ? "bg-zinc-900 border-amber-400 ring-1 ring-amber-400/30 text-white"
-                            : "bg-zinc-900/40 border-zinc-800 hover:border-zinc-700 text-zinc-400"
+                            ? "bg-[#F8FAFC] border-[#7137D8] ring-1 ring-amber-400/30 text-white"
+                            : "bg-[#F8FAFC]/40 border-[#E2E8F0] hover:border-[#CBD5E1] text-[#64748B]"
                         }`}
                       >
-                        <div className="text-xs font-bold text-zinc-200">{mode.label}</div>
-                        <div className="text-[10px] text-zinc-500 mt-0.5">{mode.desc}</div>
+                        <div className="text-xs font-bold text-[#111827]">{mode.label}</div>
+                        <div className="text-[10px] text-[#94A3B8] mt-0.5">{mode.desc}</div>
                       </button>
                     ))}
                   </div>
@@ -510,35 +510,35 @@ function CountdownStudioPage() {
 
                 {/* Date Mode Controls */}
                 {cfg.timerMode === "date" && (
-                  <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-3">
-                    <span className="text-xs font-semibold text-white block">Target Date & Time</span>
+                  <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-3">
+                    <span className="text-xs font-semibold text-[#111827] block">Target Date & Time</span>
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">Date</label>
+                        <label className="text-[11px] text-[#64748B] block mb-1">Date</label>
                         <input
                           type="date"
                           value={cfg.targetDate}
                           onChange={(e) => updateConfig({ targetDate: e.target.value })}
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">Time</label>
+                        <label className="text-[11px] text-[#64748B] block mb-1">Time</label>
                         <input
                           type="time"
                           value={cfg.targetTime}
                           onChange={(e) => updateConfig({ targetTime: e.target.value })}
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-[11px] text-zinc-400 block mb-1">Timezone</label>
+                      <label className="text-[11px] text-[#64748B] block mb-1">Timezone</label>
                       <select
                         value={cfg.timezone}
                         onChange={(e) => updateConfig({ timezone: e.target.value })}
-                        className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                       >
                         <option value="local">User Local Timezone</option>
                         <option value="UTC">UTC (Coordinated Universal Time)</option>
@@ -553,25 +553,25 @@ function CountdownStudioPage() {
 
                 {/* Personal Mode Controls */}
                 {cfg.timerMode === "personal" && (
-                  <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-3">
-                    <span className="text-xs font-semibold text-white block">Personal Visitor Duration</span>
+                  <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-3">
+                    <span className="text-xs font-semibold text-[#111827] block">Personal Visitor Duration</span>
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">Duration</label>
+                        <label className="text-[11px] text-[#64748B] block mb-1">Duration</label>
                         <input
                           type="number"
                           min="1"
                           value={cfg.durationValue}
                           onChange={(e) => updateConfig({ durationValue: Math.max(1, Number(e.target.value)) })}
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">Unit</label>
+                        <label className="text-[11px] text-[#64748B] block mb-1">Unit</label>
                         <select
                           value={cfg.durationUnit}
                           onChange={(e) => updateConfig({ durationUnit: e.target.value as any })}
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                         >
                           <option value="minutes">Minutes</option>
                           <option value="hours">Hours</option>
@@ -591,10 +591,10 @@ function CountdownStudioPage() {
 
                 {/* Recurring Mode Controls */}
                 {cfg.timerMode === "recurring" && (
-                  <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-3">
-                    <span className="text-xs font-semibold text-white block">Recurring Auto-Reset Interval</span>
+                  <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-3">
+                    <span className="text-xs font-semibold text-[#111827] block">Recurring Auto-Reset Interval</span>
                     <div>
-                      <label className="text-[11px] text-zinc-400 block mb-1">Repeat Every (Hours)</label>
+                      <label className="text-[11px] text-[#64748B] block mb-1">Repeat Every (Hours)</label>
                       <input
                         type="number"
                         min="1"
@@ -602,9 +602,9 @@ function CountdownStudioPage() {
                         onChange={(e) =>
                           updateConfig({ recurringIntervalHours: Math.max(1, Number(e.target.value)) })
                         }
-                        className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                       />
-                      <p className="text-[10px] text-zinc-500 mt-1">
+                      <p className="text-[10px] text-[#94A3B8] mt-1">
                         When the timer reaches zero, it automatically loops and restarts from the beginning.
                       </p>
                     </div>
@@ -613,42 +613,42 @@ function CountdownStudioPage() {
 
                 {/* Number Counter Controls */}
                 {cfg.timerMode === "counter" && (
-                  <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-3">
-                    <span className="text-xs font-semibold text-white block">Number Counter Range</span>
+                  <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-3">
+                    <span className="text-xs font-semibold text-[#111827] block">Number Counter Range</span>
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">Start Value</label>
+                        <label className="text-[11px] text-[#64748B] block mb-1">Start Value</label>
                         <input
                           type="number"
                           value={cfg.counterStart}
                           onChange={(e) => updateConfig({ counterStart: Number(e.target.value) })}
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">End Value</label>
+                        <label className="text-[11px] text-[#64748B] block mb-1">End Value</label>
                         <input
                           type="number"
                           value={cfg.counterEnd}
                           onChange={(e) => updateConfig({ counterEnd: Number(e.target.value) })}
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                         />
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">Direction</label>
+                        <label className="text-[11px] text-[#64748B] block mb-1">Direction</label>
                         <select
                           value={cfg.counterDirection}
                           onChange={(e) => updateConfig({ counterDirection: e.target.value as any })}
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                         >
                           <option value="down">Count Down</option>
                           <option value="up">Count Up</option>
                         </select>
                       </div>
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">Duration (Secs)</label>
+                        <label className="text-[11px] text-[#64748B] block mb-1">Duration (Secs)</label>
                         <input
                           type="number"
                           min="1"
@@ -656,7 +656,7 @@ function CountdownStudioPage() {
                           onChange={(e) =>
                             updateConfig({ counterDurationSeconds: Math.max(1, Number(e.target.value)) })
                           }
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                         />
                       </div>
                     </div>
@@ -665,7 +665,7 @@ function CountdownStudioPage() {
 
                 {/* Display Units & Custom Labels */}
                 <div className="space-y-3">
-                  <label className="text-xs font-semibold text-zinc-300 uppercase tracking-wider block">
+                  <label className="text-xs font-semibold text-[#334155] uppercase tracking-wider block">
                     Display Units & Labels
                   </label>
 
@@ -681,7 +681,7 @@ function CountdownStudioPage() {
                       value={cfg.labelDays}
                       onChange={(e) => updateConfig({ labelDays: e.target.value })}
                       placeholder="Days label (e.g. Days)"
-                      className="w-full px-2.5 py-1 bg-zinc-900 border border-zinc-800 rounded text-xs text-zinc-200 mb-2"
+                      className="w-full px-2.5 py-1 bg-[#F8FAFC] border border-[#E2E8F0] rounded text-xs text-[#111827] mb-2"
                     />
                   )}
 
@@ -696,7 +696,7 @@ function CountdownStudioPage() {
                       value={cfg.labelHours}
                       onChange={(e) => updateConfig({ labelHours: e.target.value })}
                       placeholder="Hours label (e.g. Hours)"
-                      className="w-full px-2.5 py-1 bg-zinc-900 border border-zinc-800 rounded text-xs text-zinc-200 mb-2"
+                      className="w-full px-2.5 py-1 bg-[#F8FAFC] border border-[#E2E8F0] rounded text-xs text-[#111827] mb-2"
                     />
                   )}
 
@@ -711,7 +711,7 @@ function CountdownStudioPage() {
                       value={cfg.labelMinutes}
                       onChange={(e) => updateConfig({ labelMinutes: e.target.value })}
                       placeholder="Minutes label (e.g. Minutes)"
-                      className="w-full px-2.5 py-1 bg-zinc-900 border border-zinc-800 rounded text-xs text-zinc-200 mb-2"
+                      className="w-full px-2.5 py-1 bg-[#F8FAFC] border border-[#E2E8F0] rounded text-xs text-[#111827] mb-2"
                     />
                   )}
 
@@ -726,7 +726,7 @@ function CountdownStudioPage() {
                       value={cfg.labelSeconds}
                       onChange={(e) => updateConfig({ labelSeconds: e.target.value })}
                       placeholder="Seconds label (e.g. Seconds)"
-                      className="w-full px-2.5 py-1 bg-zinc-900 border border-zinc-800 rounded text-xs text-zinc-200 mb-2"
+                      className="w-full px-2.5 py-1 bg-[#F8FAFC] border border-[#E2E8F0] rounded text-xs text-[#111827] mb-2"
                     />
                   )}
 
@@ -740,7 +740,7 @@ function CountdownStudioPage() {
 
                 {/* Number Animation */}
                 <div>
-                  <label className="text-xs font-semibold text-zinc-300 uppercase tracking-wider block mb-2">
+                  <label className="text-xs font-semibold text-[#334155] uppercase tracking-wider block mb-2">
                     Number Change Animation
                   </label>
                   <div className="grid grid-cols-4 gap-1.5">
@@ -756,8 +756,8 @@ function CountdownStudioPage() {
                         onClick={() => updateConfig({ animation: anim.key as CountdownNumberAnimation })}
                         className={`py-2 text-xs font-semibold rounded-lg border transition ${
                           cfg.animation === anim.key
-                            ? "bg-amber-400 text-black border-amber-400 shadow-sm"
-                            : "bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-zinc-700"
+                            ? "bg-[#7137D8] text-black border-[#7137D8] shadow-sm"
+                            : "bg-[#F8FAFC] border-[#E2E8F0] text-[#334155] hover:border-[#CBD5E1]"
                         }`}
                       >
                         {anim.label}
@@ -767,13 +767,13 @@ function CountdownStudioPage() {
                 </div>
 
                 {/* Expiry Behavior */}
-                <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-3">
+                <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-white">When Timer Reaches Zero</span>
+                    <span className="text-xs font-semibold text-[#111827]">When Timer Reaches Zero</span>
                     <button
                       type="button"
                       onClick={handleTestExpiry}
-                      className="text-[11px] text-amber-400 hover:text-amber-300 font-medium"
+                      className="text-[11px] text-[#7137D8] hover:text-[#7137D8] font-medium"
                     >
                       Test Expiry
                     </button>
@@ -790,8 +790,8 @@ function CountdownStudioPage() {
                         key={opt.key}
                         className={`flex items-center gap-2.5 p-2 rounded-lg cursor-pointer text-xs border transition ${
                           cfg.expiryAction === opt.key
-                            ? "bg-zinc-800 border-amber-400 text-white font-medium"
-                            : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-zinc-700"
+                            ? "bg-[#F1F5F9] border-[#7137D8] text-white font-medium"
+                            : "bg-white border-[#E2E8F0] text-[#64748B] hover:border-[#CBD5E1]"
                         }`}
                       >
                         <input
@@ -799,7 +799,7 @@ function CountdownStudioPage() {
                           name="expiryAction"
                           checked={cfg.expiryAction === opt.key}
                           onChange={() => updateConfig({ expiryAction: opt.key as CountdownExpiryAction })}
-                          className="text-amber-400 focus:ring-0"
+                          className="text-[#7137D8] focus:ring-0"
                         />
                         <span>{opt.label}</span>
                       </label>
@@ -808,25 +808,25 @@ function CountdownStudioPage() {
 
                   {cfg.expiryAction === "message" && (
                     <div className="pt-2">
-                      <label className="text-[11px] text-zinc-400 block mb-1">Expired Message</label>
+                      <label className="text-[11px] text-[#64748B] block mb-1">Expired Message</label>
                       <textarea
                         rows={2}
                         value={cfg.expiryMessage}
                         onChange={(e) => updateConfig({ expiryMessage: e.target.value })}
-                        className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                       />
                     </div>
                   )}
 
                   {cfg.expiryAction === "redirect" && (
                     <div className="pt-2">
-                      <label className="text-[11px] text-zinc-400 block mb-1">Redirect URL</label>
+                      <label className="text-[11px] text-[#64748B] block mb-1">Redirect URL</label>
                       <input
                         type="url"
                         value={cfg.expiryRedirectUrl}
                         onChange={(e) => updateConfig({ expiryRedirectUrl: e.target.value })}
                         placeholder="https://example.com/expired"
-                        className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                       />
                     </div>
                   )}
@@ -838,7 +838,7 @@ function CountdownStudioPage() {
             {activeTab === "content" && (
               <div className="space-y-5">
                 {/* Badge Section */}
-                <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-3">
+                <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-3">
                   <StudioSwitch
                     label="Urgency Badge / Tag"
                     checked={cfg.showBadge}
@@ -848,17 +848,17 @@ function CountdownStudioPage() {
                   {cfg.showBadge && (
                     <>
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">Badge Text</label>
+                        <label className="text-[11px] text-[#64748B] block mb-1">Badge Text</label>
                         <input
                           type="text"
                           value={cfg.badgeText}
                           onChange={(e) => updateConfig({ badgeText: e.target.value })}
                           placeholder="e.g. FLASH DEAL 50% OFF"
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">Badge Icon</label>
+                        <label className="text-[11px] text-[#64748B] block mb-1">Badge Icon</label>
                         <div className="flex gap-2">
                           {[
                             { key: "fire", icon: Flame },
@@ -876,8 +876,8 @@ function CountdownStudioPage() {
                                 onClick={() => updateConfig({ badgeIcon: item.key })}
                                 className={`p-2 rounded-lg border transition ${
                                   cfg.badgeIcon === item.key
-                                    ? "bg-amber-400 text-black border-amber-400"
-                                    : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white"
+                                    ? "bg-[#7137D8] text-black border-[#7137D8]"
+                                    : "bg-white border-[#E2E8F0] text-[#64748B] hover:text-white"
                                 }`}
                               >
                                 <IconComponent className="w-3.5 h-3.5" />
@@ -893,40 +893,40 @@ function CountdownStudioPage() {
                 {/* Heading & Description */}
                 <div className="space-y-3">
                   <div>
-                    <label className="text-xs font-semibold text-zinc-300 block mb-1">Heading</label>
+                    <label className="text-xs font-semibold text-[#334155] block mb-1">Heading</label>
                     <input
                       type="text"
                       value={cfg.heading}
                       onChange={(e) => updateConfig({ heading: e.target.value })}
                       placeholder="e.g. Special Offer Ends Soon"
-                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-sm text-white focus:outline-none focus:border-amber-400"
+                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-sm text-white focus:outline-none focus:border-[#7137D8]"
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs font-semibold text-zinc-300 block mb-1">Description</label>
+                    <label className="text-xs font-semibold text-[#334155] block mb-1">Description</label>
                     <textarea
                       rows={2}
                       value={cfg.description}
                       onChange={(e) => updateConfig({ description: e.target.value })}
                       placeholder="e.g. Don't miss out on this limited seasonal discount."
-                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                     />
                   </div>
                 </div>
 
                 {/* Typography formatting */}
-                <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-3">
-                  <span className="text-xs font-semibold text-white block">Formatting & Alignment</span>
+                <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-3">
+                  <span className="text-xs font-semibold text-[#111827] block">Formatting & Alignment</span>
                   
                   {/* Heading Style */}
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-zinc-400">Heading Style</span>
-                    <div className="flex gap-1 bg-zinc-950 p-1 rounded-lg border border-zinc-800">
+                    <span className="text-xs text-[#64748B]">Heading Style</span>
+                    <div className="flex gap-1 bg-white p-1 rounded-lg border border-[#E2E8F0]">
                       <button
                         type="button"
                         onClick={() => updateConfig({ headingBold: !cfg.headingBold })}
-                        className={`p-1.5 rounded transition ${cfg.headingBold ? "bg-zinc-800 text-amber-400 font-bold" : "text-zinc-500 hover:text-white"}`}
+                        className={`p-1.5 rounded transition ${cfg.headingBold ? "bg-[#F1F5F9] text-[#7137D8] font-bold" : "text-[#94A3B8] hover:text-white"}`}
                         title="Bold Heading"
                       >
                         <Bold className="w-3.5 h-3.5" />
@@ -934,7 +934,7 @@ function CountdownStudioPage() {
                       <button
                         type="button"
                         onClick={() => updateConfig({ headingItalic: !cfg.headingItalic })}
-                        className={`p-1.5 rounded transition ${cfg.headingItalic ? "bg-zinc-800 text-amber-400 font-bold" : "text-zinc-500 hover:text-white"}`}
+                        className={`p-1.5 rounded transition ${cfg.headingItalic ? "bg-[#F1F5F9] text-[#7137D8] font-bold" : "text-[#94A3B8] hover:text-white"}`}
                         title="Italic Heading"
                       >
                         <Italic className="w-3.5 h-3.5" />
@@ -942,7 +942,7 @@ function CountdownStudioPage() {
                       <button
                         type="button"
                         onClick={() => updateConfig({ headingUnderline: !cfg.headingUnderline })}
-                        className={`p-1.5 rounded transition ${cfg.headingUnderline ? "bg-zinc-800 text-amber-400 font-bold" : "text-zinc-500 hover:text-white"}`}
+                        className={`p-1.5 rounded transition ${cfg.headingUnderline ? "bg-[#F1F5F9] text-[#7137D8] font-bold" : "text-[#94A3B8] hover:text-white"}`}
                         title="Underline Heading"
                       >
                         <Underline className="w-3.5 h-3.5" />
@@ -952,12 +952,12 @@ function CountdownStudioPage() {
 
                   {/* Description Style */}
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-zinc-400">Description Style</span>
-                    <div className="flex gap-1 bg-zinc-950 p-1 rounded-lg border border-zinc-800">
+                    <span className="text-xs text-[#64748B]">Description Style</span>
+                    <div className="flex gap-1 bg-white p-1 rounded-lg border border-[#E2E8F0]">
                       <button
                         type="button"
                         onClick={() => updateConfig({ descBold: !cfg.descBold })}
-                        className={`p-1.5 rounded transition ${cfg.descBold ? "bg-zinc-800 text-amber-400 font-bold" : "text-zinc-500 hover:text-white"}`}
+                        className={`p-1.5 rounded transition ${cfg.descBold ? "bg-[#F1F5F9] text-[#7137D8] font-bold" : "text-[#94A3B8] hover:text-white"}`}
                         title="Bold Description"
                       >
                         <Bold className="w-3.5 h-3.5" />
@@ -965,7 +965,7 @@ function CountdownStudioPage() {
                       <button
                         type="button"
                         onClick={() => updateConfig({ descItalic: !cfg.descItalic })}
-                        className={`p-1.5 rounded transition ${cfg.descItalic ? "bg-zinc-800 text-amber-400 font-bold" : "text-zinc-500 hover:text-white"}`}
+                        className={`p-1.5 rounded transition ${cfg.descItalic ? "bg-[#F1F5F9] text-[#7137D8] font-bold" : "text-[#94A3B8] hover:text-white"}`}
                         title="Italic Description"
                       >
                         <Italic className="w-3.5 h-3.5" />
@@ -973,7 +973,7 @@ function CountdownStudioPage() {
                       <button
                         type="button"
                         onClick={() => updateConfig({ descUnderline: !cfg.descUnderline })}
-                        className={`p-1.5 rounded transition ${cfg.descUnderline ? "bg-zinc-800 text-amber-400 font-bold" : "text-zinc-500 hover:text-white"}`}
+                        className={`p-1.5 rounded transition ${cfg.descUnderline ? "bg-[#F1F5F9] text-[#7137D8] font-bold" : "text-[#94A3B8] hover:text-white"}`}
                         title="Underline Description"
                       >
                         <Underline className="w-3.5 h-3.5" />
@@ -983,12 +983,12 @@ function CountdownStudioPage() {
 
                   {/* Alignment */}
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-zinc-400">Text Alignment</span>
-                    <div className="flex gap-1 bg-zinc-950 p-1 rounded-lg border border-zinc-800">
+                    <span className="text-xs text-[#64748B]">Text Alignment</span>
+                    <div className="flex gap-1 bg-white p-1 rounded-lg border border-[#E2E8F0]">
                       <button
                         type="button"
                         onClick={() => updateConfig({ contentAlign: "left" })}
-                        className={`p-1.5 rounded transition ${cfg.contentAlign === "left" ? "bg-zinc-800 text-amber-400 font-bold" : "text-zinc-500 hover:text-white"}`}
+                        className={`p-1.5 rounded transition ${cfg.contentAlign === "left" ? "bg-[#F1F5F9] text-[#7137D8] font-bold" : "text-[#94A3B8] hover:text-white"}`}
                         title="Align Left"
                       >
                         <AlignLeft className="w-3.5 h-3.5" />
@@ -996,7 +996,7 @@ function CountdownStudioPage() {
                       <button
                         type="button"
                         onClick={() => updateConfig({ contentAlign: "center" })}
-                        className={`p-1.5 rounded transition ${cfg.contentAlign === "center" ? "bg-zinc-800 text-amber-400 font-bold" : "text-zinc-500 hover:text-white"}`}
+                        className={`p-1.5 rounded transition ${cfg.contentAlign === "center" ? "bg-[#F1F5F9] text-[#7137D8] font-bold" : "text-[#94A3B8] hover:text-white"}`}
                         title="Align Center"
                       >
                         <AlignCenter className="w-3.5 h-3.5" />
@@ -1004,7 +1004,7 @@ function CountdownStudioPage() {
                       <button
                         type="button"
                         onClick={() => updateConfig({ contentAlign: "right" })}
-                        className={`p-1.5 rounded transition ${cfg.contentAlign === "right" ? "bg-zinc-800 text-amber-400 font-bold" : "text-zinc-500 hover:text-white"}`}
+                        className={`p-1.5 rounded transition ${cfg.contentAlign === "right" ? "bg-[#F1F5F9] text-[#7137D8] font-bold" : "text-[#94A3B8] hover:text-white"}`}
                         title="Align Right"
                       >
                         <AlignRight className="w-3.5 h-3.5" />
@@ -1020,7 +1020,7 @@ function CountdownStudioPage() {
               <div className="space-y-6">
                 {/* Visual Timer Styles with Mini Previews */}
                 <div>
-                  <label className="text-xs font-semibold text-zinc-300 uppercase tracking-wider block mb-2.5">
+                  <label className="text-xs font-semibold text-[#334155] uppercase tracking-wider block mb-2.5">
                     Timer Visual Style
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -1062,15 +1062,15 @@ function CountdownStudioPage() {
                         onClick={() => updateConfig({ timerStyle: st.key as CountdownTimerStyle })}
                         className={`p-3 rounded-xl border text-left transition flex flex-col justify-between ${
                           cfg.timerStyle === st.key
-                            ? "bg-zinc-900 border-amber-400 ring-1 ring-amber-400/30 text-white shadow-md shadow-amber-500/5"
-                            : "bg-zinc-900/40 border-zinc-800 hover:border-zinc-700 text-zinc-400"
+                            ? "bg-[#F8FAFC] border-[#7137D8] ring-1 ring-amber-400/30 text-white shadow-md shadow-amber-500/5"
+                            : "bg-[#F8FAFC]/40 border-[#E2E8F0] hover:border-[#CBD5E1] text-[#64748B]"
                         }`}
                       >
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-bold text-zinc-200">{st.name}</span>
-                          <span className="text-[10px] text-zinc-500">{st.styleHint}</span>
+                          <span className="text-xs font-bold text-[#111827]">{st.name}</span>
+                          <span className="text-[10px] text-[#94A3B8]">{st.styleHint}</span>
                         </div>
-                        <div className="bg-zinc-950 p-2 rounded-lg text-center font-mono text-xs font-semibold text-amber-300 tracking-wider">
+                        <div className="bg-white p-2 rounded-lg text-center font-mono text-xs font-semibold text-[#7137D8] tracking-wider">
                           {st.preview}
                         </div>
                       </button>
@@ -1079,8 +1079,8 @@ function CountdownStudioPage() {
                 </div>
 
                 {/* Position & Sticky Controls */}
-                <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-3">
-                  <span className="text-xs font-semibold text-white block">Widget Placement</span>
+                <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-3">
+                  <span className="text-xs font-semibold text-[#111827] block">Widget Placement</span>
                   <div className="grid grid-cols-2 gap-1.5">
                     {[
                       { key: "inline", label: "Inline" },
@@ -1094,8 +1094,8 @@ function CountdownStudioPage() {
                         onClick={() => updateConfig({ position: pos.key as CountdownPosition })}
                         className={`py-2 text-xs font-semibold rounded-lg border transition ${
                           cfg.position === pos.key
-                            ? "bg-amber-400 text-black border-amber-400"
-                            : "bg-zinc-950 border-zinc-800 text-zinc-300 hover:border-zinc-700"
+                            ? "bg-[#7137D8] text-black border-[#7137D8]"
+                            : "bg-white border-[#E2E8F0] text-[#334155] hover:border-[#CBD5E1]"
                         }`}
                       >
                         {pos.label}
@@ -1104,7 +1104,7 @@ function CountdownStudioPage() {
                   </div>
 
                   {(cfg.position === "top_bar" || cfg.position === "bottom_bar") && (
-                    <div className="pt-2 border-t border-zinc-800 space-y-2">
+                    <div className="pt-2 border-t border-[#E2E8F0] space-y-2">
                       <StudioSwitch
                         label="Sticky Bar"
                         checked={cfg.sticky}
@@ -1123,12 +1123,12 @@ function CountdownStudioPage() {
 
                 {/* Sizing & Spacing Sliders */}
                 <div className="space-y-4">
-                  <label className="text-xs font-semibold text-zinc-300 uppercase tracking-wider block">
+                  <label className="text-xs font-semibold text-[#334155] uppercase tracking-wider block">
                     Sizes & Spacing
                   </label>
 
                   <div>
-                    <div className="flex justify-between text-xs text-zinc-400 mb-1">
+                    <div className="flex justify-between text-xs text-[#64748B] mb-1">
                       <span>Timer Numbers Size</span>
                       <span className="font-mono">{cfg.typography.timerSize}px</span>
                     </div>
@@ -1143,7 +1143,7 @@ function CountdownStudioPage() {
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-xs text-zinc-400 mb-1">
+                    <div className="flex justify-between text-xs text-[#64748B] mb-1">
                       <span>Heading Size</span>
                       <span className="font-mono">{cfg.typography.headingSize}px</span>
                     </div>
@@ -1158,7 +1158,7 @@ function CountdownStudioPage() {
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-xs text-zinc-400 mb-1">
+                    <div className="flex justify-between text-xs text-[#64748B] mb-1">
                       <span>Description Size</span>
                       <span className="font-mono">{cfg.typography.descriptionSize || 13}px</span>
                     </div>
@@ -1173,7 +1173,7 @@ function CountdownStudioPage() {
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-xs text-zinc-400 mb-1">
+                    <div className="flex justify-between text-xs text-[#64748B] mb-1">
                       <span>Padding</span>
                       <span className="font-mono">{cfg.spacing.padding}px</span>
                     </div>
@@ -1188,7 +1188,7 @@ function CountdownStudioPage() {
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-xs text-zinc-400 mb-1">
+                    <div className="flex justify-between text-xs text-[#64748B] mb-1">
                       <span>Border Radius</span>
                       <span className="font-mono">{cfg.spacing.borderRadius}px</span>
                     </div>
@@ -1204,8 +1204,8 @@ function CountdownStudioPage() {
                 </div>
 
                 {/* Effects */}
-                <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-3">
-                  <span className="text-xs font-semibold text-white block">Visual Effects</span>
+                <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-3">
+                  <span className="text-xs font-semibold text-[#111827] block">Visual Effects</span>
                   <StudioSwitch
                     label="Box Shadow"
                     checked={cfg.effects.shadow}
@@ -1232,13 +1232,13 @@ function CountdownStudioPage() {
               <div className="space-y-6">
                 {/* Typography Font Family */}
                 <div>
-                  <label className="text-xs font-semibold text-zinc-300 uppercase tracking-wider block mb-2">
+                  <label className="text-xs font-semibold text-[#334155] uppercase tracking-wider block mb-2">
                     Typography Font Family
                   </label>
                   <select
                     value={cfg.typography.fontFamily}
                     onChange={(e) => updateTypography({ fontFamily: e.target.value })}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                   >
                     <option value="Inter, sans-serif">Inter (Modern Clean)</option>
                     <option value="Outfit, sans-serif">Outfit (Geometric Sans)</option>
@@ -1251,8 +1251,8 @@ function CountdownStudioPage() {
                 </div>
 
                 {/* Color Palette Controls */}
-                <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
-                  <span className="text-xs font-semibold text-white block mb-2">Theme Colors</span>
+                <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-2">
+                  <span className="text-xs font-semibold text-[#111827] block mb-2">Theme Colors</span>
                   <ColorControl
                     label="Background Color"
                     value={cfg.colors.background}
@@ -1310,7 +1310,7 @@ function CountdownStudioPage() {
             {/* ================= TAB 5: ACTIONS (CTA) ================= */}
             {activeTab === "actions" && (
               <div className="space-y-5">
-                <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-4">
+                <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-4">
                   <StudioSwitch
                     label="Show Call-To-Action Button"
                     checked={cfg.showCTA}
@@ -1321,37 +1321,37 @@ function CountdownStudioPage() {
                   {cfg.showCTA && (
                     <>
                       <div>
-                        <label className="text-xs font-semibold text-zinc-300 block mb-1">Button Text</label>
+                        <label className="text-xs font-semibold text-[#334155] block mb-1">Button Text</label>
                         <input
                           type="text"
                           value={cfg.ctaText}
                           onChange={(e) => updateConfig({ ctaText: e.target.value })}
                           placeholder="e.g. Shop Deal Now"
-                          className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-3 py-2 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-xs font-semibold text-zinc-300 block mb-1">Destination URL</label>
+                        <label className="text-xs font-semibold text-[#334155] block mb-1">Destination URL</label>
                         <input
                           type="url"
                           value={cfg.ctaUrl}
                           onChange={(e) => updateConfig({ ctaUrl: e.target.value })}
                           placeholder="https://example.com/shop"
-                          className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-3 py-2 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-xs font-semibold text-zinc-300 block mb-1">Open Link</label>
+                        <label className="text-xs font-semibold text-[#334155] block mb-1">Open Link</label>
                         <div className="grid grid-cols-2 gap-2">
                           <button
                             type="button"
                             onClick={() => updateConfig({ ctaTarget: "_blank" })}
                             className={`py-1.5 text-xs font-semibold rounded-lg border transition ${
                               cfg.ctaTarget === "_blank"
-                                ? "bg-amber-400 text-black border-amber-400"
-                                : "bg-zinc-950 border-zinc-800 text-zinc-400"
+                                ? "bg-[#7137D8] text-black border-[#7137D8]"
+                                : "bg-white border-[#E2E8F0] text-[#64748B]"
                             }`}
                           >
                             New Tab (_blank)
@@ -1361,8 +1361,8 @@ function CountdownStudioPage() {
                             onClick={() => updateConfig({ ctaTarget: "_self" })}
                             className={`py-1.5 text-xs font-semibold rounded-lg border transition ${
                               cfg.ctaTarget === "_self"
-                                ? "bg-amber-400 text-black border-amber-400"
-                                : "bg-zinc-950 border-zinc-800 text-zinc-400"
+                                ? "bg-[#7137D8] text-black border-[#7137D8]"
+                                : "bg-white border-[#E2E8F0] text-[#64748B]"
                             }`}
                           >
                             Same Tab (_self)
@@ -1371,7 +1371,7 @@ function CountdownStudioPage() {
                       </div>
 
                       <div>
-                        <label className="text-xs font-semibold text-zinc-300 block mb-1">Button Style</label>
+                        <label className="text-xs font-semibold text-[#334155] block mb-1">Button Style</label>
                         <div className="grid grid-cols-2 gap-2">
                           {[
                             { key: "primary", label: "Primary Fill" },
@@ -1385,8 +1385,8 @@ function CountdownStudioPage() {
                               onClick={() => updateConfig({ ctaStyle: st.key as any })}
                               className={`py-2 text-xs font-semibold rounded-lg border transition ${
                                 cfg.ctaStyle === st.key
-                                  ? "bg-zinc-800 border-amber-400 text-white"
-                                  : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-zinc-700"
+                                  ? "bg-[#F1F5F9] border-[#7137D8] text-white"
+                                  : "bg-white border-[#E2E8F0] text-[#64748B] hover:border-[#CBD5E1]"
                               }`}
                             >
                               {st.label}
@@ -1405,16 +1405,16 @@ function CountdownStudioPage() {
         {/* Right Live Preview Area */}
         <main className="flex-1 bg-[#0a0a0c] flex flex-col overflow-hidden relative">
           {/* Preview Canvas Bar */}
-          <div className="h-10 border-b border-zinc-800/80 bg-zinc-950/80 px-4 flex items-center justify-between text-xs text-zinc-400 shrink-0">
+          <div className="h-10 border-b border-[#E2E8F0] bg-white/80 px-4 flex items-center justify-between text-xs text-[#64748B] shrink-0">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-semibold text-zinc-300">Live Preview</span>
+              <span className="font-semibold text-[#334155]">Live Preview</span>
               <span className="text-zinc-600">|</span>
-              <span className="text-zinc-500 font-mono">1-Sec Real-Time Clock</span>
+              <span className="text-[#94A3B8] font-mono">1-Sec Real-Time Clock</span>
             </div>
 
             <div className="flex items-center gap-3">
-              <span className="text-zinc-500 text-[11px]">
+              <span className="text-[#94A3B8] text-[11px]">
                 Width: {previewDevice === "desktop" ? "100%" : previewDevice === "tablet" ? "768px" : "375px"}
               </span>
             </div>
@@ -1433,7 +1433,7 @@ function CountdownStudioPage() {
             >
               {/* Mock website content background for sticky bars */}
               {(cfg.position === "top_bar" || cfg.position === "bottom_bar") && (
-                <div className="p-4 mb-2 bg-zinc-900/40 border border-dashed border-zinc-800 rounded-lg text-center text-zinc-500 text-xs">
+                <div className="p-4 mb-2 bg-[#F8FAFC]/40 border border-dashed border-[#E2E8F0] rounded-lg text-center text-[#94A3B8] text-xs">
                   Mock Website Page Content (Demonstrating {cfg.position === "top_bar" ? "Top" : "Bottom"} Bar Placement)
                 </div>
               )}
@@ -1446,7 +1446,7 @@ function CountdownStudioPage() {
               />
 
               {(cfg.position === "top_bar" || cfg.position === "bottom_bar") && (
-                <div className="p-8 mt-2 bg-zinc-900/40 border border-dashed border-zinc-800 rounded-lg text-center text-zinc-500 text-xs">
+                <div className="p-8 mt-2 bg-[#F8FAFC]/40 border border-dashed border-[#E2E8F0] rounded-lg text-center text-[#94A3B8] text-xs">
                   Scrollable Container Content Below Banner
                 </div>
               )}
@@ -1458,40 +1458,40 @@ function CountdownStudioPage() {
       {/* Embed Dialog Modal */}
       {embedModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-lg w-full space-y-5 shadow-2xl">
+          <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-6 max-w-lg w-full space-y-5 shadow-2xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Code2 className="w-5 h-5 text-amber-400" />
-                <h3 className="text-base font-bold text-white">Embed Countdown Timer</h3>
+                <Code2 className="w-5 h-5 text-[#7137D8]" />
+                <h3 className="text-base font-bold text-[#111827]">Embed Countdown Timer</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setEmbedModalOpen(false)}
-                className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800"
+                className="p-1 rounded-lg text-[#64748B] hover:text-white hover:bg-[#F1F5F9]"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <p className="text-xs text-zinc-400 leading-relaxed">
+            <p className="text-xs text-[#64748B] leading-relaxed">
               Copy and paste this HTML snippet into any website, landing page, or WebToolOcean page to display this countdown timer.
             </p>
 
             <div className="relative">
-              <pre className="p-4 bg-zinc-950 border border-zinc-800 rounded-xl text-xs font-mono text-amber-300 overflow-x-auto select-all">
+              <pre className="p-4 bg-white border border-[#E2E8F0] rounded-xl text-xs font-mono text-[#7137D8] overflow-x-auto select-all">
                 {embedCode}
               </pre>
             </div>
 
             <div className="flex items-center justify-between pt-2">
-              <span className="text-[11px] text-zinc-500 font-mono">Widget ID: {widget.id}</span>
+              <span className="text-[11px] text-[#94A3B8] font-mono">Widget ID: {widget.id}</span>
               <button
                 type="button"
                 onClick={() => {
                   navigator.clipboard.writeText(embedCode);
                   toast.success("Embed snippet copied to clipboard!");
                 }}
-                className="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs rounded-lg transition"
+                className="px-4 py-2 bg-[#7137D8] hover:bg-amber-300 text-black font-bold text-xs rounded-lg transition"
               >
                 Copy Embed Code
               </button>

@@ -315,10 +315,10 @@ function LegacyAccessibilityToolbarModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/85 backdrop-blur-xs p-3 sm:p-5 animate-in fade-in duration-150">
-      <div className="relative flex flex-col w-full max-w-6xl max-h-[94vh] rounded-2xl bg-[#121214] text-[#F5F5F5] border border-[#27272A] shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-5 animate-in fade-in duration-150">
+      <div className="relative flex flex-col w-full max-w-6xl max-h-[94vh] rounded-2xl bg-[#121214] text-[#111827] border border-[#E2E8F0] shadow-2xl overflow-hidden">
         {/* ── HEADER ───────────────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between border-b border-[#222225] px-6 py-4 bg-[#151518]">
+        <div className="flex items-center justify-between border-b border-[#E2E8F0] px-6 py-4 bg-[#151518]">
           <div className="flex items-center gap-3.5">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-md">
               <span
@@ -327,10 +327,10 @@ function LegacyAccessibilityToolbarModal({
               />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white tracking-tight">
+              <h2 className="text-base font-bold text-[#111827] tracking-tight">
                 {embedToEdit ? "Edit Accessibility Toolbar" : "Add Accessibility Toolbar"}
               </h2>
-              <p className="text-xs text-zinc-400">
+              <p className="text-xs text-[#64748B]">
                 Add an accessibility toolbar to your website. Help all users browse your website easily.
               </p>
             </div>
@@ -338,7 +338,7 @@ function LegacyAccessibilityToolbarModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-2 text-zinc-400 hover:bg-[#222226] hover:text-white transition"
+            className="rounded-lg p-2 text-[#64748B] hover:bg-[#F1F5F9] hover:text-white transition"
             aria-label="Close modal"
           >
             <X className="h-5 w-5" />
@@ -352,12 +352,12 @@ function LegacyAccessibilityToolbarModal({
             {/* 1. TOOLBAR STYLE SECTION */}
             <div className="space-y-4">
               <div className="flex items-center gap-2.5">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FACC15] text-zinc-950 text-xs font-black">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#7137D8] text-zinc-950 text-xs font-black">
                   1
                 </span>
-                <h3 className="text-sm font-bold text-white">Toolbar Style</h3>
+                <h3 className="text-sm font-bold text-[#111827]">Toolbar Style</h3>
               </div>
-              <p className="text-xs text-zinc-400">Choose a toolbar style and color.</p>
+              <p className="text-xs text-[#64748B]">Choose a toolbar style and color.</p>
 
               {/* 4 Style Cards matching Mockup */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -383,7 +383,7 @@ function LegacyAccessibilityToolbarModal({
                     >
                       {/* Check badge on selected */}
                       {isSelected && (
-                        <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-xs bg-[#FACC15] text-zinc-950">
+                        <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-xs bg-[#7137D8] text-zinc-950">
                           <Check className="h-3 w-3 stroke-[3]" />
                         </span>
                       )}
@@ -395,7 +395,7 @@ function LegacyAccessibilityToolbarModal({
 
                       <span
                         className={`text-xs font-semibold mt-1 ${
-                          isSelected ? "text-[#FACC15]" : "text-zinc-300"
+                          isSelected ? "text-[#FACC15]" : "text-[#334155]"
                         }`}
                       >
                         {styleItem.label}
@@ -407,7 +407,7 @@ function LegacyAccessibilityToolbarModal({
 
               {/* Toolbar Color Swatches */}
               <div className="pt-2">
-                <span className="block text-xs font-semibold text-zinc-300 mb-2.5">Toolbar Color</span>
+                <span className="block text-xs font-semibold text-[#334155] mb-2.5">Toolbar Color</span>
                 <div className="flex items-center gap-3 flex-wrap">
                   {TOOLBAR_COLORS.map((swatch) => {
                     const isSelected = toolbarColor.toLowerCase() === swatch.value.toLowerCase();
@@ -421,7 +421,7 @@ function LegacyAccessibilityToolbarModal({
                         className={`h-7 w-7 rounded-full transition-transform active:scale-95 ${
                           isSelected
                             ? "ring-2 ring-[#FACC15] ring-offset-2 ring-offset-[#121214] scale-110"
-                            : "border border-zinc-700/60 hover:scale-105"
+                            : "border border-[#CBD5E1]/60 hover:scale-105"
                         }`}
                       />
                     );
@@ -433,12 +433,12 @@ function LegacyAccessibilityToolbarModal({
             {/* 2. POSITION SECTION */}
             <div className="space-y-4 pt-2 border-t border-[#1F1F24]">
               <div className="flex items-center gap-2.5">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FACC15] text-zinc-950 text-xs font-black">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#7137D8] text-zinc-950 text-xs font-black">
                   2
                 </span>
-                <h3 className="text-sm font-bold text-white">Position</h3>
+                <h3 className="text-sm font-bold text-[#111827]">Position</h3>
               </div>
-              <p className="text-xs text-zinc-400">
+              <p className="text-xs text-[#64748B]">
                 Choose where to show the accessibility toolbar.
               </p>
 
@@ -466,13 +466,13 @@ function LegacyAccessibilityToolbarModal({
                     >
                       {/* Check badge on selected */}
                       {isSelected && (
-                        <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-xs bg-[#FACC15] text-zinc-950">
+                        <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-xs bg-[#7137D8] text-zinc-950">
                           <Check className="h-3 w-3 stroke-[3]" />
                         </span>
                       )}
 
                       {/* Miniature screen diagram with blue icon */}
-                      <div className="h-14 w-full max-w-[100px] rounded-md bg-[#0D0D10] border border-[#2B2B32] relative p-1 mb-2">
+                      <div className="h-14 w-full max-w-[100px] rounded-md bg-white border border-[#2B2B32] relative p-1 mb-2">
                         <div className="h-1.5 w-full bg-[#1F1F26] rounded-xs mb-1" />
                         <div
                           style={{ backgroundColor: toolbarColor }}
@@ -495,7 +495,7 @@ function LegacyAccessibilityToolbarModal({
 
                       <span
                         className={`text-xs font-semibold ${
-                          isSelected ? "text-[#FACC15]" : "text-zinc-300"
+                          isSelected ? "text-[#FACC15]" : "text-[#334155]"
                         }`}
                       >
                         {posItem.label}
@@ -509,18 +509,18 @@ function LegacyAccessibilityToolbarModal({
             {/* 3. VISIBILITY SECTION */}
             <div className="space-y-4 pt-2 border-t border-[#1F1F24]">
               <div className="flex items-center gap-2.5">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FACC15] text-zinc-950 text-xs font-black">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#7137D8] text-zinc-950 text-xs font-black">
                   3
                 </span>
-                <h3 className="text-sm font-bold text-white">Visibility</h3>
+                <h3 className="text-sm font-bold text-[#111827]">Visibility</h3>
               </div>
-              <p className="text-xs text-zinc-400">Choose where to display the toolbar.</p>
+              <p className="text-xs text-[#64748B]">Choose where to display the toolbar.</p>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 {/* Show On: All Pages vs Selected Pages */}
                 <div className="space-y-2">
-                  <span className="block text-xs font-medium text-zinc-300 mb-1">Show On</span>
-                  <label className="flex items-center gap-2 cursor-pointer text-xs text-zinc-200">
+                  <span className="block text-xs font-medium text-[#334155] mb-1">Show On</span>
+                  <label className="flex items-center gap-2 cursor-pointer text-xs text-[#111827]">
                     <input
                       type="radio"
                       name="a11yPageTargeting"
@@ -530,7 +530,7 @@ function LegacyAccessibilityToolbarModal({
                     />
                     <span>All Pages</span>
                   </label>
-                  <label className="flex items-center gap-2 cursor-pointer text-xs text-zinc-200">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs text-[#111827]">
                     <input
                       type="radio"
                       name="a11yPageTargeting"
@@ -547,11 +547,11 @@ function LegacyAccessibilityToolbarModal({
                   </label>
 
                   {pageTargeting === "custom" && (
-                    <div className="mt-2 p-2 rounded-lg bg-[#18181C] border border-[#2B2B32] max-h-32 overflow-y-auto space-y-1.5 scrollbar-thin">
+                    <div className="mt-2 p-2 rounded-lg bg-[#F1F5F9] border border-[#2B2B32] max-h-32 overflow-y-auto space-y-1.5 scrollbar-thin">
                       {projectPages.map((p) => (
                         <label
                           key={p.id}
-                          className="flex items-center gap-2 text-[11px] text-zinc-300 cursor-pointer hover:text-white"
+                          className="flex items-center gap-2 text-[11px] text-[#334155] cursor-pointer hover:text-white"
                         >
                           <input
                             type="checkbox"
@@ -568,10 +568,10 @@ function LegacyAccessibilityToolbarModal({
 
                 {/* Show on Devices */}
                 <div className="space-y-2">
-                  <span className="block text-xs font-medium text-zinc-300 mb-1">
+                  <span className="block text-xs font-medium text-[#334155] mb-1">
                     Show on Devices
                   </span>
-                  <label className="flex items-center gap-2 cursor-pointer text-xs text-zinc-200">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs text-[#111827]">
                     <input
                       type="checkbox"
                       checked={showOnDesktop}
@@ -580,7 +580,7 @@ function LegacyAccessibilityToolbarModal({
                     />
                     <span>Desktop</span>
                   </label>
-                  <label className="flex items-center gap-2 cursor-pointer text-xs text-zinc-200">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs text-[#111827]">
                     <input
                       type="checkbox"
                       checked={showOnMobile}
@@ -593,7 +593,7 @@ function LegacyAccessibilityToolbarModal({
 
                 {/* Auto Show / Hide */}
                 <div className="space-y-2">
-                  <span className="block text-xs font-medium text-zinc-300 mb-1">
+                  <span className="block text-xs font-medium text-[#334155] mb-1">
                     Auto Show / Hide
                   </span>
                   <div className="flex items-center gap-2.5">
@@ -602,16 +602,16 @@ function LegacyAccessibilityToolbarModal({
                       onCheckedChange={setShowByDefault}
                       className="data-[state=checked]:bg-[#2563EB]"
                     />
-                    <span className="text-xs text-zinc-200">Show by default</span>
+                    <span className="text-xs text-[#111827]">Show by default</span>
                   </div>
-                  <p className="text-[10px] text-zinc-400">Users can open/close the toolbar anytime.</p>
+                  <p className="text-[10px] text-[#64748B]">Users can open/close the toolbar anytime.</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* ── RIGHT COLUMN: LIVE WEBSITE PREVIEW ─────────────────────────── */}
-          <div className="w-full lg:w-[480px] shrink-0 border-t lg:border-t-0 lg:border-l border-[#222225] bg-[#0E0E10] p-6 flex flex-col justify-between">
+          <div className="w-full lg:w-[480px] shrink-0 border-t lg:border-t-0 lg:border-l border-[#E2E8F0] bg-[#0E0E10] p-6 flex flex-col justify-between">
             <div>
               {/* Realistic Browser Window Frame */}
               <div className="mx-auto rounded-xl border border-[#2B2B32] bg-[#141418] shadow-2xl overflow-hidden w-full max-w-[440px]">
@@ -619,10 +619,10 @@ function LegacyAccessibilityToolbarModal({
                 <div className="flex items-center gap-2 px-3 py-2 bg-[#1A1A20] border-b border-[#25252C]">
                   <div className="flex items-center gap-1.5 shrink-0">
                     <span className="h-2 w-2 rounded-full bg-[#EF4444]" />
-                    <span className="h-2 w-2 rounded-full bg-[#FACC15]" />
+                    <span className="h-2 w-2 rounded-full bg-[#7137D8]" />
                     <span className="h-2 w-2 rounded-full bg-[#10B981]" />
                   </div>
-                  <div className="flex-1 rounded-md bg-[#0D0D10] px-2 py-0.5 text-[10px] text-zinc-400 truncate text-center font-mono">
+                  <div className="flex-1 rounded-md bg-white px-2 py-0.5 text-[10px] text-[#64748B] truncate text-center font-mono">
                     https://yourwebsite.com
                   </div>
                 </div>
@@ -646,7 +646,7 @@ function LegacyAccessibilityToolbarModal({
                   {/* Website Header */}
                   <div className="flex items-center justify-between border-b border-white/10 pb-2">
                     <span className="text-xs font-black tracking-wider text-white">LOGO</span>
-                    <div className="flex items-center gap-3 text-[10px] text-zinc-300 font-medium">
+                    <div className="flex items-center gap-3 text-[10px] text-[#334155] font-medium">
                       <span className={previewKeyboardNav ? "outline outline-1 outline-yellow-400 px-1" : ""}>
                         Home
                       </span>
@@ -659,7 +659,7 @@ function LegacyAccessibilityToolbarModal({
                       <span className={previewKeyboardNav ? "outline outline-1 outline-yellow-400 px-1" : ""}>
                         Contact
                       </span>
-                      <span className="rounded-md bg-[#FACC15] px-2 py-0.5 font-bold text-zinc-950 text-[9px]">
+                      <span className="rounded-md bg-[#7137D8] px-2 py-0.5 font-bold text-zinc-950 text-[9px]">
                         Get Started
                       </span>
                     </div>
@@ -675,14 +675,14 @@ function LegacyAccessibilityToolbarModal({
                     </h4>
                     <p
                       style={{ fontSize: `${(11 * previewTextScale) / 100}px` }}
-                      className="text-zinc-400 line-clamp-2 max-w-[260px] mx-auto"
+                      className="text-[#64748B] line-clamp-2 max-w-[260px] mx-auto"
                     >
                       Create stunning websites with our easy to use builder. No coding required.
                     </p>
                     <div className="pt-2">
                       <button
                         type="button"
-                        className={`rounded-lg bg-[#FACC15] px-4 py-1.5 text-xs font-bold text-zinc-950 shadow-sm ${
+                        className={`rounded-lg bg-[#7137D8] px-4 py-1.5 text-xs font-bold text-zinc-950 shadow-sm ${
                           previewKeyboardNav ? "ring-2 ring-black" : ""
                         }`}
                       >
@@ -732,7 +732,7 @@ function LegacyAccessibilityToolbarModal({
                             e.stopPropagation();
                             setPreviewPanelOpen(false);
                           }}
-                          className="h-4 w-4 rounded-full flex items-center justify-center text-zinc-400 hover:text-zinc-700"
+                          className="h-4 w-4 rounded-full flex items-center justify-center text-[#64748B] hover:text-zinc-700"
                         >
                           <X className="h-3 w-3" />
                         </button>
@@ -774,7 +774,7 @@ function LegacyAccessibilityToolbarModal({
                           onClick={() => setPreviewHighContrast(!previewHighContrast)}
                           className={`w-full flex items-center justify-between px-2 py-1.5 rounded-lg transition text-left ${
                             previewHighContrast
-                              ? "bg-zinc-900 text-yellow-300 font-bold"
+                              ? "bg-[#F8FAFC] text-yellow-300 font-bold"
                               : "bg-zinc-50 hover:bg-zinc-100 text-zinc-800"
                           }`}
                         >
@@ -841,9 +841,9 @@ function LegacyAccessibilityToolbarModal({
             </div>
 
             {/* Note on live behavior */}
-            <div className="mt-4 p-3 rounded-xl bg-[#141418] border border-[#222228] text-[11px] text-zinc-400">
-              <span className="font-semibold text-zinc-200">Interactive Preview:</span>
-              <p className="text-[10px] text-zinc-400 mt-0.5">
+            <div className="mt-4 p-3 rounded-xl bg-[#141418] border border-[#222228] text-[11px] text-[#64748B]">
+              <span className="font-semibold text-[#111827]">Interactive Preview:</span>
+              <p className="text-[10px] text-[#64748B] mt-0.5">
                 Click any tool inside the preview panel above to test font scaling, high contrast, readable font, and animation freezing in real-time.
               </p>
             </div>
@@ -851,12 +851,12 @@ function LegacyAccessibilityToolbarModal({
         </div>
 
         {/* ── FOOTER ACTIONS ──────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between border-t border-[#222225] px-6 py-4 bg-[#151518]">
+        <div className="flex items-center justify-between border-t border-[#E2E8F0] px-6 py-4 bg-[#151518]">
           <button
             type="button"
             onClick={onClose}
             disabled={isSaving}
-            className="px-5 py-2 rounded-xl border border-zinc-700 bg-transparent text-xs font-bold text-white hover:bg-zinc-800 transition active:scale-95"
+            className="px-5 py-2 rounded-xl border border-[#CBD5E1] bg-transparent text-xs font-bold text-[#111827] hover:bg-[#F1F5F9] transition active:scale-95"
           >
             Cancel
           </button>
@@ -865,7 +865,7 @@ function LegacyAccessibilityToolbarModal({
             type="button"
             onClick={handleSave}
             disabled={isSaving}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#FACC15] hover:bg-[#FDE047] text-zinc-950 text-xs font-extrabold shadow-md transition active:scale-95 disabled:opacity-50"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#7137D8] hover:bg-[#6025C5] text-zinc-950 text-xs font-extrabold shadow-md transition active:scale-95 disabled:opacity-50"
           >
             {isSaving ? "Saving Plugin..." : "Save Plugin"}
           </button>

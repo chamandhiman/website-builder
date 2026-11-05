@@ -2182,13 +2182,13 @@ function DashboardWidgetsPage() {
                 <Zap className="w-3 h-3 text-[#7137D8] fill-[#7137D8]" />
                 Dynamic Widgets
               </span>
-              <h1 className="text-xl md:text-2xl font-black text-[#111827] tracking-tight leading-tight mb-1">
+              <h1 className="text-xl md:text-2xl font-black text-[#000000] tracking-tight leading-tight mb-1" style={{ color: "#000000" }}>
                 Widget Studio &amp;{" "}
                 <span className="bg-gradient-to-r from-[#7137D8] via-[#D52BBD] to-[#FF8A35] bg-clip-text text-transparent">
                   Hub
                 </span>
               </h1>
-              <p className="text-xs text-[#475569] leading-relaxed">
+              <p className="text-xs text-[#000000] leading-relaxed font-medium" style={{ color: "#000000" }}>
                 Choose interactive widgets to boost conversions, build social trust and embed them on any website — in under a minute.
               </p>
             </div>
@@ -2201,11 +2201,11 @@ function DashboardWidgetsPage() {
                   <span className="w-7 h-7 rounded-lg bg-[#EDE0FD] text-[#7137D8] flex items-center justify-center shadow-2xs">
                     <LayoutGrid className="w-3.5 h-3.5 text-[#7137D8]" />
                   </span>
-                  <span className="text-xl font-black text-[#111827] group-hover:text-[#7137D8] transition-colors leading-none">
+                  <span className="text-xl font-black text-[#000000] group-hover:text-[#7137D8] transition-colors leading-none" style={{ color: "#000000" }}>
                     {CATALOG_WIDGETS.length}
                   </span>
                 </div>
-                <div className="text-[11px] font-semibold text-[#64748B] mt-1.5 truncate">Total widgets</div>
+                <div className="text-[11px] font-bold text-[#000000] mt-1.5 truncate" style={{ color: "#000000" }}>Total widgets</div>
               </div>
 
               {/* Stat 2: Ready to use (Soft Mint) */}
@@ -2214,11 +2214,11 @@ function DashboardWidgetsPage() {
                   <span className="w-7 h-7 rounded-lg bg-[#D1FAE5] text-[#16A34A] flex items-center justify-center shadow-2xs">
                     <Check className="w-3.5 h-3.5 text-[#16A34A] stroke-[2.5]" />
                   </span>
-                  <span className="text-xl font-black text-[#111827] group-hover:text-[#16A34A] transition-colors leading-none">
+                  <span className="text-xl font-black text-[#000000] group-hover:text-[#16A34A] transition-colors leading-none" style={{ color: "#000000" }}>
                     5
                   </span>
                 </div>
-                <div className="text-[11px] font-semibold text-[#64748B] mt-1.5 truncate">Ready to use</div>
+                <div className="text-[11px] font-bold text-[#000000] mt-1.5 truncate" style={{ color: "#000000" }}>Ready to use</div>
               </div>
 
               {/* Stat 3: Active on sites (Soft Blue) */}
@@ -2231,11 +2231,11 @@ function DashboardWidgetsPage() {
                   <span className="w-7 h-7 rounded-lg bg-[#DBEAFE] text-[#2563EB] flex items-center justify-center shadow-2xs">
                     <Activity className="w-3.5 h-3.5 text-[#2563EB]" />
                   </span>
-                  <span className="text-xl font-black text-[#111827] group-hover:text-[#2563EB] transition-colors leading-none">
+                  <span className="text-xl font-black text-[#000000] group-hover:text-[#2563EB] transition-colors leading-none" style={{ color: "#000000" }}>
                     {widgets.length || 0}
                   </span>
                 </div>
-                <div className="text-[11px] font-semibold text-[#64748B] mt-1.5 truncate">
+                <div className="text-[11px] font-bold text-[#000000] mt-1.5 truncate" style={{ color: "#000000" }}>
                   {viewMode === "active" ? "← Back to catalog" : "Active on sites"}
                 </div>
               </button>
@@ -2247,15 +2247,15 @@ function DashboardWidgetsPage() {
                     <Eye className="w-3.5 h-3.5 text-[#D52BBD]" />
                   </span>
                   <div className="text-right">
-                    <span className="text-lg font-black text-[#111827] group-hover:text-[#D52BBD] transition-colors leading-none block">
+                    <span className="text-lg font-black text-[#000000] group-hover:text-[#D52BBD] transition-colors leading-none block" style={{ color: "#000000" }}>
                       12.4k
                     </span>
-                    <span className="text-[9px] font-bold text-[#16A34A] inline-flex items-center gap-0.5 leading-none mt-0.5">
+                    <span className="text-[9px] font-black text-[#16A34A] inline-flex items-center gap-0.5 leading-none mt-0.5">
                       ↑ 18%
                     </span>
                   </div>
                 </div>
-                <div className="text-[11px] font-semibold text-[#64748B] mt-1.5 truncate">Views this month</div>
+                <div className="text-[11px] font-bold text-[#000000] mt-1.5 truncate" style={{ color: "#000000" }}>Views this month</div>
               </div>
             </div>
           </section>
@@ -2281,19 +2281,20 @@ function DashboardWidgetsPage() {
               <aside className="w-full lg:w-64 shrink-0 space-y-4 lg:sticky lg:top-4 lg:self-start lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto pr-0.5">
                 {/* Search widgets input at the top */}
                 <div className="relative">
-                  <Search className="w-4 h-4 text-[#94A3B8] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Search className="w-4 h-4 text-[#000000] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
                     type="search"
                     placeholder="Search widgets..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-8 py-2.5 rounded-xl bg-white border border-[#E2E8F0] focus:border-[#7137D8] focus:ring-2 focus:ring-[#7137D8]/10 text-xs font-medium text-[#111827] placeholder:text-[#94A3B8] shadow-2xs outline-none transition"
+                    className="w-full pl-10 pr-8 py-2.5 rounded-xl bg-white border border-[#CBD5E1] focus:border-[#7137D8] focus:ring-2 focus:ring-[#7137D8]/10 text-xs font-bold text-[#000000] placeholder:text-[#64748B] shadow-2xs outline-none transition"
+                    style={{ color: "#000000" }}
                   />
                   {searchQuery && (
                     <button
                       type="button"
                       onClick={() => setSearchQuery("")}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#111827] cursor-pointer"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#000000] hover:text-[#7137D8] cursor-pointer"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -2301,9 +2302,9 @@ function DashboardWidgetsPage() {
                 </div>
 
                 {/* Categories container */}
-                <div className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-2xs">
+                <div className="bg-white rounded-2xl border border-[#CBD5E1] p-3 shadow-2xs">
                   <div className="px-3 pt-1 pb-2">
-                    <span className="text-[11px] font-bold tracking-wider text-[#94A3B8] uppercase">
+                    <span className="text-[11px] font-black tracking-wider text-[#000000] uppercase" style={{ color: "#000000" }}>
                       WIDGET CATEGORIES
                     </span>
                   </div>
@@ -2319,25 +2320,25 @@ function DashboardWidgetsPage() {
                           onClick={() => {
                             setSelectedCategory(cat.id);
                           }}
-                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
+                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs transition cursor-pointer ${
                             isActive
-                              ? "bg-[#F6F0FE] text-[#7137D8]"
-                              : "text-[#475569] hover:bg-[#F8FAFC] hover:text-[#111827]"
+                              ? "bg-[#EDE9FE] text-[#000000] font-black border-l-4 border-[#7137D8] shadow-2xs"
+                              : "text-[#000000] hover:bg-[#F8FAFC] font-bold"
                           }`}
                         >
                           <div className="flex items-center gap-2.5">
                             <IconComponent
                               className={`w-4 h-4 ${
-                                isActive ? "text-[#7137D8]" : "text-[#64748B]"
+                                isActive ? "text-[#7137D8]" : "text-[#000000]"
                               }`}
                             />
-                            <span>{cat.label}</span>
+                            <span className="text-[#000000]" style={{ color: "#000000" }}>{cat.label}</span>
                           </div>
                           <span
                             className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                               isActive
                                 ? "bg-[#7137D8] text-white"
-                                : "bg-[#F1F5F9] text-[#64748B]"
+                                : "bg-[#E2E8F0] text-[#000000]"
                             }`}
                           >
                             {cat.count}
@@ -2358,10 +2359,10 @@ function DashboardWidgetsPage() {
                     <button
                       type="button"
                       onClick={() => setFilterPill("all")}
-                      className={`px-4 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer ${
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold transition cursor-pointer ${
                         filterPill === "all"
                           ? "bg-[#7137D8] text-white shadow-sm shadow-[#7137D8]/20"
-                          : "bg-white border border-[#E2E8F0] text-[#475569] hover:text-[#111827] hover:bg-[#F8FAFC]"
+                          : "bg-white border border-[#CBD5E1] text-[#000000] hover:bg-[#000000] hover:text-white"
                       }`}
                     >
                       All
@@ -2369,10 +2370,10 @@ function DashboardWidgetsPage() {
                     <button
                       type="button"
                       onClick={() => setFilterPill("popular")}
-                      className={`px-4 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer ${
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold transition cursor-pointer ${
                         filterPill === "popular"
                           ? "bg-[#7137D8] text-white shadow-sm shadow-[#7137D8]/20"
-                          : "bg-white border border-[#E2E8F0] text-[#475569] hover:text-[#111827] hover:bg-[#F8FAFC]"
+                          : "bg-white border border-[#CBD5E1] text-[#000000] hover:bg-[#000000] hover:text-white"
                       }`}
                     >
                       Popular
@@ -2380,10 +2381,10 @@ function DashboardWidgetsPage() {
                     <button
                       type="button"
                       onClick={() => setFilterPill("new")}
-                      className={`px-4 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer ${
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold transition cursor-pointer ${
                         filterPill === "new"
                           ? "bg-[#7137D8] text-white shadow-sm shadow-[#7137D8]/20"
-                          : "bg-white border border-[#E2E8F0] text-[#475569] hover:text-[#111827] hover:bg-[#F8FAFC]"
+                          : "bg-white border border-[#CBD5E1] text-[#000000] hover:bg-[#000000] hover:text-white"
                       }`}
                     >
                       New
@@ -2392,12 +2393,13 @@ function DashboardWidgetsPage() {
 
                   {/* Sort dropdown */}
                   <div className="flex items-center gap-2 self-end sm:self-auto">
-                    <span className="text-xs text-[#64748B] font-medium">Sort:</span>
+                    <span className="text-xs text-[#000000] font-bold" style={{ color: "#000000" }}>Sort:</span>
                     <select
                       value={marketplaceSort}
                       onChange={(e) => setMarketplaceSort(e.target.value as any)}
                       aria-label="Sort widgets"
-                      className="bg-white border border-[#E2E8F0] text-[#111827] text-xs font-semibold rounded-xl px-3 py-1.5 outline-none focus:border-[#7137D8] shadow-2xs cursor-pointer"
+                      className="bg-white border border-[#CBD5E1] text-[#000000] text-xs font-bold rounded-xl px-3 py-1.5 outline-none focus:border-[#7137D8] shadow-2xs cursor-pointer"
+                      style={{ color: "#000000" }}
                     >
                       <option value="popular">Most Popular</option>
                       <option value="name_asc">Name (A → Z)</option>
@@ -2413,8 +2415,8 @@ function DashboardWidgetsPage() {
                     <div className="w-12 h-12 rounded-2xl bg-[#F6F0FE] text-[#7137D8] flex items-center justify-center mx-auto mb-3">
                       <Search className="w-6 h-6" />
                     </div>
-                    <h3 className="text-sm font-bold text-[#111827] mb-1">No widgets found</h3>
-                    <p className="text-xs text-[#64748B] max-w-sm mx-auto mb-4">
+                    <h3 className="text-sm font-black text-[#000000] mb-1" style={{ color: "#000000" }}>No widgets found</h3>
+                    <p className="text-xs text-[#000000] font-medium max-w-sm mx-auto mb-4" style={{ color: "#000000" }}>
                       We couldn't find any widgets matching "{searchQuery}". Try searching for something else or reset your filters.
                     </p>
                     <button
@@ -2435,7 +2437,7 @@ function DashboardWidgetsPage() {
                       return (
                         <article
                           key={item.id}
-                          className="bg-white rounded-2xl border border-[#E2E8F0] hover:border-[#CBD5E1] p-4 flex flex-col justify-between shadow-2xs hover:shadow-md transition-all duration-200 group"
+                          className="bg-white rounded-2xl border border-[#CBD5E1] hover:border-[#94A3B8] p-4 flex flex-col justify-between shadow-2xs hover:shadow-md transition-all duration-200 group"
                         >
                           <div>
                             {/* A. Miniature Preview Area */}
@@ -2451,12 +2453,12 @@ function DashboardWidgetsPage() {
                                 >
                                   {renderItemIcon(item.iconType)}
                                 </div>
-                                <h3 className="text-sm font-bold text-[#111827] truncate">
+                                <h3 className="text-sm font-black text-[#000000] truncate" style={{ color: "#000000" }}>
                                   {item.title}
                                 </h3>
                                 {item.badge && (
                                   <span
-                                    className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded-full uppercase tracking-wider ${
+                                    className={`text-[9px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-wider ${
                                       item.badge.toLowerCase() === "popular"
                                         ? "bg-[#FFE4E6] text-[#E11D48]"
                                         : "bg-[#F3E8FF] text-[#7137D8]"
@@ -2466,7 +2468,7 @@ function DashboardWidgetsPage() {
                                   </span>
                                 )}
                               </div>
-                              <p className="text-xs text-[#64748B] line-clamp-2 leading-relaxed">
+                              <p className="text-xs text-[#000000] line-clamp-2 leading-relaxed font-normal" style={{ color: "#000000" }}>
                                 {item.description}
                               </p>
                             </div>
@@ -2475,20 +2477,20 @@ function DashboardWidgetsPage() {
                           {/* C. Bottom Actions */}
                           <div className="flex items-center justify-between pt-4 mt-3 border-t border-[#F1F5F9] gap-2">
                             {/* Available designs count */}
-                            <div className="flex items-center gap-1.5 text-xs text-[#64748B] font-medium shrink-0">
-                              <Layers className="w-3.5 h-3.5 text-[#94A3B8]" />
+                            <div className="flex items-center gap-1.5 text-xs text-[#000000] font-bold shrink-0" style={{ color: "#000000" }}>
+                              <Layers className="w-3.5 h-3.5 text-[#000000]" />
                               <span>{item.designsCount || "3+ Designs"}</span>
                             </div>
 
                             <div className="flex items-center gap-1.5 shrink-0">
-                              {/* + Add widget button */}
+                              {/* + Add widget button - High contrast dark background with crisp white text */}
                               <button
                                 type="button"
                                 onClick={() => handleWidgetClick(item)}
-                                className="px-3 py-1.5 rounded-lg bg-[#F8FAFC] hover:bg-[#7137D8] text-[#111827] hover:text-white border border-[#E2E8F0] hover:border-[#7137D8] text-xs font-semibold transition cursor-pointer flex items-center gap-1"
+                                className="px-3.5 py-1.5 rounded-lg bg-[#000000] hover:bg-[#7137D8] text-white text-xs font-bold transition cursor-pointer flex items-center gap-1.5 shadow-xs"
                               >
-                                <Plus className="w-3 h-3" />
-                                <span>Add widget</span>
+                                <Plus className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+                                <span className="text-white font-bold">Add widget</span>
                               </button>
 
                               {/* Eye icon preview button */}
@@ -2496,9 +2498,9 @@ function DashboardWidgetsPage() {
                                 type="button"
                                 title="Quick Preview"
                                 onClick={() => setPreviewModalWidget(item)}
-                                className="w-8 h-8 rounded-full border border-[#E2E8F0] hover:border-[#7137D8] hover:text-[#7137D8] flex items-center justify-center text-[#64748B] hover:bg-[#F6F0FE] transition cursor-pointer"
+                                className="w-8 h-8 rounded-full border border-[#000000]/25 hover:border-black hover:bg-black/5 flex items-center justify-center text-[#000000] transition cursor-pointer"
                               >
-                                <Eye className="w-3.5 h-3.5" />
+                                <Eye className="w-3.5 h-3.5 text-[#000000]" />
                               </button>
                             </div>
                           </div>

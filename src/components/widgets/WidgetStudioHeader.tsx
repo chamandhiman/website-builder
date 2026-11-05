@@ -30,7 +30,7 @@ export function WidgetStudioHeader({
   onWidgetNameChange,
   status,
   icon,
-  iconBgClass = "bg-[#25d366]/15 border-[#25d366]/30 text-[#25d366]",
+  iconBgClass = "bg-[#7137D8]/10 border-[#7137D8]/20 text-[#7137D8]",
   previewDevice = "desktop",
   onPreviewDeviceChange,
   onResetPreview,
@@ -45,24 +45,24 @@ export function WidgetStudioHeader({
   const isPublished = status === "published";
 
   return (
-    <header className="h-14 border-b border-zinc-800/80 bg-zinc-950 px-4 flex items-center justify-between shrink-0 z-30 select-none">
+    <header className="h-14 border-b border-[#E2E8F0] bg-white px-4 flex items-center justify-between shrink-0 z-30 select-none shadow-2xs">
       {/* Left: Back button + Divider + Icon + Editable Name + Status Badge */}
       <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={() => navigate({ to: "/dashboard/widgets" as any })}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800/80 transition text-xs font-semibold cursor-pointer"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white hover:bg-[#F8FAFC] text-[#475569] hover:text-[#111827] border border-[#E2E8F0] hover:border-[#CBD5E1] transition text-xs font-semibold cursor-pointer shadow-2xs"
           title="Back to Plugins"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Back to Plugins</span>
         </button>
 
-        <div className="h-4 w-px bg-zinc-800" />
+        <div className="h-4 w-px bg-[#E2E8F0]" />
 
         <div className="flex items-center gap-2">
           <div
-            className={`w-6 h-6 rounded-md border flex items-center justify-center shrink-0 ${iconBgClass}`}
+            className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 shadow-2xs ${iconBgClass}`}
           >
             {icon}
           </div>
@@ -70,43 +70,43 @@ export function WidgetStudioHeader({
             type="text"
             value={widgetName}
             onChange={(e) => onWidgetNameChange(e.target.value)}
-            className="bg-transparent hover:bg-zinc-900/60 focus:bg-zinc-900 px-2 py-0.5 rounded text-sm font-semibold text-white focus:outline-none focus:ring-1 focus:ring-white/20 max-w-[180px] sm:max-w-[240px] truncate"
+            className="bg-transparent hover:bg-[#F8FAFC] focus:bg-white px-2 py-1 rounded-lg text-sm font-bold text-[#111827] focus:outline-none focus:ring-1 focus:ring-[#7137D8] border border-transparent focus:border-[#7137D8] max-w-[180px] sm:max-w-[240px] truncate transition"
             title="Click to rename widget"
           />
         </div>
 
         <span
-          className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0 ${
+          className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1.5 shrink-0 ${
             isPublished
-              ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-              : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+              ? "bg-[#DCFCE7] text-[#16A34A] border border-[#BBF7D0]"
+              : "bg-[#FEF3C7] text-[#D97706] border border-[#FDE68A]"
           }`}
         >
           <span
             className={`w-1.5 h-1.5 rounded-full ${
-              isPublished ? "bg-emerald-400" : "bg-amber-400"
+              isPublished ? "bg-[#16A34A]" : "bg-[#D97706]"
             }`}
           />
           {isPublished ? "Published" : "Draft"}
         </span>
 
         {hasUnsavedChanges && (
-          <span className="hidden xl:inline text-[11px] text-amber-400 font-medium">
-            • Unsaved
+          <span className="hidden xl:inline text-[11px] text-[#D97706] font-semibold bg-[#FEF3C7] px-2 py-0.5 rounded-full border border-[#FDE68A]">
+            • Unsaved changes
           </span>
         )}
       </div>
 
       {/* Center: Desktop / Mobile Device Switcher */}
       {onPreviewDeviceChange && (
-        <div className="hidden md:flex items-center bg-zinc-900 border border-zinc-800 p-0.5 rounded-lg">
+        <div className="hidden md:flex items-center bg-[#F1F5F9] border border-[#E2E8F0] p-0.5 rounded-xl">
           <button
             type="button"
             onClick={() => onPreviewDeviceChange("desktop")}
-            className={`px-3 py-1 rounded text-xs font-medium flex items-center gap-1.5 transition cursor-pointer ${
+            className={`px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer ${
               previewDevice === "desktop"
-                ? "bg-zinc-800 text-white shadow-sm"
-                : "text-zinc-400 hover:text-zinc-200"
+                ? "bg-white text-[#7137D8] shadow-xs font-bold"
+                : "text-[#64748B] hover:text-[#111827]"
             }`}
           >
             <Monitor className="w-3.5 h-3.5" />
@@ -115,10 +115,10 @@ export function WidgetStudioHeader({
           <button
             type="button"
             onClick={() => onPreviewDeviceChange("mobile")}
-            className={`px-3 py-1 rounded text-xs font-medium flex items-center gap-1.5 transition cursor-pointer ${
+            className={`px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer ${
               previewDevice === "mobile"
-                ? "bg-zinc-800 text-white shadow-sm"
-                : "text-zinc-400 hover:text-zinc-200"
+                ? "bg-white text-[#7137D8] shadow-xs font-bold"
+                : "text-[#64748B] hover:text-[#111827]"
             }`}
           >
             <Smartphone className="w-3.5 h-3.5" />
@@ -133,20 +133,20 @@ export function WidgetStudioHeader({
           <button
             type="button"
             onClick={onResetPreview}
-            className="p-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white transition cursor-pointer"
+            className="p-2 rounded-xl bg-white hover:bg-[#F8FAFC] text-[#64748B] hover:text-[#111827] border border-[#E2E8F0] hover:border-[#CBD5E1] transition cursor-pointer shadow-2xs"
             title="Reload Preview"
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-3.5 h-3.5" />
           </button>
         )}
 
         <button
           type="button"
           onClick={onOpenEmbed}
-          className="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-medium text-xs flex items-center gap-1.5 border border-zinc-800 cursor-pointer"
+          className="px-3 py-1.5 rounded-xl bg-white hover:bg-[#F8FAFC] text-[#334155] hover:text-[#111827] font-semibold text-xs flex items-center gap-1.5 border border-[#E2E8F0] hover:border-[#CBD5E1] cursor-pointer shadow-2xs transition"
           title="Get embed code"
         >
-          <Code2 className="w-3.5 h-3.5" />
+          <Code2 className="w-3.5 h-3.5 text-[#7137D8]" />
           <span>Embed</span>
         </button>
 
@@ -154,7 +154,7 @@ export function WidgetStudioHeader({
           type="button"
           onClick={onSaveDraft}
           disabled={saving}
-          className="px-3.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-medium text-xs transition disabled:opacity-50 cursor-pointer"
+          className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#CBD5E1] hover:border-[#94A3B8] text-[#111827] font-bold text-xs transition disabled:opacity-50 cursor-pointer shadow-2xs"
         >
           {saving ? "Saving…" : "Save Draft"}
         </button>
@@ -163,7 +163,7 @@ export function WidgetStudioHeader({
           type="button"
           onClick={onPublish}
           disabled={publishing}
-          className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-[#22c55e] to-[#16a34a] hover:opacity-90 text-zinc-950 font-bold text-xs transition shadow-md shadow-[#22c55e]/20 disabled:opacity-50 cursor-pointer"
+          className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-[#7137D8] to-[#8B5CF6] hover:from-[#6025C5] hover:to-[#7C3AED] text-white font-bold text-xs transition shadow-xs disabled:opacity-50 cursor-pointer"
         >
           {publishing ? "Publishing…" : "Publish Live"}
         </button>

@@ -72,7 +72,7 @@ function StudioSwitch({
   return (
     <div
       onClick={() => onChange(!checked)}
-      className="flex items-center justify-between py-2 px-1 cursor-pointer select-none group rounded-lg hover:bg-zinc-800/40 transition-colors"
+      className="flex items-center justify-between py-2 px-1 cursor-pointer select-none group rounded-lg hover:bg-[#F8FAFC] transition-colors"
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
@@ -83,15 +83,15 @@ function StudioSwitch({
       }}
     >
       <div className="pr-3">
-        <span className="text-zinc-200 group-hover:text-white font-medium text-xs transition-colors">
+        <span className="text-[#111827] group-hover:text-white font-medium text-xs transition-colors">
           {label}
         </span>
-        {description && <p className="text-[10px] text-zinc-500 mt-0.5">{description}</p>}
+        {description && <p className="text-[10px] text-[#94A3B8] mt-0.5">{description}</p>}
       </div>
       <div className="flex items-center gap-2 shrink-0">
         <span
           className={`text-[10px] font-bold tracking-wider uppercase transition-colors ${
-            checked ? "text-[#25d366]" : "text-zinc-500"
+            checked ? "text-[#25d366]" : "text-[#94A3B8]"
           }`}
         >
           {checked ? "ON" : "OFF"}
@@ -317,7 +317,7 @@ function WhatsAppChatStudioPage() {
 
   if (loading || !widget) {
     return (
-      <div className="min-h-screen bg-[#121214] flex items-center justify-center text-zinc-400">
+      <div className="min-h-screen bg-[#121214] flex items-center justify-center text-[#64748B]">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-2 border-[#25d366] border-t-transparent rounded-full animate-spin"></div>
           <span className="text-sm">Loading WhatsApp Studio…</span>
@@ -330,7 +330,7 @@ function WhatsAppChatStudioPage() {
   const isPublished = widget.status === "published";
 
   return (
-    <div className="h-screen w-full flex flex-col bg-[#121214] text-zinc-100 overflow-hidden select-none">
+    <div className="h-screen w-full flex flex-col bg-[#121214] text-[#111827] overflow-hidden select-none">
       {/* Top Studio Navbar */}
       <WidgetStudioHeader
         widgetName={widget.name}
@@ -351,16 +351,16 @@ function WhatsAppChatStudioPage() {
       {/* Main Studio Body: Split View (Settings Panel on Left, Live Canvas on Right) */}
       <div className="flex-1 flex overflow-hidden">
         {/* Settings Sidebar Panel */}
-        <div className="w-[380px] lg:w-[420px] bg-zinc-950 border-r border-zinc-800/80 flex flex-col shrink-0">
+        <div className="w-[380px] lg:w-[420px] bg-white border-r border-[#E2E8F0] flex flex-col shrink-0">
           {/* Tabs Navigation */}
-          <div className="grid grid-cols-4 border-b border-zinc-800/80 bg-zinc-950 text-xs font-semibold shrink-0">
+          <div className="grid grid-cols-4 border-b border-[#E2E8F0] bg-white text-xs font-semibold shrink-0">
             <button
               type="button"
               onClick={() => setActiveTab("content")}
               className={`py-3 flex flex-col items-center justify-center gap-1 transition border-b-2 cursor-pointer ${
                 activeTab === "content"
-                  ? "border-[#25d366] text-[#25d366] bg-zinc-900/40"
-                  : "border-transparent text-zinc-400 hover:text-zinc-200"
+                  ? "border-[#25d366] text-[#25d366] bg-[#F8FAFC]/40"
+                  : "border-transparent text-[#64748B] hover:text-[#111827]"
               }`}
             >
               <Phone className="w-3.5 h-3.5" />
@@ -371,8 +371,8 @@ function WhatsAppChatStudioPage() {
               onClick={() => setActiveTab("appearance")}
               className={`py-3 flex flex-col items-center justify-center gap-1 transition border-b-2 cursor-pointer ${
                 activeTab === "appearance"
-                  ? "border-[#25d366] text-[#25d366] bg-zinc-900/40"
-                  : "border-transparent text-zinc-400 hover:text-zinc-200"
+                  ? "border-[#25d366] text-[#25d366] bg-[#F8FAFC]/40"
+                  : "border-transparent text-[#64748B] hover:text-[#111827]"
               }`}
             >
               <Palette className="w-3.5 h-3.5" />
@@ -383,8 +383,8 @@ function WhatsAppChatStudioPage() {
               onClick={() => setActiveTab("behavior")}
               className={`py-3 flex flex-col items-center justify-center gap-1 transition border-b-2 cursor-pointer ${
                 activeTab === "behavior"
-                  ? "border-[#25d366] text-[#25d366] bg-zinc-900/40"
-                  : "border-transparent text-zinc-400 hover:text-zinc-200"
+                  ? "border-[#25d366] text-[#25d366] bg-[#F8FAFC]/40"
+                  : "border-transparent text-[#64748B] hover:text-[#111827]"
               }`}
             >
               <Sliders className="w-3.5 h-3.5" />
@@ -395,8 +395,8 @@ function WhatsAppChatStudioPage() {
               onClick={() => setActiveTab("install")}
               className={`py-3 flex flex-col items-center justify-center gap-1 transition border-b-2 cursor-pointer ${
                 activeTab === "install"
-                  ? "border-[#25d366] text-[#25d366] bg-zinc-900/40"
-                  : "border-transparent text-zinc-400 hover:text-zinc-200"
+                  ? "border-[#25d366] text-[#25d366] bg-[#F8FAFC]/40"
+                  : "border-transparent text-[#64748B] hover:text-[#111827]"
               }`}
             >
               <Code2 className="w-3.5 h-3.5" />
@@ -410,9 +410,9 @@ function WhatsAppChatStudioPage() {
             {activeTab === "content" && (
               <div className="space-y-5">
                 {/* 1. Phone Number */}
-                <div className="space-y-2 p-3.5 rounded-xl bg-zinc-900/80 border border-zinc-800">
+                <div className="space-y-2 p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <label className="text-xs font-bold text-[#111827] flex items-center gap-1.5">
                       <Phone className="w-3.5 h-3.5 text-[#25d366]" />
                       <span>WhatsApp Phone Number</span>
                     </label>
@@ -421,7 +421,7 @@ function WhatsAppChatStudioPage() {
                         <Check className="w-3 h-3" /> Valid
                       </span>
                     ) : (
-                      <span className="text-[10px] font-bold text-amber-400">Required</span>
+                      <span className="text-[10px] font-bold text-[#7137D8]">Required</span>
                     )}
                   </div>
                   <input
@@ -429,16 +429,16 @@ function WhatsAppChatStudioPage() {
                     value={content.phoneNumber}
                     onChange={(e) => updateContent({ phoneNumber: e.target.value })}
                     placeholder="e.g. 14155552671 or 919876543210"
-                    className={`w-full bg-zinc-950 border rounded-lg px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:outline-none transition ${
+                    className={`w-full bg-white border rounded-lg px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:outline-none transition ${
                       rawPhone && !isPhoneValid
                         ? "border-red-500/60 focus:border-red-500"
-                        : "border-zinc-800 focus:border-[#25d366]"
+                        : "border-[#E2E8F0] focus:border-[#25d366]"
                     }`}
                   />
-                  <div className="text-[11px] text-zinc-400 leading-snug">
-                    Enter your international number with country code. Do not include <code className="text-zinc-300">+</code>, spaces, or dashes.
+                  <div className="text-[11px] text-[#64748B] leading-snug">
+                    Enter your international number with country code. Do not include <code className="text-[#334155]">+</code>, spaces, or dashes.
                     {normalizedPhone && (
-                      <div className="mt-1 font-mono text-[10px] text-zinc-300">
+                      <div className="mt-1 font-mono text-[10px] text-[#334155]">
                         Normalized: <span className="text-[#25d366]">+{normalizedPhone}</span>
                       </div>
                     )}
@@ -453,53 +453,53 @@ function WhatsAppChatStudioPage() {
 
                 {/* 2. Button Label */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-zinc-300">Button Label</label>
+                  <label className="text-xs font-semibold text-[#334155]">Button Label</label>
                   <input
                     type="text"
                     value={content.buttonLabel}
                     onChange={(e) => updateContent({ buttonLabel: e.target.value })}
                     placeholder="Chat on WhatsApp"
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#25d366]"
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#25d366]"
                   />
-                  <span className="text-[10px] text-zinc-500">
+                  <span className="text-[10px] text-[#94A3B8]">
                     Shown when button style has pill/rounded border radius.
                   </span>
                 </div>
 
                 {/* 3. Greeting Text */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-zinc-300">Greeting Text</label>
+                  <label className="text-xs font-semibold text-[#334155]">Greeting Text</label>
                   <textarea
                     rows={2}
                     value={content.greetingText}
                     onChange={(e) => updateContent({ greetingText: e.target.value })}
                     placeholder="Hi! How can we help you today?"
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2.5 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#25d366] resize-none"
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg p-2.5 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#25d366] resize-none"
                   />
-                  <span className="text-[10px] text-zinc-500">
+                  <span className="text-[10px] text-[#94A3B8]">
                     Displayed inside the welcome speech bubble or contact card.
                   </span>
                 </div>
 
                 {/* 4. Pre-filled Message */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-zinc-300">Pre-filled Message</label>
+                  <label className="text-xs font-semibold text-[#334155]">Pre-filled Message</label>
                   <textarea
                     rows={2}
                     value={content.prefilledMessage}
                     onChange={(e) => updateContent({ prefilledMessage: e.target.value })}
                     placeholder="Hi, I would like to know more about your services."
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2.5 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#25d366] resize-none"
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg p-2.5 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#25d366] resize-none"
                   />
-                  <span className="text-[10px] text-zinc-500">
+                  <span className="text-[10px] text-[#94A3B8]">
                     Pre-populated automatically in the visitor&apos;s WhatsApp input box.
                   </span>
                 </div>
 
                 {/* 5. Agent / Team Name */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-zinc-400" />
+                  <label className="text-xs font-semibold text-[#334155] flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5 text-[#64748B]" />
                     <span>Business / Agent Name</span>
                   </label>
                   <input
@@ -507,14 +507,14 @@ function WhatsAppChatStudioPage() {
                     value={content.agentName}
                     onChange={(e) => updateContent({ agentName: e.target.value })}
                     placeholder="Support Team"
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#25d366]"
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#25d366]"
                   />
                 </div>
 
                 {/* 6. Agent Avatar URL */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
-                    <Image className="w-3.5 h-3.5 text-zinc-400" />
+                  <label className="text-xs font-semibold text-[#334155] flex items-center gap-1.5">
+                    <Image className="w-3.5 h-3.5 text-[#64748B]" />
                     <span>Agent Avatar URL (Optional)</span>
                   </label>
                   <input
@@ -522,30 +522,30 @@ function WhatsAppChatStudioPage() {
                     value={content.agentAvatarUrl}
                     onChange={(e) => updateContent({ agentAvatarUrl: e.target.value })}
                     placeholder="https://example.com/avatar.jpg"
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#25d366]"
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#25d366]"
                   />
-                  <span className="text-[10px] text-zinc-500">
+                  <span className="text-[10px] text-[#94A3B8]">
                     Leave blank to show agent initials with official badge.
                   </span>
                 </div>
 
                 {/* 7. Status / Availability Label */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-zinc-300">Status Label (Informational)</label>
+                  <label className="text-xs font-semibold text-[#334155]">Status Label (Informational)</label>
                   <input
                     type="text"
                     value={content.statusLabel}
                     onChange={(e) => updateContent({ statusLabel: e.target.value })}
                     placeholder="Usually replies in minutes"
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#25d366]"
+                    className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#25d366]"
                   />
-                  <span className="text-[10px] text-zinc-500">
+                  <span className="text-[10px] text-[#94A3B8]">
                     Static informational text displayed next to the green status dot.
                   </span>
                 </div>
 
                 {/* 8. Working Hours Notice */}
-                <div className="space-y-2 p-3 rounded-xl bg-zinc-900/60 border border-zinc-800/80">
+                <div className="space-y-2 p-3 rounded-xl bg-white border border-[#E2E8F0]">
                   <StudioSwitch
                     label="Show Working Hours Notice"
                     checked={content.showWorkingHoursNotice}
@@ -558,7 +558,7 @@ function WhatsAppChatStudioPage() {
                       value={content.workingHoursNotice}
                       onChange={(e) => updateContent({ workingHoursNotice: e.target.value })}
                       placeholder="We usually reply Monday–Friday (9am - 6pm)"
-                      className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#25d366] mt-2"
+                      className="w-full bg-white border border-[#E2E8F0] rounded-lg px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#25d366] mt-2"
                     />
                   )}
                 </div>
@@ -570,8 +570,8 @@ function WhatsAppChatStudioPage() {
               <div className="space-y-6">
                 {/* 1. Presets */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-white flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <label className="text-xs font-bold text-[#111827] flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-[#7137D8]" />
                     <span>Quick Design Presets</span>
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -583,11 +583,11 @@ function WhatsAppChatStudioPage() {
                         className={`p-2.5 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between ${
                           appearance.template === tpl.key
                             ? "bg-[#25d366]/10 border-[#25d366] text-white"
-                            : "bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-zinc-700"
+                            : "bg-[#F8FAFC] border-[#E2E8F0] text-[#334155] hover:border-[#CBD5E1]"
                         }`}
                       >
                         <div className="text-xs font-bold">{tpl.name}</div>
-                        <div className="text-[10px] text-zinc-500 mt-1 line-clamp-1">{tpl.badge}</div>
+                        <div className="text-[10px] text-[#94A3B8] mt-1 line-clamp-1">{tpl.badge}</div>
                       </button>
                     ))}
                   </div>
@@ -595,7 +595,7 @@ function WhatsAppChatStudioPage() {
 
                 {/* 2. Layout Style */}
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-zinc-300">Layout Style</label>
+                  <label className="text-xs font-semibold text-[#334155]">Layout Style</label>
                   <div className="grid grid-cols-3 gap-2">
                     {[
                       { key: "floating_button", label: "Button", icon: "🔘" },
@@ -609,7 +609,7 @@ function WhatsAppChatStudioPage() {
                         className={`py-2 px-2 rounded-lg border text-center transition cursor-pointer text-xs font-semibold flex flex-col items-center gap-1 ${
                           appearance.layoutStyle === st.key
                             ? "bg-[#25d366]/15 border-[#25d366] text-[#25d366]"
-                            : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white"
+                            : "bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:text-white"
                         }`}
                       >
                         <span className="text-base">{st.icon}</span>
@@ -622,15 +622,15 @@ function WhatsAppChatStudioPage() {
                 {/* 3. Button Color & Presets */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-semibold text-zinc-300">Button Background Color</label>
-                    <span className="font-mono text-xs text-zinc-400">{appearance.buttonColor}</span>
+                    <label className="text-xs font-semibold text-[#334155]">Button Background Color</label>
+                    <span className="font-mono text-xs text-[#64748B]">{appearance.buttonColor}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <input
                       type="color"
                       value={appearance.buttonColor}
                       onChange={(e) => updateAppearance({ buttonColor: e.target.value })}
-                      className="w-10 h-8 rounded-lg bg-zinc-900 border border-zinc-800 p-0.5 cursor-pointer shrink-0"
+                      className="w-10 h-8 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] p-0.5 cursor-pointer shrink-0"
                     />
                     <div className="flex items-center gap-1.5 flex-wrap">
                       {[
@@ -657,15 +657,15 @@ function WhatsAppChatStudioPage() {
                 </div>
 
                 {/* 4. Position & Viewport Spacing */}
-                <div className="space-y-3 p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
+                <div className="space-y-3 p-3 rounded-xl bg-white border border-[#E2E8F0]">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-semibold text-zinc-300">Screen Position</label>
-                    <div className="flex items-center bg-zinc-950 p-0.5 rounded-lg border border-zinc-800">
+                    <label className="text-xs font-semibold text-[#334155]">Screen Position</label>
+                    <div className="flex items-center bg-white p-0.5 rounded-lg border border-[#E2E8F0]">
                       <button
                         type="button"
                         onClick={() => updateAppearance({ position: "bottom_left" })}
                         className={`px-2.5 py-1 text-xs rounded font-medium transition cursor-pointer ${
-                          appearance.position === "bottom_left" ? "bg-zinc-800 text-white" : "text-zinc-400"
+                          appearance.position === "bottom_left" ? "bg-[#F1F5F9] text-white" : "text-[#64748B]"
                         }`}
                       >
                         Bottom Left
@@ -674,7 +674,7 @@ function WhatsAppChatStudioPage() {
                         type="button"
                         onClick={() => updateAppearance({ position: "bottom_right" })}
                         className={`px-2.5 py-1 text-xs rounded font-medium transition cursor-pointer ${
-                          appearance.position === "bottom_right" ? "bg-zinc-800 text-white" : "text-zinc-400"
+                          appearance.position === "bottom_right" ? "bg-[#F1F5F9] text-white" : "text-[#64748B]"
                         }`}
                       >
                         Bottom Right
@@ -684,7 +684,7 @@ function WhatsAppChatStudioPage() {
 
                   <div className="grid grid-cols-2 gap-3 pt-2">
                     <div>
-                      <div className="flex justify-between text-[11px] text-zinc-400 mb-1">
+                      <div className="flex justify-between text-[11px] text-[#64748B] mb-1">
                         <span>Side Offset</span>
                         <span>{appearance.offsetX}px</span>
                       </div>
@@ -698,7 +698,7 @@ function WhatsAppChatStudioPage() {
                       />
                     </div>
                     <div>
-                      <div className="flex justify-between text-[11px] text-zinc-400 mb-1">
+                      <div className="flex justify-between text-[11px] text-[#64748B] mb-1">
                         <span>Bottom Offset</span>
                         <span>{appearance.offsetY}px</span>
                       </div>
@@ -715,9 +715,9 @@ function WhatsAppChatStudioPage() {
                 </div>
 
                 {/* 5. Button Sizing */}
-                <div className="space-y-3 p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
+                <div className="space-y-3 p-3 rounded-xl bg-white border border-[#E2E8F0]">
                   <div>
-                    <div className="flex justify-between text-[11px] text-zinc-400 mb-1">
+                    <div className="flex justify-between text-[11px] text-[#64748B] mb-1">
                       <span>Button Diameter</span>
                       <span>{appearance.buttonDiameter}px</span>
                     </div>
@@ -732,7 +732,7 @@ function WhatsAppChatStudioPage() {
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-[11px] text-zinc-400 mb-1">
+                    <div className="flex justify-between text-[11px] text-[#64748B] mb-1">
                       <span>Icon Size</span>
                       <span>{appearance.iconSize}px</span>
                     </div>
@@ -747,7 +747,7 @@ function WhatsAppChatStudioPage() {
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-[11px] text-zinc-400 mb-1">
+                    <div className="flex justify-between text-[11px] text-[#64748B] mb-1">
                       <span>Border Radius</span>
                       <span>{appearance.borderRadius >= 50 ? "Circle / Pill" : `${appearance.borderRadius}px`}</span>
                     </div>
@@ -765,11 +765,11 @@ function WhatsAppChatStudioPage() {
                 {/* 6. Animations */}
                 <div className="space-y-3">
                   <div>
-                    <label className="text-xs font-semibold text-zinc-300 block mb-1">Entrance Animation</label>
+                    <label className="text-xs font-semibold text-[#334155] block mb-1">Entrance Animation</label>
                     <select
                       value={appearance.entranceAnimation}
                       onChange={(e) => updateAppearance({ entranceAnimation: e.target.value as WhatsAppEntranceAnimation })}
-                      className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#25d366] cursor-pointer"
+                      className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#25d366] cursor-pointer"
                     >
                       <option value="none">None</option>
                       <option value="fade_in">Fade In</option>
@@ -779,11 +779,11 @@ function WhatsAppChatStudioPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-semibold text-zinc-300 block mb-1">Subtle Attention Animation</label>
+                    <label className="text-xs font-semibold text-[#334155] block mb-1">Subtle Attention Animation</label>
                     <select
                       value={appearance.attentionAnimation}
                       onChange={(e) => updateAppearance({ attentionAnimation: e.target.value as WhatsAppAttentionAnimation })}
-                      className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#25d366] cursor-pointer"
+                      className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#25d366] cursor-pointer"
                     >
                       <option value="none">None (Static)</option>
                       <option value="subtle_pulse">Subtle Pulse (Heartbeat)</option>
@@ -793,7 +793,7 @@ function WhatsAppChatStudioPage() {
                 </div>
 
                 {/* 7. Hover Tooltip */}
-                <div className="space-y-2 p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
+                <div className="space-y-2 p-3 rounded-xl bg-white border border-[#E2E8F0]">
                   <StudioSwitch
                     label="Show Tooltip on Hover"
                     checked={appearance.showTooltip}
@@ -806,7 +806,7 @@ function WhatsAppChatStudioPage() {
                       value={appearance.customTooltipText}
                       onChange={(e) => updateAppearance({ customTooltipText: e.target.value })}
                       placeholder="Chat with us"
-                      className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#25d366] mt-2"
+                      className="w-full bg-white border border-[#E2E8F0] rounded-lg px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#25d366] mt-2"
                     />
                   )}
                 </div>
@@ -816,7 +816,7 @@ function WhatsAppChatStudioPage() {
             {/* ================= TAB 3: BEHAVIOR ================= */}
             {activeTab === "behavior" && (
               <div className="space-y-5">
-                <div className="p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-3">
+                <div className="p-3.5 rounded-xl bg-white border border-[#E2E8F0] space-y-3">
                   <StudioSwitch
                     label="Open WhatsApp in New Tab"
                     checked={behavior.openInNewTab}
@@ -824,7 +824,7 @@ function WhatsAppChatStudioPage() {
                     description="Opens WhatsApp (wa.me) or the WhatsApp app in a separate browser tab."
                   />
 
-                  <div className="h-px bg-zinc-800" />
+                  <div className="h-px bg-[#F1F5F9]" />
 
                   <StudioSwitch
                     label="Pre-fill WhatsApp Message"
@@ -834,7 +834,7 @@ function WhatsAppChatStudioPage() {
                   />
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-3">
+                <div className="p-3.5 rounded-xl bg-white border border-[#E2E8F0] space-y-3">
                   <StudioSwitch
                     label="Show Greeting Bubble"
                     checked={behavior.showGreetingBubble}
@@ -845,7 +845,7 @@ function WhatsAppChatStudioPage() {
                   {behavior.showGreetingBubble && (
                     <>
                       <div>
-                        <div className="flex justify-between text-[11px] text-zinc-400 mb-1">
+                        <div className="flex justify-between text-[11px] text-[#64748B] mb-1">
                           <span>Greeting Delay</span>
                           <span>{behavior.greetingDelaySec}s</span>
                         </div>
@@ -857,13 +857,13 @@ function WhatsAppChatStudioPage() {
                           onChange={(e) => updateBehavior({ greetingDelaySec: Number(e.target.value) })}
                           className="w-full accent-[#25d366]"
                         />
-                        <span className="text-[10px] text-zinc-500">
+                        <span className="text-[10px] text-[#94A3B8]">
                           Wait {behavior.greetingDelaySec}s after page load before popping up greeting.
                         </span>
                       </div>
 
                       <div>
-                        <div className="flex justify-between text-[11px] text-zinc-400 mb-1">
+                        <div className="flex justify-between text-[11px] text-[#64748B] mb-1">
                           <span>Auto-Dismiss Duration</span>
                           <span>{behavior.autoDismissGreetingSec === 0 ? "Never (Stay Open)" : `${behavior.autoDismissGreetingSec}s`}</span>
                         </div>
@@ -876,7 +876,7 @@ function WhatsAppChatStudioPage() {
                           onChange={(e) => updateBehavior({ autoDismissGreetingSec: Number(e.target.value) })}
                           className="w-full accent-[#25d366]"
                         />
-                        <span className="text-[10px] text-zinc-500">
+                        <span className="text-[10px] text-[#94A3B8]">
                           Automatically hides the greeting bubble after this duration.
                         </span>
                       </div>
@@ -884,15 +884,15 @@ function WhatsAppChatStudioPage() {
                   )}
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-3">
-                  <h4 className="text-xs font-bold text-white">Device Visibility</h4>
+                <div className="p-3.5 rounded-xl bg-white border border-[#E2E8F0] space-y-3">
+                  <h4 className="text-xs font-bold text-[#111827]">Device Visibility</h4>
                   <StudioSwitch
                     label="Show on Desktop Computers"
                     checked={behavior.visibleOnDesktop}
                     onChange={(checked) => updateBehavior({ visibleOnDesktop: checked })}
                     description="Redirects desktop visitors to WhatsApp Web."
                   />
-                  <div className="h-px bg-zinc-800" />
+                  <div className="h-px bg-[#F1F5F9]" />
                   <StudioSwitch
                     label="Show on Mobile Phones & Tablets"
                     checked={behavior.visibleOnMobile}
@@ -907,9 +907,9 @@ function WhatsAppChatStudioPage() {
             {activeTab === "install" && (
               <div className="space-y-6">
                 {/* Embed Code Snippet Card */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-[#111827] flex items-center gap-1.5">
                       <Code2 className="w-3.5 h-3.5 text-[#25d366]" />
                       <span>Embed Snippet</span>
                     </span>
@@ -922,18 +922,18 @@ function WhatsAppChatStudioPage() {
                       <span>{copiedEmbed ? "Copied!" : "Copy Code"}</span>
                     </button>
                   </div>
-                  <pre className="p-3 rounded-lg bg-zinc-950 border border-zinc-850 font-mono text-[11px] text-zinc-300 overflow-x-auto whitespace-pre-wrap leading-relaxed select-all">
+                  <pre className="p-3 rounded-lg bg-white border border-[#E2E8F0] font-mono text-[11px] text-[#334155] overflow-x-auto whitespace-pre-wrap leading-relaxed select-all">
                     {embedCode}
                   </pre>
-                  <p className="text-[11px] text-zinc-400">
-                    Paste this snippet before the closing <code className="text-zinc-300">&lt;/body&gt;</code> tag of your website.
+                  <p className="text-[11px] text-[#64748B]">
+                    Paste this snippet before the closing <code className="text-[#334155]">&lt;/body&gt;</code> tag of your website.
                   </p>
                 </div>
 
                 {/* Direct WhatsApp Click Link */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-[#111827] flex items-center gap-1.5">
                       <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
                       <span>Direct WhatsApp Link</span>
                     </span>
@@ -941,7 +941,7 @@ function WhatsAppChatStudioPage() {
                       type="button"
                       disabled={!isPhoneValid}
                       onClick={handleCopyWaLink}
-                      className="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-bold text-xs flex items-center gap-1 cursor-pointer transition disabled:opacity-40"
+                      className="px-2.5 py-1 rounded bg-[#F1F5F9] hover:bg-zinc-700 text-[#111827] font-bold text-xs flex items-center gap-1 cursor-pointer transition disabled:opacity-40"
                     >
                       {copiedWaLink ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                       <span>{copiedWaLink ? "Copied!" : "Copy Link"}</span>
@@ -951,7 +951,7 @@ function WhatsAppChatStudioPage() {
                     type="text"
                     readOnly
                     value={directWaUrl || "Please configure your phone number first"}
-                    className="w-full bg-zinc-950 border border-zinc-850 rounded px-2.5 py-1.5 font-mono text-[11px] text-zinc-300 select-all"
+                    className="w-full bg-white border border-[#E2E8F0] rounded px-2.5 py-1.5 font-mono text-[11px] text-[#334155] select-all"
                   />
                   {isPhoneValid && directWaUrl && (
                     <a
@@ -967,26 +967,26 @@ function WhatsAppChatStudioPage() {
 
                 {/* Platform Instructions */}
                 <div className="space-y-2.5">
-                  <h4 className="text-xs font-bold text-white">Platform Instructions</h4>
+                  <h4 className="text-xs font-bold text-[#111827]">Platform Instructions</h4>
 
-                  <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800 space-y-1">
-                    <div className="text-xs font-bold text-zinc-200">1. HTML / Static Websites</div>
-                    <p className="text-[11px] text-zinc-400">
-                      Paste the code snippet immediately before the closing <code className="text-zinc-300">&lt;/body&gt;</code> tag on every page where you want the live chat to show.
+                  <div className="p-3 rounded-lg bg-[#F8FAFC]/50 border border-[#E2E8F0] space-y-1">
+                    <div className="text-xs font-bold text-[#111827]">1. HTML / Static Websites</div>
+                    <p className="text-[11px] text-[#64748B]">
+                      Paste the code snippet immediately before the closing <code className="text-[#334155]">&lt;/body&gt;</code> tag on every page where you want the live chat to show.
                     </p>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800 space-y-1">
-                    <div className="text-xs font-bold text-zinc-200">2. WordPress</div>
-                    <p className="text-[11px] text-zinc-400">
+                  <div className="p-3 rounded-lg bg-[#F8FAFC]/50 border border-[#E2E8F0] space-y-1">
+                    <div className="text-xs font-bold text-[#111827]">2. WordPress</div>
+                    <p className="text-[11px] text-[#64748B]">
                       Use a plugin like <em>Insert Headers and Footers</em> or add the snippet to your theme footer via Appearance &gt; Theme File Editor &gt; footer.php.
                     </p>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800 space-y-1">
-                    <div className="text-xs font-bold text-zinc-200">3. React / Next.js</div>
-                    <p className="text-[11px] text-zinc-400">
-                      Add the script to your Root Layout or custom <code className="text-zinc-300">_document.tsx</code> using Next.js Script (<code className="text-zinc-300">strategy=&quot;lazyOnload&quot;</code>).
+                  <div className="p-3 rounded-lg bg-[#F8FAFC]/50 border border-[#E2E8F0] space-y-1">
+                    <div className="text-xs font-bold text-[#111827]">3. React / Next.js</div>
+                    <p className="text-[11px] text-[#64748B]">
+                      Add the script to your Root Layout or custom <code className="text-[#334155]">_document.tsx</code> using Next.js Script (<code className="text-[#334155]">strategy=&quot;lazyOnload&quot;</code>).
                     </p>
                   </div>
                 </div>
@@ -1009,11 +1009,11 @@ function WhatsAppChatStudioPage() {
         {/* Live Preview Canvas */}
         <div className="flex-1 bg-[#0a0a0c] flex flex-col overflow-hidden relative">
           {/* Top Canvas Bar */}
-          <div className="h-10 border-b border-zinc-800/80 bg-zinc-950/80 px-4 flex items-center justify-between text-xs text-zinc-400 shrink-0">
+          <div className="h-10 border-b border-[#E2E8F0] bg-white/80 px-4 flex items-center justify-between text-xs text-[#64748B] shrink-0">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#25d366]" />
-              <span className="font-semibold text-zinc-300">Live Preview</span>
-              <span className="text-zinc-500 text-[11px]">
+              <span className="font-semibold text-[#334155]">Live Preview</span>
+              <span className="text-[#94A3B8] text-[11px]">
                 ({previewDevice === "desktop" ? "Desktop viewport" : "Mobile 375px"})
               </span>
             </div>
@@ -1024,7 +1024,7 @@ function WhatsAppChatStudioPage() {
                   <CheckCheck className="w-3.5 h-3.5" /> Ready for live chats
                 </span>
               ) : (
-                <span className="text-amber-400 flex items-center gap-1 font-medium">
+                <span className="text-[#7137D8] flex items-center gap-1 font-medium">
                   <ShieldAlert className="w-3.5 h-3.5" /> Destination phone not configured
                 </span>
               )}
@@ -1034,18 +1034,18 @@ function WhatsAppChatStudioPage() {
           {/* Canvas Viewport Area */}
           <div className="flex-1 overflow-auto p-4 sm:p-8 flex items-center justify-center">
             <div
-              className={`relative bg-[#18181b] border border-zinc-800 rounded-2xl shadow-2xl transition-all duration-300 overflow-hidden flex flex-col ${
+              className={`relative bg-[#18181b] border border-[#E2E8F0] rounded-2xl shadow-2xl transition-all duration-300 overflow-hidden flex flex-col ${
                 previewDevice === "desktop" ? "w-full max-w-4xl h-[580px]" : "w-[375px] h-[667px]"
               }`}
             >
               {/* Simulated Browser Bar */}
-              <div className="h-9 bg-zinc-900 border-b border-zinc-800 px-3 flex items-center justify-between shrink-0 select-none">
+              <div className="h-9 bg-[#F8FAFC] border-b border-[#E2E8F0] px-3 flex items-center justify-between shrink-0 select-none">
                 <div className="flex items-center gap-1.5">
                   <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
                   <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
                   <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
                 </div>
-                <div className="bg-zinc-950 border border-zinc-800/80 rounded px-2.5 py-0.5 text-[10px] text-zinc-400 font-mono truncate max-w-[200px]">
+                <div className="bg-white border border-[#E2E8F0] rounded px-2.5 py-0.5 text-[10px] text-[#64748B] font-mono truncate max-w-[200px]">
                   https://yourcustomerwebsite.com
                 </div>
                 <div className="w-12" />
@@ -1054,44 +1054,44 @@ function WhatsAppChatStudioPage() {
               {/* Simulated Webpage Content */}
               <div className="flex-1 p-6 sm:p-8 overflow-y-auto space-y-6 relative bg-gradient-to-b from-[#18181b] to-[#121215]">
                 {/* Simulated Header */}
-                <div className="flex items-center justify-between pb-4 border-b border-zinc-800/60">
-                  <div className="h-5 w-28 bg-zinc-800 rounded" />
+                <div className="flex items-center justify-between pb-4 border-b border-[#E2E8F0]">
+                  <div className="h-5 w-28 bg-[#F1F5F9] rounded" />
                   <div className="hidden sm:flex items-center gap-4">
-                    <div className="h-3 w-14 bg-zinc-800/60 rounded" />
-                    <div className="h-3 w-14 bg-zinc-800/60 rounded" />
-                    <div className="h-3 w-14 bg-zinc-800/60 rounded" />
+                    <div className="h-3 w-14 bg-[#F8FAFC] rounded" />
+                    <div className="h-3 w-14 bg-[#F8FAFC] rounded" />
+                    <div className="h-3 w-14 bg-[#F8FAFC] rounded" />
                   </div>
-                  <div className="h-7 w-20 bg-zinc-800 rounded-lg" />
+                  <div className="h-7 w-20 bg-[#F1F5F9] rounded-lg" />
                 </div>
 
                 {/* Simulated Hero Section */}
                 <div className="space-y-3 pt-6 max-w-md">
-                  <div className="h-3 w-20 bg-amber-400/20 rounded text-amber-400 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 inline-block">
+                  <div className="h-3 w-20 bg-[#7137D8]/20 rounded text-[#7137D8] text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 inline-block">
                     Sample Website
                   </div>
                   <h2 className="text-2xl font-black text-white leading-tight">
                     Grow Your Business Faster With Modern Tools
                   </h2>
-                  <p className="text-xs text-zinc-400 leading-relaxed">
+                  <p className="text-xs text-[#64748B] leading-relaxed">
                     This is how your live website looks to visitors with your customized WhatsApp Live Chat widget floating in the corner.
                   </p>
                   <div className="pt-2 flex items-center gap-2">
                     <div className="h-8 w-28 bg-white/10 rounded-lg" />
-                    <div className="h-8 w-24 bg-zinc-800 rounded-lg" />
+                    <div className="h-8 w-24 bg-[#F1F5F9] rounded-lg" />
                   </div>
                 </div>
 
                 {/* Simulated Feature Cards */}
                 <div className="grid grid-cols-2 gap-3 pt-4 opacity-50 pointer-events-none">
-                  <div className="p-3 rounded-xl bg-zinc-900 border border-zinc-800 space-y-1.5">
-                    <div className="w-6 h-6 rounded bg-zinc-800" />
+                  <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1.5">
+                    <div className="w-6 h-6 rounded bg-[#F1F5F9]" />
                     <div className="h-3 w-20 bg-zinc-700 rounded" />
-                    <div className="h-2 w-full bg-zinc-800 rounded" />
+                    <div className="h-2 w-full bg-[#F1F5F9] rounded" />
                   </div>
-                  <div className="p-3 rounded-xl bg-zinc-900 border border-zinc-800 space-y-1.5">
-                    <div className="w-6 h-6 rounded bg-zinc-800" />
+                  <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1.5">
+                    <div className="w-6 h-6 rounded bg-[#F1F5F9]" />
                     <div className="h-3 w-20 bg-zinc-700 rounded" />
-                    <div className="h-2 w-full bg-zinc-800 rounded" />
+                    <div className="h-2 w-full bg-[#F1F5F9] rounded" />
                   </div>
                 </div>
 

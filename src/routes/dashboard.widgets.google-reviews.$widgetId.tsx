@@ -71,7 +71,7 @@ function StudioSwitch({
   return (
     <div
       onClick={() => onChange(!checked)}
-      className="flex items-center justify-between py-2 px-1 cursor-pointer select-none group rounded-lg hover:bg-zinc-800/40 transition-colors"
+      className="flex items-center justify-between py-2 px-1 cursor-pointer select-none group rounded-lg hover:bg-[#F8FAFC] transition-colors"
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
@@ -82,15 +82,15 @@ function StudioSwitch({
       }}
     >
       <div className="pr-3">
-        <span className="text-zinc-200 group-hover:text-white font-medium text-xs transition-colors">
+        <span className="text-[#111827] group-hover:text-white font-medium text-xs transition-colors">
           {label}
         </span>
-        {description && <p className="text-[10px] text-zinc-500 mt-0.5">{description}</p>}
+        {description && <p className="text-[10px] text-[#94A3B8] mt-0.5">{description}</p>}
       </div>
       <div className="flex items-center gap-2 shrink-0">
         <span
           className={`text-[10px] font-bold tracking-wider uppercase transition-colors ${
-            checked ? "text-amber-400" : "text-zinc-500"
+            checked ? "text-[#7137D8]" : "text-[#94A3B8]"
           }`}
         >
           {checked ? "ON" : "OFF"}
@@ -99,8 +99,8 @@ function StudioSwitch({
           type="button"
           role="switch"
           aria-checked={checked}
-          className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-1 focus:ring-amber-400/50 ${
-            checked ? "bg-amber-400" : "bg-zinc-700"
+          className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-1 focus:ring-[#7137D8]/50 ${
+            checked ? "bg-[#7137D8]" : "bg-[#CBD5E1]"
           }`}
           onClick={(e) => {
             e.stopPropagation();
@@ -406,8 +406,8 @@ function GoogleReviewsStudioPage() {
 
   if (loading || !widget) {
     return (
-      <div className="min-h-screen bg-[#18181b] flex items-center justify-center text-zinc-400">
-        <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mr-3"></div>
+      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center text-[#64748B]">
+        <div className="w-8 h-8 border-2 border-[#7137D8] border-t-transparent rounded-full animate-spin mr-3"></div>
         Loading Widget Studio…
       </div>
     );
@@ -419,14 +419,14 @@ function GoogleReviewsStudioPage() {
   const allReviewsList = widget.allReviews || widget.selectedReviews || [];
 
   return (
-    <div className="h-screen flex flex-col bg-[#121214] text-zinc-100 overflow-hidden">
+    <div className="h-screen flex flex-col bg-[#121214] text-[#111827] overflow-hidden">
       {/* Top Studio Navbar */}
       <WidgetStudioHeader
         widgetName={widget.name}
         onWidgetNameChange={(name) => setWidget({ ...widget, name })}
         status={widget.status}
-        icon={<Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />}
-        iconBgClass="bg-amber-400/15 border-amber-400/30 text-amber-400"
+        icon={<Star className="w-3.5 h-3.5 fill-amber-400 text-[#7137D8]" />}
+        iconBgClass="bg-[#7137D8]/10 border-[#7137D8]/30 text-[#7137D8]"
         previewDevice={previewDevice}
         onPreviewDeviceChange={setPreviewDevice}
         onResetPreview={() => setPreviewKey((k) => k + 1)}
@@ -440,9 +440,9 @@ function GoogleReviewsStudioPage() {
       {/* Main Studio Body: Left Sidebar + Right Live Preview */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left Studio Sidebar */}
-        <aside className="w-80 md:w-96 border-r border-zinc-800 bg-[#18181b] flex flex-col z-10">
+        <aside className="w-80 md:w-96 border-r border-[#E2E8F0] bg-white shadow-2xs flex flex-col z-10">
           {/* Studio Navigation Tabs */}
-          <div className="grid grid-cols-4 border-b border-zinc-800 bg-[#16161b] shrink-0 select-none overflow-hidden">
+          <div className="grid grid-cols-4 border-b border-[#E2E8F0] bg-[#16161b] shrink-0 select-none overflow-hidden">
             {[
               { id: "template", label: "Template", icon: Layers },
               { id: "source", label: "Source", icon: Search },
@@ -462,18 +462,18 @@ function GoogleReviewsStudioPage() {
                   onClick={() => setActiveTab(t.id)}
                   className={`group flex flex-col items-center justify-center py-2.5 px-1 text-center border-b-2 transition cursor-pointer ${
                     isActive
-                      ? "border-amber-400 bg-amber-500/10 text-amber-300"
-                      : "border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40"
+                      ? "border-[#7137D8] bg-[#F6F0FE] text-[#7137D8]"
+                      : "border-transparent text-[#64748B] hover:text-[#111827] hover:bg-[#F8FAFC]"
                   }`}
                 >
                   <Icon
                     className={`w-5 h-5 transition-transform duration-150 group-hover:scale-110 ${
-                      isActive ? "text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.35)]" : "text-zinc-400 group-hover:text-zinc-200"
+                      isActive ? "text-[#7137D8]" : "text-[#64748B] group-hover:text-[#111827]"
                     }`}
                   />
                   <span
                     className={`text-[10px] font-semibold mt-1 tracking-tight truncate max-w-full leading-none ${
-                      isActive ? "text-amber-300 font-bold" : "text-zinc-400 group-hover:text-zinc-200"
+                      isActive ? "text-[#7137D8] font-bold" : "text-[#64748B] group-hover:text-[#111827]"
                     }`}
                   >
                     {t.label}
@@ -484,13 +484,13 @@ function GoogleReviewsStudioPage() {
           </div>
 
           {/* Tab Form Controls */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-5 text-xs text-zinc-300">
+          <div className="flex-1 overflow-y-auto p-4 space-y-5 text-xs text-[#334155]">
             {/* 0. TEMPLATE SELECTION TAB */}
             {activeTab === "template" && (
               <div className="space-y-4">
                 <div>
-                  <h4 className="text-sm font-bold text-white mb-1">Choose Template</h4>
-                  <p className="text-zinc-400 text-[11px]">
+                  <h4 className="text-sm font-bold text-[#111827] mb-1">Choose Template</h4>
+                  <p className="text-[#64748B] text-[11px]">
                     Select a starting visual layout preset for your Google Reviews widget.
                   </p>
                 </div>
@@ -524,16 +524,16 @@ function GoogleReviewsStudioPage() {
                         }}
                         className={`p-3 rounded-xl border cursor-pointer transition-all flex flex-col justify-between ${
                           isSelected
-                            ? "bg-amber-400/10 border-amber-400 ring-1 ring-amber-400/30"
-                            : "bg-zinc-900 border-zinc-800 hover:border-zinc-700"
+                            ? "bg-[#7137D8]/10 border-[#7137D8] ring-1 ring-amber-400/30"
+                            : "bg-[#F8FAFC] border-[#E2E8F0] hover:border-[#CBD5E1]"
                         }`}
                       >
                         <div>
                           <div className="flex items-center justify-between mb-1.5">
                             <span className="font-bold text-white text-xs">{tmpl.name}</span>
-                            {isSelected && <Check className="w-3.5 h-3.5 text-amber-400" />}
+                            {isSelected && <Check className="w-3.5 h-3.5 text-[#7137D8]" />}
                           </div>
-                          <p className="text-[10px] text-zinc-400 leading-relaxed">{tmpl.desc}</p>
+                          <p className="text-[10px] text-[#64748B] leading-relaxed">{tmpl.desc}</p>
                         </div>
                       </div>
                     );
@@ -546,7 +546,7 @@ function GoogleReviewsStudioPage() {
                     await handleSaveDraft();
                     setActiveTab("source");
                   }}
-                  className="w-full py-2.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-98 mt-3"
+                  className="w-full py-2.5 rounded-lg bg-[#7137D8] hover:bg-amber-300 text-black font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-98 mt-3"
                 >
                   <span>Continue</span>
                   <ArrowRight className="w-4 h-4" />
@@ -558,16 +558,16 @@ function GoogleReviewsStudioPage() {
             {activeTab === "source" && (
               <div className="space-y-4">
                 <div>
-                  <h4 className="text-sm font-bold text-white mb-1">Connect Source</h4>
-                  <p className="text-zinc-400 text-[11px]">
+                  <h4 className="text-sm font-bold text-[#111827] mb-1">Connect Source</h4>
+                  <p className="text-[#64748B] text-[11px]">
                     Connect your Google Business profile to retrieve authentic customer reviews.
                   </p>
                 </div>
 
                 {/* Connected Business Box */}
-                <div className="p-3.5 rounded-xl bg-zinc-900 border border-zinc-700/80 space-y-2.5">
+                <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#CBD5E1]/80 space-y-2.5">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-[10px] text-zinc-400 font-semibold uppercase tracking-wider">
+                    <div className="flex items-center gap-2 text-[10px] text-[#64748B] font-semibold uppercase tracking-wider">
                       <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                       <span>Connected Source</span>
                     </div>
@@ -579,25 +579,25 @@ function GoogleReviewsStudioPage() {
                         type="button"
                         onClick={handleRefreshReviews}
                         disabled={refreshingReviews}
-                        className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 transition-colors"
+                        className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded bg-[#F1F5F9] hover:bg-zinc-700 text-[#334155] border border-[#CBD5E1] transition-colors"
                         title="Reload real reviews from connected source"
                       >
-                        <RefreshCw className={`w-3 h-3 text-amber-400 ${refreshingReviews ? "animate-spin" : ""}`} />
+                        <RefreshCw className={`w-3 h-3 text-[#7137D8] ${refreshingReviews ? "animate-spin" : ""}`} />
                         <span>Sync</span>
                       </button>
                     </div>
                   </div>
                   <div>
                     <h5 className="font-bold text-white text-sm">{currentSource?.businessName || "No business connected"}</h5>
-                    <p className="text-[11px] text-zinc-400 mt-0.5">{currentSource?.address}</p>
+                    <p className="text-[11px] text-[#64748B] mt-0.5">{currentSource?.address}</p>
                   </div>
-                  <div className="pt-2 border-t border-zinc-800 flex items-center justify-between text-[11px]">
-                    <span className="text-amber-400 font-bold flex items-center gap-1">
+                  <div className="pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-[11px]">
+                    <span className="text-[#7137D8] font-bold flex items-center gap-1">
                       <Star className="w-3.5 h-3.5 fill-amber-400" />
                       {(currentSource?.overallRating ?? 4.7).toFixed(1)}
                     </span>
-                    <span className="text-zinc-400">{currentSource?.totalReviews ?? widget.selectedReviews?.length ?? 0} Total Reviews</span>
-                    <span className="font-mono text-[10px] text-zinc-500 truncate max-w-[90px]">
+                    <span className="text-[#64748B]">{currentSource?.totalReviews ?? widget.selectedReviews?.length ?? 0} Total Reviews</span>
+                    <span className="font-mono text-[10px] text-[#94A3B8] truncate max-w-[90px]">
                       {currentSource?.placeId}
                     </span>
                   </div>
@@ -605,7 +605,7 @@ function GoogleReviewsStudioPage() {
 
                 {/* Search Box */}
                 <div className="space-y-2">
-                  <label className="text-[11px] font-semibold text-zinc-300 block">
+                  <label className="text-[11px] font-semibold text-[#334155] block">
                     Search Business Name, Address or Location
                   </label>
                   <div className="flex gap-1.5">
@@ -615,13 +615,13 @@ function GoogleReviewsStudioPage() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                      className="flex-1 px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-lg text-white text-xs focus:outline-none focus:border-amber-400"
+                      className="flex-1 px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-white text-xs focus:outline-none focus:border-[#7137D8]"
                     />
                     <button
                       type="button"
                       onClick={handleSearch}
                       disabled={searching}
-                      className="px-3.5 py-2 bg-amber-400 hover:bg-amber-300 text-black font-bold rounded-lg text-xs transition-colors disabled:opacity-50"
+                      className="px-3.5 py-2 bg-[#7137D8] hover:bg-amber-300 text-black font-bold rounded-lg text-xs transition-colors disabled:opacity-50"
                     >
                       {searching ? "…" : "Search"}
                     </button>
@@ -629,7 +629,7 @@ function GoogleReviewsStudioPage() {
 
                   {/* Popular Verified Business Presets for Fast Testing */}
                   <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                    <span className="text-[10px] text-zinc-500">Quick connect:</span>
+                    <span className="text-[10px] text-[#94A3B8]">Quick connect:</span>
                     {["Google", "Google New York", "Netsmartz Infotech", "Apple Park", "The French Laundry"].map((preset) => (
                       <button
                         key={preset}
@@ -644,7 +644,7 @@ function GoogleReviewsStudioPage() {
                             setSearching(false);
                           }
                         }}
-                        className="text-[10px] px-2 py-0.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-750 transition-colors"
+                        className="text-[10px] px-2 py-0.5 rounded-full bg-[#F1F5F9] hover:bg-zinc-700 text-[#334155] border border-zinc-750 transition-colors"
                       >
                         {preset}
                       </button>
@@ -655,20 +655,20 @@ function GoogleReviewsStudioPage() {
                 {/* Search Results List */}
                 {searchResults.length > 0 && (
                   <div className="space-y-2 pt-2">
-                    <span className="text-[11px] font-semibold text-zinc-400 block">Select Location to Connect:</span>
+                    <span className="text-[11px] font-semibold text-[#64748B] block">Select Location to Connect:</span>
                     <div className="space-y-2 max-h-60 overflow-y-auto">
                       {searchResults.map((res) => (
                         <div
                           key={res.placeId}
                           onClick={() => handleSelectBusiness(res)}
-                          className="p-3 rounded-lg bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 hover:border-amber-400/50 cursor-pointer transition-all flex items-start justify-between gap-2 group"
+                          className="p-3 rounded-lg bg-[#F8FAFC] hover:bg-[#F1F5F9] border border-[#E2E8F0] hover:border-[#7137D8]/50 cursor-pointer transition-all flex items-start justify-between gap-2 group"
                         >
                           <div>
-                            <div className="font-bold text-white text-xs group-hover:text-amber-300 transition-colors">{res.name}</div>
-                            <div className="text-[11px] text-zinc-400 mt-0.5">{res.address}</div>
-                            <div className="flex items-center gap-2 text-[10px] text-amber-400 mt-1 font-semibold">
+                            <div className="font-bold text-white text-xs group-hover:text-[#7137D8] transition-colors">{res.name}</div>
+                            <div className="text-[11px] text-[#64748B] mt-0.5">{res.address}</div>
+                            <div className="flex items-center gap-2 text-[10px] text-[#7137D8] mt-1 font-semibold">
                               <span>⭐ {res.rating.toFixed(1)}</span>
-                              <span className="text-zinc-500">({res.reviewCount} reviews)</span>
+                              <span className="text-[#94A3B8]">({res.reviewCount} reviews)</span>
                               {res.reviews?.length > 0 && (
                                 <span className="text-emerald-400 text-[10px]">✓ {res.reviews.length} authentic reviews</span>
                               )}
@@ -676,7 +676,7 @@ function GoogleReviewsStudioPage() {
                           </div>
                           <button
                             type="button"
-                            className="px-2.5 py-1 rounded bg-amber-400/20 group-hover:bg-amber-400 text-amber-300 group-hover:text-black text-[10px] font-bold transition-all shrink-0"
+                            className="px-2.5 py-1 rounded bg-[#7137D8]/20 group-hover:bg-[#7137D8] text-[#7137D8] group-hover:text-black text-[10px] font-bold transition-all shrink-0"
                           >
                             Connect
                           </button>
@@ -687,10 +687,10 @@ function GoogleReviewsStudioPage() {
                 )}
 
                 {/* Google Places API Key Configuration Section */}
-                <div className="p-3.5 rounded-xl bg-zinc-900/80 border border-zinc-800 space-y-2.5 mt-4">
+                <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2.5 mt-4">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-200">
-                      <Key className="w-3.5 h-3.5 text-amber-400" />
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-[#111827]">
+                      <Key className="w-3.5 h-3.5 text-[#7137D8]" />
                       <span>Google Places API (Live Integration)</span>
                     </div>
                     {apiTestStatus?.ok ? (
@@ -698,13 +698,13 @@ function GoogleReviewsStudioPage() {
                         Connected
                       </span>
                     ) : apiTestStatus?.blocked ? (
-                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
+                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-[#7137D8] font-bold border border-amber-500/30">
                         Needs Activation
                       </span>
                     ) : null}
                   </div>
 
-                  <p className="text-[10px] text-zinc-400 leading-relaxed">
+                  <p className="text-[10px] text-[#64748B] leading-relaxed">
                     Configure your Google Cloud Places API key to query and import real-time reviews for any registered business worldwide.
                   </p>
 
@@ -715,13 +715,13 @@ function GoogleReviewsStudioPage() {
                         placeholder="AIzaSy..."
                         value={customApiKey}
                         onChange={(e) => setCustomApiKey(e.target.value)}
-                        className="flex-1 px-2.5 py-1.5 bg-zinc-950 border border-zinc-700 rounded-md text-white text-xs font-mono focus:outline-none focus:border-amber-400"
+                        className="flex-1 px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-md text-white text-xs font-mono focus:outline-none focus:border-[#7137D8]"
                       />
                       <button
                         type="button"
                         onClick={handleTestAndSaveApiKey}
                         disabled={testingApi || !customApiKey.trim()}
-                        className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-amber-300 text-xs font-bold rounded-md border border-zinc-700 transition-colors disabled:opacity-50"
+                        className="px-3 py-1.5 bg-[#F1F5F9] hover:bg-zinc-700 text-[#7137D8] text-xs font-bold rounded-md border border-[#CBD5E1] transition-colors disabled:opacity-50"
                       >
                         {testingApi ? "Verifying…" : "Save & Verify"}
                       </button>
@@ -743,7 +743,7 @@ function GoogleReviewsStudioPage() {
                               href="https://console.developers.google.com/apis/api/places.googleapis.com/overview?project=1017816701985"
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 hover:underline pt-0.5"
+                              className="inline-flex items-center gap-1 text-[11px] font-bold text-[#7137D8] hover:underline pt-0.5"
                             >
                               <span>Enable Places API in Google Cloud Console</span>
                               <ExternalLink className="w-3 h-3" />
@@ -760,10 +760,10 @@ function GoogleReviewsStudioPage() {
             {/* 2. REVIEWS TAB */}
             {activeTab === "reviews" && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
+                <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0]">
                   <div>
-                    <h4 className="text-sm font-bold text-white">Review Selection</h4>
-                    <p className="text-[11px] text-zinc-400">
+                    <h4 className="text-sm font-bold text-[#111827]">Review Selection</h4>
+                    <p className="text-[11px] text-[#64748B]">
                       {widget.selectedReviews.length} of {allReviewsList.length} reviews selected
                     </p>
                   </div>
@@ -771,7 +771,7 @@ function GoogleReviewsStudioPage() {
                     <button
                       type="button"
                       onClick={() => setShowAddReviewModal((prev) => !prev)}
-                      className="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-md bg-amber-400 hover:bg-amber-300 text-black font-bold transition-all shadow-sm"
+                      className="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-md bg-[#7137D8] hover:bg-amber-300 text-black font-bold transition-all shadow-sm"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>Add Review</span>
@@ -779,14 +779,14 @@ function GoogleReviewsStudioPage() {
                     <button
                       type="button"
                       onClick={() => updateDraft({ selectedReviews: [...allReviewsList] })}
-                      className="text-[10px] font-semibold text-amber-400 hover:text-amber-300"
+                      className="text-[10px] font-semibold text-[#7137D8] hover:text-[#7137D8]"
                     >
                       Select All
                     </button>
                     <button
                       type="button"
                       onClick={() => updateDraft({ selectedReviews: [] })}
-                      className="text-[10px] font-semibold text-zinc-500 hover:text-zinc-400"
+                      className="text-[10px] font-semibold text-[#94A3B8] hover:text-[#64748B]"
                     >
                       Clear All
                     </button>
@@ -795,36 +795,36 @@ function GoogleReviewsStudioPage() {
 
                 {/* Add Review Inline Form */}
                 {showAddReviewModal && (
-                  <form onSubmit={handleAddReview} className="p-3.5 rounded-xl bg-zinc-900 border border-amber-400/40 space-y-3 shadow-lg">
+                  <form onSubmit={handleAddReview} className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#7137D8]/40 space-y-3 shadow-lg">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-white text-xs flex items-center gap-1.5">
-                        <Plus className="w-3.5 h-3.5 text-amber-400" />
+                        <Plus className="w-3.5 h-3.5 text-[#7137D8]" />
                         <span>Add Customer Review</span>
                       </span>
                       <button
                         type="button"
                         onClick={() => setShowAddReviewModal(false)}
-                        className="text-zinc-400 hover:text-white"
+                        className="text-[#64748B] hover:text-white"
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[10px] font-semibold text-zinc-300">Customer Name *</label>
+                      <label className="text-[10px] font-semibold text-[#334155]">Customer Name *</label>
                       <input
                         type="text"
                         placeholder="e.g. John Doe"
                         value={newAuthorName}
                         onChange={(e) => setNewAuthorName(e.target.value)}
                         required
-                        className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-700 rounded-md text-white text-xs focus:outline-none focus:border-amber-400"
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-md text-white text-xs focus:outline-none focus:border-[#7137D8]"
                       />
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
-                        <label className="text-[10px] font-semibold text-zinc-300">Rating (1 to 5) *</label>
+                        <label className="text-[10px] font-semibold text-[#334155]">Rating (1 to 5) *</label>
                         <div className="flex items-center gap-1 pt-1">
                           {[1, 2, 3, 4, 5].map((star) => (
                             <button
@@ -835,7 +835,7 @@ function GoogleReviewsStudioPage() {
                             >
                               <Star
                                 className={`w-4 h-4 ${
-                                  star <= newRating ? "fill-amber-400 text-amber-400" : "text-zinc-600"
+                                  star <= newRating ? "fill-amber-400 text-[#7137D8]" : "text-zinc-600"
                                 }`}
                               />
                             </button>
@@ -844,26 +844,26 @@ function GoogleReviewsStudioPage() {
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-[10px] font-semibold text-zinc-300">Date / Time</label>
+                        <label className="text-[10px] font-semibold text-[#334155]">Date / Time</label>
                         <input
                           type="text"
                           placeholder="e.g. 2 weeks ago"
                           value={newTime}
                           onChange={(e) => setNewTime(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-700 rounded-md text-white text-xs focus:outline-none focus:border-amber-400"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-md text-white text-xs focus:outline-none focus:border-[#7137D8]"
                         />
                       </div>
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[10px] font-semibold text-zinc-300">Review Text *</label>
+                      <label className="text-[10px] font-semibold text-[#334155]">Review Text *</label>
                       <textarea
                         rows={3}
                         placeholder="Write the customer's feedback here..."
                         value={newText}
                         onChange={(e) => setNewText(e.target.value)}
                         required
-                        className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-700 rounded-md text-white text-xs focus:outline-none focus:border-amber-400 resize-none"
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-md text-white text-xs focus:outline-none focus:border-[#7137D8] resize-none"
                       />
                     </div>
 
@@ -871,13 +871,13 @@ function GoogleReviewsStudioPage() {
                       <button
                         type="button"
                         onClick={() => setShowAddReviewModal(false)}
-                        className="px-3 py-1.5 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs transition-colors"
+                        className="px-3 py-1.5 rounded-md bg-[#F1F5F9] hover:bg-zinc-700 text-[#334155] text-xs transition-colors"
                       >
                         Cancel
                       </button>
                       <button
                         type="submit"
-                        className="px-4 py-1.5 rounded-md bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold transition-all shadow-sm"
+                        className="px-4 py-1.5 rounded-md bg-[#7137D8] hover:bg-amber-300 text-black text-xs font-bold transition-all shadow-sm"
                       >
                         Add Review
                       </button>
@@ -887,11 +887,11 @@ function GoogleReviewsStudioPage() {
 
                 {/* Empty State when no reviews are present */}
                 {allReviewsList.length === 0 ? (
-                  <div className="p-6 rounded-xl border border-dashed border-zinc-800 bg-zinc-900/40 text-center space-y-3">
-                    <Star className="w-8 h-8 text-amber-400/60 mx-auto" />
+                  <div className="p-6 rounded-xl border border-dashed border-[#E2E8F0] bg-[#F8FAFC]/40 text-center space-y-3">
+                    <Star className="w-8 h-8 text-[#7137D8]/60 mx-auto" />
                     <div>
                       <p className="font-bold text-white text-xs">No reviews attached yet</p>
-                      <p className="text-[11px] text-zinc-400 mt-1 max-w-xs mx-auto">
+                      <p className="text-[11px] text-[#64748B] mt-1 max-w-xs mx-auto">
                         Connect a verified Google location from the Source tab to load real customer reviews, or click Add Review to input them manually.
                       </p>
                     </div>
@@ -899,14 +899,14 @@ function GoogleReviewsStudioPage() {
                       <button
                         type="button"
                         onClick={() => setShowAddReviewModal(true)}
-                        className="px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs"
+                        className="px-3 py-1.5 rounded-lg bg-[#7137D8] hover:bg-amber-300 text-black font-bold text-xs"
                       >
                         + Add Customer Review
                       </button>
                       <button
                         type="button"
                         onClick={() => setActiveTab("source")}
-                        className="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs border border-zinc-700"
+                        className="px-3 py-1.5 rounded-lg bg-[#F1F5F9] hover:bg-zinc-700 text-[#334155] text-xs border border-[#CBD5E1]"
                       >
                         Search Business
                       </button>
@@ -921,8 +921,8 @@ function GoogleReviewsStudioPage() {
                           key={rev.id}
                           className={`p-3 rounded-xl border transition-all flex items-start gap-3 group relative ${
                             isSelected
-                              ? "bg-zinc-900 border-zinc-700 shadow-sm"
-                              : "bg-zinc-950/60 border-zinc-850 opacity-60"
+                              ? "bg-[#F8FAFC] border-[#CBD5E1] shadow-sm"
+                              : "bg-white border-[#E2E8F0] opacity-60"
                           }`}
                         >
                           <div
@@ -955,10 +955,10 @@ function GoogleReviewsStudioPage() {
                           >
                             <div className="flex items-center justify-between pr-6">
                               <span className="font-bold text-white text-xs">{rev.authorName}</span>
-                              <span className="text-amber-400 font-bold text-[10px]">★ {rev.rating}</span>
+                              <span className="text-[#7137D8] font-bold text-[10px]">★ {rev.rating}</span>
                             </div>
-                            <div className="text-[10px] text-zinc-500 mt-0.5">{rev.relativeTimeDescription}</div>
-                            <p className="text-[11px] text-zinc-300 line-clamp-2 mt-1 leading-relaxed">{rev.text}</p>
+                            <div className="text-[10px] text-[#94A3B8] mt-0.5">{rev.relativeTimeDescription}</div>
+                            <p className="text-[11px] text-[#334155] line-clamp-2 mt-1 leading-relaxed">{rev.text}</p>
                           </div>
 
                           {/* Delete Review Button */}
@@ -986,7 +986,7 @@ function GoogleReviewsStudioPage() {
             {activeTab === "layout" && (
               <div className="space-y-4">
                 <div>
-                  <label className="text-[11px] font-semibold text-zinc-300 block mb-1.5">Choose Layout</label>
+                  <label className="text-[11px] font-semibold text-[#334155] block mb-1.5">Choose Layout</label>
                   <div className="grid grid-cols-3 gap-2">
                     {["carousel", "grid", "slider", "list", "masonry", "badge"].map((type) => (
                       <button
@@ -998,8 +998,8 @@ function GoogleReviewsStudioPage() {
                         }}
                         className={`py-2 px-1 rounded-lg border text-xs font-semibold capitalize transition-all ${
                           cfg.layout.type === type
-                            ? "bg-amber-400/10 border-amber-400 text-amber-300 ring-1 ring-amber-400/30"
-                            : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white"
+                            ? "bg-[#7137D8]/10 border-[#7137D8] text-[#7137D8] ring-1 ring-amber-400/30"
+                            : "bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:text-white"
                         }`}
                       >
                         {type}
@@ -1009,7 +1009,7 @@ function GoogleReviewsStudioPage() {
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+                  <label className="text-[11px] font-semibold text-[#334155] block mb-1.5">
                     Desktop Columns ({cfg.layout.desktopColumns})
                   </label>
                   <div className="grid grid-cols-4 gap-1.5">
@@ -1020,8 +1020,8 @@ function GoogleReviewsStudioPage() {
                         onClick={() => updateConfig("layout", { desktopColumns: col })}
                         className={`py-1.5 rounded-lg border font-bold text-xs ${
                           cfg.layout.desktopColumns === col
-                            ? "bg-amber-400/20 border-amber-400 text-amber-300"
-                            : "bg-zinc-900 border-zinc-800 text-zinc-400"
+                            ? "bg-[#7137D8]/20 border-[#7137D8] text-[#7137D8]"
+                            : "bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B]"
                         }`}
                       >
                         {col}
@@ -1030,7 +1030,7 @@ function GoogleReviewsStudioPage() {
                   </div>
                 </div>
 
-                <div className="space-y-1 pt-3 border-t border-zinc-800">
+                <div className="space-y-1 pt-3 border-t border-[#E2E8F0]">
                   <StudioSwitch
                     label="Navigation Arrows"
                     checked={cfg.layout.showArrows !== false}
@@ -1061,14 +1061,14 @@ function GoogleReviewsStudioPage() {
                 />
 
                 {cfg.header.showHeader !== false && (
-                  <div className="space-y-3 pt-2 border-t border-zinc-800/80">
+                  <div className="space-y-3 pt-2 border-t border-[#E2E8F0]">
                     <div>
-                      <label className="text-[11px] text-zinc-400 block mb-1">Widget Title</label>
+                      <label className="text-[11px] text-[#64748B] block mb-1">Widget Title</label>
                       <input
                         type="text"
                         value={cfg.header.title || ""}
                         onChange={(e) => updateConfig("header", { title: e.target.value })}
-                        className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-lg text-white text-xs focus:outline-none focus:border-amber-400"
+                        className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-white text-xs focus:outline-none focus:border-[#7137D8]"
                       />
                     </div>
 
@@ -1098,12 +1098,12 @@ function GoogleReviewsStudioPage() {
 
                     {cfg.header.showWriteReviewButton !== false && (
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">Button Text</label>
+                        <label className="text-[11px] text-[#64748B] block mb-1">Button Text</label>
                         <input
                           type="text"
                           value={cfg.header.buttonText || "Review us on Google"}
                           onChange={(e) => updateConfig("header", { buttonText: e.target.value })}
-                          className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-lg text-white text-xs"
+                          className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-white text-xs"
                         />
                       </div>
                     )}
@@ -1163,7 +1163,7 @@ function GoogleReviewsStudioPage() {
             {activeTab === "style" && (
               <div className="space-y-4">
                 <div>
-                  <label className="text-[11px] font-semibold text-zinc-300 block mb-1">Color Theme</label>
+                  <label className="text-[11px] font-semibold text-[#334155] block mb-1">Color Theme</label>
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       type="button"
@@ -1177,8 +1177,8 @@ function GoogleReviewsStudioPage() {
                       }
                       className={`py-2 rounded-lg border text-xs font-semibold ${
                         cfg.style.theme === "light"
-                          ? "bg-zinc-800 border-amber-400 text-amber-300"
-                          : "bg-zinc-900 border-zinc-800 text-zinc-400"
+                          ? "bg-[#F1F5F9] border-[#7137D8] text-[#7137D8]"
+                          : "bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B]"
                       }`}
                     >
                       Light Theme
@@ -1195,8 +1195,8 @@ function GoogleReviewsStudioPage() {
                       }
                       className={`py-2 rounded-lg border text-xs font-semibold ${
                         cfg.style.theme === "dark"
-                          ? "bg-zinc-800 border-amber-400 text-amber-300"
-                          : "bg-zinc-900 border-zinc-800 text-zinc-400"
+                          ? "bg-[#F1F5F9] border-[#7137D8] text-[#7137D8]"
+                          : "bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B]"
                       }`}
                     >
                       Dark Theme
@@ -1205,14 +1205,14 @@ function GoogleReviewsStudioPage() {
                 </div>
 
                 {/* Typography & Font Formatting */}
-                <div className="p-3.5 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-3">
-                  <span className="text-xs font-semibold text-white block">Typography & Fonts</span>
+                <div className="p-3.5 rounded-xl bg-white border border-[#E2E8F0] space-y-3">
+                  <span className="text-xs font-semibold text-[#111827] block">Typography & Fonts</span>
                   <div>
-                    <label className="text-[11px] text-zinc-400 block mb-1">Font Family</label>
+                    <label className="text-[11px] text-[#64748B] block mb-1">Font Family</label>
                     <select
                       value={cfg.style.fontFamily || "Inter, system-ui, sans-serif"}
                       onChange={(e) => updateConfig("style", { fontFamily: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-zinc-900 border border-zinc-700 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                      className="w-full px-3 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                     >
                       <option value="Inter, system-ui, sans-serif">Inter (Modern & Clean)</option>
                       <option value="'Roboto', sans-serif">Roboto</option>
@@ -1225,7 +1225,7 @@ function GoogleReviewsStudioPage() {
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-xs text-zinc-400 mb-1">
+                    <div className="flex justify-between text-xs text-[#64748B] mb-1">
                       <span>Card Font Size</span>
                       <span className="font-mono">{cfg.style.fontSize || 14}px</span>
                     </div>
@@ -1240,15 +1240,15 @@ function GoogleReviewsStudioPage() {
                   </div>
 
                   <div>
-                    <label className="text-[11px] text-zinc-400 block mb-1">Card Text Alignment</label>
+                    <label className="text-[11px] text-[#64748B] block mb-1">Card Text Alignment</label>
                     <div className="grid grid-cols-2 gap-1.5">
                       <button
                         type="button"
                         onClick={() => updateConfig("style", { textAlign: "left" })}
                         className={`py-1.5 rounded text-xs font-semibold transition ${
                           (cfg.style.textAlign || "left") === "left"
-                            ? "bg-amber-400 text-black font-bold"
-                            : "bg-zinc-900 text-zinc-400 border border-zinc-800"
+                            ? "bg-[#7137D8] text-black font-bold"
+                            : "bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0]"
                         }`}
                       >
                         Left Align
@@ -1258,8 +1258,8 @@ function GoogleReviewsStudioPage() {
                         onClick={() => updateConfig("style", { textAlign: "center" })}
                         className={`py-1.5 rounded text-xs font-semibold transition ${
                           cfg.style.textAlign === "center"
-                            ? "bg-amber-400 text-black font-bold"
-                            : "bg-zinc-900 text-zinc-400 border border-zinc-800"
+                            ? "bg-[#7137D8] text-black font-bold"
+                            : "bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0]"
                         }`}
                       >
                         Center Align
@@ -1270,32 +1270,32 @@ function GoogleReviewsStudioPage() {
 
                 <div className="space-y-3 pt-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-zinc-300">Star Color</span>
+                    <span className="text-[#334155]">Star Color</span>
                     <input
                       type="color"
                       value={cfg.style.starColor || "#f59e0b"}
                       onChange={(e) => updateConfig("style", { starColor: e.target.value })}
-                      className="w-7 h-7 rounded border border-zinc-700 bg-transparent cursor-pointer"
+                      className="w-7 h-7 rounded border border-[#CBD5E1] bg-transparent cursor-pointer"
                     />
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <span className="text-zinc-300">Accent / Button Color</span>
+                    <span className="text-[#334155]">Accent / Button Color</span>
                     <input
                       type="color"
                       value={cfg.style.accentColor || "#1d4ed8"}
                       onChange={(e) => updateConfig("style", { accentColor: e.target.value })}
-                      className="w-7 h-7 rounded border border-zinc-700 bg-transparent cursor-pointer"
+                      className="w-7 h-7 rounded border border-[#CBD5E1] bg-transparent cursor-pointer"
                     />
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <span className="text-zinc-300">Card Background</span>
+                    <span className="text-[#334155]">Card Background</span>
                     <input
                       type="color"
                       value={cfg.style.cardBackgroundColor || "#ffffff"}
                       onChange={(e) => updateConfig("style", { cardBackgroundColor: e.target.value })}
-                      className="w-7 h-7 rounded border border-zinc-700 bg-transparent cursor-pointer"
+                      className="w-7 h-7 rounded border border-[#CBD5E1] bg-transparent cursor-pointer"
                     />
                   </div>
                 </div>
@@ -1318,11 +1318,11 @@ function GoogleReviewsStudioPage() {
                 />
 
                 <div>
-                  <label className="text-[11px] text-zinc-400 block mb-1">Minimum Rating Filter</label>
+                  <label className="text-[11px] text-[#64748B] block mb-1">Minimum Rating Filter</label>
                   <select
                     value={cfg.settings.minRating || 0}
                     onChange={(e) => updateConfig("settings", { minRating: Number(e.target.value) })}
-                    className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-lg text-white text-xs"
+                    className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-white text-xs"
                   >
                     <option value={0}>Show all ratings</option>
                     <option value={4}>4 Stars & above</option>
@@ -1342,7 +1342,7 @@ function GoogleReviewsStudioPage() {
               maxWidth: previewDevice === "mobile" ? "375px" : previewDevice === "tablet" ? "768px" : "100%",
             }}
           >
-            <div className="w-full h-full overflow-y-auto rounded-2xl bg-white/5 border border-zinc-800 shadow-2xl p-6 flex flex-col justify-center">
+            <div className="w-full h-full overflow-y-auto rounded-2xl bg-white/5 border border-[#E2E8F0] shadow-2xl p-6 flex flex-col justify-center">
               <div
                 ref={previewContainerRef}
                 className="w-full"

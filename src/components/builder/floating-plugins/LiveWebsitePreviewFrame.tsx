@@ -55,7 +55,7 @@ export function LiveWebsitePreviewFrame({
     <div className="w-full flex justify-center items-center">
       {mode === "desktop" ? (
         /* ── DESKTOP FRAME ──────────────────────────────────────────────────── */
-        <div className="w-full max-w-[480px] xl:max-w-[500px] rounded-2xl border border-zinc-800 bg-white text-zinc-900 shadow-2xl overflow-hidden relative select-none">
+        <div className="w-full max-w-[480px] xl:max-w-[500px] rounded-2xl border border-[#CBD5E1] bg-white text-zinc-900 shadow-xl overflow-hidden relative select-none">
           {/* WebToolOcean Website Navigation Bar */}
           <div className="flex items-center justify-between px-5 py-3 border-b border-zinc-100 bg-white/95 backdrop-blur-xs">
             {/* Logo */}
@@ -164,7 +164,7 @@ export function LiveWebsitePreviewFrame({
         </div>
       ) : (
         /* ── MOBILE PHONE FRAME ─────────────────────────────────────────────── */
-        <div className="w-[280px] sm:w-[300px] rounded-[36px] border-4 border-zinc-700 bg-white text-zinc-900 shadow-2xl overflow-hidden relative select-none">
+        <div className="w-[280px] sm:w-[300px] rounded-[36px] border-4 border-[#CBD5E1] bg-white text-zinc-900 shadow-xl overflow-hidden relative select-none">
           {/* Phone Top Speaker & Camera Notch */}
           <div className="h-5 bg-zinc-900 flex items-center justify-center relative">
             <div className="h-1 w-12 bg-zinc-600 rounded-full" />

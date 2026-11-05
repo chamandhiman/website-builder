@@ -69,7 +69,7 @@ export function PopupModalConfig({ data, onChange }: PopupModalConfigProps) {
     <div className="space-y-6">
       {/* ── 1. POPUP TEMPLATE ─────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Popup Template
         </label>
         <div className="grid grid-cols-3 gap-2.5">
@@ -90,10 +90,10 @@ export function PopupModalConfig({ data, onChange }: PopupModalConfigProps) {
                 className={`flex flex-col items-center justify-center p-3 rounded-xl transition ${
                   isSelected
                     ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm text-white"
-                    : "border border-[#27272A] bg-[#151518] hover:border-zinc-600 text-zinc-400"
+                    : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 text-[#64748B]"
                 }`}
               >
-                <Icon className={`h-5 w-5 mb-1.5 ${isSelected ? "text-[#FACC15]" : "text-zinc-500"}`} />
+                <Icon className={`h-5 w-5 mb-1.5 ${isSelected ? "text-[#FACC15]" : "text-[#94A3B8]"}`} />
                 <span className="text-xs font-semibold truncate">{t.label}</span>
               </button>
             );
@@ -103,11 +103,11 @@ export function PopupModalConfig({ data, onChange }: PopupModalConfigProps) {
 
       {/* ── 2. CONTENT ────────────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Popup Content
         </label>
         <div>
-          <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+          <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
             Headline
           </span>
           <input
@@ -115,12 +115,12 @@ export function PopupModalConfig({ data, onChange }: PopupModalConfigProps) {
             value={data.headline}
             onChange={(e) => update({ headline: e.target.value })}
             placeholder="Special Offer"
-            className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-white placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
+            className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
           />
         </div>
 
         <div>
-          <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+          <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
             Message
           </span>
           <textarea
@@ -128,13 +128,13 @@ export function PopupModalConfig({ data, onChange }: PopupModalConfigProps) {
             onChange={(e) => update({ message: e.target.value })}
             placeholder="Write your popup text here..."
             rows={2}
-            className="w-full p-3 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-white placeholder-zinc-500 focus:outline-none focus:border-[#FACC15] resize-none"
+            className="w-full p-3 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15] resize-none"
           />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+            <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Button Label
             </span>
             <input
@@ -142,12 +142,12 @@ export function PopupModalConfig({ data, onChange }: PopupModalConfigProps) {
               value={data.ctaLabel}
               onChange={(e) => update({ ctaLabel: e.target.value })}
               placeholder="Claim Offer"
-              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-white placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
+              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
             />
           </div>
 
           <div>
-            <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+            <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Button Link URL
             </span>
             <input
@@ -155,7 +155,7 @@ export function PopupModalConfig({ data, onChange }: PopupModalConfigProps) {
               value={data.ctaUrl}
               onChange={(e) => update({ ctaUrl: e.target.value })}
               placeholder="https://example.com"
-              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-white placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
+              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
             />
           </div>
         </div>
@@ -163,12 +163,12 @@ export function PopupModalConfig({ data, onChange }: PopupModalConfigProps) {
 
       {/* ── 3. COLORS ─────────────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Appearance & Colors
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+            <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Modal Background
             </span>
             <div className="flex items-center gap-2 h-10 px-2 rounded-xl bg-[#17171A] border border-[#2B2B30]">
@@ -183,7 +183,7 @@ export function PopupModalConfig({ data, onChange }: PopupModalConfigProps) {
           </div>
 
           <div>
-            <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+            <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Button Color
             </span>
             <div className="flex items-center gap-2 h-10 px-2 rounded-xl bg-[#17171A] border border-[#2B2B30]">
@@ -201,25 +201,25 @@ export function PopupModalConfig({ data, onChange }: PopupModalConfigProps) {
 
       {/* ── 4. DISPLAY OPTIONS ────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Display Options
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#27272A]">
-            <span className="text-xs font-semibold text-zinc-200">Show on Desktop</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#111827]">Show on Desktop</span>
             <Switch
               checked={data.showOnDesktop}
               onCheckedChange={(checked) => update({ showOnDesktop: checked })}
-              className="data-[state=checked]:bg-[#FACC15]"
+              className="data-[state=checked]:bg-[#7137D8]"
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#27272A]">
-            <span className="text-xs font-semibold text-zinc-200">Show on Mobile</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#111827]">Show on Mobile</span>
             <Switch
               checked={data.showOnMobile}
               onCheckedChange={(checked) => update({ showOnMobile: checked })}
-              className="data-[state=checked]:bg-[#FACC15]"
+              className="data-[state=checked]:bg-[#7137D8]"
             />
           </div>
         </div>
@@ -238,16 +238,16 @@ export function renderPopupModalPreviewElement(data: PopupModalConfigData) {
         }}
         className="w-full max-w-[260px] rounded-2xl p-4 shadow-2xl border border-white/10 text-center space-y-2 relative"
       >
-        <span className="absolute top-2.5 right-2.5 text-zinc-400 hover:text-white cursor-pointer text-xs">
+        <span className="absolute top-2.5 right-2.5 text-[#64748B] hover:text-white cursor-pointer text-xs">
           ✕
         </span>
-        <div className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#FACC15]/20 text-[#FACC15] mb-0.5">
+        <div className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#7137D8]/20 text-[#FACC15] mb-0.5">
           <Tag className="h-4 w-4" />
         </div>
-        <h4 className="text-xs font-bold text-white leading-tight">
+        <h4 className="text-xs font-bold text-[#111827] leading-tight">
           {data.headline || "Special Offer"}
         </h4>
-        <p className="text-[10px] text-zinc-300 leading-snug line-clamp-2">
+        <p className="text-[10px] text-[#334155] leading-snug line-clamp-2">
           {data.message || "Sign up now for exclusive discounts."}
         </p>
         <div className="pt-1">

@@ -64,7 +64,7 @@ export function LanguageSwitcherConfig({ data, onChange }: LanguageSwitcherConfi
     <div className="space-y-6">
       {/* ── 1. SUPPORTED LANGUAGES ────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Select Supported Languages
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -79,7 +79,7 @@ export function LanguageSwitcherConfig({ data, onChange }: LanguageSwitcherConfi
                 className={`flex items-center justify-between p-2.5 rounded-xl transition ${
                   isSelected
                     ? "border border-[#FACC15] bg-[#1A1A20] text-white"
-                    : "border border-[#27272A] bg-[#151518] text-zinc-400 hover:border-zinc-600"
+                    : "border border-[#E2E8F0] bg-[#151518] text-[#64748B] hover:border-zinc-600"
                 }`}
               >
                 <div className="flex items-center gap-1.5 truncate">
@@ -87,7 +87,7 @@ export function LanguageSwitcherConfig({ data, onChange }: LanguageSwitcherConfi
                   <span className="text-xs font-semibold truncate">{lang.name}</span>
                 </div>
                 {isDefault ? (
-                  <span className="text-[9px] bg-[#FACC15] text-zinc-950 font-bold px-1 rounded-sm">
+                  <span className="text-[9px] bg-[#7137D8] text-zinc-950 font-bold px-1 rounded-sm">
                     DEF
                   </span>
                 ) : isSelected ? (
@@ -101,13 +101,13 @@ export function LanguageSwitcherConfig({ data, onChange }: LanguageSwitcherConfi
 
       {/* ── 2. SWITCHER STYLE & THEME ─────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Switcher Style & Theme
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Layout */}
           <div>
-            <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+            <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Layout Style
             </span>
             <div className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-[#17171A] border border-[#2B2B30]">
@@ -127,7 +127,7 @@ export function LanguageSwitcherConfig({ data, onChange }: LanguageSwitcherConfi
                     className={`py-1.5 rounded-lg text-xs font-semibold transition ${
                       isSelected
                         ? "border border-[#FACC15] bg-[#222228] text-white"
-                        : "text-zinc-400 hover:text-white"
+                        : "text-[#64748B] hover:text-white"
                     }`}
                   >
                     {l.label}
@@ -139,7 +139,7 @@ export function LanguageSwitcherConfig({ data, onChange }: LanguageSwitcherConfi
 
           {/* Theme */}
           <div>
-            <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+            <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Color Theme
             </span>
             <div className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-[#17171A] border border-[#2B2B30]">
@@ -159,7 +159,7 @@ export function LanguageSwitcherConfig({ data, onChange }: LanguageSwitcherConfi
                     className={`py-1.5 rounded-lg text-xs font-semibold capitalize transition ${
                       isSelected
                         ? "border border-[#FACC15] bg-[#222228] text-white"
-                        : "text-zinc-400 hover:text-white"
+                        : "text-[#64748B] hover:text-white"
                     }`}
                   >
                     {t.label}
@@ -173,7 +173,7 @@ export function LanguageSwitcherConfig({ data, onChange }: LanguageSwitcherConfi
 
       {/* ── 3. BUTTON POSITION ────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Button Position
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -194,12 +194,12 @@ export function LanguageSwitcherConfig({ data, onChange }: LanguageSwitcherConfi
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition ${
                   isSelected
                     ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm text-white"
-                    : "border border-[#27272A] bg-[#151518] hover:border-zinc-600 text-zinc-400"
+                    : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 text-[#64748B]"
                 }`}
               >
                 <LayoutGrid
                   className={`h-4 w-4 shrink-0 ${
-                    isSelected ? "text-[#FACC15]" : "text-zinc-500"
+                    isSelected ? "text-[#FACC15]" : "text-[#94A3B8]"
                   }`}
                 />
                 <span className="text-xs font-semibold truncate">{posItem.label}</span>
@@ -211,34 +211,34 @@ export function LanguageSwitcherConfig({ data, onChange }: LanguageSwitcherConfi
 
       {/* ── 4. DISPLAY OPTIONS ────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Display Options
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#27272A]">
-            <span className="text-xs font-semibold text-zinc-200">Show on Desktop</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#111827]">Show on Desktop</span>
             <Switch
               checked={data.showOnDesktop}
               onCheckedChange={(checked) => update({ showOnDesktop: checked })}
-              className="data-[state=checked]:bg-[#FACC15]"
+              className="data-[state=checked]:bg-[#7137D8]"
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#27272A]">
-            <span className="text-xs font-semibold text-zinc-200">Show on Mobile</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#111827]">Show on Mobile</span>
             <Switch
               checked={data.showOnMobile}
               onCheckedChange={(checked) => update({ showOnMobile: checked })}
-              className="data-[state=checked]:bg-[#FACC15]"
+              className="data-[state=checked]:bg-[#7137D8]"
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#27272A]">
-            <span className="text-xs font-semibold text-zinc-200">Show Flag Icons</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#111827]">Show Flag Icons</span>
             <Switch
               checked={data.showFlags}
               onCheckedChange={(checked) => update({ showFlags: checked })}
-              className="data-[state=checked]:bg-[#FACC15]"
+              className="data-[state=checked]:bg-[#7137D8]"
             />
           </div>
         </div>
@@ -256,8 +256,8 @@ export function renderLanguageSwitcherPreviewElement(data: LanguageSwitcherConfi
     data.theme === "light"
       ? "bg-white text-zinc-900 border-zinc-200 shadow-xl"
       : data.theme === "glass"
-      ? "bg-zinc-900/80 backdrop-blur-md text-white border-white/20 shadow-xl"
-      : "bg-[#18181B] text-white border-zinc-700 shadow-2xl";
+      ? "bg-[#F8FAFC]/80 backdrop-blur-md text-white border-white/20 shadow-xl"
+      : "bg-[#18181B] text-white border-[#CBD5E1] shadow-2xl";
 
   return (
     <div className="animate-in fade-in duration-200">

@@ -552,9 +552,9 @@ export function AnnouncementBarModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-5 bg-black/40 backdrop-blur-md animate-in fade-in duration-200">
       <div
-        className="w-full max-w-[1320px] max-h-[94vh] flex flex-col bg-[#12141A] border border-[#232733] rounded-2xl shadow-2xl text-zinc-100 overflow-hidden font-sans"
+        className="w-full max-w-[1320px] max-h-[94vh] flex flex-col bg-[#12141A] border border-[#232733] rounded-2xl shadow-2xl text-[#111827] overflow-hidden font-sans"
         onClick={(e) => e.stopPropagation()}
       >
         {/* ── TOP HEADER ──────────────────────────────────────────────────────── */}
@@ -564,10 +564,10 @@ export function AnnouncementBarModal({
               <Megaphone size={20} className="stroke-[2.2]" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white tracking-tight leading-tight">
+              <h2 className="text-lg font-bold text-[#111827] tracking-tight leading-tight">
                 {embedToEdit ? "Edit Announcement Bar" : "Add Announcement Bar"}
               </h2>
-              <p className="text-xs text-zinc-400 mt-0.5">
+              <p className="text-xs text-[#64748B] mt-0.5">
                 Customize your announcement bar design and preferences with instant live preview.
               </p>
             </div>
@@ -575,7 +575,7 @@ export function AnnouncementBarModal({
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800/80 transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#64748B] hover:text-white hover:bg-[#F1F5F9]/80 transition-colors"
             aria-label="Close"
           >
             <X size={18} />
@@ -593,15 +593,15 @@ export function AnnouncementBarModal({
                 onClick={() => setActiveTab("design")}
                 className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
                   activeTab === "design"
-                    ? "bg-[#FACC15] text-zinc-950 shadow-md shadow-yellow-500/20"
-                    : "text-zinc-400 hover:text-white hover:bg-[#1C202C]"
+                    ? "bg-[#7137D8] text-zinc-950 shadow-md shadow-yellow-500/20"
+                    : "text-[#64748B] hover:text-white hover:bg-[#1C202C]"
                 }`}
               >
-                <Sparkles size={14} className={activeTab === "design" ? "text-zinc-950" : "text-zinc-400"} />
+                <Sparkles size={14} className={activeTab === "design" ? "text-zinc-950" : "text-[#64748B]"} />
                 <span>Design</span>
                 <span
                   className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ml-1 ${
-                    activeTab === "design" ? "bg-black/15 text-zinc-950" : "bg-zinc-800 text-zinc-400"
+                    activeTab === "design" ? "bg-black/15 text-zinc-950" : "bg-[#F1F5F9] text-[#64748B]"
                   }`}
                 >
                   10
@@ -613,11 +613,11 @@ export function AnnouncementBarModal({
                 onClick={() => setActiveTab("preferences")}
                 className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
                   activeTab === "preferences"
-                    ? "bg-[#FACC15] text-zinc-950 shadow-md shadow-yellow-500/20"
-                    : "text-zinc-400 hover:text-white hover:bg-[#1C202C]"
+                    ? "bg-[#7137D8] text-zinc-950 shadow-md shadow-yellow-500/20"
+                    : "text-[#64748B] hover:text-white hover:bg-[#1C202C]"
                 }`}
               >
-                <Sliders size={14} className={activeTab === "preferences" ? "text-zinc-950" : "text-zinc-400"} />
+                <Sliders size={14} className={activeTab === "preferences" ? "text-zinc-950" : "text-[#64748B]"} />
                 <span>Preferences</span>
               </button>
             </div>
@@ -626,7 +626,7 @@ export function AnnouncementBarModal({
             {activeTab === "design" && (
               <div className="flex-1 overflow-y-auto p-4 space-y-2.5 custom-scrollbar bg-[#101217]">
                 <div className="mb-2 px-0.5">
-                  <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
+                  <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
                     Select Template Preset
                   </span>
                 </div>
@@ -641,7 +641,7 @@ export function AnnouncementBarModal({
                       className={`group relative p-2.5 rounded-xl cursor-pointer transition-all border ${
                         isSelected
                           ? "border-[#FACC15] bg-[#1C1F2B] ring-1 ring-[#FACC15]/50 shadow-md"
-                          : "border-[#232733] bg-[#141720] hover:border-zinc-700 hover:bg-[#181B26]"
+                          : "border-[#232733] bg-[#141720] hover:border-[#CBD5E1] hover:bg-[#181B26]"
                       }`}
                     >
                       <div className="flex items-center gap-2.5">
@@ -650,10 +650,10 @@ export function AnnouncementBarModal({
                           <Switch
                             checked={isSelected}
                             onCheckedChange={() => handleSelectTemplate(tpl.key)}
-                            className="data-[state=checked]:bg-[#FACC15] scale-75 shrink-0"
+                            className="data-[state=checked]:bg-[#7137D8] scale-75 shrink-0"
                             onClick={(e) => e.stopPropagation()}
                           />
-                          <span className={`text-xs font-semibold whitespace-nowrap ${isSelected ? "text-white" : "text-zinc-400"}`}>
+                          <span className={`text-xs font-semibold whitespace-nowrap ${isSelected ? "text-white" : "text-[#64748B]"}`}>
                             {tpl.number}. {tpl.name}
                           </span>
                         </div>
@@ -726,14 +726,14 @@ export function AnnouncementBarModal({
                 {/* 1. Content */}
                 <div className="p-3.5 rounded-xl bg-[#161922] border border-[#252A38] space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-300">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#334155]">
                       Content
                     </span>
-                    <span className="text-[11px] text-zinc-500 font-medium">Text & Icons</span>
+                    <span className="text-[11px] text-[#94A3B8] font-medium">Text & Icons</span>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-zinc-300 block">
+                    <label className="text-xs font-semibold text-[#334155] block">
                       Announcement Text <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -747,7 +747,7 @@ export function AnnouncementBarModal({
 
                   {/* Optional Icon */}
                   <div className="space-y-1.5 pt-1">
-                    <label className="text-xs font-semibold text-zinc-300 block">Icon (Optional)</label>
+                    <label className="text-xs font-semibold text-[#334155] block">Icon (Optional)</label>
                     <div className="flex items-center gap-1.5 flex-wrap">
                       {ICON_OPTIONS.map((opt) => {
                         const IconComp = opt.icon;
@@ -761,7 +761,7 @@ export function AnnouncementBarModal({
                             className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-all ${
                               isChosen
                                 ? "border-[#FACC15] bg-[#222736] text-[#FACC15] ring-1 ring-[#FACC15]"
-                                : "border-[#2E3547] bg-[#1A1D27] text-zinc-400 hover:text-white hover:border-zinc-600"
+                                : "border-[#2E3547] bg-[#1A1D27] text-[#64748B] hover:text-white hover:border-zinc-600"
                             }`}
                           >
                             <IconComp size={15} />
@@ -777,7 +777,7 @@ export function AnnouncementBarModal({
                     selectedTemplate === "success" ||
                     selectedTemplate === "seasonal") && (
                     <div className="space-y-1.5 pt-1">
-                      <label className="text-xs font-semibold text-zinc-300 block">
+                      <label className="text-xs font-semibold text-[#334155] block">
                         Title / Supporting Headline
                       </label>
                       <input
@@ -793,7 +793,7 @@ export function AnnouncementBarModal({
                   {/* Inline Link Text where supported */}
                   {selectedTemplate === "announcement_link" && (
                     <div className="space-y-1.5 pt-1">
-                      <label className="text-xs font-semibold text-zinc-300 block">Link Text</label>
+                      <label className="text-xs font-semibold text-[#334155] block">Link Text</label>
                       <input
                         type="text"
                         value={linkText}
@@ -809,16 +809,16 @@ export function AnnouncementBarModal({
                 {(currentTplDef.hasButton || selectedTemplate === "announcement_link") && (
                   <div className="p-3.5 rounded-xl bg-[#161922] border border-[#252A38] space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold uppercase tracking-wider text-zinc-300">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#334155]">
                         Action & Link
                       </span>
-                      <span className="text-[11px] text-zinc-500 font-medium">CTA Button</span>
+                      <span className="text-[11px] text-[#94A3B8] font-medium">CTA Button</span>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {currentTplDef.hasButton && (
                         <div className="space-y-1.5">
-                          <label className="text-xs font-semibold text-zinc-300 block">Button Text</label>
+                          <label className="text-xs font-semibold text-[#334155] block">Button Text</label>
                           <input
                             type="text"
                             value={buttonText}
@@ -830,7 +830,7 @@ export function AnnouncementBarModal({
                       )}
 
                       <div className={`space-y-1.5 ${!currentTplDef.hasButton ? "sm:col-span-2" : ""}`}>
-                        <label className="text-xs font-semibold text-zinc-300 block">Destination URL</label>
+                        <label className="text-xs font-semibold text-[#334155] block">Destination URL</label>
                         <input
                           type="text"
                           value={buttonUrl}
@@ -841,7 +841,7 @@ export function AnnouncementBarModal({
                       </div>
                     </div>
 
-                    <label className="flex items-center gap-2 cursor-pointer text-xs text-zinc-300 select-none pt-1">
+                    <label className="flex items-center gap-2 cursor-pointer text-xs text-[#334155] select-none pt-1">
                       <input
                         type="checkbox"
                         checked={openNewTab}
@@ -856,17 +856,17 @@ export function AnnouncementBarModal({
                 {/* 3. Appearance */}
                 <div className="p-3.5 rounded-xl bg-[#161922] border border-[#252A38] space-y-3.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-300">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#334155]">
                       Appearance
                     </span>
-                    <span className="text-[11px] text-zinc-500 font-medium">Colors & Theme</span>
+                    <span className="text-[11px] text-[#94A3B8] font-medium">Colors & Theme</span>
                   </div>
 
                   {/* Background Color */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs font-semibold text-zinc-300 block">Background Color</label>
-                      <span className="text-[10px] text-zinc-400 font-mono truncate max-w-[120px]">
+                      <label className="text-xs font-semibold text-[#334155] block">Background Color</label>
+                      <span className="text-[10px] text-[#64748B] font-mono truncate max-w-[120px]">
                         {bgColor}
                       </span>
                     </div>
@@ -899,7 +899,7 @@ export function AnnouncementBarModal({
                           onChange={(e) => setBgColor(e.target.value)}
                           className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
                         />
-                        <span className="text-[10px] text-zinc-400 font-bold">+</span>
+                        <span className="text-[10px] text-[#64748B] font-bold">+</span>
                       </label>
                     </div>
                   </div>
@@ -907,8 +907,8 @@ export function AnnouncementBarModal({
                   {/* Text Color */}
                   <div className="space-y-2 pt-1 border-t border-[#232733]">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs font-semibold text-zinc-300 block">Text Color</label>
-                      <span className="text-[10px] text-zinc-400 font-mono">{textColor}</span>
+                      <label className="text-xs font-semibold text-[#334155] block">Text Color</label>
+                      <span className="text-[10px] text-[#64748B] font-mono">{textColor}</span>
                     </div>
                     <div className="flex items-center gap-1.5 flex-wrap">
                       {TEXT_COLOR_SWATCHES.map((swatch, idx) => {
@@ -938,7 +938,7 @@ export function AnnouncementBarModal({
                           onChange={(e) => setTextColor(e.target.value)}
                           className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
                         />
-                        <span className="text-[10px] text-zinc-400 font-bold">+</span>
+                        <span className="text-[10px] text-[#64748B] font-bold">+</span>
                       </label>
                     </div>
                   </div>
@@ -947,8 +947,8 @@ export function AnnouncementBarModal({
                   {currentTplDef.hasButton && (
                     <div className="space-y-2 pt-1 border-t border-[#232733]">
                       <div className="flex items-center justify-between">
-                        <label className="text-xs font-semibold text-zinc-300 block">Button Style</label>
-                        <span className="text-[10px] text-zinc-400 font-mono">{buttonBg}</span>
+                        <label className="text-xs font-semibold text-[#334155] block">Button Style</label>
+                        <span className="text-[10px] text-[#64748B] font-mono">{buttonBg}</span>
                       </div>
                       <div className="flex items-center gap-1.5 flex-wrap">
                         {BUTTON_COLOR_SWATCHES.map((swatch, idx) => {
@@ -981,7 +981,7 @@ export function AnnouncementBarModal({
                             onChange={(e) => setButtonBg(e.target.value)}
                             className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
                           />
-                          <span className="text-[10px] text-zinc-400 font-bold">+</span>
+                          <span className="text-[10px] text-[#64748B] font-bold">+</span>
                         </label>
                       </div>
                     </div>
@@ -991,10 +991,10 @@ export function AnnouncementBarModal({
                 {/* 4. Placement */}
                 <div className="p-3.5 rounded-xl bg-[#161922] border border-[#252A38] space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-300">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#334155]">
                       Placement
                     </span>
-                    <span className="text-[11px] text-zinc-500 font-medium">Position on Page</span>
+                    <span className="text-[11px] text-[#94A3B8] font-medium">Position on Page</span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 text-xs">
@@ -1003,8 +1003,8 @@ export function AnnouncementBarModal({
                       onClick={() => setPosition("top_fixed")}
                       className={`py-2 px-3 rounded-lg border text-xs font-bold flex items-center justify-center gap-2 transition-all ${
                         position === "top_fixed"
-                          ? "border-[#FACC15] bg-[#FACC15]/10 text-[#FACC15]"
-                          : "border-[#2E3547] bg-[#1A1D27] text-zinc-400 hover:text-white"
+                          ? "border-[#FACC15] bg-[#7137D8]/10 text-[#FACC15]"
+                          : "border-[#2E3547] bg-[#1A1D27] text-[#64748B] hover:text-white"
                       }`}
                     >
                       <span>Top of Website</span>
@@ -1015,8 +1015,8 @@ export function AnnouncementBarModal({
                       onClick={() => setPosition("bottom_fixed")}
                       className={`py-2 px-3 rounded-lg border text-xs font-bold flex items-center justify-center gap-2 transition-all ${
                         position === "bottom_fixed"
-                          ? "border-[#FACC15] bg-[#FACC15]/10 text-[#FACC15]"
-                          : "border-[#2E3547] bg-[#1A1D27] text-zinc-400 hover:text-white"
+                          ? "border-[#FACC15] bg-[#7137D8]/10 text-[#FACC15]"
+                          : "border-[#2E3547] bg-[#1A1D27] text-[#64748B] hover:text-white"
                       }`}
                     >
                       <span>Bottom of Website</span>
@@ -1027,15 +1027,15 @@ export function AnnouncementBarModal({
                 {/* 5. Visibility */}
                 <div className="p-3.5 rounded-xl bg-[#161922] border border-[#252A38] space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-300">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#334155]">
                       Visibility
                     </span>
-                    <span className="text-[11px] text-zinc-500 font-medium">Targeting & Devices</span>
+                    <span className="text-[11px] text-[#94A3B8] font-medium">Targeting & Devices</span>
                   </div>
 
                   {/* Target Pages */}
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-zinc-300 block">Show On</label>
+                    <label className="text-xs font-semibold text-[#334155] block">Show On</label>
                     <select
                       value={pageTargeting}
                       onChange={(e) => setPageTargeting(e.target.value as "all" | "custom")}
@@ -1050,7 +1050,7 @@ export function AnnouncementBarModal({
                         <button
                           type="button"
                           onClick={() => setIsCustomPagesOpen(!isCustomPagesOpen)}
-                          className="flex items-center justify-between w-full text-xs text-zinc-300 bg-[#1A1D27] px-3 py-1.5 rounded border border-[#2E3547]"
+                          className="flex items-center justify-between w-full text-xs text-[#334155] bg-[#1A1D27] px-3 py-1.5 rounded border border-[#2E3547]"
                         >
                           <span>
                             {selectedPages.length === 0
@@ -1081,7 +1081,7 @@ export function AnnouncementBarModal({
                                     }}
                                     className="w-3.5 h-3.5 rounded accent-[#FACC15]"
                                   />
-                                  <span className="text-zinc-200">{p.name || p.slug || "Page"}</span>
+                                  <span className="text-[#111827]">{p.name || p.slug || "Page"}</span>
                                 </label>
                               );
                             })}
@@ -1093,9 +1093,9 @@ export function AnnouncementBarModal({
 
                   {/* Device Targeting */}
                   <div className="space-y-1.5 pt-2 border-t border-[#232733]">
-                    <label className="text-xs font-semibold text-zinc-300 block">Show on Devices</label>
+                    <label className="text-xs font-semibold text-[#334155] block">Show on Devices</label>
                     <div className="flex items-center gap-4 text-xs">
-                      <label className="flex items-center gap-2 cursor-pointer text-zinc-200 select-none">
+                      <label className="flex items-center gap-2 cursor-pointer text-[#111827] select-none">
                         <input
                           type="checkbox"
                           checked={showOnDesktop}
@@ -1104,7 +1104,7 @@ export function AnnouncementBarModal({
                         />
                         <span>Desktop</span>
                       </label>
-                      <label className="flex items-center gap-2 cursor-pointer text-zinc-200 select-none">
+                      <label className="flex items-center gap-2 cursor-pointer text-[#111827] select-none">
                         <input
                           type="checkbox"
                           checked={showOnMobile}
@@ -1120,13 +1120,13 @@ export function AnnouncementBarModal({
                 {/* 6. Behavior */}
                 <div className="p-3.5 rounded-xl bg-[#161922] border border-[#252A38] space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-300">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#334155]">
                       Behavior
                     </span>
-                    <span className="text-[11px] text-zinc-500 font-medium">Interaction & Animation</span>
+                    <span className="text-[11px] text-[#94A3B8] font-medium">Interaction & Animation</span>
                   </div>
 
-                  <div className="space-y-2 text-xs text-zinc-200 select-none">
+                  <div className="space-y-2 text-xs text-[#111827] select-none">
                     <label className="flex items-center gap-2 cursor-pointer hover:text-white">
                       <input
                         type="checkbox"
@@ -1167,11 +1167,11 @@ export function AnnouncementBarModal({
                         <Clock size={13} />
                         <span>Countdown Timer</span>
                       </div>
-                      <span className="text-[10px] text-zinc-400 font-mono">Live ticker</span>
+                      <span className="text-[10px] text-[#64748B] font-mono">Live ticker</span>
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-semibold text-zinc-300 block flex items-center gap-1.5">
+                      <label className="text-xs font-semibold text-[#334155] block flex items-center gap-1.5">
                         <Calendar size={13} className="text-[#FACC15]" />
                         <span>End Date and Time</span>
                       </label>
@@ -1183,9 +1183,9 @@ export function AnnouncementBarModal({
                       />
                     </div>
 
-                    <div className="flex items-center justify-between text-xs text-zinc-400 bg-[#1A1D27] p-2 rounded-lg border border-[#2E3547]">
+                    <div className="flex items-center justify-between text-xs text-[#64748B] bg-[#1A1D27] p-2 rounded-lg border border-[#2E3547]">
                       <span>Remaining:</span>
-                      <span className="font-mono font-bold text-white tracking-wide">
+                      <span className="font-mono font-bold text-[#111827] tracking-wide">
                         {countdownUnits.days}d {countdownUnits.hours}h {countdownUnits.mins}m {countdownUnits.secs}s
                       </span>
                     </div>
@@ -1200,7 +1200,7 @@ export function AnnouncementBarModal({
             {/* Live Preview Top Control Bar */}
             <div className="flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-zinc-300">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#334155]">
                   Live Preview
                 </span>
                 <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50 animate-pulse" />
@@ -1213,8 +1213,8 @@ export function AnnouncementBarModal({
                   onClick={() => setPreviewDevice("desktop")}
                   className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold transition-all ${
                     previewDevice === "desktop"
-                      ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                      : "text-zinc-400 hover:text-white"
+                      ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                      : "text-[#64748B] hover:text-white"
                   }`}
                 >
                   <Monitor size={14} />
@@ -1225,8 +1225,8 @@ export function AnnouncementBarModal({
                   onClick={() => setPreviewDevice("mobile")}
                   className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold transition-all ${
                     previewDevice === "mobile"
-                      ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                      : "text-zinc-400 hover:text-white"
+                      ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                      : "text-[#64748B] hover:text-white"
                   }`}
                 >
                   <Smartphone size={14} />
@@ -1243,20 +1243,20 @@ export function AnnouncementBarModal({
                 }`}
               >
                 {/* Browser Mockup Top Header */}
-                <div className="flex items-center justify-between px-3.5 py-2 bg-[#1A1E29] border-b border-black/30 text-zinc-400 text-[11px]">
+                <div className="flex items-center justify-between px-3.5 py-2 bg-[#1A1E29] border-b border-black/30 text-[#64748B] text-[11px]">
                   <div className="flex items-center gap-1.5">
                     <div className="w-2.5 h-2.5 rounded-full bg-[#EF4444]/80" />
                     <div className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]/80" />
                     <div className="w-2.5 h-2.5 rounded-full bg-[#10B981]/80" />
                   </div>
-                  <div className="text-[10px] text-zinc-400 font-mono tracking-tight truncate max-w-[200px]">
+                  <div className="text-[10px] text-[#64748B] font-mono tracking-tight truncate max-w-[200px]">
                     https://courtesydrivingschool.com
                   </div>
                   <div className="w-8" />
                 </div>
 
                 {/* Container for Website Mockup + Live Announcement Bar */}
-                <div className="relative flex flex-col bg-[#1A1A1E] text-white">
+                <div className="relative flex flex-col bg-white text-white">
                   {/* Announcement Bar at Top Position */}
                   {position === "top_fixed" && (
                     <div
@@ -1334,7 +1334,7 @@ export function AnnouncementBarModal({
                     {/* Simulated Navbar */}
                     <div className="flex items-center justify-between pb-3 border-b border-white/10">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-lg bg-[#FACC15] text-zinc-950 font-black flex items-center justify-center text-xs">
+                        <div className="w-7 h-7 rounded-lg bg-[#7137D8] text-zinc-950 font-black flex items-center justify-center text-xs">
                           G
                         </div>
                         <span className="font-extrabold text-xs tracking-wider uppercase text-white">
@@ -1343,19 +1343,19 @@ export function AnnouncementBarModal({
                       </div>
 
                       {previewDevice === "desktop" ? (
-                        <div className="flex items-center gap-4 text-[11px] text-zinc-300 font-medium">
+                        <div className="flex items-center gap-4 text-[11px] text-[#334155] font-medium">
                           <span className="text-white font-semibold">Home</span>
                           <span className="hover:text-white">About</span>
                           <span className="hover:text-white">Services</span>
                           <span className="hover:text-white">Locations</span>
                           <span className="hover:text-white">FAQ</span>
                           <span className="hover:text-white">Contact</span>
-                          <span className="bg-[#FACC15] text-zinc-950 font-bold px-2.5 py-1 rounded text-[10px]">
+                          <span className="bg-[#7137D8] text-zinc-950 font-bold px-2.5 py-1 rounded text-[10px]">
                             STUDENT PORTAL
                           </span>
                         </div>
                       ) : (
-                        <div className="text-zinc-300 text-sm font-bold">☰</div>
+                        <div className="text-[#334155] text-sm font-bold">☰</div>
                       )}
                     </div>
 
@@ -1369,10 +1369,10 @@ export function AnnouncementBarModal({
                     >
                       <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]" />
                       <div className="relative z-10 px-4">
-                        <h1 className="text-lg sm:text-2xl font-serif font-bold text-white tracking-tight drop-shadow-md">
+                        <h1 className="text-lg sm:text-2xl font-serif font-bold text-[#111827] tracking-tight drop-shadow-md">
                           Michigan Driver's Training
                         </h1>
-                        <p className="text-xs sm:text-sm text-zinc-200 mt-1.5 max-w-md mx-auto drop-shadow">
+                        <p className="text-xs sm:text-sm text-[#111827] mt-1.5 max-w-md mx-auto drop-shadow">
                           Michigan's most trusted driving school for over 50 years
                         </p>
                       </div>
@@ -1426,7 +1426,7 @@ export function AnnouncementBarModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2 rounded-lg border border-zinc-700 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold transition-colors"
+            className="px-5 py-2 rounded-lg border border-[#CBD5E1] hover:bg-[#F1F5F9] text-[#334155] hover:text-white text-xs font-semibold transition-colors"
           >
             Cancel
           </button>
@@ -1435,7 +1435,7 @@ export function AnnouncementBarModal({
             type="button"
             onClick={handleSave}
             disabled={isSaving}
-            className="px-6 py-2 rounded-lg bg-[#FACC15] hover:bg-[#EAB308] text-zinc-950 text-xs font-bold shadow-lg shadow-yellow-500/10 hover:shadow-yellow-500/20 transition-all flex items-center gap-1.5 disabled:opacity-50"
+            className="px-6 py-2 rounded-lg bg-[#7137D8] hover:bg-[#EAB308] text-zinc-950 text-xs font-bold shadow-lg shadow-yellow-500/10 hover:shadow-yellow-500/20 transition-all flex items-center gap-1.5 disabled:opacity-50"
           >
             {isSaving ? "Saving..." : "Save Plugin"}
           </button>

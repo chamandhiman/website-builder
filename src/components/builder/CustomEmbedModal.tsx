@@ -1287,10 +1287,10 @@ function CustomEmbedModalInner({
   const headerInfo = getHeaderInfo();
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-150">
-      <div className="relative flex max-h-[92vh] w-full max-w-4xl flex-col rounded-2xl border border-[#2B2B30] bg-[#121214] text-[#F5F5F5] shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-150">
+      <div className="relative flex max-h-[92vh] w-full max-w-4xl flex-col rounded-2xl border border-[#2B2B30] bg-[#121214] text-[#111827] shadow-2xl overflow-hidden">
         {/* ── TOP HEADER (Matching Mockups 1, 2, 3) ───────────────────── */}
-        <div className="flex shrink-0 items-center justify-between border-b border-[#222225] bg-[#161619] px-6 py-4">
+        <div className="flex shrink-0 items-center justify-between border-b border-[#E2E8F0] bg-[#161619] px-6 py-4">
           <div className="flex items-center gap-3.5">
             {/* Top Left Plugin Icon */}
             {pluginType === "announcement" ? (
@@ -1318,16 +1318,16 @@ function CustomEmbedModalInner({
                 <Globe className="h-5 w-5" />
               </span>
             ) : (
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-800 border border-zinc-700 text-[#FACC15] shadow-xs">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F1F5F9] border border-[#CBD5E1] text-[#FACC15] shadow-xs">
                 <Code2 className="h-5 w-5" />
               </span>
             )}
 
             <div>
-              <h2 className="text-base font-bold text-white tracking-wide">
+              <h2 className="text-base font-bold text-[#111827] tracking-wide">
                 {headerInfo.title}
               </h2>
-              <p className="text-xs text-zinc-400 mt-0.5">
+              <p className="text-xs text-[#64748B] mt-0.5">
                 {headerInfo.subtitle}
               </p>
             </div>
@@ -1337,7 +1337,7 @@ function CustomEmbedModalInner({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
+            className="flex h-8 w-8 items-center justify-center rounded-xl text-[#64748B] hover:text-white hover:bg-[#F1F5F9] transition"
             title="Close modal"
           >
             <X className="h-5 w-5" />
@@ -1357,13 +1357,13 @@ function CustomEmbedModalInner({
                       onClick={() => applyAnnouncementTemplate(tpl)}
                       className={`group relative flex flex-col justify-between rounded-2xl border p-4 cursor-pointer transition-all ${
                         isSelected
-                          ? "border-2 border-[#FACC15] bg-[#1A1A1E] shadow-xl shadow-[#FACC15]/5"
-                          : "border-zinc-800 bg-[#161619] hover:border-zinc-700 hover:bg-[#19191D]"
+                          ? "border-2 border-[#FACC15] bg-white shadow-xl shadow-[#FACC15]/5"
+                          : "border-[#E2E8F0] bg-[#161619] hover:border-[#CBD5E1] hover:bg-[#19191D]"
                       }`}
                     >
                       {/* Checkmark Badge for Selected Card */}
                       {isSelected && (
-                        <div className="absolute top-3 right-3 flex h-5 w-5 items-center justify-center rounded-full bg-[#FACC15] text-zinc-950 shadow-md z-10">
+                        <div className="absolute top-3 right-3 flex h-5 w-5 items-center justify-center rounded-full bg-[#7137D8] text-zinc-950 shadow-md z-10">
                           <Check className="h-3.5 w-3.5 stroke-[3]" />
                         </div>
                       )}
@@ -1404,7 +1404,7 @@ function CustomEmbedModalInner({
                       </div>
 
                       {/* Card Label */}
-                      <span className="mt-3 text-xs font-bold text-zinc-300 group-hover:text-white transition">
+                      <span className="mt-3 text-xs font-bold text-[#334155] group-hover:text-white transition">
                         {tpl.label}
                       </span>
                     </div>
@@ -1421,12 +1421,12 @@ function CustomEmbedModalInner({
                       onClick={() => applyPopupTemplate(tpl)}
                       className={`group relative flex flex-col justify-between rounded-2xl border p-4 cursor-pointer transition-all ${
                         isSelected
-                          ? "border-2 border-[#FACC15] bg-[#1A1A1E] shadow-xl shadow-[#FACC15]/5"
-                          : "border-zinc-800 bg-[#161619] hover:border-zinc-700 hover:bg-[#19191D]"
+                          ? "border-2 border-[#FACC15] bg-white shadow-xl shadow-[#FACC15]/5"
+                          : "border-[#E2E8F0] bg-[#161619] hover:border-[#CBD5E1] hover:bg-[#19191D]"
                       }`}
                     >
                       {isSelected && (
-                        <div className="absolute top-3 right-3 flex h-5 w-5 items-center justify-center rounded-full bg-[#FACC15] text-zinc-950 shadow-md z-10">
+                        <div className="absolute top-3 right-3 flex h-5 w-5 items-center justify-center rounded-full bg-[#7137D8] text-zinc-950 shadow-md z-10">
                           <Check className="h-3.5 w-3.5 stroke-[3]" />
                         </div>
                       )}
@@ -1435,10 +1435,10 @@ function CustomEmbedModalInner({
                           backgroundColor: tpl.bgColor,
                           color: tpl.textColor,
                         }}
-                        className="rounded-xl p-4 border border-zinc-700/60 shadow-md space-y-2"
+                        className="rounded-xl p-4 border border-[#CBD5E1]/60 shadow-md space-y-2"
                       >
                         <h4 className="text-xs font-bold">{tpl.headline}</h4>
-                        <p className="text-[11px] text-zinc-400 line-clamp-2 leading-relaxed">
+                        <p className="text-[11px] text-[#64748B] line-clamp-2 leading-relaxed">
                           {tpl.message}
                         </p>
                         <span
@@ -1451,7 +1451,7 @@ function CustomEmbedModalInner({
                           {tpl.btnText}
                         </span>
                       </div>
-                      <span className="mt-3 text-xs font-bold text-zinc-300 group-hover:text-white transition">
+                      <span className="mt-3 text-xs font-bold text-[#334155] group-hover:text-white transition">
                         {tpl.label}
                       </span>
                     </div>
@@ -1459,7 +1459,7 @@ function CustomEmbedModalInner({
                 })}
               </div>
             ) : (
-              <div className="py-8 text-center text-zinc-400 text-sm">
+              <div className="py-8 text-center text-[#64748B] text-sm">
                 Click Next to configure settings for {name || "this plugin"}.
               </div>
             )}
@@ -1470,14 +1470,14 @@ function CustomEmbedModalInner({
         {step === 2 && (
           <div className="flex flex-1 overflow-hidden">
             {/* Left Vertical Sub-Tabs */}
-            <div className="w-44 shrink-0 border-r border-[#222225] bg-[#141416] p-3 space-y-1 overflow-y-auto">
+            <div className="w-44 shrink-0 border-r border-[#E2E8F0] bg-[#141416] p-3 space-y-1 overflow-y-auto">
               <button
                 type="button"
                 onClick={() => setActiveSettingsTab("content")}
                 className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
                   activeSettingsTab === "content"
-                    ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
+                    ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                    : "text-[#64748B] hover:text-white hover:bg-[#F1F5F9]/60"
                 }`}
               >
                 <Megaphone className="h-4 w-4" />
@@ -1489,8 +1489,8 @@ function CustomEmbedModalInner({
                 onClick={() => setActiveSettingsTab("style")}
                 className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
                   activeSettingsTab === "style"
-                    ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
+                    ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                    : "text-[#64748B] hover:text-white hover:bg-[#F1F5F9]/60"
                 }`}
               >
                 <Palette className="h-4 w-4" />
@@ -1502,8 +1502,8 @@ function CustomEmbedModalInner({
                 onClick={() => setActiveSettingsTab("icon")}
                 className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
                   activeSettingsTab === "icon"
-                    ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
+                    ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                    : "text-[#64748B] hover:text-white hover:bg-[#F1F5F9]/60"
                 }`}
               >
                 <Bell className="h-4 w-4" />
@@ -1515,8 +1515,8 @@ function CustomEmbedModalInner({
                 onClick={() => setActiveSettingsTab("link")}
                 className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
                   activeSettingsTab === "link"
-                    ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
+                    ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                    : "text-[#64748B] hover:text-white hover:bg-[#F1F5F9]/60"
                 }`}
               >
                 <LinkIcon className="h-4 w-4" />
@@ -1528,8 +1528,8 @@ function CustomEmbedModalInner({
                 onClick={() => setActiveSettingsTab("visibility")}
                 className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
                   activeSettingsTab === "visibility"
-                    ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
+                    ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                    : "text-[#64748B] hover:text-white hover:bg-[#F1F5F9]/60"
                 }`}
               >
                 <Eye className="h-4 w-4" />
@@ -1541,8 +1541,8 @@ function CustomEmbedModalInner({
                 onClick={() => setActiveSettingsTab("position")}
                 className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
                   activeSettingsTab === "position"
-                    ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
+                    ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                    : "text-[#64748B] hover:text-white hover:bg-[#F1F5F9]/60"
                 }`}
               >
                 <Compass className="h-4 w-4" />
@@ -1554,8 +1554,8 @@ function CustomEmbedModalInner({
                 onClick={() => setActiveSettingsTab("animation")}
                 className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
                   activeSettingsTab === "animation"
-                    ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
+                    ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                    : "text-[#64748B] hover:text-white hover:bg-[#F1F5F9]/60"
                 }`}
               >
                 <Sparkles className="h-4 w-4" />
@@ -1571,7 +1571,7 @@ function CustomEmbedModalInner({
                   {activeSettingsTab === "content" && (
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                           Announcement Text
                         </label>
                         <textarea
@@ -1579,13 +1579,13 @@ function CustomEmbedModalInner({
                           value={announcementText}
                           onChange={(e) => setAnnouncementText(e.target.value)}
                           placeholder="2027 Winter and Spring Schedules are now open for enrollment!"
-                          className="w-full rounded-xl border border-zinc-800 bg-[#17171A] p-3 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20 leading-relaxed"
+                          className="w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] p-3 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20 leading-relaxed"
                         />
                       </div>
 
                       {/* Icon selector pills */}
                       <div>
-                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                           Icon
                         </label>
                         <div className="flex items-center gap-2 flex-wrap">
@@ -1610,8 +1610,8 @@ function CustomEmbedModalInner({
                                 title={ic.label}
                                 className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all ${
                                   isSelected
-                                    ? "border-[#FACC15] bg-[#FACC15]/15 text-[#FACC15] shadow-sm"
-                                    : "border-zinc-800 bg-[#17171A] text-zinc-400 hover:text-white hover:border-zinc-700"
+                                    ? "border-[#FACC15] bg-[#7137D8]/15 text-[#FACC15] shadow-sm"
+                                    : "border-[#E2E8F0] bg-[#17171A] text-[#64748B] hover:text-white hover:border-[#CBD5E1]"
                                 }`}
                               >
                                 <IconCmp className="h-4 w-4" />
@@ -1623,7 +1623,7 @@ function CustomEmbedModalInner({
 
                       {/* Link URL (Optional) */}
                       <div>
-                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                           Link (Optional)
                         </label>
                         <div className="space-y-2">
@@ -1632,14 +1632,14 @@ function CustomEmbedModalInner({
                             value={announcementLink}
                             onChange={(e) => setAnnouncementLink(e.target.value)}
                             placeholder="https://"
-                            className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
+                            className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
                           />
-                          <label className="flex items-center gap-2 text-xs text-zinc-400 cursor-pointer">
+                          <label className="flex items-center gap-2 text-xs text-[#64748B] cursor-pointer">
                             <input
                               type="checkbox"
                               checked={announcementLinkNewTab}
                               onChange={(e) => setAnnouncementLinkNewTab(e.target.checked)}
-                              className="rounded border-zinc-700 text-[#FACC15] focus:ring-0"
+                              className="rounded border-[#CBD5E1] text-[#FACC15] focus:ring-0"
                             />
                             <span>Open in new tab</span>
                           </label>
@@ -1648,7 +1648,7 @@ function CustomEmbedModalInner({
 
                       {/* Button Text (Optional) */}
                       <div>
-                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                           Button Text (Optional)
                         </label>
                         <input
@@ -1656,7 +1656,7 @@ function CustomEmbedModalInner({
                           value={announcementBtnLabel}
                           onChange={(e) => setAnnouncementBtnLabel(e.target.value)}
                           placeholder="Learn More"
-                          className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
+                          className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
                         />
                       </div>
                     </div>
@@ -1667,7 +1667,7 @@ function CustomEmbedModalInner({
                     <div className="space-y-4">
                       {/* Background Color */}
                       <div>
-                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                           Background Color
                         </label>
                         <div className="flex items-center gap-2.5">
@@ -1675,13 +1675,13 @@ function CustomEmbedModalInner({
                             type="color"
                             value={announcementBg}
                             onChange={(e) => setAnnouncementBg(e.target.value)}
-                            className="h-9 w-12 rounded-lg border border-zinc-800 bg-transparent cursor-pointer p-0.5"
+                            className="h-9 w-12 rounded-lg border border-[#E2E8F0] bg-transparent cursor-pointer p-0.5"
                           />
                           <input
                             type="text"
                             value={announcementBg}
                             onChange={(e) => setAnnouncementBg(e.target.value)}
-                            className="h-9 w-28 rounded-xl border border-zinc-800 bg-[#17171A] px-3 font-mono text-xs text-zinc-100"
+                            className="h-9 w-28 rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 font-mono text-xs text-[#111827]"
                           />
                           <div className="flex items-center gap-1.5 flex-wrap">
                             {[
@@ -1708,7 +1708,7 @@ function CustomEmbedModalInner({
 
                       {/* Text Color */}
                       <div>
-                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                           Text Color
                         </label>
                         <div className="flex items-center gap-2.5">
@@ -1716,20 +1716,20 @@ function CustomEmbedModalInner({
                             type="color"
                             value={announcementTextColor}
                             onChange={(e) => setAnnouncementTextColor(e.target.value)}
-                            className="h-9 w-12 rounded-lg border border-zinc-800 bg-transparent cursor-pointer p-0.5"
+                            className="h-9 w-12 rounded-lg border border-[#E2E8F0] bg-transparent cursor-pointer p-0.5"
                           />
                           <input
                             type="text"
                             value={announcementTextColor}
                             onChange={(e) => setAnnouncementTextColor(e.target.value)}
-                            className="h-9 w-28 rounded-xl border border-zinc-800 bg-[#17171A] px-3 font-mono text-xs text-zinc-100"
+                            className="h-9 w-28 rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 font-mono text-xs text-[#111827]"
                           />
                         </div>
                       </div>
 
                       {/* Icon Color */}
                       <div>
-                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                           Icon Color
                         </label>
                         <div className="flex items-center gap-2.5">
@@ -1737,25 +1737,25 @@ function CustomEmbedModalInner({
                             type="color"
                             value={announcementIconColor}
                             onChange={(e) => setAnnouncementIconColor(e.target.value)}
-                            className="h-9 w-12 rounded-lg border border-zinc-800 bg-transparent cursor-pointer p-0.5"
+                            className="h-9 w-12 rounded-lg border border-[#E2E8F0] bg-transparent cursor-pointer p-0.5"
                           />
                           <input
                             type="text"
                             value={announcementIconColor}
                             onChange={(e) => setAnnouncementIconColor(e.target.value)}
-                            className="h-9 w-28 rounded-xl border border-zinc-800 bg-[#17171A] px-3 font-mono text-xs text-zinc-100"
+                            className="h-9 w-28 rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 font-mono text-xs text-[#111827]"
                           />
                         </div>
                       </div>
 
                       {/* Button Colors */}
-                      <div className="rounded-xl border border-zinc-800 bg-[#161619] p-3.5 space-y-3">
-                        <span className="text-xs font-bold text-zinc-300">
+                      <div className="rounded-xl border border-[#E2E8F0] bg-[#161619] p-3.5 space-y-3">
+                        <span className="text-xs font-bold text-[#334155]">
                           Button Appearance
                         </span>
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <label className="block text-[11px] text-zinc-400 mb-1">
+                            <label className="block text-[11px] text-[#64748B] mb-1">
                               Button Background
                             </label>
                             <div className="flex items-center gap-2">
@@ -1763,18 +1763,18 @@ function CustomEmbedModalInner({
                                 type="color"
                                 value={announcementBtnBg}
                                 onChange={(e) => setAnnouncementBtnBg(e.target.value)}
-                                className="h-8 w-10 rounded border border-zinc-700 bg-transparent cursor-pointer"
+                                className="h-8 w-10 rounded border border-[#CBD5E1] bg-transparent cursor-pointer"
                               />
                               <input
                                 type="text"
                                 value={announcementBtnBg}
                                 onChange={(e) => setAnnouncementBtnBg(e.target.value)}
-                                className="h-8 w-24 rounded-lg border border-zinc-800 bg-[#17171A] px-2 font-mono text-xs text-zinc-200"
+                                className="h-8 w-24 rounded-lg border border-[#E2E8F0] bg-[#17171A] px-2 font-mono text-xs text-[#111827]"
                               />
                             </div>
                           </div>
                           <div>
-                            <label className="block text-[11px] text-zinc-400 mb-1">
+                            <label className="block text-[11px] text-[#64748B] mb-1">
                               Button Text Color
                             </label>
                             <div className="flex items-center gap-2">
@@ -1782,13 +1782,13 @@ function CustomEmbedModalInner({
                                 type="color"
                                 value={announcementBtnTextColor}
                                 onChange={(e) => setAnnouncementBtnTextColor(e.target.value)}
-                                className="h-8 w-10 rounded border border-zinc-700 bg-transparent cursor-pointer"
+                                className="h-8 w-10 rounded border border-[#CBD5E1] bg-transparent cursor-pointer"
                               />
                               <input
                                 type="text"
                                 value={announcementBtnTextColor}
                                 onChange={(e) => setAnnouncementBtnTextColor(e.target.value)}
-                                className="h-8 w-24 rounded-lg border border-zinc-800 bg-[#17171A] px-2 font-mono text-xs text-zinc-200"
+                                className="h-8 w-24 rounded-lg border border-[#E2E8F0] bg-[#17171A] px-2 font-mono text-xs text-[#111827]"
                               />
                             </div>
                           </div>
@@ -1801,7 +1801,7 @@ function CustomEmbedModalInner({
                   {activeSettingsTab === "icon" && (
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-2">
                           Select Icon
                         </label>
                         <div className="grid grid-cols-3 gap-2.5">
@@ -1825,8 +1825,8 @@ function CustomEmbedModalInner({
                                 onClick={() => setAnnouncementIcon(ic.id)}
                                 className={`flex items-center gap-2.5 rounded-xl border p-3 text-left transition-all ${
                                   isSelected
-                                    ? "border-[#FACC15] bg-[#FACC15]/10 text-white"
-                                    : "border-zinc-800 bg-[#17171A] text-zinc-400 hover:text-white hover:border-zinc-700"
+                                    ? "border-[#FACC15] bg-[#7137D8]/10 text-white"
+                                    : "border-[#E2E8F0] bg-[#17171A] text-[#64748B] hover:text-white hover:border-[#CBD5E1]"
                                 }`}
                               >
                                 <IconCmp className="h-4 w-4 shrink-0 text-[#FACC15]" />
@@ -1843,7 +1843,7 @@ function CustomEmbedModalInner({
                   {activeSettingsTab === "link" && (
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                           Call-to-Action Link URL
                         </label>
                         <input
@@ -1851,14 +1851,14 @@ function CustomEmbedModalInner({
                           value={announcementLink}
                           onChange={(e) => setAnnouncementLink(e.target.value)}
                           placeholder="https://example.com/special-offer"
-                          className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
+                          className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
                         />
                       </div>
 
-                      <div className="flex items-center justify-between rounded-xl border border-zinc-800 bg-[#161619] p-3.5">
+                      <div className="flex items-center justify-between rounded-xl border border-[#E2E8F0] bg-[#161619] p-3.5">
                         <div>
-                          <p className="text-xs font-bold text-white">Open in New Tab</p>
-                          <p className="text-[11px] text-zinc-400">Target _blank for external URLs</p>
+                          <p className="text-xs font-bold text-[#111827]">Open in New Tab</p>
+                          <p className="text-[11px] text-[#64748B]">Target _blank for external URLs</p>
                         </div>
                         <Switch
                           checked={announcementLinkNewTab}
@@ -1867,7 +1867,7 @@ function CustomEmbedModalInner({
                       </div>
 
                       <div>
-                        <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                           Button Text Label
                         </label>
                         <input
@@ -1875,7 +1875,7 @@ function CustomEmbedModalInner({
                           value={announcementBtnLabel}
                           onChange={(e) => setAnnouncementBtnLabel(e.target.value)}
                           placeholder="Learn More"
-                          className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
+                          className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
                         />
                       </div>
                     </div>
@@ -1884,10 +1884,10 @@ function CustomEmbedModalInner({
                   {/* TAB: VISIBILITY */}
                   {activeSettingsTab === "visibility" && (
                     <div className="space-y-3">
-                      <div className="flex items-center justify-between rounded-xl border border-zinc-800 bg-[#161619] p-3.5">
+                      <div className="flex items-center justify-between rounded-xl border border-[#E2E8F0] bg-[#161619] p-3.5">
                         <div>
-                          <p className="text-xs font-bold text-white">Show on Desktop</p>
-                          <p className="text-[11px] text-zinc-400">Display on screens larger than 768px</p>
+                          <p className="text-xs font-bold text-[#111827]">Show on Desktop</p>
+                          <p className="text-[11px] text-[#64748B]">Display on screens larger than 768px</p>
                         </div>
                         <Switch
                           checked={announcementShowDesktop}
@@ -1895,10 +1895,10 @@ function CustomEmbedModalInner({
                         />
                       </div>
 
-                      <div className="flex items-center justify-between rounded-xl border border-zinc-800 bg-[#161619] p-3.5">
+                      <div className="flex items-center justify-between rounded-xl border border-[#E2E8F0] bg-[#161619] p-3.5">
                         <div>
-                          <p className="text-xs font-bold text-white">Show on Mobile</p>
-                          <p className="text-[11px] text-zinc-400">Display on smartphones and compact screens</p>
+                          <p className="text-xs font-bold text-[#111827]">Show on Mobile</p>
+                          <p className="text-[11px] text-[#64748B]">Display on smartphones and compact screens</p>
                         </div>
                         <Switch
                           checked={announcementShowMobile}
@@ -1906,10 +1906,10 @@ function CustomEmbedModalInner({
                         />
                       </div>
 
-                      <div className="flex items-center justify-between rounded-xl border border-zinc-800 bg-[#161619] p-3.5">
+                      <div className="flex items-center justify-between rounded-xl border border-[#E2E8F0] bg-[#161619] p-3.5">
                         <div>
-                          <p className="text-xs font-bold text-white">Dismiss / Close Button</p>
-                          <p className="text-[11px] text-zinc-400">Allow visitors to close the announcement bar (✕)</p>
+                          <p className="text-xs font-bold text-[#111827]">Dismiss / Close Button</p>
+                          <p className="text-[11px] text-[#64748B]">Allow visitors to close the announcement bar (✕)</p>
                         </div>
                         <Switch
                           checked={announcementShowClose}
@@ -1917,16 +1917,16 @@ function CustomEmbedModalInner({
                         />
                       </div>
 
-                      <div className="rounded-xl border border-zinc-800 bg-[#161619] p-3.5 space-y-2">
-                        <p className="text-xs font-bold text-white">Page Targeting</p>
+                      <div className="rounded-xl border border-[#E2E8F0] bg-[#161619] p-3.5 space-y-2">
+                        <p className="text-xs font-bold text-[#111827]">Page Targeting</p>
                         <div className="grid grid-cols-2 gap-2">
                           <button
                             type="button"
                             onClick={() => setAnnouncementPageTargeting("all")}
                             className={`rounded-lg py-2 text-xs font-bold transition ${
                               announcementPageTargeting === "all"
-                                ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                                : "bg-[#18181C] text-zinc-400 hover:text-white"
+                                ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                                : "bg-[#F1F5F9] text-[#64748B] hover:text-white"
                             }`}
                           >
                             All Pages
@@ -1936,8 +1936,8 @@ function CustomEmbedModalInner({
                             onClick={() => setAnnouncementPageTargeting("custom")}
                             className={`rounded-lg py-2 text-xs font-bold transition ${
                               announcementPageTargeting === "custom"
-                                ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                                : "bg-[#18181C] text-zinc-400 hover:text-white"
+                                ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                                : "bg-[#F1F5F9] text-[#64748B] hover:text-white"
                             }`}
                           >
                             Current Page Only
@@ -1950,7 +1950,7 @@ function CustomEmbedModalInner({
                   {/* TAB: POSITION */}
                   {activeSettingsTab === "position" && (
                     <div className="space-y-4">
-                      <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-2">
                         Announcement Bar Placement
                       </label>
                       <div className="grid grid-cols-2 gap-3">
@@ -1959,15 +1959,15 @@ function CustomEmbedModalInner({
                           onClick={() => setAnnouncementPosition("top_fixed")}
                           className={`flex flex-col items-center gap-2 rounded-2xl border p-5 text-center transition-all ${
                             announcementPosition === "top_fixed"
-                              ? "border-2 border-[#FACC15] bg-[#1A1A1E] text-white shadow-md"
-                              : "border-zinc-800 bg-[#161619] text-zinc-400 hover:text-white hover:border-zinc-700"
+                              ? "border-2 border-[#FACC15] bg-white text-white shadow-md"
+                              : "border-[#E2E8F0] bg-[#161619] text-[#64748B] hover:text-white hover:border-[#CBD5E1]"
                           }`}
                         >
-                          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-800 text-[#FACC15]">
+                          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F1F5F9] text-[#FACC15]">
                             <ArrowUp className="h-5 w-5" />
                           </span>
-                          <span className="text-xs font-bold text-white">Top of Website</span>
-                          <span className="text-[11px] text-zinc-400">
+                          <span className="text-xs font-bold text-[#111827]">Top of Website</span>
+                          <span className="text-[11px] text-[#64748B]">
                             Sticks to the very top above the navbar
                           </span>
                         </button>
@@ -1977,15 +1977,15 @@ function CustomEmbedModalInner({
                           onClick={() => setAnnouncementPosition("bottom_fixed")}
                           className={`flex flex-col items-center gap-2 rounded-2xl border p-5 text-center transition-all ${
                             announcementPosition === "bottom_fixed"
-                              ? "border-2 border-[#FACC15] bg-[#1A1A1E] text-white shadow-md"
-                              : "border-zinc-800 bg-[#161619] text-zinc-400 hover:text-white hover:border-zinc-700"
+                              ? "border-2 border-[#FACC15] bg-white text-white shadow-md"
+                              : "border-[#E2E8F0] bg-[#161619] text-[#64748B] hover:text-white hover:border-[#CBD5E1]"
                           }`}
                         >
-                          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-800 text-[#FACC15]">
+                          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F1F5F9] text-[#FACC15]">
                             <Compass className="h-5 w-5" />
                           </span>
-                          <span className="text-xs font-bold text-white">Bottom of Website</span>
-                          <span className="text-[11px] text-zinc-400">
+                          <span className="text-xs font-bold text-[#111827]">Bottom of Website</span>
+                          <span className="text-[11px] text-[#64748B]">
                             Fixed banner floating along bottom edge
                           </span>
                         </button>
@@ -1996,7 +1996,7 @@ function CustomEmbedModalInner({
                   {/* TAB: ANIMATION */}
                   {activeSettingsTab === "animation" && (
                     <div className="space-y-4">
-                      <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-2">
                         Entrance Animation
                       </label>
                       <div className="grid grid-cols-3 gap-3">
@@ -2013,12 +2013,12 @@ function CustomEmbedModalInner({
                               onClick={() => setAnnouncementAnimation(a.id as any)}
                               className={`rounded-2xl border p-4 text-left transition-all ${
                                 isSelected
-                                  ? "border-2 border-[#FACC15] bg-[#1A1A1E] shadow-sm text-white"
-                                  : "border-zinc-800 bg-[#161619] text-zinc-400 hover:text-white hover:border-zinc-700"
+                                  ? "border-2 border-[#FACC15] bg-white shadow-sm text-white"
+                                  : "border-[#E2E8F0] bg-[#161619] text-[#64748B] hover:text-white hover:border-[#CBD5E1]"
                               }`}
                             >
                               <span className="text-xs font-bold block text-white mb-0.5">{a.label}</span>
-                              <span className="text-[11px] text-zinc-400">{a.desc}</span>
+                              <span className="text-[11px] text-[#64748B]">{a.desc}</span>
                             </button>
                           );
                         })}
@@ -2030,7 +2030,7 @@ function CustomEmbedModalInner({
                 /* CONTACT SETTINGS */
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                       Phone Number or Target
                     </label>
                     <input
@@ -2038,11 +2038,11 @@ function CustomEmbedModalInner({
                       value={contactPhone}
                       onChange={(e) => setContactPhone(e.target.value)}
                       placeholder="+1 (555) 000-0000"
-                      className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15]"
+                      className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#FACC15]"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                       Button Label
                     </label>
                     <input
@@ -2050,18 +2050,18 @@ function CustomEmbedModalInner({
                       value={contactLabel}
                       onChange={(e) => setContactLabel(e.target.value)}
                       placeholder="Call Us"
-                      className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 outline-none"
+                      className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 text-xs text-[#111827] outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                       Button Color
                     </label>
                     <input
                       type="color"
                       value={contactColor}
                       onChange={(e) => setContactColor(e.target.value)}
-                      className="h-9 w-12 rounded-lg border border-zinc-800 bg-transparent cursor-pointer"
+                      className="h-9 w-12 rounded-lg border border-[#E2E8F0] bg-transparent cursor-pointer"
                     />
                   </div>
                 </div>
@@ -2069,7 +2069,7 @@ function CustomEmbedModalInner({
                 /* WHATSAPP SETTINGS */
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                       WhatsApp Phone Number (with Country Code)
                     </label>
                     <input
@@ -2077,11 +2077,11 @@ function CustomEmbedModalInner({
                       value={waPhone}
                       onChange={(e) => setWaPhone(e.target.value)}
                       placeholder="+1234567890"
-                      className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15]"
+                      className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#FACC15]"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                       Support Agent Name
                     </label>
                     <input
@@ -2089,11 +2089,11 @@ function CustomEmbedModalInner({
                       value={waAgent}
                       onChange={(e) => setWaAgent(e.target.value)}
                       placeholder="Customer Support"
-                      className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 outline-none"
+                      className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 text-xs text-[#111827] outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                       Pre-filled Message
                     </label>
                     <input
@@ -2101,7 +2101,7 @@ function CustomEmbedModalInner({
                       value={waMessage}
                       onChange={(e) => setWaMessage(e.target.value)}
                       placeholder="Hello, I have a question about your services."
-                      className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 outline-none"
+                      className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 text-xs text-[#111827] outline-none"
                     />
                   </div>
                 </div>
@@ -2109,7 +2109,7 @@ function CustomEmbedModalInner({
                 /* YOUTUBE SETTINGS */
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                       YouTube Video URL
                     </label>
                     <input
@@ -2117,7 +2117,7 @@ function CustomEmbedModalInner({
                       value={ytUrl}
                       onChange={(e) => setYtUrl(e.target.value)}
                       placeholder="https://www.youtube.com/watch?v=..."
-                      className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 outline-none focus:border-[#FACC15]"
+                      className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 text-xs text-[#111827] outline-none focus:border-[#FACC15]"
                     />
                   </div>
                 </div>
@@ -2125,7 +2125,7 @@ function CustomEmbedModalInner({
                 /* MAPS SETTINGS */
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                       Location Address or Place Name
                     </label>
                     <input
@@ -2133,7 +2133,7 @@ function CustomEmbedModalInner({
                       value={mapAddress}
                       onChange={(e) => setMapAddress(e.target.value)}
                       placeholder="1600 Amphitheatre Parkway, Mountain View, CA"
-                      className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] px-3 text-xs text-zinc-100 outline-none focus:border-[#FACC15]"
+                      className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 text-xs text-[#111827] outline-none focus:border-[#FACC15]"
                     />
                   </div>
                 </div>
@@ -2141,7 +2141,7 @@ function CustomEmbedModalInner({
                 /* CUSTOM HTML */
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
                       HTML / Script Code
                     </label>
                     <textarea
@@ -2149,7 +2149,7 @@ function CustomEmbedModalInner({
                       value={customHtml}
                       onChange={(e) => setCustomHtml(e.target.value)}
                       placeholder="<script>...</script> or <div>...</div>"
-                      className="w-full rounded-xl border border-zinc-800 bg-[#17171A] p-3 font-mono text-xs text-zinc-100 outline-none focus:border-[#FACC15]"
+                      className="w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] p-3 font-mono text-xs text-[#111827] outline-none focus:border-[#FACC15]"
                     />
                   </div>
                 </div>
@@ -2164,18 +2164,18 @@ function CustomEmbedModalInner({
             {/* Device Switcher Controls */}
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold text-white">Device Preview</p>
-                <p className="text-[11px] text-zinc-400">See how your plugin renders on sample devices</p>
+                <p className="text-xs font-bold text-[#111827]">Device Preview</p>
+                <p className="text-[11px] text-[#64748B]">See how your plugin renders on sample devices</p>
               </div>
 
-              <div className="flex items-center rounded-xl bg-[#1A1A1E] border border-zinc-800 p-1">
+              <div className="flex items-center rounded-xl bg-white border border-[#E2E8F0] p-1">
                 <button
                   type="button"
                   onClick={() => setPreviewDevice("desktop")}
                   className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition ${
                     previewDevice === "desktop"
-                      ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                      : "text-zinc-400 hover:text-white"
+                      ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                      : "text-[#64748B] hover:text-white"
                   }`}
                 >
                   <Monitor className="h-3.5 w-3.5" />
@@ -2186,8 +2186,8 @@ function CustomEmbedModalInner({
                   onClick={() => setPreviewDevice("mobile")}
                   className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition ${
                     previewDevice === "mobile"
-                      ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                      : "text-zinc-400 hover:text-white"
+                      ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                      : "text-[#64748B] hover:text-white"
                   }`}
                 >
                   <Smartphone className="h-3.5 w-3.5" />
@@ -2198,18 +2198,18 @@ function CustomEmbedModalInner({
 
             {/* Realistic Browser Window Frame (Mockup 3) */}
             <div
-              className={`mx-auto rounded-2xl border border-zinc-800 bg-[#17171A] shadow-2xl overflow-hidden transition-all duration-300 ${
+              className={`mx-auto rounded-2xl border border-[#E2E8F0] bg-[#17171A] shadow-2xl overflow-hidden transition-all duration-300 ${
                 previewDevice === "mobile" ? "max-w-[340px]" : "max-w-2xl"
               }`}
             >
               {/* Browser Window Header */}
-              <div className="flex items-center justify-between border-b border-zinc-800/80 bg-[#1E1E22] px-3.5 py-2">
+              <div className="flex items-center justify-between border-b border-[#E2E8F0]/80 bg-[#1E1E22] px-3.5 py-2">
                 <div className="flex items-center gap-1.5">
                   <span className="h-2.5 w-2.5 rounded-full bg-rose-500/80" />
                   <span className="h-2.5 w-2.5 rounded-full bg-amber-500/80" />
                   <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80" />
                 </div>
-                <div className="rounded-full bg-[#141416] px-4 py-0.5 text-[10px] font-mono text-zinc-400 border border-zinc-800">
+                <div className="rounded-full bg-[#141416] px-4 py-0.5 text-[10px] font-mono text-[#64748B] border border-[#E2E8F0]">
                   https://mywebsite.com
                 </div>
                 <div className="w-8" />
@@ -2260,36 +2260,36 @@ function CustomEmbedModalInner({
                 {/* Sample Website Content Skeleton (Matching Mockup 3) */}
                 <div className="p-5 space-y-4 flex-1">
                   {/* Mock Navbar */}
-                  <div className="flex items-center justify-between border-b border-zinc-800/60 pb-3">
+                  <div className="flex items-center justify-between border-b border-[#E2E8F0]/60 pb-3">
                     <div className="h-4 w-20 rounded-md bg-zinc-700/60" />
                     <div className="flex items-center gap-2">
-                      <div className="h-2 w-8 rounded-full bg-zinc-800" />
-                      <div className="h-2 w-8 rounded-full bg-zinc-800" />
-                      <div className="h-2 w-8 rounded-full bg-zinc-800" />
-                      <div className="h-4 w-12 rounded-md bg-[#FACC15]/40" />
+                      <div className="h-2 w-8 rounded-full bg-[#F1F5F9]" />
+                      <div className="h-2 w-8 rounded-full bg-[#F1F5F9]" />
+                      <div className="h-2 w-8 rounded-full bg-[#F1F5F9]" />
+                      <div className="h-4 w-12 rounded-md bg-[#7137D8]/40" />
                     </div>
                   </div>
 
                   {/* Mock Hero Banner */}
-                  <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/60 p-4 space-y-2.5">
+                  <div className="rounded-xl border border-[#E2E8F0]/80 bg-[#F8FAFC]/60 p-4 space-y-2.5">
                     <div className="h-4 w-3/4 rounded-md bg-zinc-700/80" />
-                    <div className="h-2.5 w-1/2 rounded-full bg-zinc-800" />
-                    <div className="h-6 w-20 rounded-lg bg-[#FACC15] mt-2" />
+                    <div className="h-2.5 w-1/2 rounded-full bg-[#F1F5F9]" />
+                    <div className="h-6 w-20 rounded-lg bg-[#7137D8] mt-2" />
                   </div>
 
                   {/* Mock Grid Cards */}
                   <div className="grid grid-cols-3 gap-2.5 pt-1">
-                    <div className="h-16 rounded-xl border border-zinc-800/60 bg-zinc-900/40 p-2 space-y-1.5">
+                    <div className="h-16 rounded-xl border border-[#E2E8F0]/60 bg-[#F8FAFC]/40 p-2 space-y-1.5">
                       <div className="h-3 w-3 rounded-full bg-blue-500/50" />
-                      <div className="h-2 w-10 rounded-full bg-zinc-800" />
+                      <div className="h-2 w-10 rounded-full bg-[#F1F5F9]" />
                     </div>
-                    <div className="h-16 rounded-xl border border-zinc-800/60 bg-zinc-900/40 p-2 space-y-1.5">
+                    <div className="h-16 rounded-xl border border-[#E2E8F0]/60 bg-[#F8FAFC]/40 p-2 space-y-1.5">
                       <div className="h-3 w-3 rounded-full bg-emerald-500/50" />
-                      <div className="h-2 w-10 rounded-full bg-zinc-800" />
+                      <div className="h-2 w-10 rounded-full bg-[#F1F5F9]" />
                     </div>
-                    <div className="h-16 rounded-xl border border-zinc-800/60 bg-zinc-900/40 p-2 space-y-1.5">
+                    <div className="h-16 rounded-xl border border-[#E2E8F0]/60 bg-[#F8FAFC]/40 p-2 space-y-1.5">
                       <div className="h-3 w-3 rounded-full bg-purple-500/50" />
-                      <div className="h-2 w-10 rounded-full bg-zinc-800" />
+                      <div className="h-2 w-10 rounded-full bg-[#F1F5F9]" />
                     </div>
                   </div>
                 </div>
@@ -2339,13 +2339,13 @@ function CustomEmbedModalInner({
         )}
 
         {/* ── MODAL FOOTER BUTTONS ─────────────────────────────────────── */}
-        <div className="flex shrink-0 items-center justify-between border-t border-[#222225] bg-[#161619] px-6 py-4">
+        <div className="flex shrink-0 items-center justify-between border-t border-[#E2E8F0] bg-[#161619] px-6 py-4">
           {/* Left Action Button */}
           {step === 1 ? (
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-zinc-800 bg-[#1A1A1E] px-5 py-2 text-xs font-bold text-zinc-300 hover:text-white hover:bg-zinc-800 transition"
+              className="rounded-xl border border-[#E2E8F0] bg-white px-5 py-2 text-xs font-bold text-[#334155] hover:text-white hover:bg-[#F1F5F9] transition"
             >
               Cancel
             </button>
@@ -2364,7 +2364,7 @@ function CustomEmbedModalInner({
                   setStep(2);
                 }
               }}
-              className="flex items-center gap-1.5 rounded-xl border border-zinc-800 bg-[#1A1A1E] px-5 py-2 text-xs font-bold text-zinc-300 hover:text-white hover:bg-zinc-800 transition"
+              className="flex items-center gap-1.5 rounded-xl border border-[#E2E8F0] bg-white px-5 py-2 text-xs font-bold text-[#334155] hover:text-white hover:bg-[#F1F5F9] transition"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               <span>Back</span>
@@ -2376,7 +2376,7 @@ function CustomEmbedModalInner({
             <button
               type="button"
               onClick={() => setStep(2)}
-              className="flex items-center gap-1.5 rounded-xl bg-[#FACC15] px-6 py-2 text-xs font-bold text-zinc-950 transition hover:bg-[#FDE047] shadow-md shadow-[#FACC15]/20 active:scale-95"
+              className="flex items-center gap-1.5 rounded-xl bg-[#7137D8] px-6 py-2 text-xs font-bold text-zinc-950 transition hover:bg-[#6025C5] shadow-md shadow-[#FACC15]/20 active:scale-95"
             >
               <span>Next</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -2389,7 +2389,7 @@ function CustomEmbedModalInner({
                   setStep(3);
                 }
               }}
-              className="flex items-center gap-1.5 rounded-xl bg-[#FACC15] px-6 py-2 text-xs font-bold text-zinc-950 transition hover:bg-[#FDE047] shadow-md shadow-[#FACC15]/20 active:scale-95"
+              className="flex items-center gap-1.5 rounded-xl bg-[#7137D8] px-6 py-2 text-xs font-bold text-zinc-950 transition hover:bg-[#6025C5] shadow-md shadow-[#FACC15]/20 active:scale-95"
             >
               <span>Next</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -2399,7 +2399,7 @@ function CustomEmbedModalInner({
               type="button"
               onClick={handleSave}
               disabled={isSubmitting}
-              className="flex items-center gap-1.5 rounded-xl bg-[#FACC15] px-6 py-2 text-xs font-bold text-zinc-950 transition hover:bg-[#FDE047] shadow-md shadow-[#FACC15]/20 active:scale-95 disabled:opacity-50"
+              className="flex items-center gap-1.5 rounded-xl bg-[#7137D8] px-6 py-2 text-xs font-bold text-zinc-950 transition hover:bg-[#6025C5] shadow-md shadow-[#FACC15]/20 active:scale-95 disabled:opacity-50"
             >
               {isSubmitting ? (
                 <span>Saving...</span>

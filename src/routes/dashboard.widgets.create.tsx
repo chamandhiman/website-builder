@@ -81,7 +81,7 @@ function FaqTemplateCardPreview({ tpl }: { tpl: FaqTemplateItem }) {
       >
         <div className="flex items-center justify-between text-[11px] font-bold" style={{ color: colors.questionColor || "#ffffff" }}>
           <span className="truncate pr-2">{sampleQ}</span>
-          <span className="shrink-0 text-[10px] text-amber-400 font-bold">−</span>
+          <span className="shrink-0 text-[10px] text-[#7137D8] font-bold">−</span>
         </div>
         <div className="text-[10px] mt-1 line-clamp-1 leading-snug" style={{ color: colors.answerColor || "#a1a1aa" }}>
           {sampleA}
@@ -100,7 +100,7 @@ function FaqTemplateCardPreview({ tpl }: { tpl: FaqTemplateItem }) {
         <span className="text-[11px] font-semibold truncate pr-2" style={{ color: colors.questionColor || "#d4d4d8" }}>
           {secondQ}
         </span>
-        <span className="shrink-0 text-[10px] text-zinc-400 font-bold">+</span>
+        <span className="shrink-0 text-[10px] text-[#64748B] font-bold">+</span>
       </div>
     </div>
   );
@@ -151,48 +151,48 @@ function TemplateCardPreview({ tpl }: { tpl: CountdownTemplateItem }) {
         {cfg.showDays && (
           <div
             className={`px-2 py-1 rounded text-xs font-mono font-bold ${
-              isFlip ? "border border-zinc-700 shadow-inner" : ""
+              isFlip ? "border border-[#CBD5E1] shadow-inner" : ""
             }`}
             style={{
               backgroundColor: isMinimal ? "transparent" : colors.cardBackground || "#27272a",
               color: colors.numberColor || "#facc15",
             }}
           >
-            02<span className="text-[8px] block text-zinc-400 font-sans">{cfg.labelDays || "d"}</span>
+            02<span className="text-[8px] block text-[#64748B] font-sans">{cfg.labelDays || "d"}</span>
           </div>
         )}
         <div
           className={`px-2 py-1 rounded text-xs font-mono font-bold ${
-            isFlip ? "border border-zinc-700 shadow-inner" : ""
+            isFlip ? "border border-[#CBD5E1] shadow-inner" : ""
           }`}
           style={{
             backgroundColor: isMinimal ? "transparent" : colors.cardBackground || "#27272a",
             color: colors.numberColor || "#facc15",
           }}
         >
-          14<span className="text-[8px] block text-zinc-400 font-sans">{cfg.labelHours || "h"}</span>
+          14<span className="text-[8px] block text-[#64748B] font-sans">{cfg.labelHours || "h"}</span>
         </div>
         <div
           className={`px-2 py-1 rounded text-xs font-mono font-bold ${
-            isFlip ? "border border-zinc-700 shadow-inner" : ""
+            isFlip ? "border border-[#CBD5E1] shadow-inner" : ""
           }`}
           style={{
             backgroundColor: isMinimal ? "transparent" : colors.cardBackground || "#27272a",
             color: colors.numberColor || "#facc15",
           }}
         >
-          35<span className="text-[8px] block text-zinc-400 font-sans">{cfg.labelMinutes || "m"}</span>
+          35<span className="text-[8px] block text-[#64748B] font-sans">{cfg.labelMinutes || "m"}</span>
         </div>
         <div
           className={`px-2 py-1 rounded text-xs font-mono font-bold ${
-            isFlip ? "border border-zinc-700 shadow-inner" : ""
+            isFlip ? "border border-[#CBD5E1] shadow-inner" : ""
           }`}
           style={{
             backgroundColor: isMinimal ? "transparent" : colors.cardBackground || "#27272a",
             color: colors.numberColor || "#facc15",
           }}
         >
-          48<span className="text-[8px] block text-zinc-400 font-sans">{cfg.labelSeconds || "s"}</span>
+          48<span className="text-[8px] block text-[#64748B] font-sans">{cfg.labelSeconds || "s"}</span>
         </div>
       </div>
 
@@ -321,18 +321,18 @@ function CreateWidgetTypePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#18181b] text-zinc-100 p-6 md:p-10">
+    <div className="min-h-screen bg-[#F8FAFC] text-[#111827] p-6 md:p-10">
       <div className="max-w-5xl mx-auto space-y-8">
         {/* ================= STEP 2: COUNTDOWN TEMPLATES SELECTION SCREEN ================= */}
         {view === "countdown_templates" ? (
           <div className="space-y-6">
             {/* Header & Back Button */}
-            <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
+            <div className="flex items-center justify-between pb-4 border-b border-[#E2E8F0]">
               <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={() => setView("choose")}
-                  className="p-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white transition"
+                  className="p-2 rounded-lg bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#64748B] hover:text-white transition"
                   title="Back to widget types"
                 >
                   <ArrowLeft className="w-4 h-4" />
@@ -340,11 +340,11 @@ function CreateWidgetTypePage() {
                 <div>
                   <div className="flex items-center gap-2">
                     <h1 className="text-2xl font-bold text-white tracking-tight">Select Countdown Template</h1>
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-[#7137D8] border border-amber-500/30">
                       10 Pro Presets
                     </span>
                   </div>
-                  <p className="text-sm text-zinc-400 mt-0.5">
+                  <p className="text-sm text-[#64748B] mt-0.5">
                     Choose a professional starter template to open in the Countdown Studio.
                   </p>
                 </div>
@@ -358,10 +358,10 @@ function CreateWidgetTypePage() {
                 return (
                   <div
                     key={tpl.key}
-                    className="rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition-all flex flex-col justify-between overflow-hidden shadow-lg hover:shadow-xl hover:shadow-amber-500/5 group"
+                    className="rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#CBD5E1] transition-all flex flex-col justify-between overflow-hidden shadow-lg hover:shadow-xl hover:shadow-amber-500/5 group"
                   >
                     {/* Visual Preview */}
-                    <div className="p-4 bg-zinc-950/60 border-b border-zinc-800/80">
+                    <div className="p-4 bg-white border-b border-[#E2E8F0]">
                       <TemplateCardPreview tpl={tpl} />
                     </div>
 
@@ -369,14 +369,14 @@ function CreateWidgetTypePage() {
                     <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                       <div>
                         <div className="flex items-center justify-between gap-2 mb-1.5">
-                          <h3 className="font-bold text-white text-base group-hover:text-amber-300 transition-colors">
+                          <h3 className="font-bold text-white text-base group-hover:text-[#7137D8] transition-colors">
                             {tpl.name}
                           </h3>
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-amber-300 border border-zinc-700/80">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F1F5F9] text-[#7137D8] border border-[#CBD5E1]/80">
                             {tpl.badge}
                           </span>
                         </div>
-                        <p className="text-xs text-zinc-400 leading-relaxed">
+                        <p className="text-xs text-[#64748B] leading-relaxed">
                           {tpl.description}
                         </p>
                       </div>
@@ -386,7 +386,7 @@ function CreateWidgetTypePage() {
                         type="button"
                         onClick={() => handleSelectCountdownTemplate(tpl)}
                         disabled={isCreatingThis}
-                        className="w-full py-2.5 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs transition flex items-center justify-center gap-2 shadow-md shadow-amber-500/10 active:scale-98 disabled:opacity-50"
+                        className="w-full py-2.5 px-4 rounded-xl bg-[#7137D8] hover:bg-amber-300 text-black font-bold text-xs transition flex items-center justify-center gap-2 shadow-md shadow-amber-500/10 active:scale-98 disabled:opacity-50"
                       >
                         <span>{isCreatingThis ? "Creating Widget…" : "Use Template"}</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -400,12 +400,12 @@ function CreateWidgetTypePage() {
         ) : view === "announcement_templates" ? (
           <div className="space-y-6">
             {/* Header & Back Button */}
-            <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
+            <div className="flex items-center justify-between pb-4 border-b border-[#E2E8F0]">
               <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={() => setView("choose")}
-                  className="p-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white transition"
+                  className="p-2 rounded-lg bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#64748B] hover:text-white transition"
                   title="Back to widget types"
                 >
                   <ArrowLeft className="w-4 h-4" />
@@ -419,11 +419,11 @@ function CreateWidgetTypePage() {
                         ? "Select Popup Modal Template"
                         : "Select Announcement Bar or Popup Template"}
                     </h1>
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-[#7137D8] border border-amber-500/30">
                       {announcementFilter === "all" ? "12 Pro Presets" : "6 Pro Presets"}
                     </span>
                   </div>
-                  <p className="text-sm text-zinc-400 mt-0.5">
+                  <p className="text-sm text-[#64748B] mt-0.5">
                     {announcementFilter === "bar"
                       ? "Choose a ready-made top or bottom notification banner to customize in the visual Studio."
                       : announcementFilter === "popup"
@@ -434,12 +434,12 @@ function CreateWidgetTypePage() {
               </div>
 
               {/* Filter Pills */}
-              <div className="flex items-center gap-1.5 bg-zinc-900 p-1 rounded-xl border border-zinc-800">
+              <div className="flex items-center gap-1.5 bg-[#F8FAFC] p-1 rounded-xl border border-[#E2E8F0]">
                 <button
                   type="button"
                   onClick={() => setAnnouncementFilter("all")}
                   className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
-                    announcementFilter === "all" ? "bg-zinc-800 text-amber-300 shadow" : "text-zinc-400 hover:text-zinc-200"
+                    announcementFilter === "all" ? "bg-[#F1F5F9] text-[#7137D8] shadow" : "text-[#64748B] hover:text-[#111827]"
                   }`}
                 >
                   All (12)
@@ -448,7 +448,7 @@ function CreateWidgetTypePage() {
                   type="button"
                   onClick={() => setAnnouncementFilter("bar")}
                   className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
-                    announcementFilter === "bar" ? "bg-blue-500/20 text-blue-300 border border-blue-500/40 shadow" : "text-zinc-400 hover:text-zinc-200"
+                    announcementFilter === "bar" ? "bg-blue-500/20 text-blue-300 border border-blue-500/40 shadow" : "text-[#64748B] hover:text-[#111827]"
                   }`}
                 >
                   Announcement Bars (6)
@@ -457,7 +457,7 @@ function CreateWidgetTypePage() {
                   type="button"
                   onClick={() => setAnnouncementFilter("popup")}
                   className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
-                    announcementFilter === "popup" ? "bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow" : "text-zinc-400 hover:text-zinc-200"
+                    announcementFilter === "popup" ? "bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow" : "text-[#64748B] hover:text-[#111827]"
                   }`}
                 >
                   Popup Modals (6)
@@ -477,7 +477,7 @@ function CreateWidgetTypePage() {
                 return (
                   <div
                     key={tpl.key}
-                    className="p-5 rounded-2xl border border-zinc-800 bg-zinc-900/60 hover:border-amber-400/80 transition-all flex flex-col justify-between group shadow-lg"
+                    className="p-5 rounded-2xl border border-[#E2E8F0] bg-white hover:border-[#7137D8] transition-all flex flex-col justify-between group shadow-lg"
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
@@ -490,7 +490,7 @@ function CreateWidgetTypePage() {
                         >
                           {tpl.displayMode === "bar" ? "Announcement Bar" : "Popup Modal"}
                         </span>
-                        <span className="text-xs text-zinc-400 font-medium">{tpl.badge}</span>
+                        <span className="text-xs text-[#64748B] font-medium">{tpl.badge}</span>
                       </div>
 
                       {/* Mini Live Preview Box */}
@@ -540,21 +540,21 @@ function CreateWidgetTypePage() {
                       </div>
 
                       <div>
-                        <h4 className="font-bold text-sm text-white group-hover:text-amber-300 transition-colors">
+                        <h4 className="font-bold text-sm text-white group-hover:text-[#7137D8] transition-colors">
                           {tpl.name}
                         </h4>
-                        <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
+                        <p className="text-xs text-[#64748B] mt-1 leading-relaxed">
                           {tpl.description}
                         </p>
                       </div>
                     </div>
 
-                    <div className="pt-4 mt-4 border-t border-zinc-800">
+                    <div className="pt-4 mt-4 border-t border-[#E2E8F0]">
                       <button
                         type="button"
                         onClick={() => handleSelectAnnouncementTemplate(tpl)}
                         disabled={isCreatingThis}
-                        className="w-full py-2.5 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs transition flex items-center justify-center gap-2 shadow-md shadow-amber-500/10 active:scale-98 disabled:opacity-50"
+                        className="w-full py-2.5 px-4 rounded-xl bg-[#7137D8] hover:bg-amber-300 text-black font-bold text-xs transition flex items-center justify-center gap-2 shadow-md shadow-amber-500/10 active:scale-98 disabled:opacity-50"
                       >
                         <span>{isCreatingThis ? "Creating Widget…" : "Use Template"}</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -568,12 +568,12 @@ function CreateWidgetTypePage() {
         ) : view === "faq_templates" ? (
           <div className="space-y-6">
             {/* Header & Back Button */}
-            <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
+            <div className="flex items-center justify-between pb-4 border-b border-[#E2E8F0]">
               <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={() => setView("choose")}
-                  className="p-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white transition"
+                  className="p-2 rounded-lg bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#64748B] hover:text-white transition"
                   title="Back to widget types"
                 >
                   <ArrowLeft className="w-4 h-4" />
@@ -581,11 +581,11 @@ function CreateWidgetTypePage() {
                 <div>
                   <div className="flex items-center gap-2">
                     <h1 className="text-2xl font-bold text-white tracking-tight">Select FAQ Accordion Template</h1>
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-[#7137D8] border border-amber-500/30">
                       8 Pro Presets
                     </span>
                   </div>
-                  <p className="text-sm text-zinc-400 mt-0.5">
+                  <p className="text-sm text-[#64748B] mt-0.5">
                     Choose a ready-made FAQ layout to customize questions, answers, colors, and behavior in the Studio.
                   </p>
                 </div>
@@ -599,10 +599,10 @@ function CreateWidgetTypePage() {
                 return (
                   <div
                     key={tpl.key}
-                    className="rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition-all flex flex-col justify-between overflow-hidden shadow-lg hover:shadow-xl hover:shadow-amber-500/5 group"
+                    className="rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#CBD5E1] transition-all flex flex-col justify-between overflow-hidden shadow-lg hover:shadow-xl hover:shadow-amber-500/5 group"
                   >
                     {/* Visual Preview */}
-                    <div className="p-4 bg-zinc-950/60 border-b border-zinc-800/80">
+                    <div className="p-4 bg-white border-b border-[#E2E8F0]">
                       <FaqTemplateCardPreview tpl={tpl} />
                     </div>
 
@@ -610,14 +610,14 @@ function CreateWidgetTypePage() {
                     <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                       <div>
                         <div className="flex items-center justify-between gap-2 mb-1.5">
-                          <h3 className="font-bold text-white text-base group-hover:text-amber-300 transition-colors">
+                          <h3 className="font-bold text-white text-base group-hover:text-[#7137D8] transition-colors">
                             {tpl.name}
                           </h3>
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-amber-300 border border-zinc-700/80">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F1F5F9] text-[#7137D8] border border-[#CBD5E1]/80">
                             {tpl.badge}
                           </span>
                         </div>
-                        <p className="text-xs text-zinc-400 leading-relaxed">
+                        <p className="text-xs text-[#64748B] leading-relaxed">
                           {tpl.description}
                         </p>
                       </div>
@@ -627,7 +627,7 @@ function CreateWidgetTypePage() {
                         type="button"
                         onClick={() => handleSelectFaqTemplate(tpl)}
                         disabled={isCreatingThis}
-                        className="w-full py-2.5 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs transition flex items-center justify-center gap-2 shadow-md shadow-amber-500/10 active:scale-98 disabled:opacity-50"
+                        className="w-full py-2.5 px-4 rounded-xl bg-[#7137D8] hover:bg-amber-300 text-black font-bold text-xs transition flex items-center justify-center gap-2 shadow-md shadow-amber-500/10 active:scale-98 disabled:opacity-50"
                       >
                         <span>{isCreatingThis ? "Creating Widget…" : "Use Template"}</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -646,13 +646,13 @@ function CreateWidgetTypePage() {
               <button
                 type="button"
                 onClick={() => navigate({ to: "/dashboard/widgets" as any })}
-                className="p-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
+                className="p-2 rounded-lg bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#64748B] hover:text-white transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
               </button>
               <div>
                 <h1 className="text-2xl font-bold text-white tracking-tight">Choose Widget Type</h1>
-                <p className="text-sm text-zinc-400 mt-0.5">Select a widget to configure and embed on your website.</p>
+                <p className="text-sm text-[#64748B] mt-0.5">Select a widget to configure and embed on your website.</p>
               </div>
             </div>
 
@@ -666,8 +666,8 @@ function CreateWidgetTypePage() {
                 }}
                 className={`p-6 rounded-2xl border cursor-pointer transition-all relative flex flex-col justify-between ${
                   selectedType === "faq_accordion"
-                    ? "bg-zinc-900 border-amber-400 ring-2 ring-amber-400/20 shadow-xl shadow-amber-500/5"
-                    : "bg-zinc-900/50 border-zinc-800 hover:border-zinc-700"
+                    ? "bg-[#F8FAFC] border-[#7137D8] ring-2 ring-amber-400/20 shadow-xl shadow-amber-500/5"
+                    : "bg-[#F8FAFC]/50 border-[#E2E8F0] hover:border-[#CBD5E1]"
                 }`}
               >
                 <div className="space-y-4">
@@ -682,19 +682,19 @@ function CreateWidgetTypePage() {
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-bold text-white flex items-center gap-1.5">
+                    <h3 className="text-lg font-bold text-[#111827] flex items-center gap-1.5">
                       FAQ Accordion
-                      <Sparkles className="w-4 h-4 text-amber-400" />
+                      <Sparkles className="w-4 h-4 text-[#7137D8]" />
                     </h3>
-                    <p className="text-sm text-zinc-400 mt-1.5 leading-relaxed">
+                    <p className="text-sm text-[#64748B] mt-1.5 leading-relaxed">
                       Interactive question and answer accordions. Expand vertically, 8 ready-made templates, live keyword search, categories, and Schema.org FAQPage structured data.
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-5 mt-5 border-t border-zinc-800 flex items-center justify-between text-xs text-amber-300 font-semibold">
+                <div className="pt-5 mt-5 border-t border-[#E2E8F0] flex items-center justify-between text-xs text-[#7137D8] font-semibold">
                   <span>8 Pro Templates &amp; Studio</span>
-                  <ArrowRight className="w-4 h-4 text-amber-400" />
+                  <ArrowRight className="w-4 h-4 text-[#7137D8]" />
                 </div>
               </div>
 
@@ -707,8 +707,8 @@ function CreateWidgetTypePage() {
                 }}
                 className={`p-6 rounded-2xl border cursor-pointer transition-all relative flex flex-col justify-between ${
                   selectedType === "announcement_bar"
-                    ? "bg-zinc-900 border-blue-400 ring-2 ring-blue-400/20 shadow-xl shadow-blue-500/5"
-                    : "bg-zinc-900/50 border-zinc-800 hover:border-zinc-700"
+                    ? "bg-[#F8FAFC] border-blue-400 ring-2 ring-blue-400/20 shadow-xl shadow-blue-500/5"
+                    : "bg-[#F8FAFC]/50 border-[#E2E8F0] hover:border-[#CBD5E1]"
                 }`}
               >
                 <div className="space-y-4">
@@ -723,17 +723,17 @@ function CreateWidgetTypePage() {
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-bold text-white flex items-center gap-1.5">
+                    <h3 className="text-lg font-bold text-[#111827] flex items-center gap-1.5">
                       Announcement Bar
                       <Sparkles className="w-4 h-4 text-blue-400" />
                     </h3>
-                    <p className="text-sm text-zinc-400 mt-1.5 leading-relaxed">
+                    <p className="text-sm text-[#64748B] mt-1.5 leading-relaxed">
                       Header and footer notification bars. Announce flash sales, free shipping milestones, coupons, and important store updates without blocking page content.
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-5 mt-5 border-t border-zinc-800 flex items-center justify-between text-xs text-blue-300 font-semibold">
+                <div className="pt-5 mt-5 border-t border-[#E2E8F0] flex items-center justify-between text-xs text-blue-300 font-semibold">
                   <span>6 Bar Presets &amp; Studio</span>
                   <ArrowRight className="w-4 h-4 text-blue-400" />
                 </div>
@@ -748,8 +748,8 @@ function CreateWidgetTypePage() {
                 }}
                 className={`p-6 rounded-2xl border cursor-pointer transition-all relative flex flex-col justify-between ${
                   selectedType === "popup"
-                    ? "bg-zinc-900 border-purple-400 ring-2 ring-purple-400/20 shadow-xl shadow-purple-500/5"
-                    : "bg-zinc-900/50 border-zinc-800 hover:border-zinc-700"
+                    ? "bg-[#F8FAFC] border-purple-400 ring-2 ring-purple-400/20 shadow-xl shadow-purple-500/5"
+                    : "bg-[#F8FAFC]/50 border-[#E2E8F0] hover:border-[#CBD5E1]"
                 }`}
               >
                 <div className="space-y-4">
@@ -764,17 +764,17 @@ function CreateWidgetTypePage() {
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-bold text-white flex items-center gap-1.5">
+                    <h3 className="text-lg font-bold text-[#111827] flex items-center gap-1.5">
                       Popup Modal
                       <Sparkles className="w-4 h-4 text-purple-400" />
                     </h3>
-                    <p className="text-sm text-zinc-400 mt-1.5 leading-relaxed">
+                    <p className="text-sm text-[#64748B] mt-1.5 leading-relaxed">
                       High-converting modal popups and centered lightboxes. Timed page-load delays, return-to-home triggers, exit intent, discount promo cards, and newsletter opt-ins.
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-5 mt-5 border-t border-zinc-800 flex items-center justify-between text-xs text-purple-300 font-semibold">
+                <div className="pt-5 mt-5 border-t border-[#E2E8F0] flex items-center justify-between text-xs text-purple-300 font-semibold">
                   <span>6 Popup Presets &amp; Studio</span>
                   <ArrowRight className="w-4 h-4 text-purple-400" />
                 </div>
@@ -788,8 +788,8 @@ function CreateWidgetTypePage() {
                 }}
                 className={`p-6 rounded-2xl border cursor-pointer transition-all relative flex flex-col justify-between ${
                   selectedType === "countdown"
-                    ? "bg-zinc-900 border-amber-400 ring-2 ring-amber-400/20 shadow-xl shadow-amber-500/5"
-                    : "bg-zinc-900/50 border-zinc-800 hover:border-zinc-700"
+                    ? "bg-[#F8FAFC] border-[#7137D8] ring-2 ring-amber-400/20 shadow-xl shadow-amber-500/5"
+                    : "bg-[#F8FAFC]/50 border-[#E2E8F0] hover:border-[#CBD5E1]"
                 }`}
               >
                 <div className="space-y-4">
@@ -804,19 +804,19 @@ function CreateWidgetTypePage() {
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-bold text-white flex items-center gap-1.5">
+                    <h3 className="text-lg font-bold text-[#111827] flex items-center gap-1.5">
                       Countdown Timer
-                      <Sparkles className="w-4 h-4 text-amber-400" />
+                      <Sparkles className="w-4 h-4 text-[#7137D8]" />
                     </h3>
-                    <p className="text-sm text-zinc-400 mt-1.5 leading-relaxed">
+                    <p className="text-sm text-[#64748B] mt-1.5 leading-relaxed">
                       Drive sales, urgency, and conversions with dynamic countdowns. Supports Date deadlines, Evergreen visitor timers, Number counters, Sticky bars, Flip clocks, and customizable expiry actions.
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-5 mt-5 border-t border-zinc-800 flex items-center justify-between text-xs text-amber-300 font-semibold">
+                <div className="pt-5 mt-5 border-t border-[#E2E8F0] flex items-center justify-between text-xs text-[#7137D8] font-semibold">
                   <span>10 Pro Templates &amp; Live Studio</span>
-                  <ArrowRight className="w-4 h-4 text-amber-400" />
+                  <ArrowRight className="w-4 h-4 text-[#7137D8]" />
                 </div>
               </div>
 
@@ -828,8 +828,8 @@ function CreateWidgetTypePage() {
                 }}
                 className={`p-6 rounded-2xl border cursor-pointer transition-all relative flex flex-col justify-between ${
                   selectedType === "google_reviews"
-                    ? "bg-zinc-900 border-amber-400 ring-2 ring-amber-400/20 shadow-xl shadow-amber-500/5"
-                    : "bg-zinc-900/50 border-zinc-800 hover:border-zinc-700"
+                    ? "bg-[#F8FAFC] border-[#7137D8] ring-2 ring-amber-400/20 shadow-xl shadow-amber-500/5"
+                    : "bg-[#F8FAFC]/50 border-[#E2E8F0] hover:border-[#CBD5E1]"
                 }`}
               >
                 <div className="space-y-4">
@@ -849,19 +849,19 @@ function CreateWidgetTypePage() {
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-bold text-white flex items-center gap-1.5">
+                    <h3 className="text-lg font-bold text-[#111827] flex items-center gap-1.5">
                       Google Reviews
-                      <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                      <Star className="w-4 h-4 text-[#7137D8] fill-amber-400" />
                     </h3>
-                    <p className="text-sm text-zinc-400 mt-1.5 leading-relaxed">
+                    <p className="text-sm text-[#64748B] mt-1.5 leading-relaxed">
                       Display verified real-time testimonials from Google Business. Supports Carousel, Grid, Masonry, and Badge layouts with automatic rating calculations and embed script generation.
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-5 mt-5 border-t border-zinc-800 flex items-center justify-between text-xs text-amber-300 font-semibold">
+                <div className="pt-5 mt-5 border-t border-[#E2E8F0] flex items-center justify-between text-xs text-[#7137D8] font-semibold">
                   <span>Dynamic Studio & Standalone Embed</span>
-                  <CheckCircle2 className={`w-5 h-5 ${selectedType === "google_reviews" ? "text-amber-400" : "text-zinc-600"}`} />
+                  <CheckCircle2 className={`w-5 h-5 ${selectedType === "google_reviews" ? "text-[#7137D8]" : "text-zinc-600"}`} />
                 </div>
               </div>
 
@@ -880,7 +880,7 @@ function CreateWidgetTypePage() {
                     toast.error("Failed to create Accessibility Widget");
                   }
                 }}
-                className="p-6 rounded-2xl border cursor-pointer transition-all relative flex flex-col justify-between bg-zinc-900/50 border-zinc-800 hover:border-[#38bdf8] hover:shadow-xl hover:shadow-sky-500/5 group"
+                className="p-6 rounded-2xl border cursor-pointer transition-all relative flex flex-col justify-between bg-[#F8FAFC]/50 border-[#E2E8F0] hover:border-[#38bdf8] hover:shadow-xl hover:shadow-sky-500/5 group"
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -894,17 +894,17 @@ function CreateWidgetTypePage() {
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-bold text-white flex items-center gap-1.5 group-hover:text-[#38bdf8] transition-colors">
+                    <h3 className="text-lg font-bold text-[#111827] flex items-center gap-1.5 group-hover:text-[#38bdf8] transition-colors">
                       Accessibility Toolbar
                       <Sparkles className="w-4 h-4 text-sky-400" />
                     </h3>
-                    <p className="text-sm text-zinc-400 mt-1.5 leading-relaxed">
+                    <p className="text-sm text-[#64748B] mt-1.5 leading-relaxed">
                       Give visitors convenient visual, reading, and motor controls. Features text resizing, high contrast, dyslexic font, reading guide, enlarged cursor, and site-persistent preferences.
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-5 mt-5 border-t border-zinc-800 flex items-center justify-between text-xs text-sky-300 font-semibold">
+                <div className="pt-5 mt-5 border-t border-[#E2E8F0] flex items-center justify-between text-xs text-sky-300 font-semibold">
                   <span>Interactive Studio &amp; Universal Embed</span>
                   <ArrowRight className="w-4 h-4 text-sky-400 group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -925,7 +925,7 @@ function CreateWidgetTypePage() {
                     toast.error("Failed to create Language Switcher Widget");
                   }
                 }}
-                className="p-6 rounded-2xl border cursor-pointer transition-all relative flex flex-col justify-between bg-zinc-900/50 border-zinc-800 hover:border-[#38bdf8] hover:shadow-xl hover:shadow-sky-500/5 group"
+                className="p-6 rounded-2xl border cursor-pointer transition-all relative flex flex-col justify-between bg-[#F8FAFC]/50 border-[#E2E8F0] hover:border-[#38bdf8] hover:shadow-xl hover:shadow-sky-500/5 group"
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -939,17 +939,17 @@ function CreateWidgetTypePage() {
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-bold text-white flex items-center gap-1.5 group-hover:text-[#38bdf8] transition-colors">
+                    <h3 className="text-lg font-bold text-[#111827] flex items-center gap-1.5 group-hover:text-[#38bdf8] transition-colors">
                       Website Language Switcher
                       <Sparkles className="w-4 h-4 text-[#38bdf8]" />
                     </h3>
-                    <p className="text-sm text-zinc-400 mt-1.5 leading-relaxed">
+                    <p className="text-sm text-[#64748B] mt-1.5 leading-relaxed">
                       Let visitors choose their preferred language and navigate seamlessly to translated pages. Includes 7 layouts, browser language detection, remembered preferences, and zero paid translation API requirement.
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-5 mt-5 border-t border-zinc-800 flex items-center justify-between text-xs text-[#38bdf8] font-semibold">
+                <div className="pt-5 mt-5 border-t border-[#E2E8F0] flex items-center justify-between text-xs text-[#38bdf8] font-semibold">
                   <span>7 Layouts &amp; Interactive Studio</span>
                   <ArrowRight className="w-4 h-4 text-[#38bdf8] group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -958,27 +958,27 @@ function CreateWidgetTypePage() {
               {/* 5. Instagram Feed (Coming Soon) */}
               <div
                 onClick={() => toast.info("Instagram Feed is in development and coming soon!")}
-                className="p-6 rounded-2xl border border-zinc-800 bg-zinc-900/40 opacity-70 hover:opacity-90 cursor-not-allowed flex flex-col justify-between"
+                className="p-6 rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC]/40 opacity-70 hover:opacity-90 cursor-not-allowed flex flex-col justify-between"
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 p-2 shadow-sm flex items-center justify-center text-white">
                       <Instagram className="w-6 h-6" />
                     </div>
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700">
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F1F5F9] text-[#64748B] border border-[#CBD5E1]">
                       Coming Soon
                     </span>
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-bold text-white">Instagram Feed</h3>
-                    <p className="text-sm text-zinc-400 mt-1.5 leading-relaxed">
+                    <h3 className="text-lg font-bold text-[#111827]">Instagram Feed</h3>
+                    <p className="text-sm text-[#64748B] mt-1.5 leading-relaxed">
                       Embed live posts, reels, and stories from your Instagram profile with responsive grid and carousel sliders.
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-5 mt-5 border-t border-zinc-800 text-xs text-zinc-500 font-medium">
+                <div className="pt-5 mt-5 border-t border-[#E2E8F0] text-xs text-[#94A3B8] font-medium">
                   In Development
                 </div>
               </div>
@@ -986,17 +986,17 @@ function CreateWidgetTypePage() {
 
             {/* Google Reviews Details Box */}
             {view === "google_reviews" && (
-              <div className="p-6 rounded-2xl bg-zinc-900 border border-zinc-800 space-y-4 max-w-xl">
+              <div className="p-6 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-4 max-w-xl">
                 <h4 className="font-semibold text-white text-sm">Google Reviews Widget Details</h4>
 
                 <div>
-                  <label className="text-xs text-zinc-400 block mb-1">Widget Name</label>
+                  <label className="text-xs text-[#64748B] block mb-1">Widget Name</label>
                   <input
                     type="text"
                     value={widgetName}
                     onChange={(e) => setWidgetName(e.target.value)}
                     placeholder="e.g. My Business Reviews"
-                    className="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-700 rounded-lg text-white text-sm focus:outline-none focus:border-amber-400"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#CBD5E1] rounded-lg text-white text-sm focus:outline-none focus:border-[#7137D8]"
                   />
                 </div>
 
@@ -1004,7 +1004,7 @@ function CreateWidgetTypePage() {
                   type="button"
                   onClick={handleCreateGoogleReviews}
                   disabled={creatingId !== null}
-                  className="w-full py-3 rounded-lg bg-amber-400 hover:bg-amber-300 text-black font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 active:scale-98 disabled:opacity-50"
+                  className="w-full py-3 rounded-lg bg-[#7137D8] hover:bg-amber-300 text-black font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 active:scale-98 disabled:opacity-50"
                 >
                   <span>{creatingId ? "Creating Widget…" : "Open Widget Studio"}</span>
                   <ArrowRight className="w-4 h-4" />

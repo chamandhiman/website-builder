@@ -287,7 +287,7 @@ export function WhatsAppChatModal({
               <h2 className="text-base sm:text-lg font-bold text-zinc-900 tracking-tight truncate">
                 WhatsApp Chat
               </h2>
-              <p className="text-xs text-zinc-500 truncate">
+              <p className="text-xs text-[#94A3B8] truncate">
                 Connect with visitors in real-time using WhatsApp messaging.
               </p>
             </div>
@@ -296,7 +296,7 @@ export function WhatsAppChatModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-2 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 transition shrink-0"
+            className="rounded-lg p-2 text-[#64748B] hover:bg-zinc-100 hover:text-zinc-700 transition shrink-0"
             aria-label="Close modal"
           >
             <X className="h-5 w-5" />
@@ -315,7 +315,7 @@ export function WhatsAppChatModal({
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition ${
                   activeTab === "design"
                     ? "bg-[#2563EB] text-white shadow-sm"
-                    : "bg-zinc-100 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/80"
+                    : "bg-zinc-100 text-[#94A3B8] hover:text-zinc-900 hover:bg-zinc-200/80"
                 }`}
               >
                 <Paintbrush className="h-4 w-4" />
@@ -328,7 +328,7 @@ export function WhatsAppChatModal({
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition ${
                   activeTab === "preferences"
                     ? "bg-[#2563EB] text-white shadow-sm"
-                    : "bg-zinc-100 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/80"
+                    : "bg-zinc-100 text-[#94A3B8] hover:text-zinc-900 hover:bg-zinc-200/80"
                 }`}
               >
                 <SlidersHorizontal className="h-4 w-4" />
@@ -364,7 +364,7 @@ export function WhatsAppChatModal({
                             </option>
                           ))}
                         </select>
-                        <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 pointer-events-none" />
+                        <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#64748B] pointer-events-none" />
                       </div>
                       <input
                         type="tel"
@@ -378,7 +378,7 @@ export function WhatsAppChatModal({
                         className="h-11 flex-1 bg-transparent px-3 text-xs text-zinc-900 placeholder-zinc-400 focus:outline-none font-mono"
                       />
                     </div>
-                    <p className="text-[11px] text-zinc-500 mt-1">
+                    <p className="text-[11px] text-[#94A3B8] mt-1">
                       Enter your phone number. Visitors clicking the chat button will directly message this WhatsApp number.
                     </p>
                   </div>
@@ -395,7 +395,7 @@ export function WhatsAppChatModal({
                       rows={3}
                       className="w-full p-3 rounded-xl border border-zinc-200 bg-white text-xs font-medium text-zinc-800 placeholder-zinc-400 focus:outline-none focus:border-[#FACC15] focus:ring-2 focus:ring-yellow-400/20 resize-none transition shadow-xs"
                     />
-                    <p className="text-[11px] text-zinc-500 mt-1">
+                    <p className="text-[11px] text-[#94A3B8] mt-1">
                       This message will be pre-typed into the visitor's WhatsApp chat input when they click the button.
                     </p>
                   </div>
@@ -430,7 +430,7 @@ export function WhatsAppChatModal({
                         >
                           {/* Checkmark indicator for selected design */}
                           {isSelected && (
-                            <div className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#FACC15] text-zinc-950 shadow-xs">
+                            <div className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#7137D8] text-zinc-950 shadow-xs">
                               <Check className="h-2.5 w-2.5 stroke-[3]" />
                             </div>
                           )}
@@ -444,7 +444,7 @@ export function WhatsAppChatModal({
                           />
                           <span
                             className={`text-xs font-bold truncate ${
-                              isSelected ? "text-zinc-900" : "text-zinc-600"
+                              isSelected ? "text-zinc-900" : "text-[#94A3B8]"
                             }`}
                           >
                             {s.label}
@@ -487,7 +487,7 @@ export function WhatsAppChatModal({
                           }`}
                         >
                           {isSelected && (
-                            <div className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#FACC15] text-zinc-950 shadow-xs">
+                            <div className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#7137D8] text-zinc-950 shadow-xs">
                               <Check className="h-2.5 w-2.5 stroke-[3]" />
                             </div>
                           )}
@@ -510,7 +510,7 @@ export function WhatsAppChatModal({
 
                           <span
                             className={`text-xs font-bold truncate ${
-                              isSelected ? "text-zinc-900" : "text-zinc-600"
+                              isSelected ? "text-zinc-900" : "text-[#94A3B8]"
                             }`}
                           >
                             {posItem.label}
@@ -597,7 +597,7 @@ export function WhatsAppChatModal({
                               className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition ${
                                 isSelected
                                   ? "border border-[#2563EB] bg-blue-50 text-[#2563EB] shadow-xs"
-                                  : "border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50"
+                                  : "border border-zinc-200 bg-white text-[#94A3B8] hover:bg-zinc-50"
                               }`}
                             >
                               {sizeItem.label}
@@ -670,7 +670,7 @@ export function WhatsAppChatModal({
                   <h3 className="text-sm font-bold text-zinc-900 tracking-tight">
                     Live Preview
                   </h3>
-                  <p className="text-[11px] text-zinc-500">
+                  <p className="text-[11px] text-[#94A3B8]">
                     See how the WhatsApp chat button will look on your website.
                   </p>
                 </div>
@@ -682,8 +682,8 @@ export function WhatsAppChatModal({
                     onClick={() => setPreviewMode("desktop")}
                     className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition ${
                       previewMode === "desktop"
-                        ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                        : "text-zinc-600 hover:text-zinc-900"
+                        ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                        : "text-[#94A3B8] hover:text-zinc-900"
                     }`}
                   >
                     <Monitor className="h-3.5 w-3.5" />
@@ -695,8 +695,8 @@ export function WhatsAppChatModal({
                     onClick={() => setPreviewMode("mobile")}
                     className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition ${
                       previewMode === "mobile"
-                        ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                        : "text-zinc-600 hover:text-zinc-900"
+                        ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                        : "text-[#94A3B8] hover:text-zinc-900"
                     }`}
                   >
                     <Smartphone className="h-3.5 w-3.5" />
@@ -717,7 +717,7 @@ export function WhatsAppChatModal({
                   {/* Website Mockup Navbar */}
                   <div className="flex items-center justify-between px-4 py-2.5 border-b border-zinc-100 bg-white">
                     <div className="flex items-center gap-1.5">
-                      <span className="flex h-5 w-5 items-center justify-center rounded-md bg-[#FACC15] text-zinc-950 shadow-xs">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-md bg-[#7137D8] text-zinc-950 shadow-xs">
                         <GraduationCap className="h-3.5 w-3.5 stroke-[2.5]" />
                       </span>
                       <span className="font-extrabold text-xs tracking-tight text-[#0F172A]">
@@ -726,10 +726,10 @@ export function WhatsAppChatModal({
                     </div>
 
                     {previewMode === "desktop" && (
-                      <div className="hidden sm:flex items-center gap-2.5 text-[10px] font-semibold text-zinc-500">
+                      <div className="hidden sm:flex items-center gap-2.5 text-[10px] font-semibold text-[#94A3B8]">
                         <span>Home</span>
                         <span className="flex items-center gap-0.5">
-                          Tools <ChevronDown className="h-2.5 w-2.5 text-zinc-400" />
+                          Tools <ChevronDown className="h-2.5 w-2.5 text-[#64748B]" />
                         </span>
                         <span>Blog</span>
                         <span>About</span>
@@ -738,7 +738,7 @@ export function WhatsAppChatModal({
 
                     <button
                       type="button"
-                      className="rounded-full bg-[#0284C7] px-3 py-1 text-[10px] font-bold text-white shadow-xs"
+                      className="rounded-full bg-[#0284C7] px-3 py-1 text-[10px] font-bold text-[#111827] shadow-xs"
                     >
                       Contact Us
                     </button>
@@ -752,13 +752,13 @@ export function WhatsAppChatModal({
                         Build Your <br />
                         <span className="text-[#2563EB]">Dream Website</span>
                       </h3>
-                      <p className="text-[10px] font-medium text-zinc-500">
+                      <p className="text-[10px] font-medium text-[#94A3B8]">
                         Simple. Fast. Powerful.
                       </p>
                       <div className="pt-1.5">
                         <button
                           type="button"
-                          className="inline-flex items-center gap-1 rounded-full bg-[#0284C7] px-3.5 py-1 text-[10px] font-bold text-white shadow-xs"
+                          className="inline-flex items-center gap-1 rounded-full bg-[#0284C7] px-3.5 py-1 text-[10px] font-bold text-[#111827] shadow-xs"
                         >
                           <span>Get Started</span>
                           <ArrowRight className="h-2.5 w-2.5" />
@@ -804,7 +804,7 @@ export function WhatsAppChatModal({
                       }`}
                     >
                       {isHiddenInCurrentPreview ? (
-                        <div className="rounded-lg bg-zinc-900/90 text-white px-2.5 py-1 text-[10px] font-semibold shadow-md">
+                        <div className="rounded-lg bg-[#F8FAFC]/90 text-white px-2.5 py-1 text-[10px] font-semibold shadow-md">
                           Hidden on {previewMode === "desktop" ? "Desktop" : "Mobile"}
                         </div>
                       ) : (
@@ -814,7 +814,7 @@ export function WhatsAppChatModal({
                             <div className="rounded-xl bg-white px-3 py-2 text-zinc-900 text-xs font-medium max-w-[170px] shadow-lg border border-zinc-200/90 flex flex-col gap-0.5">
                               <div className="flex items-center justify-between text-[9px] font-bold text-[#059669] uppercase tracking-wider">
                                 <span>{agentName || "Customer Support"}</span>
-                                <span className="text-zinc-400 hover:text-zinc-600 cursor-pointer ml-2">×</span>
+                                <span className="text-[#64748B] hover:text-[#94A3B8] cursor-pointer ml-2">×</span>
                               </div>
                               <div className="text-[11px] leading-snug font-semibold text-zinc-800">
                                 {tooltipText || "Chat with us 👋"}
@@ -834,7 +834,7 @@ export function WhatsAppChatModal({
                               className="w-5 h-5 flex items-center justify-center"
                             />
                             {/* Unread Message Badge */}
-                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#EF4444] text-[9px] font-bold text-white border border-white shadow-xs">
+                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#EF4444] text-[9px] font-bold text-[#111827] border border-white shadow-xs">
                               1
                             </span>
                           </div>
@@ -871,7 +871,7 @@ export function WhatsAppChatModal({
             type="button"
             onClick={handleSave}
             disabled={isSaving}
-            className="flex items-center justify-center min-w-[130px] px-6 py-2.5 rounded-xl bg-[#FACC15] hover:bg-[#FDE047] text-xs font-bold text-zinc-950 shadow-md transition active:scale-95 disabled:opacity-50"
+            className="flex items-center justify-center min-w-[130px] px-6 py-2.5 rounded-xl bg-[#7137D8] hover:bg-[#6025C5] text-xs font-bold text-zinc-950 shadow-md transition active:scale-95 disabled:opacity-50"
           >
             {isSaving ? "Saving..." : "Save Plugin"}
           </button>

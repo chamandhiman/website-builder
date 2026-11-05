@@ -75,11 +75,11 @@ export function FloatingWidgetConfigModal({
 
   return (
     <div className="fixed inset-0 z-[100000] flex items-center justify-center bg-black/75 p-4 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="relative flex max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl border border-[#2B2B2B] bg-[#141416] text-[#F5F5F5] shadow-2xl overflow-hidden">
+      <div className="relative flex max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl border border-[#2B2B2B] bg-[#141416] text-[#111827] shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[#2B2B2B] px-5 py-4 bg-[#18181A]">
           <div className="flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#FACC15]/15 border border-[#FACC15]/30 text-[#FACC15]">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#7137D8]/15 border border-[#FACC15]/30 text-[#FACC15]">
               {formData.type === "whatsapp_chat" && <MessageCircle className="h-5 w-5" />}
               {formData.type === "accessibility" && <Accessibility className="h-5 w-5" />}
               {formData.type === "language_switcher" && <Globe className="h-5 w-5" />}
@@ -89,7 +89,7 @@ export function FloatingWidgetConfigModal({
             </span>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-sm font-bold text-white tracking-wide">
+                <h2 className="text-sm font-bold text-[#111827] tracking-wide">
                   {widget ? "Configure Floating Widget" : "Add Floating Widget"}
                 </h2>
                 <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
@@ -172,7 +172,7 @@ export function FloatingWidgetConfigModal({
                 className={`w-full h-8 rounded-lg border px-3 text-xs font-bold transition flex items-center justify-center gap-1.5 ${
                   formData.enabled
                     ? "border-emerald-500/40 bg-emerald-500/15 text-emerald-400"
-                    : "border-zinc-700 bg-zinc-800 text-zinc-400"
+                    : "border-[#CBD5E1] bg-[#F1F5F9] text-[#64748B]"
                 }`}
               >
                 <span className={`w-2 h-2 rounded-full ${formData.enabled ? "bg-emerald-400" : "bg-zinc-500"}`} />
@@ -187,7 +187,7 @@ export function FloatingWidgetConfigModal({
               {/* WhatsApp Specific */}
               {formData.type === "whatsapp_chat" && (
                 <div className="rounded-xl border border-[#2B2B2B] bg-[#18181A] p-4 space-y-3">
-                  <h3 className="text-xs font-bold text-white flex items-center gap-2">
+                  <h3 className="text-xs font-bold text-[#111827] flex items-center gap-2">
                     <MessageCircle className="h-4 w-4 text-emerald-400" />
                     <span>WhatsApp Details</span>
                   </h3>
@@ -259,7 +259,7 @@ export function FloatingWidgetConfigModal({
               {/* Accessibility Specific */}
               {formData.type === "accessibility" && (
                 <div className="rounded-xl border border-[#2B2B2B] bg-[#18181A] p-4 space-y-3">
-                  <h3 className="text-xs font-bold text-white flex items-center gap-2">
+                  <h3 className="text-xs font-bold text-[#111827] flex items-center gap-2">
                     <Accessibility className="h-4 w-4 text-blue-400" />
                     <span>Accessibility Tools Enabled</span>
                   </h3>
@@ -289,7 +289,7 @@ export function FloatingWidgetConfigModal({
                             }}
                             className="rounded border-[#2B2B2B] text-[#FACC15] focus:ring-0"
                           />
-                          <span className="text-[11px] text-zinc-300">{feature.label}</span>
+                          <span className="text-[11px] text-[#334155]">{feature.label}</span>
                         </label>
                       );
                     })}
@@ -300,8 +300,8 @@ export function FloatingWidgetConfigModal({
               {/* Back to Top Specific */}
               {formData.type === "back_to_top" && (
                 <div className="rounded-xl border border-[#2B2B2B] bg-[#18181A] p-4 space-y-3">
-                  <h3 className="text-xs font-bold text-white flex items-center gap-2">
-                    <ArrowUp className="h-4 w-4 text-amber-400" />
+                  <h3 className="text-xs font-bold text-[#111827] flex items-center gap-2">
+                    <ArrowUp className="h-4 w-4 text-[#7137D8]" />
                     <span>Scroll Trigger & Style</span>
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -345,8 +345,8 @@ export function FloatingWidgetConfigModal({
               {/* Quick Contact Specific */}
               {formData.type === "floating_contact" && (
                 <div className="rounded-xl border border-[#2B2B2B] bg-[#18181A] p-4 space-y-3">
-                  <h3 className="text-xs font-bold text-white flex items-center gap-2">
-                    <Phone className="h-4 w-4 text-amber-400" />
+                  <h3 className="text-xs font-bold text-[#111827] flex items-center gap-2">
+                    <Phone className="h-4 w-4 text-[#7137D8]" />
                     <span>Action & Destination</span>
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -403,8 +403,8 @@ export function FloatingWidgetConfigModal({
               {/* Custom Embed Specific */}
               {formData.type === "custom_embed" && (
                 <div className="rounded-xl border border-[#2B2B2B] bg-[#18181A] p-4 space-y-3">
-                  <h3 className="text-xs font-bold text-white flex items-center gap-2">
-                    <Code2 className="h-4 w-4 text-amber-400" />
+                  <h3 className="text-xs font-bold text-[#111827] flex items-center gap-2">
+                    <Code2 className="h-4 w-4 text-[#7137D8]" />
                     <span>Floating Embed HTML / Script</span>
                   </h3>
                   <textarea
@@ -412,7 +412,7 @@ export function FloatingWidgetConfigModal({
                     value={formData.snippetHtml || ""}
                     onChange={(e) => setFormData({ ...formData, snippetHtml: e.target.value })}
                     placeholder="<iframe ...></iframe> or custom chatbot widget script"
-                    className="w-full font-mono rounded-lg border border-[#2B2B2B] bg-[#111113] p-3 text-xs text-amber-300 outline-none focus:border-[#FACC15]"
+                    className="w-full font-mono rounded-lg border border-[#2B2B2B] bg-[#111113] p-3 text-xs text-[#7137D8] outline-none focus:border-[#FACC15]"
                   />
                 </div>
               )}
@@ -441,7 +441,7 @@ export function FloatingWidgetConfigModal({
                         onClick={() => setFormData({ ...formData, position: corner.id as FloatingPosition })}
                         className={`h-16 rounded-xl border p-3 flex flex-col items-center justify-center gap-1 transition ${
                           isSelected
-                            ? "border-[#FACC15] bg-[#FACC15]/15 text-[#FACC15] font-bold shadow-xs"
+                            ? "border-[#FACC15] bg-[#7137D8]/15 text-[#FACC15] font-bold shadow-xs"
                             : "border-[#2B2B2B] bg-[#18181A] text-[#A1A1AA] hover:border-zinc-600 hover:text-white"
                         }`}
                       >
@@ -493,14 +493,14 @@ export function FloatingWidgetConfigModal({
                     onClick={() => setFormData({ ...formData, showOnDesktop: !formData.showOnDesktop })}
                     className={`flex items-center gap-2 p-3 rounded-xl border transition ${
                       formData.showOnDesktop
-                        ? "border-[#FACC15]/40 bg-[#FACC15]/10 text-white"
-                        : "border-[#2B2B2B] bg-[#18181A] text-zinc-500"
+                        ? "border-[#FACC15]/40 bg-[#7137D8]/10 text-white"
+                        : "border-[#2B2B2B] bg-[#18181A] text-[#94A3B8]"
                     }`}
                   >
                     <Monitor className="h-4 w-4 text-[#FACC15]" />
                     <div className="text-left text-xs">
                       <span className="font-bold block">Desktop</span>
-                      <span className="text-[10px] text-zinc-400">
+                      <span className="text-[10px] text-[#64748B]">
                         {formData.showOnDesktop ? "Visible on computers" : "Hidden"}
                       </span>
                     </div>
@@ -510,14 +510,14 @@ export function FloatingWidgetConfigModal({
                     onClick={() => setFormData({ ...formData, showOnMobile: !formData.showOnMobile })}
                     className={`flex items-center gap-2 p-3 rounded-xl border transition ${
                       formData.showOnMobile
-                        ? "border-[#FACC15]/40 bg-[#FACC15]/10 text-white"
-                        : "border-[#2B2B2B] bg-[#18181A] text-zinc-500"
+                        ? "border-[#FACC15]/40 bg-[#7137D8]/10 text-white"
+                        : "border-[#2B2B2B] bg-[#18181A] text-[#94A3B8]"
                     }`}
                   >
                     <Smartphone className="h-4 w-4 text-[#FACC15]" />
                     <div className="text-left text-xs">
                       <span className="font-bold block">Mobile & Tablets</span>
-                      <span className="text-[10px] text-zinc-400">
+                      <span className="text-[10px] text-[#64748B]">
                         {formData.showOnMobile ? "Visible on phones" : "Hidden"}
                       </span>
                     </div>
@@ -538,8 +538,8 @@ export function FloatingWidgetConfigModal({
                       key={mode.id}
                       className={`flex items-start gap-2.5 p-3 rounded-xl border cursor-pointer transition ${
                         formData.pageTargeting === mode.id
-                          ? "border-[#FACC15]/40 bg-[#FACC15]/10 text-white"
-                          : "border-[#2B2B2B] bg-[#18181A] text-[#A1A1AA] hover:border-zinc-700"
+                          ? "border-[#FACC15]/40 bg-[#7137D8]/10 text-white"
+                          : "border-[#2B2B2B] bg-[#18181A] text-[#A1A1AA] hover:border-[#CBD5E1]"
                       }`}
                     >
                       <input
@@ -552,7 +552,7 @@ export function FloatingWidgetConfigModal({
                       />
                       <div>
                         <span className="text-xs font-bold block text-white">{mode.label}</span>
-                        <span className="text-[10px] text-zinc-400">{mode.desc}</span>
+                        <span className="text-[10px] text-[#64748B]">{mode.desc}</span>
                       </div>
                     </label>
                   ))}
@@ -560,12 +560,12 @@ export function FloatingWidgetConfigModal({
 
                 {formData.pageTargeting === "custom" && (
                   <div className="mt-2 p-3 rounded-xl border border-[#2B2B2B] bg-[#141416] space-y-2">
-                    <span className="text-[11px] font-semibold text-zinc-300 block">Select Target Pages:</span>
+                    <span className="text-[11px] font-semibold text-[#334155] block">Select Target Pages:</span>
                     <div className="space-y-1 max-h-36 overflow-y-auto">
                       {pages.map((p) => {
                         const isChecked = (formData.targetedPages || []).includes(p.id);
                         return (
-                          <label key={p.id} className="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer">
+                          <label key={p.id} className="flex items-center gap-2 text-xs text-[#334155] cursor-pointer">
                             <input
                               type="checkbox"
                               checked={isChecked}
@@ -616,7 +616,7 @@ export function FloatingWidgetConfigModal({
             <button
               type="button"
               onClick={handleSave}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-[#FACC15] px-4 py-1.5 text-xs font-bold text-[#111111] hover:bg-[#FDE047] transition shadow-xs"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[#7137D8] px-4 py-1.5 text-xs font-bold text-[#111111] hover:bg-[#6025C5] transition shadow-xs"
             >
               <Save className="h-3.5 w-3.5" />
               <span>Save & Apply</span>

@@ -77,10 +77,10 @@ function SettingSwitch({
   description?: string;
 }) {
   return (
-    <div className="flex items-center justify-between py-2 border-b border-zinc-800/60 last:border-0">
+    <div className="flex items-center justify-between py-2 border-b border-[#E2E8F0] last:border-0">
       <div className="pr-3">
-        <div className="text-xs font-semibold text-zinc-200">{label}</div>
-        {description && <div className="text-[11px] text-zinc-400 mt-0.5">{description}</div>}
+        <div className="text-xs font-semibold text-[#111827]">{label}</div>
+        {description && <div className="text-[11px] text-[#64748B] mt-0.5">{description}</div>}
       </div>
       <button
         type="button"
@@ -88,11 +88,11 @@ function SettingSwitch({
         aria-checked={checked}
         onClick={() => onChange(!checked)}
         className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-          checked ? "bg-amber-400" : "bg-zinc-700"
+          checked ? "bg-[#7137D8]" : "bg-[#CBD5E1]"
         }`}
       >
         <span
-          className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-black shadow-lg ring-0 transition duration-200 ease-in-out ${
+          className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
             checked ? "translate-x-4" : "translate-x-0 bg-zinc-300"
           }`}
         />
@@ -112,20 +112,20 @@ function ColorField({
   onChange: (val: string) => void;
 }) {
   return (
-    <div className="flex items-center justify-between py-1.5 border-b border-zinc-850/60 last:border-0">
-      <label className="text-xs text-zinc-300 font-medium">{label}</label>
+    <div className="flex items-center justify-between py-1.5 border-b border-[#E2E8F0] last:border-0">
+      <label className="text-xs text-[#374151] font-semibold">{label}</label>
       <div className="flex items-center gap-2">
         <input
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-20 px-2 py-1 text-xs font-mono bg-zinc-950 border border-zinc-800 rounded text-zinc-300 focus:outline-none focus:border-amber-400 text-center"
+          className="w-20 px-2 py-1 text-xs font-mono bg-white border border-[#CBD5E1] rounded-lg text-[#111827] focus:outline-none focus:border-[#7137D8] text-center shadow-2xs"
         />
         <input
           type="color"
           value={value.startsWith("#") ? value.slice(0, 7) : "#ffffff"}
           onChange={(e) => onChange(e.target.value)}
-          className="w-7 h-7 rounded border border-zinc-700 bg-transparent cursor-pointer p-0"
+          className="w-7 h-7 rounded border border-[#CBD5E1] bg-white cursor-pointer p-0 shadow-2xs"
         />
       </div>
     </div>
@@ -301,8 +301,8 @@ function AnnouncementPopupStudioPage() {
 
   if (loading || !widget || !config) {
     return (
-      <div className="min-h-screen bg-[#18181b] flex items-center justify-center text-zinc-400">
-        <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mr-3"></div>
+      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center text-[#64748B]">
+        <div className="w-8 h-8 border-2 border-[#7137D8] border-t-transparent rounded-full animate-spin mr-3"></div>
         Loading Announcement &amp; Popup Studio…
       </div>
     );
@@ -330,7 +330,7 @@ function AnnouncementPopupStudioPage() {
     barObj.position || "fixed_top";
 
   return (
-    <div className="min-h-screen bg-[#141416] text-zinc-100 flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-[#F8FAFC] text-[#111827] flex flex-col overflow-hidden">
       {/* =========================================================================
           TOP TOOLBAR
          ========================================================================= */}
@@ -359,12 +359,12 @@ function AnnouncementPopupStudioPage() {
          ========================================================================= */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left Settings Sidebar */}
-        <div className="w-full md:w-[420px] lg:w-[460px] border-r border-zinc-800 bg-[#18181b] flex flex-col shrink-0 overflow-hidden">
+        <div className="w-full md:w-[420px] lg:w-[460px] border-r border-[#E2E8F0] bg-white flex flex-col shrink-0 overflow-hidden shadow-2xs">
           {/* Widget Mode Switcher (Bar vs Popup) */}
-          <div className="p-3 border-b border-zinc-800 bg-zinc-900/90 flex items-center justify-between gap-3 shrink-0">
+          <div className="p-3 border-b border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between gap-3 shrink-0">
             <div className="flex flex-col">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">Widget Type</span>
-              <span className="text-xs font-bold text-white flex items-center gap-1.5 mt-0.5">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">Widget Type</span>
+              <span className="text-xs font-bold text-[#111827] flex items-center gap-1.5 mt-0.5">
                 {isBar ? (
                   <>
                     <span className="w-2 h-2 rounded-full bg-blue-400"></span>
@@ -378,7 +378,7 @@ function AnnouncementPopupStudioPage() {
                 )}
               </span>
             </div>
-            <div className="flex bg-zinc-950 p-1 rounded-xl border border-zinc-800/80 gap-1">
+            <div className="flex bg-white p-1 rounded-xl border border-[#CBD5E1] gap-1 shadow-2xs">
               <button
                 type="button"
                 onClick={() => {
@@ -387,8 +387,8 @@ function AnnouncementPopupStudioPage() {
                 }}
                 className={`py-1 px-3 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
                   isBar
-                    ? "bg-blue-500/20 text-blue-300 border border-blue-500/40 shadow-sm"
-                    : "text-zinc-400 hover:text-white"
+                    ? "bg-blue-50 text-blue-600 border border-blue-200 shadow-xs"
+                    : "text-[#64748B] hover:text-[#111827]"
                 }`}
                 title="Switch to Announcement Bar"
               >
@@ -403,8 +403,8 @@ function AnnouncementPopupStudioPage() {
                 }}
                 className={`py-1 px-3 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
                   !isBar
-                    ? "bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-sm"
-                    : "text-zinc-400 hover:text-white"
+                    ? "bg-purple-50 text-[#7137D8] border border-purple-200 shadow-xs"
+                    : "text-[#64748B] hover:text-[#111827]"
                 }`}
                 title="Switch to Popup Modal"
               >
@@ -415,7 +415,7 @@ function AnnouncementPopupStudioPage() {
           </div>
 
           {/* Tabs Navigation */}
-          <div className="grid grid-cols-5 border-b border-zinc-800 bg-zinc-900/60 shrink-0 select-none overflow-hidden">
+          <div className="grid grid-cols-5 border-b border-[#E2E8F0] bg-white shrink-0 select-none overflow-hidden shadow-2xs">
             {[
               { id: "templates", label: "Templates", icon: Layers },
               { id: "content", label: "Content", icon: Type },
@@ -432,18 +432,18 @@ function AnnouncementPopupStudioPage() {
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`group flex flex-col items-center justify-center py-2.5 px-1 text-center border-b-2 transition cursor-pointer ${
                     isActive
-                      ? "border-amber-400 bg-amber-500/10 text-amber-300"
-                      : "border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40"
+                      ? "border-[#7137D8] bg-[#F6F0FE] text-[#7137D8]"
+                      : "border-transparent text-[#64748B] hover:text-[#111827] hover:bg-[#F8FAFC]"
                   }`}
                 >
                   <Icon
                     className={`w-5 h-5 transition-transform duration-150 group-hover:scale-110 ${
-                      isActive ? "text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.35)]" : "text-zinc-400 group-hover:text-zinc-200"
+                      isActive ? "text-[#7137D8]" : "text-[#64748B] group-hover:text-[#111827]"
                     }`}
                   />
                   <span
                     className={`text-[10px] font-semibold mt-1 tracking-tight truncate max-w-full leading-none ${
-                      isActive ? "text-amber-300 font-bold" : "text-zinc-400 group-hover:text-zinc-200"
+                      isActive ? "text-[#7137D8] font-bold" : "text-[#64748B] group-hover:text-[#111827]"
                     }`}
                   >
                     {tab.label}
@@ -460,14 +460,14 @@ function AnnouncementPopupStudioPage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+                    <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider">
                       {templateFilter === "bar"
                         ? "Announcement Bar Presets"
                         : templateFilter === "popup"
                         ? "Popup Modal Presets"
                         : "Ready-Made Presets"}
                     </h3>
-                    <p className="text-[11px] text-zinc-400 mt-0.5">
+                    <p className="text-[11px] text-[#64748B] mt-0.5">
                       {templateFilter === "bar"
                         ? "6 pre-styled header & footer notification bars"
                         : templateFilter === "popup"
@@ -475,12 +475,12 @@ function AnnouncementPopupStudioPage() {
                         : "Select one of 12 production templates"}
                     </p>
                   </div>
-                  <div className="flex items-center gap-1 bg-zinc-900 p-1 rounded-lg border border-zinc-800">
+                  <div className="flex items-center gap-1 bg-[#F8FAFC] p-1 rounded-xl border border-[#E2E8F0]">
                     <button
                       type="button"
                       onClick={() => setTemplateFilter("all")}
                       className={`px-2 py-0.5 rounded text-[10px] font-bold transition ${
-                        templateFilter === "all" ? "bg-zinc-800 text-amber-300" : "text-zinc-400 hover:text-zinc-200"
+                        templateFilter === "all" ? "bg-white text-[#7137D8] font-bold shadow-xs border border-[#CBD5E1]" : "text-[#64748B] hover:text-[#111827]"
                       }`}
                     >
                       All (12)
@@ -489,7 +489,7 @@ function AnnouncementPopupStudioPage() {
                       type="button"
                       onClick={() => setTemplateFilter("bar")}
                       className={`px-2 py-0.5 rounded text-[10px] font-bold transition ${
-                        templateFilter === "bar" ? "bg-blue-500/20 text-blue-300 border border-blue-500/40" : "text-zinc-400 hover:text-zinc-200"
+                        templateFilter === "bar" ? "bg-white text-blue-600 font-bold shadow-xs border border-blue-200" : "text-[#64748B] hover:text-[#111827]"
                       }`}
                     >
                       Bars (6)
@@ -498,7 +498,7 @@ function AnnouncementPopupStudioPage() {
                       type="button"
                       onClick={() => setTemplateFilter("popup")}
                       className={`px-2 py-0.5 rounded text-[10px] font-bold transition ${
-                        templateFilter === "popup" ? "bg-purple-500/20 text-purple-300 border border-purple-500/40" : "text-zinc-400 hover:text-zinc-200"
+                        templateFilter === "popup" ? "bg-white text-[#7137D8] font-bold shadow-xs border border-purple-200" : "text-[#64748B] hover:text-[#111827]"
                       }`}
                     >
                       Popups (6)
@@ -516,7 +516,7 @@ function AnnouncementPopupStudioPage() {
                       <div
                         key={tpl.key}
                         onClick={() => handleApplyTemplate(tpl.key)}
-                        className="p-3 rounded-xl border border-zinc-800 bg-zinc-900/60 hover:border-amber-400/80 hover:bg-zinc-900 cursor-pointer transition flex flex-col justify-between group"
+                        className="p-3.5 rounded-2xl border border-[#E2E8F0] bg-white hover:border-[#7137D8] hover:shadow-md cursor-pointer transition flex flex-col justify-between group shadow-2xs"
                       >
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
@@ -529,20 +529,20 @@ function AnnouncementPopupStudioPage() {
                             >
                               {tpl.displayMode === "bar" ? "Bar" : "Popup"}
                             </span>
-                            <span className="text-[10px] text-zinc-500 font-medium">
+                            <span className="text-[10px] text-[#94A3B8] font-medium">
                               {tpl.badge}
                             </span>
                           </div>
 
-                          <div className="font-bold text-xs text-white group-hover:text-amber-300 transition-colors">
+                          <div className="font-bold text-xs text-white group-hover:text-[#7137D8] transition-colors">
                             {tpl.name}
                           </div>
-                          <p className="text-[11px] text-zinc-400 line-clamp-2 leading-relaxed">
+                          <p className="text-[11px] text-[#64748B] line-clamp-2 leading-relaxed">
                             {tpl.description}
                           </p>
                         </div>
 
-                        <div className="mt-3 pt-2 border-t border-zinc-800/80 flex items-center justify-between text-[10px] text-amber-400 font-semibold">
+                        <div className="mt-3 pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-[10px] text-[#7137D8] font-semibold">
                           <span>Apply Preset</span>
                           <span className="opacity-0 group-hover:opacity-100 transition-opacity">
                             →
@@ -559,8 +559,8 @@ function AnnouncementPopupStudioPage() {
             {activeTab === "content" && (
               <div className="space-y-5">
                 {/* Mode Selector */}
-                <div className="p-3 rounded-xl bg-zinc-900 border border-zinc-800 space-y-2">
-                  <label className="text-xs font-bold text-zinc-300 block">Widget Type</label>
+                <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
+                  <label className="text-xs font-bold text-[#334155] block">Widget Type</label>
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       type="button"
@@ -572,8 +572,8 @@ function AnnouncementPopupStudioPage() {
                       }
                       className={`py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
                         config.displayMode === "bar"
-                          ? "bg-amber-400 text-black shadow-sm"
-                          : "bg-zinc-950 text-zinc-400 hover:text-white border border-zinc-800"
+                          ? "bg-[#7137D8] text-black shadow-sm"
+                          : "bg-white text-[#64748B] hover:text-white border border-[#E2E8F0]"
                       }`}
                     >
                       <Megaphone className="w-3.5 h-3.5" />
@@ -589,8 +589,8 @@ function AnnouncementPopupStudioPage() {
                       }
                       className={`py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
                         config.displayMode === "popup"
-                          ? "bg-amber-400 text-black shadow-sm"
-                          : "bg-zinc-950 text-zinc-400 hover:text-white border border-zinc-800"
+                          ? "bg-[#7137D8] text-black shadow-sm"
+                          : "bg-white text-[#64748B] hover:text-white border border-[#E2E8F0]"
                       }`}
                     >
                       <Layers className="w-3.5 h-3.5" />
@@ -600,13 +600,13 @@ function AnnouncementPopupStudioPage() {
                 </div>
 
                 {/* Main Headlines */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
+                  <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider">
                     Text Content
                   </h4>
 
                   <div>
-                    <label className="text-xs text-zinc-400 block mb-1">Headline</label>
+                    <label className="text-xs text-[#64748B] block mb-1">Headline</label>
                     <input
                       type="text"
                       value={config.content?.headline ?? ""}
@@ -617,12 +617,12 @@ function AnnouncementPopupStudioPage() {
                         }))
                       }
                       placeholder="e.g. Special Offer: Save 20% Today"
-                      className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400"
+                      className="w-full px-3 py-2 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8]"
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs text-zinc-400 block mb-1">
+                    <label className="text-xs text-[#64748B] block mb-1">
                       Description / Message
                     </label>
                     <textarea
@@ -635,12 +635,12 @@ function AnnouncementPopupStudioPage() {
                         }))
                       }
                       placeholder="Add an engaging message or offer description…"
-                      className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400 resize-y"
+                      className="w-full px-3 py-2 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8] resize-y"
                     />
                   </div>
 
                   {/* Badge & Icon */}
-                  <div className="pt-2 border-t border-zinc-800 space-y-3">
+                  <div className="pt-2 border-t border-[#E2E8F0] space-y-3">
                     <SettingSwitch
                       checked={Boolean(config.content?.showBadge)}
                       onChange={(val) =>
@@ -656,7 +656,7 @@ function AnnouncementPopupStudioPage() {
                     {config.content?.showBadge && (
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <label className="text-[11px] text-zinc-400 block mb-1">Badge Text</label>
+                          <label className="text-[11px] text-[#64748B] block mb-1">Badge Text</label>
                           <input
                             type="text"
                             value={config.content?.badgeText || ""}
@@ -667,11 +667,11 @@ function AnnouncementPopupStudioPage() {
                               }))
                             }
                             placeholder="e.g. LIMITED TIME"
-                            className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded text-xs text-white focus:outline-none focus:border-amber-400"
+                            className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-xl text-xs text-[#111827] shadow-2xs focus:outline-none focus:border-[#7137D8]"
                           />
                         </div>
                         <div>
-                          <label className="text-[11px] text-zinc-400 block mb-1">Icon / Emoji</label>
+                          <label className="text-[11px] text-[#64748B] block mb-1">Icon / Emoji</label>
                           <input
                             type="text"
                             value={config.content?.icon || ""}
@@ -682,7 +682,7 @@ function AnnouncementPopupStudioPage() {
                               }))
                             }
                             placeholder="🔥, ⚡, 🎁, 🎉"
-                            className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded text-xs text-white focus:outline-none focus:border-amber-400 text-center"
+                            className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-xl text-xs text-[#111827] shadow-2xs focus:outline-none focus:border-[#7137D8] text-center"
                           />
                         </div>
                       </div>
@@ -703,7 +703,7 @@ function AnnouncementPopupStudioPage() {
                 </div>
 
                 {/* Primary CTA Button */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
                   <SettingSwitch
                     checked={Boolean(config.buttons?.primary?.enabled)}
                     onChange={(val) =>
@@ -720,10 +720,10 @@ function AnnouncementPopupStudioPage() {
                   />
 
                   {config.buttons?.primary?.enabled && (
-                    <div className="space-y-3 pt-2 border-t border-zinc-800">
+                    <div className="space-y-3 pt-2 border-t border-[#E2E8F0]">
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <label className="text-[11px] text-zinc-400 block mb-1">
+                          <label className="text-[11px] text-[#64748B] block mb-1">
                             Button Label
                           </label>
                           <input
@@ -739,11 +739,11 @@ function AnnouncementPopupStudioPage() {
                               }))
                             }
                             placeholder="e.g. Claim Discount"
-                            className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded text-xs text-white focus:outline-none focus:border-amber-400"
+                            className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-xl text-xs text-[#111827] shadow-2xs focus:outline-none focus:border-[#7137D8]"
                           />
                         </div>
                         <div>
-                          <label className="text-[11px] text-zinc-400 block mb-1">Target URL</label>
+                          <label className="text-[11px] text-[#64748B] block mb-1">Target URL</label>
                           <input
                             type="text"
                             value={config.buttons?.primary?.url ?? ""}
@@ -757,7 +757,7 @@ function AnnouncementPopupStudioPage() {
                               }))
                             }
                             placeholder="https://..."
-                            className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded text-xs text-white focus:outline-none focus:border-amber-400"
+                            className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-xl text-xs text-[#111827] shadow-2xs focus:outline-none focus:border-[#7137D8]"
                           />
                         </div>
                       </div>
@@ -780,7 +780,7 @@ function AnnouncementPopupStudioPage() {
                 </div>
 
                 {/* Secondary Button */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
                   <SettingSwitch
                     checked={Boolean(config.buttons?.secondary?.enabled)}
                     onChange={(val) =>
@@ -797,9 +797,9 @@ function AnnouncementPopupStudioPage() {
                   />
 
                   {config.buttons?.secondary?.enabled && (
-                    <div className="grid grid-cols-2 gap-2 pt-2 border-t border-zinc-800">
+                    <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#E2E8F0]">
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">Button Text</label>
+                        <label className="text-[11px] text-[#64748B] block mb-1">Button Text</label>
                         <input
                           type="text"
                           value={config.buttons?.secondary?.text ?? ""}
@@ -813,11 +813,11 @@ function AnnouncementPopupStudioPage() {
                             }))
                           }
                           placeholder="No thanks"
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-xl text-xs text-[#111827] shadow-2xs focus:outline-none focus:border-[#7137D8]"
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">Target URL</label>
+                        <label className="text-[11px] text-[#64748B] block mb-1">Target URL</label>
                         <input
                           type="text"
                           value={config.buttons?.secondary?.url ?? ""}
@@ -831,7 +831,7 @@ function AnnouncementPopupStudioPage() {
                             }))
                           }
                           placeholder="#"
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-xl text-xs text-[#111827] shadow-2xs focus:outline-none focus:border-[#7137D8]"
                         />
                       </div>
                     </div>
@@ -839,7 +839,7 @@ function AnnouncementPopupStudioPage() {
                 </div>
 
                 {/* Coupon Code Feature */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
                   <SettingSwitch
                     checked={Boolean(config.coupon?.enabled)}
                     onChange={(val) =>
@@ -853,9 +853,9 @@ function AnnouncementPopupStudioPage() {
                   />
 
                   {config.coupon?.enabled && (
-                    <div className="grid grid-cols-2 gap-2 pt-2 border-t border-zinc-800">
+                    <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#E2E8F0]">
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">Promo Code</label>
+                        <label className="text-[11px] text-[#64748B] block mb-1">Promo Code</label>
                         <input
                           type="text"
                           value={config.coupon.code || ""}
@@ -866,11 +866,11 @@ function AnnouncementPopupStudioPage() {
                             }))
                           }
                           placeholder="SAVE20"
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded text-xs text-white focus:outline-none focus:border-amber-400 uppercase font-mono"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-xl text-xs text-[#111827] shadow-2xs focus:outline-none focus:border-[#7137D8] uppercase font-mono"
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">Copy Button</label>
+                        <label className="text-[11px] text-[#64748B] block mb-1">Copy Button</label>
                         <input
                           type="text"
                           value={config.coupon.buttonText || ""}
@@ -881,7 +881,7 @@ function AnnouncementPopupStudioPage() {
                             }))
                           }
                           placeholder="Copy Code"
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-xl text-xs text-[#111827] shadow-2xs focus:outline-none focus:border-[#7137D8]"
                         />
                       </div>
                     </div>
@@ -889,7 +889,7 @@ function AnnouncementPopupStudioPage() {
                 </div>
 
                 {/* Synchronized Countdown Integration */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
                   <SettingSwitch
                     checked={Boolean(config.countdown?.enabled)}
                     onChange={(val) =>
@@ -910,9 +910,9 @@ function AnnouncementPopupStudioPage() {
                   />
 
                   {config.countdown?.enabled && (
-                    <div className="space-y-3 pt-2 border-t border-zinc-800">
+                    <div className="space-y-3 pt-2 border-t border-[#E2E8F0]">
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">
+                        <label className="text-[11px] text-[#64748B] block mb-1">
                           Target End Date &amp; Time
                         </label>
                         <input
@@ -939,7 +939,7 @@ function AnnouncementPopupStudioPage() {
                               }));
                             }
                           }}
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-xl text-xs text-[#111827] shadow-2xs focus:outline-none focus:border-[#7137D8]"
                         />
                       </div>
 
@@ -987,7 +987,7 @@ function AnnouncementPopupStudioPage() {
                       </div>
 
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">
+                        <label className="text-[11px] text-[#64748B] block mb-1">
                           Expired Message
                         </label>
                         <input
@@ -1002,7 +1002,7 @@ function AnnouncementPopupStudioPage() {
                               },
                             }))
                           }
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-xl text-xs text-[#111827] shadow-2xs focus:outline-none focus:border-[#7137D8]"
                         />
                       </div>
                     </div>
@@ -1011,7 +1011,7 @@ function AnnouncementPopupStudioPage() {
 
                 {/* Modal Image (If in Popup Mode) */}
                 {config.displayMode === "popup" && (
-                  <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
+                  <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
                     <SettingSwitch
                       checked={Boolean(config.image?.enabled)}
                       onChange={(val) =>
@@ -1025,9 +1025,9 @@ function AnnouncementPopupStudioPage() {
                     />
 
                     {config.image?.enabled && (
-                      <div className="space-y-3 pt-2 border-t border-zinc-800">
+                      <div className="space-y-3 pt-2 border-t border-[#E2E8F0]">
                         <div>
-                          <label className="text-[11px] text-zinc-400 block mb-1">Image URL</label>
+                          <label className="text-[11px] text-[#64748B] block mb-1">Image URL</label>
                           <input
                             type="text"
                             value={config.image.url || ""}
@@ -1038,12 +1038,12 @@ function AnnouncementPopupStudioPage() {
                               }))
                             }
                             placeholder="https://images.unsplash.com/..."
-                            className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded text-xs text-white focus:outline-none focus:border-amber-400 font-mono"
+                            className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-xl text-xs text-[#111827] shadow-2xs focus:outline-none focus:border-[#7137D8] font-mono"
                           />
                         </div>
 
                         <div>
-                          <label className="text-[11px] text-zinc-400 block mb-1">
+                          <label className="text-[11px] text-[#64748B] block mb-1">
                             Image Position
                           </label>
                           <div className="grid grid-cols-3 gap-1.5">
@@ -1059,8 +1059,8 @@ function AnnouncementPopupStudioPage() {
                                 }
                                 className={`py-1.5 px-2 rounded text-xs capitalize font-semibold transition ${
                                   config.image?.position === pos
-                                    ? "bg-amber-400 text-black font-bold"
-                                    : "bg-zinc-950 text-zinc-400 border border-zinc-800"
+                                    ? "bg-[#7137D8] text-black font-bold"
+                                    : "bg-white text-[#64748B] border border-[#E2E8F0]"
                                 }`}
                               >
                                 {pos}
@@ -1079,8 +1079,8 @@ function AnnouncementPopupStudioPage() {
             {activeTab === "design" && (
               <div className="space-y-5">
                 {/* Color Palette */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-2">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-2">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
+                  <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider mb-2">
                     Color Palette
                   </h4>
 
@@ -1182,13 +1182,13 @@ function AnnouncementPopupStudioPage() {
                 </div>
 
                 {/* Typography */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
+                  <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider">
                     Typography
                   </h4>
 
                   <div>
-                    <label className="text-xs text-zinc-400 block mb-1">Font Family</label>
+                    <label className="text-xs text-[#64748B] block mb-1">Font Family</label>
                     <select
                       value={config.typography.fontFamily}
                       onChange={(e) =>
@@ -1197,7 +1197,7 @@ function AnnouncementPopupStudioPage() {
                           typography: { ...p.typography, fontFamily: e.target.value },
                         }))
                       }
-                      className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer"
+                      className="w-full px-3 py-2 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8] cursor-pointer"
                     >
                       <option value="Inter, system-ui, sans-serif">Inter (Modern Clean)</option>
                       <option value="'Plus Jakarta Sans', sans-serif">Plus Jakarta Sans</option>
@@ -1211,7 +1211,7 @@ function AnnouncementPopupStudioPage() {
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs text-zinc-400 block mb-1">
+                      <label className="text-xs text-[#64748B] block mb-1">
                         Heading Size: {config.typography.headingSize}px
                       </label>
                       <input
@@ -1232,7 +1232,7 @@ function AnnouncementPopupStudioPage() {
                       />
                     </div>
                     <div>
-                      <label className="text-xs text-zinc-400 block mb-1">
+                      <label className="text-xs text-[#64748B] block mb-1">
                         Body Size: {config.typography.bodySize}px
                       </label>
                       <input
@@ -1253,8 +1253,8 @@ function AnnouncementPopupStudioPage() {
 
                   {/* Heading Style Formatting */}
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-zinc-400">Heading Style</span>
-                    <div className="flex gap-1 bg-zinc-950 p-1 rounded-lg border border-zinc-800">
+                    <span className="text-xs text-[#64748B]">Heading Style</span>
+                    <div className="flex gap-1 bg-white p-1 rounded-lg border border-[#E2E8F0]">
                       <button
                         type="button"
                         onClick={() =>
@@ -1268,8 +1268,8 @@ function AnnouncementPopupStudioPage() {
                         }
                         className={`p-1.5 rounded transition ${
                           config.typography.headingWeight === "700" || config.typography.headingWeight === "800"
-                            ? "bg-zinc-800 text-amber-400 font-bold"
-                            : "text-zinc-500 hover:text-white"
+                            ? "bg-[#F1F5F9] text-[#7137D8] font-bold"
+                            : "text-[#94A3B8] hover:text-white"
                         }`}
                         title="Bold Headline"
                       >
@@ -1288,8 +1288,8 @@ function AnnouncementPopupStudioPage() {
                         }
                         className={`p-1.5 rounded transition ${
                           (config.typography as any).headingItalic
-                            ? "bg-zinc-800 text-amber-400 font-bold"
-                            : "text-zinc-500 hover:text-white"
+                            ? "bg-[#F1F5F9] text-[#7137D8] font-bold"
+                            : "text-[#94A3B8] hover:text-white"
                         }`}
                         title="Italic Headline"
                       >
@@ -1308,8 +1308,8 @@ function AnnouncementPopupStudioPage() {
                         }
                         className={`p-1.5 rounded transition ${
                           (config.typography as any).headingUnderline
-                            ? "bg-zinc-800 text-amber-400 font-bold"
-                            : "text-zinc-500 hover:text-white"
+                            ? "bg-[#F1F5F9] text-[#7137D8] font-bold"
+                            : "text-[#94A3B8] hover:text-white"
                         }`}
                         title="Underline Headline"
                       >
@@ -1320,8 +1320,8 @@ function AnnouncementPopupStudioPage() {
 
                   {/* Body Style Formatting */}
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-zinc-400">Body Style</span>
-                    <div className="flex gap-1 bg-zinc-950 p-1 rounded-lg border border-zinc-800">
+                    <span className="text-xs text-[#64748B]">Body Style</span>
+                    <div className="flex gap-1 bg-white p-1 rounded-lg border border-[#E2E8F0]">
                       <button
                         type="button"
                         onClick={() =>
@@ -1335,8 +1335,8 @@ function AnnouncementPopupStudioPage() {
                         }
                         className={`p-1.5 rounded transition ${
                           (config.typography as any).bodyBold
-                            ? "bg-zinc-800 text-amber-400 font-bold"
-                            : "text-zinc-500 hover:text-white"
+                            ? "bg-[#F1F5F9] text-[#7137D8] font-bold"
+                            : "text-[#94A3B8] hover:text-white"
                         }`}
                         title="Bold Body"
                       >
@@ -1355,8 +1355,8 @@ function AnnouncementPopupStudioPage() {
                         }
                         className={`p-1.5 rounded transition ${
                           (config.typography as any).bodyItalic
-                            ? "bg-zinc-800 text-amber-400 font-bold"
-                            : "text-zinc-500 hover:text-white"
+                            ? "bg-[#F1F5F9] text-[#7137D8] font-bold"
+                            : "text-[#94A3B8] hover:text-white"
                         }`}
                         title="Italic Body"
                       >
@@ -1375,8 +1375,8 @@ function AnnouncementPopupStudioPage() {
                         }
                         className={`p-1.5 rounded transition ${
                           (config.typography as any).bodyUnderline
-                            ? "bg-zinc-800 text-amber-400 font-bold"
-                            : "text-zinc-500 hover:text-white"
+                            ? "bg-[#F1F5F9] text-[#7137D8] font-bold"
+                            : "text-[#94A3B8] hover:text-white"
                         }`}
                         title="Underline Body"
                       >
@@ -1387,8 +1387,8 @@ function AnnouncementPopupStudioPage() {
 
                   {/* Alignment */}
                   <div className="flex items-center justify-between">
-                    <label className="text-xs text-zinc-400 block">Text Alignment</label>
-                    <div className="flex gap-1 bg-zinc-950 p-1 rounded-lg border border-zinc-800">
+                    <label className="text-xs text-[#64748B] block">Text Alignment</label>
+                    <div className="flex gap-1 bg-white p-1 rounded-lg border border-[#E2E8F0]">
                       {(["left", "center", "right"] as const).map((align) => (
                         <button
                           key={align}
@@ -1401,8 +1401,8 @@ function AnnouncementPopupStudioPage() {
                           }
                           className={`p-1.5 rounded transition ${
                             config.typography.textAlign === align
-                              ? "bg-zinc-800 text-amber-400 font-bold"
-                              : "text-zinc-500 hover:text-white"
+                              ? "bg-[#F1F5F9] text-[#7137D8] font-bold"
+                              : "text-[#94A3B8] hover:text-white"
                           }`}
                           title={`Align ${align}`}
                         >
@@ -1414,13 +1414,13 @@ function AnnouncementPopupStudioPage() {
                 </div>
 
                 {/* Sizing, Radius & Animation */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
+                  <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider">
                     Dimensions &amp; Animation
                   </h4>
 
                   <div>
-                    <label className="text-xs text-zinc-400 block mb-1">
+                    <label className="text-xs text-[#64748B] block mb-1">
                       Border Radius: {config.layout.borderRadius}px
                     </label>
                     <input
@@ -1439,7 +1439,7 @@ function AnnouncementPopupStudioPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs text-zinc-400 block mb-1">
+                    <label className="text-xs text-[#64748B] block mb-1">
                       Padding Y: {config.layout.paddingY}px
                     </label>
                     <input
@@ -1458,7 +1458,7 @@ function AnnouncementPopupStudioPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs text-zinc-400 block mb-1">Entrance Animation</label>
+                    <label className="text-xs text-[#64748B] block mb-1">Entrance Animation</label>
                     <div className="grid grid-cols-4 gap-1.5">
                       {(["fade", "slide_down", "slide_up", "scale"] as const).map((anim) => (
                         <button
@@ -1472,8 +1472,8 @@ function AnnouncementPopupStudioPage() {
                           }
                           className={`py-1.5 px-2 rounded text-[11px] capitalize font-semibold transition ${
                             config.animation.type === anim
-                              ? "bg-amber-400 text-black font-bold"
-                              : "bg-zinc-950 text-zinc-400 border border-zinc-800"
+                              ? "bg-[#7137D8] text-black font-bold"
+                              : "bg-white text-[#64748B] border border-[#E2E8F0]"
                           }`}
                         >
                           {anim.replace("_", " ")}
@@ -1490,8 +1490,8 @@ function AnnouncementPopupStudioPage() {
               <div className="space-y-5">
                 {isBar ? (
                   <div className="space-y-4">
-                    <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
-                      <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                    <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
+                      <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider">
                         Display Position
                       </h4>
 
@@ -1522,8 +1522,8 @@ function AnnouncementPopupStudioPage() {
                             }
                             className={`p-2.5 rounded-lg text-xs font-semibold text-left transition border ${
                               currentPos === pos.id
-                                ? "bg-amber-400/10 border-amber-400 text-amber-300 font-bold"
-                                : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white"
+                                ? "bg-[#7137D8]/10 border-[#7137D8] text-[#7137D8] font-bold"
+                                : "bg-white border-[#E2E8F0] text-[#64748B] hover:text-white"
                             }`}
                           >
                             {pos.label}
@@ -1531,7 +1531,7 @@ function AnnouncementPopupStudioPage() {
                         ))}
                       </div>
 
-                      <div className="pt-2 border-t border-zinc-800 space-y-3">
+                      <div className="pt-2 border-t border-[#E2E8F0] space-y-3">
                         <SettingSwitch
                           checked={Boolean(barObj.sticky)}
                           onChange={(val) =>
@@ -1570,7 +1570,7 @@ function AnnouncementPopupStudioPage() {
 
                         {barObj.contained && (
                           <div>
-                            <label className="text-[11px] text-zinc-400 block mb-1">
+                            <label className="text-[11px] text-[#64748B] block mb-1">
                               Max Width: {barObj.maxWidth}px
                             </label>
                             <input
@@ -1620,13 +1620,13 @@ function AnnouncementPopupStudioPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
-                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                  <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
+                    <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider">
                       Modal Dialog Sizing
                     </h4>
 
                     <div>
-                      <label className="text-xs text-zinc-400 block mb-1">
+                      <label className="text-xs text-[#64748B] block mb-1">
                         Popup Width: {config.layout.popupWidth}px
                       </label>
                       <input
@@ -1653,13 +1653,13 @@ function AnnouncementPopupStudioPage() {
             {activeTab === "rules" && (
               <div className="space-y-5">
                 {/* 1. Activation Trigger & Time Delay */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-4">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-4">
                   <div>
-                    <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                      <Timer className="w-3.5 h-3.5 text-amber-400" />
+                    <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider flex items-center gap-1.5">
+                      <Timer className="w-3.5 h-3.5 text-[#7137D8]" />
                       Activation Trigger
                     </h4>
-                    <p className="text-[11px] text-zinc-400 mt-0.5">
+                    <p className="text-[11px] text-[#64748B] mt-0.5">
                       Choose when the {isBar ? "announcement bar" : "popup modal"} appears to visitors.
                     </p>
                   </div>
@@ -1684,15 +1684,15 @@ function AnnouncementPopupStudioPage() {
                         }
                         className={`p-3 rounded-lg border cursor-pointer transition flex items-start gap-3 ${
                           config.displayRules.trigger === trig.id
-                            ? "bg-amber-400/10 border-amber-400 text-white"
-                            : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-zinc-200"
+                            ? "bg-[#7137D8]/10 border-[#7137D8] text-white"
+                            : "bg-white border-[#E2E8F0] text-[#64748B] hover:text-[#111827]"
                         }`}
                       >
                         <div
                           className={`w-4 h-4 rounded-full border mt-0.5 flex items-center justify-center shrink-0 ${
                             config.displayRules.trigger === trig.id
-                              ? "border-amber-400 bg-amber-400"
-                              : "border-zinc-700"
+                              ? "border-[#7137D8] bg-[#7137D8]"
+                              : "border-[#CBD5E1]"
                           }`}
                         >
                           {config.displayRules.trigger === trig.id && (
@@ -1700,8 +1700,8 @@ function AnnouncementPopupStudioPage() {
                           )}
                         </div>
                         <div>
-                          <div className="text-xs font-bold text-zinc-100">{trig.label}</div>
-                          <div className="text-[11px] text-zinc-400">{trig.desc}</div>
+                          <div className="text-xs font-bold text-[#111827]">{trig.label}</div>
+                          <div className="text-[11px] text-[#64748B]">{trig.desc}</div>
                         </div>
                       </div>
                     ))}
@@ -1709,19 +1709,19 @@ function AnnouncementPopupStudioPage() {
 
                   {/* Convenient Time Delay Controls */}
                   {config.displayRules.trigger === "delay" && (
-                    <div className="pt-3 border-t border-zinc-800 space-y-3">
+                    <div className="pt-3 border-t border-[#E2E8F0] space-y-3">
                       <div className="flex items-center justify-between">
-                        <label className="text-xs font-semibold text-zinc-200">
+                        <label className="text-xs font-semibold text-[#111827]">
                           Delay time before showing
                         </label>
-                        <span className="text-xs font-mono font-bold text-amber-400 px-2 py-0.5 rounded bg-amber-400/10 border border-amber-400/30">
+                        <span className="text-xs font-mono font-bold text-[#7137D8] px-2 py-0.5 rounded bg-[#7137D8]/10 border border-[#7137D8]/30">
                           {config.displayRules.triggerDelaySeconds ?? 3}s
                         </span>
                       </div>
 
                       {/* Quick preset buttons for convenience */}
                       <div>
-                        <div className="text-[10px] uppercase font-bold text-zinc-400 mb-1.5">Quick Presets:</div>
+                        <div className="text-[10px] uppercase font-bold text-[#64748B] mb-1.5">Quick Presets:</div>
                         <div className="flex flex-wrap gap-1.5">
                           {[
                             { sec: 0, label: "0s (Instant)" },
@@ -1746,8 +1746,8 @@ function AnnouncementPopupStudioPage() {
                               }
                               className={`py-1 px-2.5 rounded-lg text-xs font-semibold transition border ${
                                 config.displayRules.triggerDelaySeconds === pill.sec
-                                  ? "bg-amber-400 text-black border-amber-400 font-bold shadow"
-                                  : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700"
+                                  ? "bg-[#7137D8] text-black border-[#7137D8] font-bold shadow"
+                                  : "bg-white border-[#E2E8F0] text-[#64748B] hover:text-white hover:border-[#CBD5E1]"
                               }`}
                             >
                               {pill.label}
@@ -1758,7 +1758,7 @@ function AnnouncementPopupStudioPage() {
 
                       {/* Precision Slider */}
                       <div className="space-y-1">
-                        <div className="flex items-center justify-between text-[11px] text-zinc-400">
+                        <div className="flex items-center justify-between text-[11px] text-[#64748B]">
                           <span>0s (Instant)</span>
                           <span>Custom: {config.displayRules.triggerDelaySeconds ?? 3} seconds</span>
                           <span>60s</span>
@@ -1785,12 +1785,12 @@ function AnnouncementPopupStudioPage() {
                   )}
 
                   {config.displayRules.trigger === "scroll" && (
-                    <div className="pt-3 border-t border-zinc-800 space-y-3">
+                    <div className="pt-3 border-t border-[#E2E8F0] space-y-3">
                       <div className="flex items-center justify-between">
-                        <label className="text-xs font-semibold text-zinc-200">
+                        <label className="text-xs font-semibold text-[#111827]">
                           Scroll Depth Threshold
                         </label>
-                        <span className="text-xs font-mono font-bold text-amber-400 px-2 py-0.5 rounded bg-amber-400/10 border border-amber-400/30">
+                        <span className="text-xs font-mono font-bold text-[#7137D8] px-2 py-0.5 rounded bg-[#7137D8]/10 border border-[#7137D8]/30">
                           {config.displayRules.triggerScrollPercent}%
                         </span>
                       </div>
@@ -1810,8 +1810,8 @@ function AnnouncementPopupStudioPage() {
                             }
                             className={`flex-1 py-1 px-2 rounded-lg text-xs font-semibold border transition ${
                               config.displayRules.triggerScrollPercent === pct
-                                ? "bg-amber-400 text-black border-amber-400 font-bold"
-                                : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white"
+                                ? "bg-[#7137D8] text-black border-[#7137D8] font-bold"
+                                : "bg-white border-[#E2E8F0] text-[#64748B] hover:text-white"
                             }`}
                           >
                             {pct}%
@@ -1839,19 +1839,19 @@ function AnnouncementPopupStudioPage() {
                 </div>
 
                 {/* 2. Page Targeting & Return to Home Page Behavior */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
                   <div>
-                    <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                    <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider flex items-center gap-1.5">
                       <Globe className="w-3.5 h-3.5 text-cyan-400" />
                       Page Targeting &amp; Return Behavior
                     </h4>
-                    <p className="text-[11px] text-zinc-400 mt-0.5">
+                    <p className="text-[11px] text-[#64748B] mt-0.5">
                       Control which pages display this widget and how returning visitors are greeted.
                     </p>
                   </div>
 
                   <div>
-                    <label className="text-xs text-zinc-400 block mb-1">Target Pages</label>
+                    <label className="text-xs text-[#64748B] block mb-1">Target Pages</label>
                     <div className="grid grid-cols-3 gap-1.5">
                       {[
                         { id: "all", label: "All Pages" },
@@ -1872,8 +1872,8 @@ function AnnouncementPopupStudioPage() {
                           }
                           className={`py-1.5 px-2 rounded-lg text-xs font-semibold border transition text-center cursor-pointer ${
                             (config.displayRules.pageTargeting || "all") === t.id
-                              ? "bg-amber-400 text-black border-amber-400 font-bold shadow"
-                              : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white"
+                              ? "bg-[#7137D8] text-black border-[#7137D8] font-bold shadow"
+                              : "bg-white border-[#E2E8F0] text-[#64748B] hover:text-white"
                           }`}
                         >
                           {t.label}
@@ -1884,7 +1884,7 @@ function AnnouncementPopupStudioPage() {
 
                   {config.displayRules.pageTargeting === "custom" && (
                     <div>
-                      <label className="text-[11px] text-zinc-400 block mb-1">
+                      <label className="text-[11px] text-[#64748B] block mb-1">
                         URL Paths (comma separated, use * for wildcards)
                       </label>
                       <input
@@ -1900,13 +1900,13 @@ function AnnouncementPopupStudioPage() {
                           }))
                         }
                         placeholder="/pricing, /products/*, /cart"
-                        className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded text-xs text-white focus:outline-none focus:border-amber-400 font-mono"
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-xl text-xs text-[#111827] shadow-2xs focus:outline-none focus:border-[#7137D8] font-mono"
                       />
                     </div>
                   )}
 
                   {/* Return to Home Page Switch */}
-                  <div className="pt-2 border-t border-zinc-800">
+                  <div className="pt-2 border-t border-[#E2E8F0]">
                     <SettingSwitch
                       checked={Boolean(config.displayRules.reappearOnHomeReturn)}
                       onChange={(val) =>
@@ -1922,19 +1922,19 @@ function AnnouncementPopupStudioPage() {
                 </div>
 
                 {/* 3. Frequency & Recurrence Cadence */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
                   <div>
-                    <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                    <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider flex items-center gap-1.5">
                       <RefreshCw className="w-3.5 h-3.5 text-emerald-400" />
                       Display Frequency
                     </h4>
-                    <p className="text-[11px] text-zinc-400 mt-0.5">
+                    <p className="text-[11px] text-[#64748B] mt-0.5">
                       How frequently returning visitors see this {isBar ? "bar" : "popup"}.
                     </p>
                   </div>
 
                   <div>
-                    <label className="text-xs text-zinc-400 block mb-1">Frequency Rule</label>
+                    <label className="text-xs text-[#64748B] block mb-1">Frequency Rule</label>
                     <select
                       value={config.displayRules.frequency}
                       onChange={(e) =>
@@ -1946,7 +1946,7 @@ function AnnouncementPopupStudioPage() {
                           },
                         }))
                       }
-                      className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer"
+                      className="w-full px-3 py-2 bg-white border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:border-[#7137D8] cursor-pointer"
                     >
                       <option value="always">Every page load (Always show)</option>
                       <option value="home_return">Always on Home Page / Return to Home</option>
@@ -1972,7 +1972,7 @@ function AnnouncementPopupStudioPage() {
 
                   {config.displayRules.dismissPersistence && (
                     <div>
-                      <label className="text-[11px] text-zinc-400 block mb-1">Dismissal Memory Scope</label>
+                      <label className="text-[11px] text-[#64748B] block mb-1">Dismissal Memory Scope</label>
                       <div className="grid grid-cols-2 gap-1.5">
                         {[
                           { id: "session", label: "For current session" },
@@ -1992,8 +1992,8 @@ function AnnouncementPopupStudioPage() {
                             }
                             className={`py-1.5 px-2 rounded-lg text-xs font-semibold border transition text-center cursor-pointer ${
                               (config.displayRules.dismissScope || "permanent") === scope.id
-                                ? "bg-amber-400 text-black border-amber-400 font-bold shadow"
-                                : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white"
+                                ? "bg-[#7137D8] text-black border-[#7137D8] font-bold shadow"
+                                : "bg-white border-[#E2E8F0] text-[#64748B] hover:text-white"
                             }`}
                           >
                             {scope.label}
@@ -2005,7 +2005,7 @@ function AnnouncementPopupStudioPage() {
                 </div>
 
                 {/* 4. Date & Time Scheduling */}
-                <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-3">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
                   <SettingSwitch
                     checked={Boolean(config.displayRules.scheduleEnabled)}
                     onChange={(val) =>
@@ -2019,9 +2019,9 @@ function AnnouncementPopupStudioPage() {
                   />
 
                   {config.displayRules.scheduleEnabled && (
-                    <div className="space-y-3 pt-2 border-t border-zinc-800">
+                    <div className="space-y-3 pt-2 border-t border-[#E2E8F0]">
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">
+                        <label className="text-[11px] text-[#64748B] block mb-1">
                           Active From (Start)
                         </label>
                         <input
@@ -2036,11 +2036,11 @@ function AnnouncementPopupStudioPage() {
                               },
                             }))
                           }
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-xl text-xs text-[#111827] shadow-2xs focus:outline-none focus:border-[#7137D8]"
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] text-zinc-400 block mb-1">
+                        <label className="text-[11px] text-[#64748B] block mb-1">
                           Active Until (End)
                         </label>
                         <input
@@ -2055,7 +2055,7 @@ function AnnouncementPopupStudioPage() {
                               },
                             }))
                           }
-                          className="w-full px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded text-xs text-white focus:outline-none focus:border-amber-400"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-xl text-xs text-[#111827] shadow-2xs focus:outline-none focus:border-[#7137D8]"
                         />
                       </div>
                     </div>
@@ -2067,21 +2067,21 @@ function AnnouncementPopupStudioPage() {
         </div>
 
         {/* Center Live Website Mockup & Canvas */}
-        <div className="flex-1 bg-zinc-950 flex flex-col items-center justify-start overflow-y-auto p-4 md:p-8 relative">
+        <div className="flex-1 bg-[#F1F5F9] flex flex-col items-center justify-start overflow-y-auto p-4 md:p-8 relative">
           <div
-            className={`w-full transition-all duration-300 relative shadow-2xl rounded-2xl border border-zinc-800 overflow-hidden bg-[#0d0f14] flex flex-col ${
+            className={`w-full transition-all duration-300 relative shadow-xl rounded-2xl border border-[#CBD5E1] overflow-hidden bg-white flex flex-col ${
               previewDevice === "mobile" ? "max-w-[390px] min-h-[680px]" : "max-w-5xl min-h-[720px]"
             }`}
             style={{ transform: "translateZ(0)" }}
           >
             {/* Mock Browser Top Bar */}
-            <div className="h-9 bg-zinc-900 border-b border-zinc-800 px-4 flex items-center justify-between select-none shrink-0 z-40">
+            <div className="h-9 bg-[#F8FAFC] border-b border-[#E2E8F0] px-4 flex items-center justify-between select-none shrink-0 z-40">
               <div className="flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-rose-500/80"></div>
                 <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80"></div>
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></div>
               </div>
-              <div className="text-[11px] font-mono text-zinc-400 px-3 py-0.5 rounded-md bg-zinc-950/60 border border-zinc-800/80 max-w-[240px] truncate">
+              <div className="text-[11px] font-mono text-[#64748B] px-3 py-0.5 rounded-md bg-white border border-[#E2E8F0] max-w-[240px] truncate">
                 https://my-store.com
               </div>
               <div className="w-10"></div>
@@ -2113,41 +2113,41 @@ function AnnouncementPopupStudioPage() {
                 }`}
               >
                 {/* Mock Nav */}
-                <div className="flex items-center justify-between border-b border-zinc-800/60 pb-4">
-                  <div className="flex items-center gap-2 font-bold text-base text-white">
-                    <div className="w-7 h-7 rounded-lg bg-amber-400 text-black flex items-center justify-center font-black">
+                <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-4">
+                  <div className="flex items-center gap-2 font-bold text-base text-[#111827]">
+                    <div className="w-7 h-7 rounded-lg bg-[#7137D8] text-white flex items-center justify-center font-black">
                       A
                     </div>
                     <span>Apex Commerce</span>
                   </div>
-                  <div className="hidden sm:flex items-center gap-6 text-xs text-zinc-400 font-medium">
+                  <div className="hidden sm:flex items-center gap-6 text-xs text-[#64748B] font-medium">
                     <span>Products</span>
                     <span>Solutions</span>
                     <span>Pricing</span>
                     <span>Company</span>
                   </div>
-                  <div className="px-3 py-1.5 rounded-full bg-zinc-800 text-zinc-200 text-xs font-semibold">
+                  <div className="px-3 py-1.5 rounded-full bg-[#F1F5F9] text-[#334155] border border-[#E2E8F0] text-xs font-semibold">
                     Cart (0)
                   </div>
                 </div>
 
                 {/* Mock Hero */}
                 <div className="max-w-2xl mx-auto text-center space-y-4 pt-6">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800/80 border border-zinc-700 text-amber-300 text-xs font-semibold">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F6F0FE] border border-[#EDE0FD] text-[#7137D8] text-xs font-semibold">
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>Summer Collection 2026 Live Now</span>
                   </div>
-                  <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">
+                  <h1 className="text-3xl md:text-5xl font-black text-[#111827] tracking-tight leading-tight">
                     Design Better. Launch Faster. Convert Smarter.
                   </h1>
-                  <p className="text-sm text-zinc-400 leading-relaxed max-w-lg mx-auto">
+                  <p className="text-sm text-[#475569] leading-relaxed max-w-lg mx-auto">
                     Transform your storefront with responsive promotional campaigns, high-converting notification bars, and targeted modal offers.
                   </p>
                   <div className="flex items-center justify-center gap-3 pt-2">
-                    <div className="px-5 py-2.5 rounded-xl bg-amber-400 text-black font-bold text-xs shadow-lg shadow-amber-500/10">
+                    <div className="px-5 py-2.5 rounded-xl bg-[#7137D8] text-white font-bold text-xs shadow-md shadow-[#7137D8]/20">
                       Explore Catalog
                     </div>
-                    <div className="px-4 py-2.5 rounded-xl bg-zinc-800 text-zinc-300 font-semibold text-xs border border-zinc-700">
+                    <div className="px-4 py-2.5 rounded-xl bg-white text-[#334155] font-semibold text-xs border border-[#CBD5E1] shadow-2xs">
                       View Lookbook
                     </div>
                   </div>
@@ -2160,13 +2160,13 @@ function AnnouncementPopupStudioPage() {
                     { name: "Ceramic Studio Lamp", price: "$89.00", badge: "New" },
                     { name: "Organic Wool Throw", price: "$120.00", badge: "20% Off" },
                   ].map((item, i) => (
-                    <div key={i} className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 space-y-3">
-                      <div className="h-32 rounded-lg bg-zinc-850 flex items-center justify-center text-zinc-600 text-xs font-medium">
+                    <div key={i} className="p-4 rounded-xl bg-white border border-[#E2E8F0] space-y-3">
+                      <div className="h-32 rounded-lg bg-[#F1F5F9] flex items-center justify-center text-zinc-600 text-xs font-medium">
                         Product Preview
                       </div>
                       <div className="flex items-center justify-between text-xs">
                         <span className="font-bold text-white">{item.name}</span>
-                        <span className="text-amber-400 font-mono font-bold">{item.price}</span>
+                        <span className="text-[#7137D8] font-mono font-bold">{item.price}</span>
                       </div>
                     </div>
                   ))}
@@ -2191,17 +2191,17 @@ function AnnouncementPopupStudioPage() {
           EMBED / INSTALLATION MODAL
          ========================================================================= */}
       {showEmbedModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-2xl bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl bg-white border border-[#E2E8F0] rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             {/* Modal Header */}
-            <div className="p-5 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/60">
+            <div className="p-5 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-amber-400/15 border border-amber-400/30 text-amber-400 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-xl bg-[#7137D8]/10 border border-[#7137D8]/20 text-[#7137D8] flex items-center justify-center">
                   <Code2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-white text-base">Embed on Any Website</h3>
-                  <p className="text-xs text-zinc-400">
+                  <h3 className="font-bold text-[#111827] text-base">Embed on Any Website</h3>
+                  <p className="text-xs text-[#64748B]">
                     Copy and paste this snippet into your website or builder.
                   </p>
                 </div>
@@ -2209,7 +2209,7 @@ function AnnouncementPopupStudioPage() {
               <button
                 type="button"
                 onClick={() => setShowEmbedModal(false)}
-                className="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition"
+                className="p-1.5 rounded-lg bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#111827] transition"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -2218,10 +2218,10 @@ function AnnouncementPopupStudioPage() {
             {/* Modal Content */}
             <div className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
               {/* Widget ID Pill */}
-              <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-between text-xs">
-                <span className="text-zinc-400">Widget ID:</span>
+              <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between text-xs">
+                <span className="text-[#64748B]">Widget ID:</span>
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-amber-300 font-bold">{widgetId}</span>
+                  <span className="font-mono text-[#7137D8] font-bold">{widgetId}</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -2230,7 +2230,7 @@ function AnnouncementPopupStudioPage() {
                       toast.success("Widget ID copied!");
                       setTimeout(() => setCopiedId(false), 2000);
                     }}
-                    className="p-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition"
+                    className="p-1 rounded bg-white border border-[#CBD5E1] text-[#334155] hover:text-[#111827] transition shadow-2xs"
                     title="Copy ID"
                   >
                     {copiedId ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
@@ -2241,9 +2241,9 @@ function AnnouncementPopupStudioPage() {
               {/* Code Snippet Box */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-zinc-300 flex items-center gap-1.5">
+                  <label className="text-xs font-bold text-[#334155] flex items-center gap-1.5">
                     <span>HTML Embed Code</span>
-                    <span className="text-[10px] text-zinc-500 font-normal">
+                    <span className="text-[10px] text-[#94A3B8] font-normal">
                       (Works in Custom HTML block or external HTML)
                     </span>
                   </label>
@@ -2255,39 +2255,39 @@ function AnnouncementPopupStudioPage() {
                       toast.success("Embed code copied to clipboard!");
                       setTimeout(() => setCopiedSnippet(false), 2000);
                     }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs transition shadow active:scale-95"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-gradient-to-r from-[#7137D8] to-[#8B5CF6] hover:from-[#6025C5] hover:to-[#7C3AED] text-white font-bold text-xs transition shadow-xs active:scale-95"
                   >
                     {copiedSnippet ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                     <span>{copiedSnippet ? "Copied!" : "Copy Code"}</span>
                   </button>
                 </div>
 
-                <pre className="p-4 rounded-xl bg-black border border-zinc-800 text-zinc-200 font-mono text-xs overflow-x-auto leading-relaxed select-all">
+                <pre className="p-4 rounded-xl bg-black border border-[#E2E8F0] text-[#111827] font-mono text-xs overflow-x-auto leading-relaxed select-all">
                   {embedCode}
                 </pre>
               </div>
 
               {/* Step-by-Step Instructions */}
               <div className="space-y-3 pt-2">
-                <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                <h4 className="text-xs font-bold text-[#111827] uppercase tracking-wider">
                   Installation Guide:
                 </h4>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                  <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-2">
-                    <div className="font-bold text-amber-300 flex items-center gap-1.5">
+                  <div className="p-4 rounded-xl bg-white/60 border border-[#E2E8F0] space-y-2">
+                    <div className="font-bold text-[#7137D8] flex items-center gap-1.5">
                       <span>1. WebToolOcean Website Builder</span>
                     </div>
-                    <p className="text-zinc-400 leading-relaxed text-[11px]">
+                    <p className="text-[#64748B] leading-relaxed text-[11px]">
                       Open your website page in the Builder. Drag and drop a <strong>Custom HTML</strong> block from the widget sidebar. Paste this code snippet into the code input. Your published widget will immediately render.
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-2">
-                    <div className="font-bold text-amber-300 flex items-center gap-1.5">
+                  <div className="p-4 rounded-xl bg-white/60 border border-[#E2E8F0] space-y-2">
+                    <div className="font-bold text-[#7137D8] flex items-center gap-1.5">
                       <span>2. Plain HTML / Static Website</span>
                     </div>
-                    <p className="text-zinc-400 leading-relaxed text-[11px]">
+                    <p className="text-[#64748B] leading-relaxed text-[11px]">
                       Paste this snippet into your HTML document (before the closing &lt;/body&gt; tag). The script loads asynchronously without jQuery, React, or heavy libraries, and automatically initializes the widget.
                     </p>
                   </div>
@@ -2296,7 +2296,7 @@ function AnnouncementPopupStudioPage() {
                 {/* Troubleshooting */}
                 <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200/90 space-y-1">
                   <div className="font-bold flex items-center gap-1.5">
-                    <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
+                    <AlertCircle className="w-3.5 h-3.5 text-[#7137D8]" />
                     <span>Live Updates Note:</span>
                   </div>
                   <p className="text-[11px] leading-relaxed text-amber-200/80">
@@ -2307,11 +2307,11 @@ function AnnouncementPopupStudioPage() {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-4 border-t border-zinc-800 bg-zinc-950/60 flex items-center justify-end">
+            <div className="p-4 border-t border-[#E2E8F0] bg-white/60 flex items-center justify-end">
               <button
                 type="button"
                 onClick={() => setShowEmbedModal(false)}
-                className="px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-semibold text-xs transition"
+                className="px-4 py-2 rounded-lg bg-[#F1F5F9] hover:bg-zinc-700 text-[#111827] font-semibold text-xs transition"
               >
                 Done
               </button>

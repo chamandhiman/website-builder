@@ -28,7 +28,7 @@ export function BackToTopConfig({ data, onChange }: BackToTopConfigProps) {
     <div className="space-y-6">
       {/* ── 1. BUTTON SHAPE ───────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Button Shape
         </label>
         <div className="grid grid-cols-2 gap-3">
@@ -38,7 +38,7 @@ export function BackToTopConfig({ data, onChange }: BackToTopConfigProps) {
             className={`flex items-center justify-center gap-2 p-3 rounded-xl transition ${
               data.shape === "round"
                 ? "border-2 border-[#FACC15] bg-[#1A1A20] text-white"
-                : "border border-[#27272A] bg-[#151518] text-zinc-400"
+                : "border border-[#E2E8F0] bg-[#151518] text-[#64748B]"
             }`}
           >
             <span className="h-6 w-6 rounded-full border border-zinc-500 flex items-center justify-center">
@@ -53,7 +53,7 @@ export function BackToTopConfig({ data, onChange }: BackToTopConfigProps) {
             className={`flex items-center justify-center gap-2 p-3 rounded-xl transition ${
               data.shape === "rounded_square"
                 ? "border-2 border-[#FACC15] bg-[#1A1A20] text-white"
-                : "border border-[#27272A] bg-[#151518] text-zinc-400"
+                : "border border-[#E2E8F0] bg-[#151518] text-[#64748B]"
             }`}
           >
             <span className="h-6 w-6 rounded-md border border-zinc-500 flex items-center justify-center">
@@ -66,7 +66,7 @@ export function BackToTopConfig({ data, onChange }: BackToTopConfigProps) {
 
       {/* ── 2. BUTTON POSITION ────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Button Position
         </label>
         <div className="grid grid-cols-2 gap-3">
@@ -85,12 +85,12 @@ export function BackToTopConfig({ data, onChange }: BackToTopConfigProps) {
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition ${
                   isSelected
                     ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm text-white"
-                    : "border border-[#27272A] bg-[#151518] hover:border-zinc-600 text-zinc-400"
+                    : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 text-[#64748B]"
                 }`}
               >
                 <LayoutGrid
                   className={`h-4 w-4 shrink-0 ${
-                    isSelected ? "text-[#FACC15]" : "text-zinc-500"
+                    isSelected ? "text-[#FACC15]" : "text-[#94A3B8]"
                   }`}
                 />
                 <span className="text-xs font-semibold truncate">{posItem.label}</span>
@@ -102,12 +102,12 @@ export function BackToTopConfig({ data, onChange }: BackToTopConfigProps) {
 
       {/* ── 3. COLORS ─────────────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Appearance & Colors
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+            <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Background Color
             </span>
             <div className="flex items-center gap-2 h-10 px-2 rounded-xl bg-[#17171A] border border-[#2B2B30]">
@@ -122,7 +122,7 @@ export function BackToTopConfig({ data, onChange }: BackToTopConfigProps) {
           </div>
 
           <div>
-            <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+            <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Arrow Icon Color
             </span>
             <div className="flex items-center gap-2 h-10 px-2 rounded-xl bg-[#17171A] border border-[#2B2B30]">
@@ -140,25 +140,25 @@ export function BackToTopConfig({ data, onChange }: BackToTopConfigProps) {
 
       {/* ── 4. DISPLAY OPTIONS ────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Display Options
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#27272A]">
-            <span className="text-xs font-semibold text-zinc-200">Show on Desktop</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#111827]">Show on Desktop</span>
             <Switch
               checked={data.showOnDesktop}
               onCheckedChange={(checked) => update({ showOnDesktop: checked })}
-              className="data-[state=checked]:bg-[#FACC15]"
+              className="data-[state=checked]:bg-[#7137D8]"
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#27272A]">
-            <span className="text-xs font-semibold text-zinc-200">Show on Mobile</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#111827]">Show on Mobile</span>
             <Switch
               checked={data.showOnMobile}
               onCheckedChange={(checked) => update({ showOnMobile: checked })}
-              className="data-[state=checked]:bg-[#FACC15]"
+              className="data-[state=checked]:bg-[#7137D8]"
             />
           </div>
         </div>

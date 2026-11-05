@@ -56,7 +56,7 @@ function SimpleSwitch({
   return (
     <div
       onClick={() => onChange(!checked)}
-      className="flex items-center justify-between py-2 px-2.5 rounded-xl bg-zinc-900/60 hover:bg-zinc-800/60 border border-zinc-800/80 cursor-pointer select-none transition"
+      className="flex items-center justify-between py-2 px-2.5 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] cursor-pointer select-none transition"
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
@@ -66,14 +66,14 @@ function SimpleSwitch({
         }
       }}
     >
-      <span className="text-zinc-300 font-semibold text-xs">{label}</span>
+      <span className="text-[#334155] font-semibold text-xs">{label}</span>
       <div
         className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors ${
           checked ? "bg-[#38bdf8]" : "bg-zinc-700"
         }`}
       >
         <div
-          className={`bg-zinc-950 w-4 h-4 rounded-full shadow transform transition-transform ${
+          className={`bg-white w-4 h-4 rounded-full shadow transform transition-transform ${
             checked ? "translate-x-4" : "translate-x-0"
           }`}
         />
@@ -409,7 +409,7 @@ function SimpleLanguageSwitcherStudioPage() {
 
   if (loading || !widget) {
     return (
-      <div className="min-h-screen bg-[#121214] flex items-center justify-center text-zinc-400">
+      <div className="min-h-screen bg-[#121214] flex items-center justify-center text-[#64748B]">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-2 border-[#38bdf8] border-t-transparent rounded-full animate-spin" />
           <span className="text-sm">Loading Language Studio…</span>
@@ -422,7 +422,7 @@ function SimpleLanguageSwitcherStudioPage() {
   const { appearance, behavior, languages } = config;
 
   return (
-    <div className="min-h-screen bg-[#0d0d10] text-zinc-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#0d0d10] text-[#111827] flex flex-col font-sans">
       {/* ================= HEADER ================= */}
       <WidgetStudioHeader
         widgetName={widget.name}
@@ -443,16 +443,16 @@ function SimpleLanguageSwitcherStudioPage() {
       {/* ================= BODY ================= */}
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
         {/* Left: Super Clean Sidebar with only 2 Tabs */}
-        <aside className="w-full lg:w-[460px] bg-[#141418] border-r border-zinc-800/80 flex flex-col shrink-0 h-[calc(100vh-64px)] overflow-y-auto">
+        <aside className="w-full lg:w-[460px] bg-[#141418] border-r border-[#E2E8F0] flex flex-col shrink-0 h-[calc(100vh-64px)] overflow-y-auto">
           {/* Exactly 2 Clean Tabs */}
-          <div className="p-2 border-b border-zinc-800/80 bg-[#111114] grid grid-cols-2 gap-2 sticky top-0 z-20">
+          <div className="p-2 border-b border-[#E2E8F0] bg-[#111114] grid grid-cols-2 gap-2 sticky top-0 z-20">
             <button
               type="button"
               onClick={() => setActiveTab("languages")}
               className={`py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
                 activeTab === "languages"
                   ? "bg-[#38bdf8] text-black shadow"
-                  : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+                  : "text-[#64748B] hover:text-white hover:bg-[#F1F5F9]/50"
               }`}
             >
               <Languages className="w-4 h-4" />
@@ -464,7 +464,7 @@ function SimpleLanguageSwitcherStudioPage() {
               className={`py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
                 activeTab === "settings"
                   ? "bg-[#38bdf8] text-black shadow"
-                  : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+                  : "text-[#64748B] hover:text-white hover:bg-[#F1F5F9]/50"
               }`}
             >
               <Sliders className="w-4 h-4" />
@@ -477,9 +477,9 @@ function SimpleLanguageSwitcherStudioPage() {
             {activeTab === "languages" && (
               <div className="space-y-5 animate-in fade-in duration-150">
                 {/* Clean Dropdown to Add Language */}
-                <div className="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 space-y-3">
+                <div className="p-3.5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-white">Add Language</label>
+                    <label className="text-xs font-bold text-[#111827]">Add Language</label>
                     <button
                       type="button"
                       onClick={() => setIsAddingCustom(!isAddingCustom)}
@@ -494,7 +494,7 @@ function SimpleLanguageSwitcherStudioPage() {
                       <select
                         value={selectedCatalogCode}
                         onChange={(e) => setSelectedCatalogCode(e.target.value)}
-                        className="flex-1 px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-700 text-xs text-white outline-none focus:border-[#38bdf8]"
+                        className="flex-1 px-3 py-2 rounded-xl bg-white border border-[#CBD5E1] text-xs text-white outline-none focus:border-[#38bdf8]"
                       >
                         <option value="">Select a language to add...</option>
                         {COMMON_LANGUAGES_CATALOG.map((l) => (
@@ -522,7 +522,7 @@ function SimpleLanguageSwitcherStudioPage() {
                           value={customLangName}
                           onChange={(e) => setCustomLangName(e.target.value)}
                           placeholder="Name (e.g. Hindi)"
-                          className="px-2.5 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-white"
+                          className="px-2.5 py-1.5 rounded-lg bg-white border border-[#E2E8F0] text-xs text-white"
                           required
                         />
                         <input
@@ -530,7 +530,7 @@ function SimpleLanguageSwitcherStudioPage() {
                           value={customLangCode}
                           onChange={(e) => setCustomLangCode(e.target.value)}
                           placeholder="Code (e.g. hi)"
-                          className="px-2.5 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-white font-mono"
+                          className="px-2.5 py-1.5 rounded-lg bg-white border border-[#E2E8F0] text-xs text-white font-mono"
                           required
                         />
                       </div>
@@ -540,7 +540,7 @@ function SimpleLanguageSwitcherStudioPage() {
                           value={customLangUrl}
                           onChange={(e) => setCustomLangUrl(e.target.value)}
                           placeholder="URL (e.g. /hi/ or https://...)"
-                          className="flex-1 px-2.5 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-white font-mono"
+                          className="flex-1 px-2.5 py-1.5 rounded-lg bg-white border border-[#E2E8F0] text-xs text-white font-mono"
                         />
                         <button
                           type="submit"
@@ -555,9 +555,9 @@ function SimpleLanguageSwitcherStudioPage() {
 
                 {/* Compact List of Languages */}
                 <div className="space-y-2.5">
-                  <div className="flex items-center justify-between text-xs text-zinc-400 font-bold px-1">
+                  <div className="flex items-center justify-between text-xs text-[#64748B] font-bold px-1">
                     <span>Configured Languages ({languages.length})</span>
-                    <span className="text-[10px] text-zinc-500">Destination URLs</span>
+                    <span className="text-[10px] text-[#94A3B8]">Destination URLs</span>
                   </div>
 
                   {languages.map((lang, index) => (
@@ -565,15 +565,15 @@ function SimpleLanguageSwitcherStudioPage() {
                       key={lang.id}
                       className={`p-3 rounded-xl border transition-all space-y-2 ${
                         lang.isDefault
-                          ? "bg-zinc-900 border-[#38bdf8]/40"
-                          : "bg-zinc-900/60 border-zinc-800 hover:border-zinc-700"
+                          ? "bg-[#F8FAFC] border-[#38bdf8]/40"
+                          : "bg-white border-[#E2E8F0] hover:border-[#CBD5E1]"
                       }`}
                     >
                       {/* Top Bar: Reorder, Name, Default Badge, Delete */}
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2 min-w-0">
                           {/* Up/down arrows */}
-                          <div className="flex items-center gap-0.5 text-zinc-500">
+                          <div className="flex items-center gap-0.5 text-[#94A3B8]">
                             <button
                               type="button"
                               onClick={() => handleMoveLanguage(index, "up")}
@@ -597,7 +597,7 @@ function SimpleLanguageSwitcherStudioPage() {
                           <span className="font-bold text-xs text-white truncate">
                             {lang.name}
                           </span>
-                          <span className="text-[10px] text-zinc-500 font-mono uppercase">
+                          <span className="text-[10px] text-[#94A3B8] font-mono uppercase">
                             ({lang.code})
                           </span>
                         </div>
@@ -611,7 +611,7 @@ function SimpleLanguageSwitcherStudioPage() {
                             <button
                               type="button"
                               onClick={() => handleSetDefaultLanguage(lang.id)}
-                              className="text-[10px] font-medium text-zinc-400 hover:text-[#38bdf8] px-2 py-0.5 rounded bg-zinc-800 border border-zinc-700/60"
+                              className="text-[10px] font-medium text-[#64748B] hover:text-[#38bdf8] px-2 py-0.5 rounded bg-[#F1F5F9] border border-[#CBD5E1]/60"
                             >
                               Set Default
                             </button>
@@ -620,7 +620,7 @@ function SimpleLanguageSwitcherStudioPage() {
                           <button
                             type="button"
                             onClick={() => handleRemoveLanguage(lang.id)}
-                            className="p-1 rounded text-zinc-500 hover:text-rose-400 hover:bg-zinc-800"
+                            className="p-1 rounded text-[#94A3B8] hover:text-rose-400 hover:bg-[#F1F5F9]"
                             title="Remove"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -635,14 +635,14 @@ function SimpleLanguageSwitcherStudioPage() {
                           value={lang.url}
                           onChange={(e) => handleUpdateLanguage(lang.id, { url: e.target.value })}
                           placeholder="Destination URL (e.g. https://... or /es/)"
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-zinc-200 font-mono pr-7 focus:border-[#38bdf8] outline-none"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-white border border-[#E2E8F0] text-xs text-[#111827] font-mono pr-7 focus:border-[#38bdf8] outline-none"
                         />
                         {lang.url && (
                           <a
                             href={lang.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="absolute right-2 top-2 text-zinc-500 hover:text-[#38bdf8]"
+                            className="absolute right-2 top-2 text-[#94A3B8] hover:text-[#38bdf8]"
                             title="Open link"
                           >
                             <ExternalLink className="w-3 h-3" />
@@ -660,7 +660,7 @@ function SimpleLanguageSwitcherStudioPage() {
               <div className="space-y-6 animate-in fade-in duration-150">
                 {/* 1. Placement / Position Controls Right Here! */}
                 <div className="space-y-2.5">
-                  <label className="text-xs font-bold text-white block">Widget Position on Website</label>
+                  <label className="text-xs font-bold text-[#111827] block">Widget Position on Website</label>
                   <div className="grid grid-cols-2 gap-2">
                     {[
                       { id: "bottom_right", label: "Bottom Right (Floating)" },
@@ -684,7 +684,7 @@ function SimpleLanguageSwitcherStudioPage() {
                           className={`p-2.5 rounded-xl text-xs font-bold text-left border transition ${
                             isSelected
                               ? "bg-[#38bdf8]/20 border-[#38bdf8] text-[#38bdf8]"
-                              : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white"
+                              : "bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:text-white"
                           }`}
                         >
                           {pos.label}
@@ -703,7 +703,7 @@ function SimpleLanguageSwitcherStudioPage() {
                     className={`w-full p-2.5 rounded-xl text-xs font-bold text-left border transition mt-1.5 ${
                       appearance.layout !== "floating_selector"
                         ? "bg-[#38bdf8]/20 border-[#38bdf8] text-[#38bdf8]"
-                        : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white"
+                        : "bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:text-white"
                     }`}
                   >
                     Inline (Embed inside Header, Navbar, or Footer)
@@ -711,8 +711,8 @@ function SimpleLanguageSwitcherStudioPage() {
                 </div>
 
                 {/* 2. Simplified Layout Choices (Just 4 clean options) */}
-                <div className="space-y-2.5 pt-2 border-t border-zinc-800">
-                  <label className="text-xs font-bold text-white block">Switcher Style</label>
+                <div className="space-y-2.5 pt-2 border-t border-[#E2E8F0]">
+                  <label className="text-xs font-bold text-[#111827] block">Switcher Style</label>
                   <div className="grid grid-cols-2 gap-2">
                     {[
                       {
@@ -753,11 +753,11 @@ function SimpleLanguageSwitcherStudioPage() {
                           className={`p-2.5 rounded-xl text-left border transition ${
                             isCurrent
                               ? "bg-[#38bdf8]/15 border-[#38bdf8] text-white"
-                              : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200"
+                              : "bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:text-[#111827]"
                           }`}
                         >
-                          <strong className="block text-xs font-bold text-white">{s.label}</strong>
-                          <span className="block text-[10px] text-zinc-500 mt-0.5">{s.desc}</span>
+                          <strong className="block text-xs font-bold text-[#111827]">{s.label}</strong>
+                          <span className="block text-[10px] text-[#94A3B8] mt-0.5">{s.desc}</span>
                         </button>
                       );
                     })}
@@ -765,8 +765,8 @@ function SimpleLanguageSwitcherStudioPage() {
                 </div>
 
                 {/* 3. Easy Toggles */}
-                <div className="space-y-2 pt-2 border-t border-zinc-800">
-                  <label className="text-xs font-bold text-white block mb-1">Display Controls</label>
+                <div className="space-y-2 pt-2 border-t border-[#E2E8F0]">
+                  <label className="text-xs font-bold text-[#111827] block mb-1">Display Controls</label>
                   <SimpleSwitch
                     label="Show Flag Icons"
                     checked={appearance.showFlags}
@@ -800,34 +800,34 @@ function SimpleLanguageSwitcherStudioPage() {
                 </div>
 
                 {/* 4. Quick Theme & Colors */}
-                <div className="space-y-2 pt-2 border-t border-zinc-800">
-                  <label className="text-xs font-bold text-white block mb-1">Colors</label>
+                <div className="space-y-2 pt-2 border-t border-[#E2E8F0]">
+                  <label className="text-xs font-bold text-[#111827] block mb-1">Colors</label>
                   <div className="grid grid-cols-3 gap-2">
-                    <div className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 space-y-1">
-                      <span className="text-[10px] text-zinc-400 font-bold block">Background</span>
+                    <div className="p-2 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1">
+                      <span className="text-[10px] text-[#64748B] font-bold block">Background</span>
                       <input
                         type="color"
                         value={appearance.backgroundColor.startsWith("#") ? appearance.backgroundColor : "#18181b"}
                         onChange={(e) => updateAppearance({ backgroundColor: e.target.value, dropdownBackgroundColor: e.target.value })}
-                        className="w-full h-7 rounded border border-zinc-700 bg-transparent cursor-pointer"
+                        className="w-full h-7 rounded border border-[#CBD5E1] bg-transparent cursor-pointer"
                       />
                     </div>
-                    <div className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 space-y-1">
-                      <span className="text-[10px] text-zinc-400 font-bold block">Text</span>
+                    <div className="p-2 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1">
+                      <span className="text-[10px] text-[#64748B] font-bold block">Text</span>
                       <input
                         type="color"
                         value={appearance.textColor.startsWith("#") ? appearance.textColor : "#ffffff"}
                         onChange={(e) => updateAppearance({ textColor: e.target.value, dropdownTextColor: e.target.value })}
-                        className="w-full h-7 rounded border border-zinc-700 bg-transparent cursor-pointer"
+                        className="w-full h-7 rounded border border-[#CBD5E1] bg-transparent cursor-pointer"
                       />
                     </div>
-                    <div className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 space-y-1">
-                      <span className="text-[10px] text-zinc-400 font-bold block">Accent</span>
+                    <div className="p-2 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1">
+                      <span className="text-[10px] text-[#64748B] font-bold block">Accent</span>
                       <input
                         type="color"
                         value={appearance.accentColor.startsWith("#") ? appearance.accentColor : "#38bdf8"}
                         onChange={(e) => updateAppearance({ accentColor: e.target.value, activeItemTextColor: e.target.value })}
-                        className="w-full h-7 rounded border border-zinc-700 bg-transparent cursor-pointer"
+                        className="w-full h-7 rounded border border-[#CBD5E1] bg-transparent cursor-pointer"
                       />
                     </div>
                   </div>
@@ -840,7 +840,7 @@ function SimpleLanguageSwitcherStudioPage() {
         {/* Right: Live Preview */}
         <main className="flex-1 bg-[#0a0a0c] flex flex-col items-center justify-between p-4 sm:p-8 overflow-y-auto relative">
           <div className="w-full max-w-4xl flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2 text-xs text-zinc-400">
+            <div className="flex items-center gap-2 text-xs text-[#64748B]">
               <Eye className="w-4 h-4 text-[#38bdf8]" />
               <span className="font-bold text-white">Live Preview</span>
             </div>
@@ -848,7 +848,7 @@ function SimpleLanguageSwitcherStudioPage() {
             <button
               type="button"
               onClick={() => setPreviewKey((k) => k + 1)}
-              className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white text-xs font-semibold border border-zinc-800 transition flex items-center gap-1.5"
+              className="px-2.5 py-1 rounded-lg bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#64748B] hover:text-white text-xs font-semibold border border-[#E2E8F0] transition flex items-center gap-1.5"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>Reset</span>
@@ -857,18 +857,18 @@ function SimpleLanguageSwitcherStudioPage() {
 
           {/* Website Canvas */}
           <div
-            className={`w-full transition-all duration-300 rounded-2xl border border-zinc-800/80 bg-zinc-950/70 shadow-2xl relative overflow-hidden flex flex-col ${
+            className={`w-full transition-all duration-300 rounded-2xl border border-[#E2E8F0] bg-white/70 shadow-2xl relative overflow-hidden flex flex-col ${
               previewDevice === "desktop" ? "max-w-4xl min-h-[520px]" : "max-w-[390px] min-h-[580px]"
             }`}
           >
             {/* Top Browser Bar */}
-            <div className="h-9 bg-[#121215] border-b border-zinc-800/80 px-4 flex items-center justify-between select-none">
+            <div className="h-9 bg-[#121215] border-b border-[#E2E8F0] px-4 flex items-center justify-between select-none">
               <div className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
               </div>
-              <div className="px-3 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 text-[10px] text-zinc-400 font-mono flex items-center gap-1.5 truncate">
+              <div className="px-3 py-0.5 rounded-md bg-[#F8FAFC] border border-[#E2E8F0] text-[10px] text-[#64748B] font-mono flex items-center gap-1.5 truncate">
                 <Globe className="w-3 h-3 text-[#38bdf8]" />
                 <span>example.com</span>
               </div>
@@ -876,7 +876,7 @@ function SimpleLanguageSwitcherStudioPage() {
             </div>
 
             {/* Simulated Navigation Bar */}
-            <div className="px-6 py-3.5 border-b border-zinc-800/40 bg-zinc-900/40 flex items-center justify-between">
+            <div className="px-6 py-3.5 border-b border-[#E2E8F0]/40 bg-[#F8FAFC]/40 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="w-6 h-6 rounded bg-[#38bdf8]/20 flex items-center justify-center text-[#38bdf8] font-black text-xs">
                   W
@@ -902,7 +902,7 @@ function SimpleLanguageSwitcherStudioPage() {
               <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
                 Preview Your Language Switcher
               </h1>
-              <p className="text-xs text-zinc-400 max-w-sm leading-relaxed">
+              <p className="text-xs text-[#64748B] max-w-sm leading-relaxed">
                 Click the language switcher to test dropdown opening and language selection.
               </p>
 
@@ -919,7 +919,7 @@ function SimpleLanguageSwitcherStudioPage() {
           </div>
 
           <div className="mt-3 text-center">
-            <span className="text-[11px] text-zinc-500">
+            <span className="text-[11px] text-[#94A3B8]">
               Selecting a language in preview safely tests destination routing.
             </span>
           </div>

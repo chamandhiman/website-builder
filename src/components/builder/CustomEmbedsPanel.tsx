@@ -546,7 +546,7 @@ export function CustomEmbedsPanel() {
         );
       default:
         return (
-          <div className={`flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl ${bgClass} text-white shadow-sm border border-zinc-700/60 font-mono text-sm font-bold`}>
+          <div className={`flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl ${bgClass} text-white shadow-sm border border-[#CBD5E1]/60 font-mono text-sm font-bold`}>
             &lt;/&gt;
           </div>
         );
@@ -573,19 +573,19 @@ export function CustomEmbedsPanel() {
   };
 
   return (
-    <div className="flex h-full flex-col overflow-hidden bg-[#121214] text-[#F5F5F5]">
+    <div className="flex h-full flex-col overflow-hidden bg-[#121214] text-[#111827]">
       {/* ── HEADER (Tabs + Search & Filters) ───────────────────────── */}
-      <div className="shrink-0 p-3.5 space-y-3 border-b border-[#222225] bg-[#141416]">
+      <div className="shrink-0 p-3.5 space-y-3 border-b border-[#E2E8F0] bg-[#141416]">
         {/* Top Controls: Active Plugins | Add New + Search Icon Toggle */}
         <div className="flex items-center gap-2">
-          <div className="grid flex-1 grid-cols-2 p-1 rounded-xl bg-[#1A1A1E] border border-zinc-800/80">
+          <div className="grid flex-1 grid-cols-2 p-1 rounded-xl bg-white border border-[#E2E8F0]/80">
             <button
               type="button"
               onClick={() => setInternalTab("my_plugins")}
               className={`py-2 text-xs font-bold rounded-lg transition-all ${
                 internalTab === "my_plugins"
-                  ? "bg-[#FACC15] text-zinc-950 shadow-sm"
-                  : "bg-transparent text-zinc-400 hover:text-white"
+                  ? "bg-[#7137D8] text-zinc-950 shadow-sm"
+                  : "bg-transparent text-[#64748B] hover:text-white"
               }`}
             >
               Active Plugins ({filterCounts.all})
@@ -595,8 +595,8 @@ export function CustomEmbedsPanel() {
               onClick={() => setInternalTab("add_new")}
               className={`py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
                 internalTab === "add_new"
-                  ? "bg-[#FACC15] text-zinc-950 shadow-sm"
-                  : "bg-transparent text-zinc-400 hover:text-white"
+                  ? "bg-[#7137D8] text-zinc-950 shadow-sm"
+                  : "bg-transparent text-[#64748B] hover:text-white"
               }`}
             >
               <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
@@ -616,8 +616,8 @@ export function CustomEmbedsPanel() {
             }}
             className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition-all ${
               searchOpen || searchQuery
-                ? "bg-[#FACC15] text-zinc-950 border-[#FACC15] shadow-xs"
-                : "bg-[#1A1A1E] text-zinc-400 hover:text-white border-zinc-800/80 hover:border-zinc-700"
+                ? "bg-[#7137D8] text-zinc-950 border-[#FACC15] shadow-xs"
+                : "bg-white text-[#64748B] hover:text-white border-[#E2E8F0]/80 hover:border-[#CBD5E1]"
             }`}
             title={searchOpen ? "Close search" : "Search plugins"}
             aria-label="Search plugins"
@@ -629,7 +629,7 @@ export function CustomEmbedsPanel() {
         {/* Expandable Full Search Field */}
         {searchOpen && (
           <div className="relative flex items-center animate-in fade-in slide-in-from-top-1 duration-150">
-            <Search className="pointer-events-none absolute left-3.5 h-3.5 w-3.5 text-zinc-500" />
+            <Search className="pointer-events-none absolute left-3.5 h-3.5 w-3.5 text-[#94A3B8]" />
             <input
               ref={searchInputRef}
               type="text"
@@ -642,13 +642,13 @@ export function CustomEmbedsPanel() {
                 }
               }}
               placeholder={internalTab === "my_plugins" ? "Search active plugins..." : "Search plugins catalog..."}
-              className="h-9 w-full rounded-xl border border-zinc-800 bg-[#17171A] pl-9 pr-8 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
+              className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] pl-9 pr-8 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
             />
             {searchQuery ? (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-full text-zinc-500 hover:text-white"
+                className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-full text-[#94A3B8] hover:text-white"
                 title="Clear search text"
               >
                 <X className="h-3 w-3" />
@@ -660,7 +660,7 @@ export function CustomEmbedsPanel() {
                   setSearchOpen(false);
                   setSearchQuery("");
                 }}
-                className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-full text-zinc-500 hover:text-white"
+                className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-full text-[#94A3B8] hover:text-white"
                 title="Close search"
               >
                 <X className="h-3 w-3" />
@@ -677,8 +677,8 @@ export function CustomEmbedsPanel() {
               onClick={() => setPlacementFilter("all")}
               className={`px-3 py-1 rounded-full text-xs font-bold transition shrink-0 ${
                 placementFilter === "all"
-                  ? "bg-[#FACC15] text-zinc-950 shadow-xs"
-                  : "bg-[#18181C] text-zinc-300 hover:text-white border border-zinc-800"
+                  ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                  : "bg-[#F1F5F9] text-[#334155] hover:text-white border border-[#E2E8F0]"
               }`}
             >
               All ({filterCounts.all})
@@ -689,8 +689,8 @@ export function CustomEmbedsPanel() {
               onClick={() => setPlacementFilter("site_wide")}
               className={`px-3 py-1 rounded-full text-xs font-semibold transition shrink-0 ${
                 placementFilter === "site_wide"
-                  ? "bg-[#FACC15] text-zinc-950 font-bold shadow-xs"
-                  : "bg-[#18181C] text-zinc-300 hover:text-white border border-zinc-800"
+                  ? "bg-[#7137D8] text-zinc-950 font-bold shadow-xs"
+                  : "bg-[#F1F5F9] text-[#334155] hover:text-white border border-[#E2E8F0]"
               }`}
             >
               Site-wide ({filterCounts.site_wide})
@@ -701,8 +701,8 @@ export function CustomEmbedsPanel() {
               onClick={() => setPlacementFilter("floating")}
               className={`px-3 py-1 rounded-full text-xs font-semibold transition shrink-0 ${
                 placementFilter === "floating"
-                  ? "bg-[#FACC15] text-zinc-950 font-bold shadow-xs"
-                  : "bg-[#18181C] text-zinc-300 hover:text-white border border-zinc-800"
+                  ? "bg-[#7137D8] text-zinc-950 font-bold shadow-xs"
+                  : "bg-[#F1F5F9] text-[#334155] hover:text-white border border-[#E2E8F0]"
               }`}
             >
               Floating ({filterCounts.floating})
@@ -713,8 +713,8 @@ export function CustomEmbedsPanel() {
               onClick={() => setPlacementFilter("page_specific")}
               className={`px-3 py-1 rounded-full text-xs font-semibold transition shrink-0 ${
                 placementFilter === "page_specific"
-                  ? "bg-[#FACC15] text-zinc-950 font-bold shadow-xs"
-                  : "bg-[#18181C] text-zinc-300 hover:text-white border border-zinc-800"
+                  ? "bg-[#7137D8] text-zinc-950 font-bold shadow-xs"
+                  : "bg-[#F1F5F9] text-[#334155] hover:text-white border border-[#E2E8F0]"
               }`}
             >
               Page ({filterCounts.page_specific})
@@ -722,7 +722,7 @@ export function CustomEmbedsPanel() {
           </div>
         )}
         {internalTab === "add_new" && (
-          <p className="text-[11px] text-zinc-500">{catalogCount} floating plugins available</p>
+          <p className="text-[11px] text-[#94A3B8]">{catalogCount} floating plugins available</p>
         )}
       </div>
 
@@ -731,30 +731,30 @@ export function CustomEmbedsPanel() {
         {internalTab === "my_plugins" ? (
           /* TAB 1: MY PLUGINS */
           allEmbeds.length === 0 ? (
-            <div className="my-8 flex flex-col items-center justify-center p-6 text-center rounded-2xl border border-dashed border-zinc-800 bg-[#161619]">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FACC15]/10 border border-[#FACC15]/20 text-[#FACC15] mb-3">
+            <div className="my-8 flex flex-col items-center justify-center p-6 text-center rounded-2xl border border-dashed border-[#E2E8F0] bg-[#161619]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#7137D8]/10 border border-[#FACC15]/20 text-[#FACC15] mb-3">
                 <Puzzle className="h-6 w-6" />
               </div>
-              <h4 className="text-xs font-bold text-white mb-1">
+              <h4 className="text-xs font-bold text-[#111827] mb-1">
                 No plugins added yet
               </h4>
-              <p className="text-[11px] text-zinc-400 max-w-[220px] mb-4 leading-relaxed">
+              <p className="text-[11px] text-[#64748B] max-w-[220px] mb-4 leading-relaxed">
                 Add WhatsApp chat, YouTube video, Google Maps, or custom tools to your website.
               </p>
               <button
                 type="button"
                 onClick={() => setInternalTab("add_new")}
-                className="flex items-center gap-1.5 rounded-lg bg-[#FACC15] px-4 py-2 text-xs font-bold text-zinc-950 transition hover:bg-[#FDE047] shadow-md"
+                className="flex items-center gap-1.5 rounded-lg bg-[#7137D8] px-4 py-2 text-xs font-bold text-zinc-950 transition hover:bg-[#6025C5] shadow-md"
               >
                 <span>Discover Plugins</span>
                 <span>→</span>
               </button>
             </div>
           ) : filteredMyPlugins.length === 0 ? (
-            <div className="my-8 p-6 text-center rounded-2xl border border-dashed border-zinc-800 bg-[#161619]">
-              <Search className="mx-auto h-6 w-6 text-zinc-500 mb-2" />
-              <p className="text-xs font-medium text-zinc-300">No matching plugins</p>
-              <p className="mt-1 text-[11px] text-zinc-500">Try choosing another filter or clearing your search</p>
+            <div className="my-8 p-6 text-center rounded-2xl border border-dashed border-[#E2E8F0] bg-[#161619]">
+              <Search className="mx-auto h-6 w-6 text-[#94A3B8] mb-2" />
+              <p className="text-xs font-medium text-[#334155]">No matching plugins</p>
+              <p className="mt-1 text-[11px] text-[#94A3B8]">Try choosing another filter or clearing your search</p>
             </div>
           ) : (
             filteredMyPlugins.map((item) => {
@@ -769,7 +769,7 @@ export function CustomEmbedsPanel() {
                   className={`group relative rounded-2xl border p-3 transition-all duration-150 cursor-pointer ${
                     isSelected
                       ? "border-[#FACC15] bg-[#161618] shadow-md shadow-amber-400/5 ring-1 ring-[#FACC15]/20"
-                      : "border-zinc-800/80 bg-[#161618] hover:border-zinc-700 hover:bg-[#1A1A1D]"
+                      : "border-[#E2E8F0]/80 bg-[#161618] hover:border-[#CBD5E1] hover:bg-[#F8FAFC]"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-3">
@@ -795,14 +795,14 @@ export function CustomEmbedsPanel() {
                           </span>
                         )}
                         {item.displayType === "inline" && (
-                          <span className="inline-flex items-center rounded-full bg-amber-950/70 border border-amber-500/40 px-2 py-0.2 text-[10px] font-semibold text-amber-300">
+                          <span className="inline-flex items-center rounded-full bg-amber-950/70 border border-amber-500/40 px-2 py-0.2 text-[10px] font-semibold text-[#7137D8]">
                             Page
                           </span>
                         )}
                       </div>
 
                       {/* Subtitle: Placement Label */}
-                      <p className="mt-1 text-xs text-zinc-400 truncate">
+                      <p className="mt-1 text-xs text-[#64748B] truncate">
                         {item.placementLabel}
                       </p>
                     </div>
@@ -821,7 +821,7 @@ export function CustomEmbedsPanel() {
                         type="button"
                         onClick={(e) => handleOpenEditModal(item, e)}
                         title="Edit plugin configuration"
-                        className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg text-[#64748B] hover:text-white hover:bg-[#F1F5F9] transition"
                       >
                         <Pencil className="h-4 w-4" />
                       </button>
@@ -834,7 +834,7 @@ export function CustomEmbedsPanel() {
                             e.stopPropagation();
                             setActiveMenuId(isMenuOpen ? null : item.id);
                           }}
-                          className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
+                          className="flex h-8 w-8 items-center justify-center rounded-lg text-[#64748B] hover:text-white hover:bg-[#F1F5F9] transition"
                         >
                           <MoreVertical className="h-4 w-4" />
                         </button>
@@ -842,15 +842,15 @@ export function CustomEmbedsPanel() {
                         {/* Dropdown Menu */}
                         {isMenuOpen && (
                           <div
-                            className="absolute right-0 top-full mt-1.5 w-36 rounded-xl border border-zinc-800 bg-[#1E1E22] p-1.5 shadow-2xl z-50 text-xs animate-in fade-in zoom-in-95"
+                            className="absolute right-0 top-full mt-1.5 w-36 rounded-xl border border-[#E2E8F0] bg-[#1E1E22] p-1.5 shadow-2xl z-50 text-xs animate-in fade-in zoom-in-95"
                             onClick={(e) => e.stopPropagation()}
                           >
                             <button
                               type="button"
                               onClick={(e) => handleDuplicate(item, e)}
-                              className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-zinc-300 hover:bg-zinc-800 hover:text-white transition"
+                              className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-[#334155] hover:bg-[#F1F5F9] hover:text-white transition"
                             >
-                              <Copy className="h-3.5 w-3.5 text-zinc-400" />
+                              <Copy className="h-3.5 w-3.5 text-[#64748B]" />
                               <span>Duplicate</span>
                             </button>
 
@@ -875,10 +875,10 @@ export function CustomEmbedsPanel() {
           /* TAB 2: ADD NEW CATALOG - Compact continuous list */
           filteredCatalog.length === 0 ? (
             <div className="px-3.5 py-3">
-              <div className="my-8 p-6 text-center rounded-2xl border border-dashed border-zinc-800 bg-[#161619]">
-                <Search className="mx-auto h-6 w-6 text-zinc-500 mb-2" />
-                <p className="text-xs font-medium text-zinc-300">No matching plugins in catalog</p>
-                <p className="mt-1 text-[11px] text-zinc-500">Try choosing another category or clearing search</p>
+              <div className="my-8 p-6 text-center rounded-2xl border border-dashed border-[#E2E8F0] bg-[#161619]">
+                <Search className="mx-auto h-6 w-6 text-[#94A3B8] mb-2" />
+                <p className="text-xs font-medium text-[#334155]">No matching plugins in catalog</p>
+                <p className="mt-1 text-[11px] text-[#94A3B8]">Try choosing another category or clearing search</p>
               </div>
             </div>
           ) : (
@@ -895,7 +895,7 @@ export function CustomEmbedsPanel() {
                     {/* Middle Info - Plugin Name */}
                     <div className="min-w-0 flex-1">
                       <h4
-                        className="font-medium text-sm text-zinc-100 group-hover:text-white truncate leading-none"
+                        className="font-medium text-sm text-[#111827] group-hover:text-white truncate leading-none"
                         title={plugin.name}
                       >
                         {plugin.name}
@@ -906,7 +906,7 @@ export function CustomEmbedsPanel() {
                     <button
                       type="button"
                       onClick={() => handleOpenAddModal(plugin.pluginType)}
-                      className="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg bg-[#FACC15] hover:bg-[#FDE047] text-zinc-950 transition shadow-xs active:scale-95 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#FACC15] focus-visible:ring-offset-1 focus-visible:ring-offset-[#18181B]"
+                      className="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg bg-[#7137D8] hover:bg-[#6025C5] text-zinc-950 transition shadow-xs active:scale-95 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#FACC15] focus-visible:ring-offset-1 focus-visible:ring-offset-[#18181B]"
                       title={`Add ${plugin.name}`}
                       aria-label={`Add ${plugin.name}`}
                     >

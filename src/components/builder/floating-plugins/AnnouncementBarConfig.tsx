@@ -51,7 +51,7 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
     <div className="space-y-6">
       {/* ── 1. PRE-DESIGNED TEMPLATES ─────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Preset Styles
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -79,11 +79,11 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
 
       {/* ── 2. MESSAGE CONTENT ────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Banner Content
         </label>
         <div>
-          <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+          <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
             Announcement Message
           </span>
           <textarea
@@ -91,13 +91,13 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
             onChange={(e) => update({ text: e.target.value })}
             placeholder="2027 Winter and Spring Schedules are now open for enrollment!"
             rows={2}
-            className="w-full p-3 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-white placeholder-zinc-500 focus:outline-none focus:border-[#FACC15] resize-none"
+            className="w-full p-3 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15] resize-none"
           />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+            <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Button Label (Optional)
             </span>
             <input
@@ -105,12 +105,12 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
               value={data.ctaLabel}
               onChange={(e) => update({ ctaLabel: e.target.value })}
               placeholder="Learn More"
-              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-white placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
+              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
             />
           </div>
 
           <div>
-            <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+            <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Button Link URL
             </span>
             <input
@@ -118,7 +118,7 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
               value={data.ctaUrl}
               onChange={(e) => update({ ctaUrl: e.target.value })}
               placeholder="https://example.com/special-offer"
-              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-white placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
+              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
             />
           </div>
         </div>
@@ -126,13 +126,13 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
 
       {/* ── 3. PLACEMENT & COLORS ─────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Placement & Colors
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Placement */}
           <div>
-            <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+            <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Banner Position
             </span>
             <div className="grid grid-cols-2 gap-2">
@@ -142,7 +142,7 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
                 className={`py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition ${
                   data.position === "top_fixed"
                     ? "border-2 border-[#FACC15] bg-[#1A1A20] text-white"
-                    : "border border-[#27272A] bg-[#151518] text-zinc-400"
+                    : "border border-[#E2E8F0] bg-[#151518] text-[#64748B]"
                 }`}
               >
                 <span>Sticky Top</span>
@@ -153,7 +153,7 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
                 className={`py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition ${
                   data.position === "bottom_fixed"
                     ? "border-2 border-[#FACC15] bg-[#1A1A20] text-white"
-                    : "border border-[#27272A] bg-[#151518] text-zinc-400"
+                    : "border border-[#E2E8F0] bg-[#151518] text-[#64748B]"
                 }`}
               >
                 <span>Sticky Bottom</span>
@@ -164,7 +164,7 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
           {/* Color pickers */}
           <div className="flex items-center gap-3">
             <div className="flex-1">
-              <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+              <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
                 Bar Color
               </span>
               <div className="flex items-center gap-2 h-10 px-2 rounded-xl bg-[#17171A] border border-[#2B2B30]">
@@ -179,7 +179,7 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
             </div>
 
             <div className="flex-1">
-              <span className="text-[11px] font-semibold text-zinc-300 block mb-1.5">
+              <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
                 Button Color
               </span>
               <div className="flex items-center gap-2 h-10 px-2 rounded-xl bg-[#17171A] border border-[#2B2B30]">
@@ -198,34 +198,34 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
 
       {/* ── 4. DISPLAY OPTIONS ────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#111827] tracking-wide block">
           Display Options
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#27272A]">
-            <span className="text-xs font-semibold text-zinc-200">Show on Desktop</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#111827]">Show on Desktop</span>
             <Switch
               checked={data.showOnDesktop}
               onCheckedChange={(checked) => update({ showOnDesktop: checked })}
-              className="data-[state=checked]:bg-[#FACC15]"
+              className="data-[state=checked]:bg-[#7137D8]"
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#27272A]">
-            <span className="text-xs font-semibold text-zinc-200">Show on Mobile</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#111827]">Show on Mobile</span>
             <Switch
               checked={data.showOnMobile}
               onCheckedChange={(checked) => update({ showOnMobile: checked })}
-              className="data-[state=checked]:bg-[#FACC15]"
+              className="data-[state=checked]:bg-[#7137D8]"
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#27272A]">
-            <span className="text-xs font-semibold text-zinc-200">Close Button</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#111827]">Close Button</span>
             <Switch
               checked={data.allowDismiss}
               onCheckedChange={(checked) => update({ allowDismiss: checked })}
-              className="data-[state=checked]:bg-[#FACC15]"
+              className="data-[state=checked]:bg-[#7137D8]"
             />
           </div>
         </div>

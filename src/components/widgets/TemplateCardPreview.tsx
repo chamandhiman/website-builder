@@ -46,48 +46,48 @@ export function TemplateCardPreview({ tpl }: { tpl: CountdownTemplateItem }) {
         {cfg.showDays && (
           <div
             className={`px-2 py-1 rounded text-xs font-mono font-bold ${
-              isFlip ? "border border-zinc-700 shadow-inner" : ""
+              isFlip ? "border border-[#CBD5E1] shadow-inner" : ""
             }`}
             style={{
               backgroundColor: isMinimal ? "transparent" : colors.cardBackground || "#27272a",
               color: colors.numberColor || "#facc15",
             }}
           >
-            02<span className="text-[8px] block text-zinc-400 font-sans">{cfg.labelDays || "d"}</span>
+            02<span className="text-[8px] block text-[#64748B] font-sans">{cfg.labelDays || "d"}</span>
           </div>
         )}
         <div
           className={`px-2 py-1 rounded text-xs font-mono font-bold ${
-            isFlip ? "border border-zinc-700 shadow-inner" : ""
+            isFlip ? "border border-[#CBD5E1] shadow-inner" : ""
           }`}
           style={{
             backgroundColor: isMinimal ? "transparent" : colors.cardBackground || "#27272a",
             color: colors.numberColor || "#facc15",
           }}
         >
-          14<span className="text-[8px] block text-zinc-400 font-sans">{cfg.labelHours || "h"}</span>
+          14<span className="text-[8px] block text-[#64748B] font-sans">{cfg.labelHours || "h"}</span>
         </div>
         <div
           className={`px-2 py-1 rounded text-xs font-mono font-bold ${
-            isFlip ? "border border-zinc-700 shadow-inner" : ""
+            isFlip ? "border border-[#CBD5E1] shadow-inner" : ""
           }`}
           style={{
             backgroundColor: isMinimal ? "transparent" : colors.cardBackground || "#27272a",
             color: colors.numberColor || "#facc15",
           }}
         >
-          35<span className="text-[8px] block text-zinc-400 font-sans">{cfg.labelMinutes || "m"}</span>
+          35<span className="text-[8px] block text-[#64748B] font-sans">{cfg.labelMinutes || "m"}</span>
         </div>
         <div
           className={`px-2 py-1 rounded text-xs font-mono font-bold ${
-            isFlip ? "border border-zinc-700 shadow-inner" : ""
+            isFlip ? "border border-[#CBD5E1] shadow-inner" : ""
           }`}
           style={{
             backgroundColor: isMinimal ? "transparent" : colors.cardBackground || "#27272a",
             color: colors.numberColor || "#facc15",
           }}
         >
-          48<span className="text-[8px] block text-zinc-400 font-sans">{cfg.labelSeconds || "s"}</span>
+          48<span className="text-[8px] block text-[#64748B] font-sans">{cfg.labelSeconds || "s"}</span>
         </div>
       </div>
 
