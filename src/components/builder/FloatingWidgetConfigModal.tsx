@@ -75,11 +75,11 @@ export function FloatingWidgetConfigModal({
 
   return (
     <div className="fixed inset-0 z-[100000] flex items-center justify-center bg-black/75 p-4 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="relative flex max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl border border-[#2B2B2B] bg-[#141416] text-[#111827] shadow-2xl overflow-hidden">
+      <div className="relative flex max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl border border-[#E2E8F0] bg-white text-[#000000] shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#2B2B2B] px-5 py-4 bg-[#18181A]">
+        <div className="flex items-center justify-between border-b border-[#E2E8F0] px-5 py-4 bg-[#F8FAFC]">
           <div className="flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#7137D8]/15 border border-[#FACC15]/30 text-[#FACC15]">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#EDE9FE] border border-[#7137D8]/30 text-[#7137D8]">
               {formData.type === "whatsapp_chat" && <MessageCircle className="h-5 w-5" />}
               {formData.type === "accessibility" && <Accessibility className="h-5 w-5" />}
               {formData.type === "language_switcher" && <Globe className="h-5 w-5" />}
@@ -89,14 +89,14 @@ export function FloatingWidgetConfigModal({
             </span>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-sm font-bold text-[#111827] tracking-wide">
+                <h2 className="text-sm font-bold text-[#000000] tracking-wide">
                   {widget ? "Configure Floating Widget" : "Add Floating Widget"}
                 </h2>
                 <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
                   {formData.enabled ? "Active" : "Disabled"}
                 </span>
               </div>
-              <p className="text-[11px] text-[#A1A1AA]">
+              <p className="text-[11px] text-[#64748B]">
                 Floats automatically on top of your website without disrupting page layouts.
               </p>
             </div>
@@ -104,21 +104,21 @@ export function FloatingWidgetConfigModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-[#71717A] hover:bg-[#27272A] hover:text-white transition"
+            className="rounded-lg p-1.5 text-[#64748B] hover:bg-[#F1F5F9] hover:text-[#000000] transition"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Tab navigation */}
-        <div className="flex border-b border-[#2B2B2B] bg-[#121214] px-5">
+        <div className="flex border-b border-[#E2E8F0] bg-[#F1F5F9] px-5">
           <button
             type="button"
             onClick={() => setActiveTab("settings")}
             className={`flex items-center gap-2 border-b-2 px-3 py-2.5 text-xs font-semibold transition ${
               activeTab === "settings"
-                ? "border-[#FACC15] text-[#FACC15]"
-                : "border-transparent text-[#A1A1AA] hover:text-white"
+                ? "border-[#7137D8] text-[#7137D8] bg-white"
+                : "border-transparent text-[#64748B] hover:text-[#000000]"
             }`}
           >
             <Settings2 className="h-3.5 w-3.5" />
@@ -129,8 +129,8 @@ export function FloatingWidgetConfigModal({
             onClick={() => setActiveTab("appearance")}
             className={`flex items-center gap-2 border-b-2 px-3 py-2.5 text-xs font-semibold transition ${
               activeTab === "appearance"
-                ? "border-[#FACC15] text-[#FACC15]"
-                : "border-transparent text-[#A1A1AA] hover:text-white"
+                ? "border-[#7137D8] text-[#7137D8] bg-white"
+                : "border-transparent text-[#64748B] hover:text-[#000000]"
             }`}
           >
             <Sliders className="h-3.5 w-3.5" />
@@ -141,8 +141,8 @@ export function FloatingWidgetConfigModal({
             onClick={() => setActiveTab("targeting")}
             className={`flex items-center gap-2 border-b-2 px-3 py-2.5 text-xs font-semibold transition ${
               activeTab === "targeting"
-                ? "border-[#FACC15] text-[#FACC15]"
-                : "border-transparent text-[#A1A1AA] hover:text-white"
+                ? "border-[#7137D8] text-[#7137D8] bg-white"
+                : "border-transparent text-[#64748B] hover:text-[#000000]"
             }`}
           >
             <Eye className="h-3.5 w-3.5" />
@@ -160,7 +160,7 @@ export function FloatingWidgetConfigModal({
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full h-8 rounded-lg border border-[#2B2B2B] bg-[#1C1C1E] px-3 text-xs text-white outline-none focus:border-[#FACC15]"
+                className="w-full h-8 rounded-lg border border-[#CBD5E1] bg-white px-3 text-xs text-[#000000] outline-none focus:border-[#FACC15]"
                 placeholder="e.g. WhatsApp Customer Support"
               />
             </div>
@@ -186,14 +186,14 @@ export function FloatingWidgetConfigModal({
             <div className="space-y-4">
               {/* WhatsApp Specific */}
               {formData.type === "whatsapp_chat" && (
-                <div className="rounded-xl border border-[#2B2B2B] bg-[#18181A] p-4 space-y-3">
-                  <h3 className="text-xs font-bold text-[#111827] flex items-center gap-2">
+                <div className="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4 space-y-3">
+                  <h3 className="text-xs font-bold text-[#000000] flex items-center gap-2">
                     <MessageCircle className="h-4 w-4 text-emerald-400" />
                     <span>WhatsApp Details</span>
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-[11px] text-[#A1A1AA]">Phone Number (with country code)</label>
+                      <label className="text-[11px] text-[#64748B]">Phone Number (with country code)</label>
                       <input
                         type="text"
                         value={formData.config.phoneNumber || ""}
@@ -204,11 +204,11 @@ export function FloatingWidgetConfigModal({
                           })
                         }
                         placeholder="+1 555 123 4567"
-                        className="w-full h-8 rounded-lg border border-[#2B2B2B] bg-[#1C1C1E] px-2.5 text-xs text-white outline-none focus:border-emerald-400"
+                        className="w-full h-8 rounded-lg border border-[#CBD5E1] bg-white px-2.5 text-xs text-[#000000] outline-none focus:border-emerald-400"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[11px] text-[#A1A1AA]">Agent / Team Name</label>
+                      <label className="text-[11px] text-[#64748B]">Agent / Team Name</label>
                       <input
                         type="text"
                         value={formData.config.agentName || ""}
@@ -219,12 +219,12 @@ export function FloatingWidgetConfigModal({
                           })
                         }
                         placeholder="Customer Support"
-                        className="w-full h-8 rounded-lg border border-[#2B2B2B] bg-[#1C1C1E] px-2.5 text-xs text-white outline-none focus:border-emerald-400"
+                        className="w-full h-8 rounded-lg border border-[#CBD5E1] bg-white px-2.5 text-xs text-[#000000] outline-none focus:border-emerald-400"
                       />
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] text-[#A1A1AA]">Greeting Bubble Message</label>
+                    <label className="text-[11px] text-[#64748B]">Greeting Bubble Message</label>
                     <input
                       type="text"
                       value={formData.config.greetingText || ""}
@@ -235,11 +235,11 @@ export function FloatingWidgetConfigModal({
                         })
                       }
                       placeholder="Hi there! How can we help you today?"
-                      className="w-full h-8 rounded-lg border border-[#2B2B2B] bg-[#1C1C1E] px-2.5 text-xs text-white outline-none focus:border-emerald-400"
+                      className="w-full h-8 rounded-lg border border-[#CBD5E1] bg-white px-2.5 text-xs text-[#000000] outline-none focus:border-emerald-400"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] text-[#A1A1AA]">Prefilled Visitor Message</label>
+                    <label className="text-[11px] text-[#64748B]">Prefilled Visitor Message</label>
                     <input
                       type="text"
                       value={formData.config.prefilledMessage || ""}
@@ -250,7 +250,7 @@ export function FloatingWidgetConfigModal({
                         })
                       }
                       placeholder="Hello! I would like to inquire about..."
-                      className="w-full h-8 rounded-lg border border-[#2B2B2B] bg-[#1C1C1E] px-2.5 text-xs text-white outline-none focus:border-emerald-400"
+                      className="w-full h-8 rounded-lg border border-[#CBD5E1] bg-white px-2.5 text-xs text-[#000000] outline-none focus:border-emerald-400"
                     />
                   </div>
                 </div>
@@ -258,8 +258,8 @@ export function FloatingWidgetConfigModal({
 
               {/* Accessibility Specific */}
               {formData.type === "accessibility" && (
-                <div className="rounded-xl border border-[#2B2B2B] bg-[#18181A] p-4 space-y-3">
-                  <h3 className="text-xs font-bold text-[#111827] flex items-center gap-2">
+                <div className="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4 space-y-3">
+                  <h3 className="text-xs font-bold text-[#000000] flex items-center gap-2">
                     <Accessibility className="h-4 w-4 text-blue-400" />
                     <span>Accessibility Tools Enabled</span>
                   </h3>
@@ -275,7 +275,7 @@ export function FloatingWidgetConfigModal({
                       return (
                         <label
                           key={feature.key}
-                          className="flex items-center gap-2 p-2 rounded-lg bg-[#141416] border border-[#2B2B2B] cursor-pointer hover:border-[#FACC15]/40 transition"
+                          className="flex items-center gap-2 p-2 rounded-lg bg-white border border-[#E2E8F0] cursor-pointer hover:border-[#FACC15]/40 transition"
                         >
                           <input
                             type="checkbox"
@@ -299,14 +299,14 @@ export function FloatingWidgetConfigModal({
 
               {/* Back to Top Specific */}
               {formData.type === "back_to_top" && (
-                <div className="rounded-xl border border-[#2B2B2B] bg-[#18181A] p-4 space-y-3">
-                  <h3 className="text-xs font-bold text-[#111827] flex items-center gap-2">
+                <div className="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4 space-y-3">
+                  <h3 className="text-xs font-bold text-[#000000] flex items-center gap-2">
                     <ArrowUp className="h-4 w-4 text-[#7137D8]" />
                     <span>Scroll Trigger & Style</span>
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-[11px] text-[#A1A1AA]">Scroll Distance to Appear (px)</label>
+                      <label className="text-[11px] text-[#64748B]">Scroll Distance to Appear (px)</label>
                       <input
                         type="number"
                         min="50"
@@ -319,11 +319,11 @@ export function FloatingWidgetConfigModal({
                             config: { ...formData.config, scrollThreshold: Number(e.target.value) },
                           })
                         }
-                        className="w-full h-8 rounded-lg border border-[#2B2B2B] bg-[#1C1C1E] px-2.5 text-xs text-white outline-none focus:border-[#FACC15]"
+                        className="w-full h-8 rounded-lg border border-[#CBD5E1] bg-white px-2.5 text-xs text-[#000000] outline-none focus:border-[#FACC15]"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[11px] text-[#A1A1AA]">Button Shape</label>
+                      <label className="text-[11px] text-[#64748B]">Button Shape</label>
                       <select
                         value={formData.config.shape || "round"}
                         onChange={(e) =>
@@ -332,7 +332,7 @@ export function FloatingWidgetConfigModal({
                             config: { ...formData.config, shape: e.target.value },
                           })
                         }
-                        className="w-full h-8 rounded-lg border border-[#2B2B2B] bg-[#1C1C1E] px-2.5 text-xs text-white outline-none focus:border-[#FACC15]"
+                        className="w-full h-8 rounded-lg border border-[#CBD5E1] bg-white px-2.5 text-xs text-[#000000] outline-none focus:border-[#FACC15]"
                       >
                         <option value="round">Circular (Round)</option>
                         <option value="rounded_square">Rounded Square</option>
@@ -344,14 +344,14 @@ export function FloatingWidgetConfigModal({
 
               {/* Quick Contact Specific */}
               {formData.type === "floating_contact" && (
-                <div className="rounded-xl border border-[#2B2B2B] bg-[#18181A] p-4 space-y-3">
-                  <h3 className="text-xs font-bold text-[#111827] flex items-center gap-2">
+                <div className="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4 space-y-3">
+                  <h3 className="text-xs font-bold text-[#000000] flex items-center gap-2">
                     <Phone className="h-4 w-4 text-[#7137D8]" />
                     <span>Action & Destination</span>
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-[11px] text-[#A1A1AA]">Action Type</label>
+                      <label className="text-[11px] text-[#64748B]">Action Type</label>
                       <select
                         value={formData.config.actionType || "phone"}
                         onChange={(e) =>
@@ -360,7 +360,7 @@ export function FloatingWidgetConfigModal({
                             config: { ...formData.config, actionType: e.target.value },
                           })
                         }
-                        className="w-full h-8 rounded-lg border border-[#2B2B2B] bg-[#1C1C1E] px-2.5 text-xs text-white outline-none focus:border-[#FACC15]"
+                        className="w-full h-8 rounded-lg border border-[#CBD5E1] bg-white px-2.5 text-xs text-[#000000] outline-none focus:border-[#FACC15]"
                       >
                         <option value="phone">Phone Call (tel:)</option>
                         <option value="email">Email Message (mailto:)</option>
@@ -368,7 +368,7 @@ export function FloatingWidgetConfigModal({
                       </select>
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[11px] text-[#A1A1AA]">Phone / Email / URL</label>
+                      <label className="text-[11px] text-[#64748B]">Phone / Email / URL</label>
                       <input
                         type="text"
                         value={formData.config.actionValue || ""}
@@ -379,12 +379,12 @@ export function FloatingWidgetConfigModal({
                           })
                         }
                         placeholder="+1 555 123 4567 or mail@domain.com"
-                        className="w-full h-8 rounded-lg border border-[#2B2B2B] bg-[#1C1C1E] px-2.5 text-xs text-white outline-none focus:border-[#FACC15]"
+                        className="w-full h-8 rounded-lg border border-[#CBD5E1] bg-white px-2.5 text-xs text-[#000000] outline-none focus:border-[#FACC15]"
                       />
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] text-[#A1A1AA]">Button Label</label>
+                    <label className="text-[11px] text-[#64748B]">Button Label</label>
                     <input
                       type="text"
                       value={formData.config.label || "Call Now"}
@@ -394,7 +394,7 @@ export function FloatingWidgetConfigModal({
                           config: { ...formData.config, label: e.target.value },
                         })
                       }
-                      className="w-full h-8 rounded-lg border border-[#2B2B2B] bg-[#1C1C1E] px-2.5 text-xs text-white outline-none focus:border-[#FACC15]"
+                      className="w-full h-8 rounded-lg border border-[#CBD5E1] bg-white px-2.5 text-xs text-[#000000] outline-none focus:border-[#FACC15]"
                     />
                   </div>
                 </div>
@@ -402,8 +402,8 @@ export function FloatingWidgetConfigModal({
 
               {/* Custom Embed Specific */}
               {formData.type === "custom_embed" && (
-                <div className="rounded-xl border border-[#2B2B2B] bg-[#18181A] p-4 space-y-3">
-                  <h3 className="text-xs font-bold text-[#111827] flex items-center gap-2">
+                <div className="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-4 space-y-3">
+                  <h3 className="text-xs font-bold text-[#000000] flex items-center gap-2">
                     <Code2 className="h-4 w-4 text-[#7137D8]" />
                     <span>Floating Embed HTML / Script</span>
                   </h3>
@@ -442,7 +442,7 @@ export function FloatingWidgetConfigModal({
                         className={`h-16 rounded-xl border p-3 flex flex-col items-center justify-center gap-1 transition ${
                           isSelected
                             ? "border-[#FACC15] bg-[#7137D8]/15 text-[#FACC15] font-bold shadow-xs"
-                            : "border-[#2B2B2B] bg-[#18181A] text-[#A1A1AA] hover:border-zinc-600 hover:text-white"
+                            : "border-[#2B2B2B] bg-[#18181A] text-[#64748B] hover:border-zinc-600 hover:text-white"
                         }`}
                       >
                         <span className="text-xs">{corner.label}</span>
@@ -456,25 +456,25 @@ export function FloatingWidgetConfigModal({
               {/* Offsets */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-[11px] text-[#A1A1AA]">Horizontal Offset (px from edge)</label>
+                  <label className="text-[11px] text-[#64748B]">Horizontal Offset (px from edge)</label>
                   <input
                     type="number"
                     min="0"
                     max="200"
                     value={formData.offsetX}
                     onChange={(e) => setFormData({ ...formData, offsetX: Number(e.target.value) })}
-                    className="w-full h-8 rounded-lg border border-[#2B2B2B] bg-[#1C1C1E] px-2.5 text-xs text-white outline-none focus:border-[#FACC15]"
+                    className="w-full h-8 rounded-lg border border-[#CBD5E1] bg-white px-2.5 text-xs text-[#000000] outline-none focus:border-[#FACC15]"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[11px] text-[#A1A1AA]">Vertical Offset (px from edge)</label>
+                  <label className="text-[11px] text-[#64748B]">Vertical Offset (px from edge)</label>
                   <input
                     type="number"
                     min="0"
                     max="200"
                     value={formData.offsetY}
                     onChange={(e) => setFormData({ ...formData, offsetY: Number(e.target.value) })}
-                    className="w-full h-8 rounded-lg border border-[#2B2B2B] bg-[#1C1C1E] px-2.5 text-xs text-white outline-none focus:border-[#FACC15]"
+                    className="w-full h-8 rounded-lg border border-[#CBD5E1] bg-white px-2.5 text-xs text-[#000000] outline-none focus:border-[#FACC15]"
                   />
                 </div>
               </div>
@@ -539,7 +539,7 @@ export function FloatingWidgetConfigModal({
                       className={`flex items-start gap-2.5 p-3 rounded-xl border cursor-pointer transition ${
                         formData.pageTargeting === mode.id
                           ? "border-[#FACC15]/40 bg-[#7137D8]/10 text-white"
-                          : "border-[#2B2B2B] bg-[#18181A] text-[#A1A1AA] hover:border-[#CBD5E1]"
+                          : "border-[#2B2B2B] bg-[#18181A] text-[#64748B] hover:border-[#CBD5E1]"
                       }`}
                     >
                       <input
@@ -609,7 +609,7 @@ export function FloatingWidgetConfigModal({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-[#2B2B2B] px-3.5 py-1.5 text-xs font-medium text-[#A1A1AA] hover:bg-[#27272A] hover:text-white transition"
+              className="rounded-lg border border-[#2B2B2B] px-3.5 py-1.5 text-xs font-medium text-[#64748B] hover:bg-[#27272A] hover:text-white transition"
             >
               Cancel
             </button>

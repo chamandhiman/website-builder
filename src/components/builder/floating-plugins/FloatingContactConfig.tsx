@@ -116,8 +116,8 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             onClick={() => handleStyleSelect("phone")}
             className={`flex flex-col items-center justify-center p-3 rounded-2xl transition ${
               data.style === "phone"
-                ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm"
-                : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 hover:bg-white"
+                ? "border-2 border-[#7137D8] bg-[#EDE9FE] shadow-sm"
+                : "border border-[#E2E8F0] bg-white hover:border-[#CBD5E1] hover:bg-[#F8FAFC]"
             }`}
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0284C7] text-white shadow-xs mb-1.5">
@@ -125,7 +125,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             </span>
             <span
               className={`text-xs font-semibold ${
-                data.style === "phone" ? "text-white" : "text-[#64748B]"
+                data.style === "phone" ? "text-[#7137D8] font-bold" : "text-[#475569]"
               }`}
             >
               Phone
@@ -138,8 +138,8 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             onClick={() => handleStyleSelect("whatsapp")}
             className={`flex flex-col items-center justify-center p-3 rounded-2xl transition ${
               data.style === "whatsapp"
-                ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm"
-                : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 hover:bg-white"
+                ? "border-2 border-[#7137D8] bg-[#EDE9FE] shadow-sm"
+                : "border border-[#E2E8F0] bg-white hover:border-[#CBD5E1] hover:bg-[#F8FAFC]"
             }`}
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xs mb-1.5">
@@ -147,7 +147,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             </span>
             <span
               className={`text-xs font-semibold ${
-                data.style === "whatsapp" ? "text-white" : "text-[#64748B]"
+                data.style === "whatsapp" ? "text-[#7137D8] font-bold" : "text-[#475569]"
               }`}
             >
               WhatsApp
@@ -160,8 +160,8 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             onClick={() => handleStyleSelect("email")}
             className={`flex flex-col items-center justify-center p-3 rounded-2xl transition ${
               data.style === "email"
-                ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm"
-                : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 hover:bg-white"
+                ? "border-2 border-[#7137D8] bg-[#EDE9FE] shadow-sm"
+                : "border border-[#E2E8F0] bg-white hover:border-[#CBD5E1] hover:bg-[#F8FAFC]"
             }`}
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0284C7] text-white shadow-xs mb-1.5">
@@ -169,7 +169,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             </span>
             <span
               className={`text-xs font-semibold ${
-                data.style === "email" ? "text-white" : "text-[#64748B]"
+                data.style === "email" ? "text-[#7137D8] font-bold" : "text-[#475569]"
               }`}
             >
               Email
@@ -182,8 +182,8 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             onClick={() => handleStyleSelect("chat")}
             className={`flex flex-col items-center justify-center p-3 rounded-2xl transition ${
               data.style === "chat"
-                ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm"
-                : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 hover:bg-white"
+                ? "border-2 border-[#7137D8] bg-[#EDE9FE] shadow-sm"
+                : "border border-[#E2E8F0] bg-white hover:border-[#CBD5E1] hover:bg-[#F8FAFC]"
             }`}
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#7C3AED] text-white shadow-xs mb-1.5">
@@ -191,7 +191,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             </span>
             <span
               className={`text-xs font-semibold ${
-                data.style === "chat" ? "text-white" : "text-[#64748B]"
+                data.style === "chat" ? "text-[#7137D8] font-bold" : "text-[#475569]"
               }`}
             >
               Chat
@@ -204,8 +204,8 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             onClick={() => handleStyleSelect("more")}
             className={`flex flex-col items-center justify-center p-3 rounded-2xl transition ${
               data.style === "more"
-                ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm"
-                : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 hover:bg-white"
+                ? "border-2 border-[#7137D8] bg-[#EDE9FE] shadow-sm"
+                : "border border-[#E2E8F0] bg-white hover:border-[#CBD5E1] hover:bg-[#F8FAFC]"
             }`}
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#27272A] text-white shadow-xs mb-1.5">
@@ -213,7 +213,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
             </span>
             <span
               className={`text-xs font-semibold ${
-                data.style === "more" ? "text-white" : "text-[#64748B]"
+                data.style === "more" ? "text-[#7137D8] font-bold" : "text-[#475569]"
               }`}
             >
               More
@@ -249,7 +249,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
               <select
                 value={data.contactType}
                 onChange={(e) => update({ contactType: e.target.value as any })}
-                className="w-full h-11 pl-9 pr-8 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] focus:outline-none focus:border-[#FACC15] appearance-none cursor-pointer"
+                className="w-full h-11 pl-9 pr-8 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#000000] focus:outline-none focus:border-[#FACC15] appearance-none cursor-pointer"
               >
                 <option value="phone" className="bg-[#17171A] text-white">
                   Phone
@@ -305,7 +305,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
                     ? "support@example.com"
                     : "https://example.com"
                 }
-                className="w-full h-11 pl-9 pr-3 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
+                className="w-full h-11 pl-9 pr-3 rounded-xl border border-[#CBD5E1] bg-white text-xs font-semibold text-[#000000] placeholder-[#94A3B8] focus:outline-none focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]"
               />
             </div>
           </div>
@@ -334,13 +334,13 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
                 onClick={() => update({ position: posItem.key })}
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition ${
                   isSelected
-                    ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm text-white"
+                    ? "border-2 border-[#7137D8] bg-[#EDE9FE] shadow-sm text-white"
                     : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 text-[#64748B]"
                 }`}
               >
                 <LayoutGrid
                   className={`h-4 w-4 shrink-0 ${
-                    isSelected ? "text-[#FACC15]" : "text-[#94A3B8]"
+                    isSelected ? "text-[#7137D8]" : "text-[#64748B]"
                   }`}
                 />
                 <span className="text-xs font-semibold truncate">{posItem.label}</span>
@@ -399,7 +399,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
                     style={{ backgroundColor: swatch.value }}
                     className={`h-7 w-7 rounded-full transition-transform ${
                       isSelected
-                        ? "ring-2 ring-offset-2 ring-offset-[#121215] ring-[#FACC15] scale-110"
+                        ? "ring-2 ring-2 ring-offset-2 ring-offset-white ring-[#7137D8] scale-110"
                         : "hover:scale-105 opacity-90 hover:opacity-100"
                     }`}
                     title={swatch.label}
@@ -439,7 +439,7 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
               value={data.tooltipText}
               onChange={(e) => update({ tooltipText: e.target.value })}
               placeholder="Call Us"
-              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
+              className="w-full h-11 px-3.5 rounded-xl border border-[#CBD5E1] bg-white text-xs font-semibold text-[#000000] placeholder-[#94A3B8] focus:outline-none focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]"
             />
           </div>
 
@@ -490,8 +490,8 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {/* Show on Desktop */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
-            <span className="text-xs font-semibold text-[#111827]">Show on Desktop</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#000000]">Show on Desktop</span>
             <Switch
               checked={data.showOnDesktop}
               onCheckedChange={(checked) => update({ showOnDesktop: checked })}
@@ -500,8 +500,8 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
           </div>
 
           {/* Show on Mobile */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
-            <span className="text-xs font-semibold text-[#111827]">Show on Mobile</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#000000]">Show on Mobile</span>
             <Switch
               checked={data.showOnMobile}
               onCheckedChange={(checked) => update({ showOnMobile: checked })}
@@ -510,8 +510,8 @@ export function FloatingContactConfig({ data, onChange }: FloatingContactConfigP
           </div>
 
           {/* Show Tooltip */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
-            <span className="text-xs font-semibold text-[#111827]">Show Tooltip</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#000000]">Show Tooltip</span>
             <Switch
               checked={data.showTooltip}
               onCheckedChange={(checked) => update({ showTooltip: checked })}

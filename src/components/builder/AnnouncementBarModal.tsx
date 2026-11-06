@@ -554,11 +554,11 @@ export function AnnouncementBarModal({
   return (
     <div className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-5 bg-black/40 backdrop-blur-md animate-in fade-in duration-200">
       <div
-        className="w-full max-w-[1320px] max-h-[94vh] flex flex-col bg-[#12141A] border border-[#232733] rounded-2xl shadow-2xl text-[#111827] overflow-hidden font-sans"
+        className="w-full max-w-[1320px] max-h-[94vh] flex flex-col bg-white border border-[#E2E8F0] rounded-2xl shadow-2xl text-[#000000] overflow-hidden font-sans"
         onClick={(e) => e.stopPropagation()}
       >
         {/* ── TOP HEADER ──────────────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#232733] bg-[#161822] flex-shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0] bg-[#F8FAFC] flex-shrink-0">
           <div className="flex items-center gap-3.5">
             <div className="w-10 h-10 rounded-xl bg-[#7C3AED] flex items-center justify-center shadow-lg shadow-purple-900/40 text-white flex-shrink-0">
               <Megaphone size={20} className="stroke-[2.2]" />
@@ -585,16 +585,16 @@ export function AnnouncementBarModal({
         {/* ── TWO-COLUMN BODY ─────────────────────────────────────────────────── */}
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-[480px_1fr] overflow-hidden divide-y lg:divide-y-0 lg:divide-x divide-[#232733] min-h-0">
           {/* ── LEFT COLUMN: CONFIGURATION (DESIGN + PREFERENCES TABS) ─────────── */}
-          <div className="flex flex-col h-full overflow-hidden bg-[#101217]">
+          <div className="flex flex-col h-full overflow-hidden bg-white">
             {/* Tab Navigation Strip */}
-            <div className="flex items-center gap-2 p-3 border-b border-[#232733] bg-[#14161F] flex-shrink-0">
+            <div className="flex items-center gap-2 p-3 border-b border-[#E2E8F0] bg-[#F1F5F9] flex-shrink-0">
               <button
                 type="button"
                 onClick={() => setActiveTab("design")}
                 className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
                   activeTab === "design"
                     ? "bg-[#7137D8] text-zinc-950 shadow-md shadow-yellow-500/20"
-                    : "text-[#64748B] hover:text-white hover:bg-[#1C202C]"
+                    : "text-[#64748B] hover:text-[#000000] hover:bg-[#F1F5F9]"
                 }`}
               >
                 <Sparkles size={14} className={activeTab === "design" ? "text-zinc-950" : "text-[#64748B]"} />
@@ -614,7 +614,7 @@ export function AnnouncementBarModal({
                 className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
                   activeTab === "preferences"
                     ? "bg-[#7137D8] text-zinc-950 shadow-md shadow-yellow-500/20"
-                    : "text-[#64748B] hover:text-white hover:bg-[#1C202C]"
+                    : "text-[#64748B] hover:text-[#000000] hover:bg-[#F1F5F9]"
                 }`}
               >
                 <Sliders size={14} className={activeTab === "preferences" ? "text-zinc-950" : "text-[#64748B]"} />
@@ -624,7 +624,7 @@ export function AnnouncementBarModal({
 
             {/* TAB 1: DESIGN — 10 Template Cards Only */}
             {activeTab === "design" && (
-              <div className="flex-1 overflow-y-auto p-4 space-y-2.5 custom-scrollbar bg-[#101217]">
+              <div className="flex-1 overflow-y-auto p-4 space-y-2.5 custom-scrollbar bg-white">
                 <div className="mb-2 px-0.5">
                   <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
                     Select Template Preset
@@ -640,8 +640,8 @@ export function AnnouncementBarModal({
                       onClick={() => handleSelectTemplate(tpl.key)}
                       className={`group relative p-2.5 rounded-xl cursor-pointer transition-all border ${
                         isSelected
-                          ? "border-[#FACC15] bg-[#1C1F2B] ring-1 ring-[#FACC15]/50 shadow-md"
-                          : "border-[#232733] bg-[#141720] hover:border-[#CBD5E1] hover:bg-[#181B26]"
+                          ? "border-2 border-[#7137D8] bg-[#EDE9FE] shadow-sm text-[#7137D8] font-bold"
+                          : "border border-[#E2E8F0] bg-white hover:border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#475569]"
                       }`}
                     >
                       <div className="flex items-center gap-2.5">
@@ -722,9 +722,9 @@ export function AnnouncementBarModal({
 
             {/* TAB 2: PREFERENCES — Compact Organized Settings */}
             {activeTab === "preferences" && (
-              <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-[#101217]">
+              <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-white">
                 {/* 1. Content */}
-                <div className="p-3.5 rounded-xl bg-[#161922] border border-[#252A38] space-y-3">
+                <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-[#334155]">
                       Content
@@ -741,7 +741,7 @@ export function AnnouncementBarModal({
                       value={text}
                       onChange={(e) => handleTextChange(e.target.value)}
                       placeholder="e.g. 2027 Winter and Spring Schedules are now open for enrollment!"
-                      className="w-full bg-[#1A1D27] border border-[#2E3547] focus:border-[#FACC15] rounded-lg px-3 py-2 text-xs text-white placeholder-zinc-500 outline-none transition-colors"
+                      className="w-full bg-white border border-[#CBD5E1] focus:border-[#7137D8] rounded-lg px-3 py-2 text-xs text-[#000000] placeholder-[#94A3B8] outline-none transition-colors"
                     />
                   </div>
 
@@ -760,8 +760,8 @@ export function AnnouncementBarModal({
                             title={opt.label}
                             className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-all ${
                               isChosen
-                                ? "border-[#FACC15] bg-[#222736] text-[#FACC15] ring-1 ring-[#FACC15]"
-                                : "border-[#2E3547] bg-[#1A1D27] text-[#64748B] hover:text-white hover:border-zinc-600"
+                                ? "border-2 border-[#7137D8] bg-[#EDE9FE] text-[#7137D8] font-bold"
+                                : "border border-[#E2E8F0] bg-white text-[#475569] hover:bg-[#F8FAFC] hover:border-[#CBD5E1]"
                             }`}
                           >
                             <IconComp size={15} />
@@ -785,7 +785,7 @@ export function AnnouncementBarModal({
                         value={headline}
                         onChange={(e) => setHeadline(e.target.value)}
                         placeholder="e.g. Important Update / New Classes"
-                        className="w-full bg-[#1A1D27] border border-[#2E3547] focus:border-[#FACC15] rounded-lg px-3 py-2 text-xs text-white placeholder-zinc-500 outline-none"
+                        className="w-full bg-white border border-[#CBD5E1] focus:border-[#7137D8] rounded-lg px-3 py-2 text-xs text-[#000000] placeholder-[#94A3B8] outline-none"
                       />
                     </div>
                   )}
@@ -799,7 +799,7 @@ export function AnnouncementBarModal({
                         value={linkText}
                         onChange={(e) => setLinkText(e.target.value)}
                         placeholder="e.g. Check Locations Near You →"
-                        className="w-full bg-[#1A1D27] border border-[#2E3547] focus:border-[#FACC15] rounded-lg px-3 py-2 text-xs text-white placeholder-zinc-500 outline-none"
+                        className="w-full bg-white border border-[#CBD5E1] focus:border-[#7137D8] rounded-lg px-3 py-2 text-xs text-[#000000] placeholder-[#94A3B8] outline-none"
                       />
                     </div>
                   )}
@@ -807,7 +807,7 @@ export function AnnouncementBarModal({
 
                 {/* 2. Action (Conditional on button / link support) */}
                 {(currentTplDef.hasButton || selectedTemplate === "announcement_link") && (
-                  <div className="p-3.5 rounded-xl bg-[#161922] border border-[#252A38] space-y-3">
+                  <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold uppercase tracking-wider text-[#334155]">
                         Action & Link
@@ -824,7 +824,7 @@ export function AnnouncementBarModal({
                             value={buttonText}
                             onChange={(e) => setButtonText(e.target.value)}
                             placeholder="e.g. Learn More"
-                            className="w-full bg-[#1A1D27] border border-[#2E3547] focus:border-[#FACC15] rounded-lg px-3 py-2 text-xs text-white placeholder-zinc-500 outline-none"
+                            className="w-full bg-white border border-[#CBD5E1] focus:border-[#7137D8] rounded-lg px-3 py-2 text-xs text-[#000000] placeholder-[#94A3B8] outline-none"
                           />
                         </div>
                       )}
@@ -836,7 +836,7 @@ export function AnnouncementBarModal({
                           value={buttonUrl}
                           onChange={(e) => setButtonUrl(e.target.value)}
                           placeholder="https://"
-                          className="w-full bg-[#1A1D27] border border-[#2E3547] focus:border-[#FACC15] rounded-lg px-3 py-2 text-xs text-white placeholder-zinc-500 outline-none"
+                          className="w-full bg-white border border-[#CBD5E1] focus:border-[#7137D8] rounded-lg px-3 py-2 text-xs text-[#000000] placeholder-[#94A3B8] outline-none"
                         />
                       </div>
                     </div>
@@ -846,7 +846,7 @@ export function AnnouncementBarModal({
                         type="checkbox"
                         checked={openNewTab}
                         onChange={(e) => setOpenNewTab(e.target.checked)}
-                        className="w-4 h-4 rounded accent-[#FACC15] cursor-pointer"
+                        className="w-4 h-4 rounded accent-[#7137D8] cursor-pointer"
                       />
                       <span>Open link in a new tab</span>
                     </label>
@@ -854,7 +854,7 @@ export function AnnouncementBarModal({
                 )}
 
                 {/* 3. Appearance */}
-                <div className="p-3.5 rounded-xl bg-[#161922] border border-[#252A38] space-y-3.5">
+                <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3.5">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-[#334155]">
                       Appearance
@@ -989,7 +989,7 @@ export function AnnouncementBarModal({
                 </div>
 
                 {/* 4. Placement */}
-                <div className="p-3.5 rounded-xl bg-[#161922] border border-[#252A38] space-y-3">
+                <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-[#334155]">
                       Placement
@@ -1025,7 +1025,7 @@ export function AnnouncementBarModal({
                 </div>
 
                 {/* 5. Visibility */}
-                <div className="p-3.5 rounded-xl bg-[#161922] border border-[#252A38] space-y-3">
+                <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-[#334155]">
                       Visibility
@@ -1079,7 +1079,7 @@ export function AnnouncementBarModal({
                                         setSelectedPages([...selectedPages, p.id]);
                                       }
                                     }}
-                                    className="w-3.5 h-3.5 rounded accent-[#FACC15]"
+                                    className="w-3.5 h-3.5 rounded accent-[#7137D8]"
                                   />
                                   <span className="text-[#111827]">{p.name || p.slug || "Page"}</span>
                                 </label>
@@ -1100,7 +1100,7 @@ export function AnnouncementBarModal({
                           type="checkbox"
                           checked={showOnDesktop}
                           onChange={(e) => setShowOnDesktop(e.target.checked)}
-                          className="w-4 h-4 rounded accent-[#FACC15] cursor-pointer"
+                          className="w-4 h-4 rounded accent-[#7137D8] cursor-pointer"
                         />
                         <span>Desktop</span>
                       </label>
@@ -1109,7 +1109,7 @@ export function AnnouncementBarModal({
                           type="checkbox"
                           checked={showOnMobile}
                           onChange={(e) => setShowOnMobile(e.target.checked)}
-                          className="w-4 h-4 rounded accent-[#FACC15] cursor-pointer"
+                          className="w-4 h-4 rounded accent-[#7137D8] cursor-pointer"
                         />
                         <span>Mobile</span>
                       </label>
@@ -1118,7 +1118,7 @@ export function AnnouncementBarModal({
                 </div>
 
                 {/* 6. Behavior */}
-                <div className="p-3.5 rounded-xl bg-[#161922] border border-[#252A38] space-y-3">
+                <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-[#334155]">
                       Behavior
@@ -1132,7 +1132,7 @@ export function AnnouncementBarModal({
                         type="checkbox"
                         checked={showCloseButton}
                         onChange={(e) => setShowCloseButton(e.target.checked)}
-                        className="w-4 h-4 rounded accent-[#FACC15] cursor-pointer"
+                        className="w-4 h-4 rounded accent-[#7137D8] cursor-pointer"
                       />
                       <span>Show Close Button</span>
                     </label>
@@ -1142,7 +1142,7 @@ export function AnnouncementBarModal({
                         type="checkbox"
                         checked={allowDismiss}
                         onChange={(e) => setAllowDismiss(e.target.checked)}
-                        className="w-4 h-4 rounded accent-[#FACC15] cursor-pointer"
+                        className="w-4 h-4 rounded accent-[#7137D8] cursor-pointer"
                       />
                       <span>Allow Dismiss (Remember for 7 days)</span>
                     </label>
@@ -1152,7 +1152,7 @@ export function AnnouncementBarModal({
                         type="checkbox"
                         checked={animateSlideDown}
                         onChange={(e) => setAnimateSlideDown(e.target.checked)}
-                        className="w-4 h-4 rounded accent-[#FACC15] cursor-pointer"
+                        className="w-4 h-4 rounded accent-[#7137D8] cursor-pointer"
                       />
                       <span>Animate Slide In</span>
                     </label>

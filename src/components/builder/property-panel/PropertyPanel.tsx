@@ -122,14 +122,14 @@ export function PropertyPanel({
 
   return (
     <div className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-transparent">
-      <div className="shrink-0 border-b border-[#262626] bg-[#161616] px-3 pt-2.5 pb-2">
+      <div className="shrink-0 border-b border-[#E2E8F0] bg-[#F8FAFC] px-3 pt-2.5 pb-2">
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-2">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-[#2B2B2B] bg-[#202020] text-[#D0D0D0]">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-[#E2E8F0] bg-[#F1F5F9] text-[#7137D8]">
               {panelIcon}
             </span>
             <div className="min-w-0">
-              <div className="truncate text-xs font-semibold text-[#F4F4F5]">{displayTitle}</div>
+              <div className="truncate text-xs font-semibold text-[#000000]">{displayTitle}</div>
               {subtitle ? <div className="truncate text-[10px] text-[#A1A1AA]">{subtitle}</div> : null}
             </div>
           </div>
@@ -138,7 +138,7 @@ export function PropertyPanel({
               type="button"
               onClick={handlePin}
               className={`flex h-6 w-6 items-center justify-center rounded-md transition ${
-                isPinned ? "bg-[#242424] text-[#FACC15]" : "text-[#71717A] hover:bg-[#202020] hover:text-[#F4F4F5]"
+                isPinned ? "bg-[#242424] text-[#7137D8]" : "text-[#64748B] hover:bg-[#F1F5F9] hover:text-[#000000]"
               }`}
               aria-label={isPinned ? "Unpin panel" : "Pin panel"}
               aria-pressed={isPinned}
@@ -149,7 +149,7 @@ export function PropertyPanel({
               type="button"
               onClick={onClose}
               disabled={!onClose}
-              className="flex h-6 w-6 items-center justify-center rounded-md text-[#71717A] transition hover:bg-[#202020] hover:text-[#F4F4F5] disabled:cursor-not-allowed disabled:opacity-40"
+              className="flex h-6 w-6 items-center justify-center rounded-md text-[#64748B] transition hover:bg-[#F1F5F9] hover:text-[#000000] disabled:cursor-not-allowed disabled:opacity-40"
               aria-label="Close panel"
             >
               <X className="h-3.5 w-3.5" />
@@ -158,7 +158,7 @@ export function PropertyPanel({
         </div>
 
         {tabs.length > 1 && (
-          <div className="mt-2 flex items-center gap-1 rounded-lg border border-[#262626] bg-[#181818] p-0.5">
+          <div className="mt-2 flex items-center gap-1 rounded-lg border border-[#E2E8F0] bg-white p-0.5">
             {tabs.map((tab) => {
               const active = resolvedTab === tab.key;
               return (
@@ -168,11 +168,11 @@ export function PropertyPanel({
                   onClick={() => setActiveTab(tab.key)}
                   className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-all ${
                     active
-                      ? "bg-[#262626] text-[#FACC15] shadow-xs"
-                      : "text-[#94A3B8] hover:bg-[#202020] hover:text-[#E4E4E7]"
+                      ? "bg-[#EDE9FE] text-[#7137D8] shadow-xs"
+                      : "text-[#000000] hover:bg-[#F1F5F9] hover:text-[#7137D8]"
                   }`}
                 >
-                  <span className={active ? "text-[#FACC15]" : "text-[#71717A]"}>{tab.icon}</span>
+                  <span className={active ? "text-[#7137D8]" : "text-[#64748B]"}>{tab.icon}</span>
                   {tab.label}
                 </button>
               );

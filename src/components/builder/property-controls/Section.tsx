@@ -15,16 +15,16 @@ export function Section({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="border-b border-[#2A2A2A] last:border-b-0">
+    <div className="border-b border-[#E2E8F0] last:border-b-0">
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between px-4 py-3 text-sm font-semibold text-[#E0E0E0] hover:bg-[#252525] transition"
+        className="flex w-full items-center justify-between px-4 py-3 text-sm font-semibold text-[#000000] hover:bg-[#F8FAFC] transition"
       >
         <span>{title}</span>
 
         <ChevronDown
-          className={`h-4 w-4 text-[#707070] transition-transform ${
+          className={`h-4 w-4 text-[#64748B] transition-transform ${
             open ? "rotate-180" : ""
           }`}
         />

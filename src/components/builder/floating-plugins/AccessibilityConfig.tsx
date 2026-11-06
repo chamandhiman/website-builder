@@ -47,7 +47,7 @@ export function AccessibilityConfig({ data, onChange }: AccessibilityConfigProps
     <div className="space-y-6">
       {/* ── 1. ACCESSIBILITY CONTROLS ─────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#000000] tracking-wide block">
           Enabled Accessibility Tools
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
@@ -69,12 +69,12 @@ export function AccessibilityConfig({ data, onChange }: AccessibilityConfigProps
                 onClick={() => toggleFeature(feat.key)}
                 className={`flex items-center justify-between p-2.5 rounded-xl transition text-left ${
                   isEnabled
-                    ? "border border-[#FACC15] bg-[#1A1A20] text-white"
-                    : "border border-[#27272A] bg-[#151518] text-zinc-400 hover:border-zinc-600"
+                    ? "border-2 border-[#7137D8] bg-[#EDE9FE] text-[#7137D8] font-bold"
+                    : "border border-[#E2E8F0] bg-white text-[#475569] hover:bg-[#F8FAFC]"
                 }`}
               >
                 <span className="text-xs font-semibold truncate">{feat.label}</span>
-                {isEnabled && <Check className="h-3.5 w-3.5 text-[#FACC15] shrink-0" />}
+                {isEnabled && <Check className="h-3.5 w-3.5 text-[#7137D8] shrink-0" />}
               </button>
             );
           })}
@@ -83,7 +83,7 @@ export function AccessibilityConfig({ data, onChange }: AccessibilityConfigProps
 
       {/* ── 2. TOOLBAR STYLE ──────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#000000] tracking-wide block">
           Toolbar Button Style
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -103,8 +103,8 @@ export function AccessibilityConfig({ data, onChange }: AccessibilityConfigProps
                 onClick={() => update({ toolbarStyle: s.key })}
                 className={`flex flex-col items-center justify-center p-3 rounded-xl transition ${
                   isSelected
-                    ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm text-white"
-                    : "border border-[#27272A] bg-[#151518] hover:border-zinc-600 text-zinc-400"
+                    ? "border-2 border-[#7137D8] bg-[#EDE9FE] shadow-sm text-[#7137D8] font-bold"
+                    : "border border-[#E2E8F0] bg-white hover:bg-[#F8FAFC] text-[#475569]"
                 }`}
               >
                 <span className="mb-1 text-xs">
@@ -119,7 +119,7 @@ export function AccessibilityConfig({ data, onChange }: AccessibilityConfigProps
 
       {/* ── 3. BUTTON POSITION ────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#000000] tracking-wide block">
           Button Position
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -139,13 +139,13 @@ export function AccessibilityConfig({ data, onChange }: AccessibilityConfigProps
                 onClick={() => update({ position: posItem.key })}
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition ${
                   isSelected
-                    ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm text-white"
-                    : "border border-[#27272A] bg-[#151518] hover:border-zinc-600 text-zinc-400"
+                    ? "border-2 border-[#7137D8] bg-[#EDE9FE] shadow-sm text-[#7137D8] font-bold"
+                    : "border border-[#E2E8F0] bg-white hover:bg-[#F8FAFC] text-[#475569]"
                 }`}
               >
                 <LayoutGrid
                   className={`h-4 w-4 shrink-0 ${
-                    isSelected ? "text-[#FACC15]" : "text-zinc-500"
+                    isSelected ? "text-[#7137D8]" : "text-[#64748B]"
                   }`}
                 />
                 <span className="text-xs font-semibold truncate">{posItem.label}</span>
@@ -157,7 +157,7 @@ export function AccessibilityConfig({ data, onChange }: AccessibilityConfigProps
 
       {/* ── 4. APPEARANCE ─────────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#000000] tracking-wide block">
           Appearance
         </label>
         <div>
@@ -175,7 +175,7 @@ export function AccessibilityConfig({ data, onChange }: AccessibilityConfigProps
                   style={{ backgroundColor: swatch.value }}
                   className={`h-7 w-7 rounded-full border border-zinc-700 transition-transform ${
                     isSelected
-                      ? "ring-2 ring-offset-2 ring-offset-[#121215] ring-[#FACC15] scale-110"
+                      ? "ring-2 ring-2 ring-offset-2 ring-offset-white ring-[#7137D8] scale-110"
                       : "hover:scale-105 opacity-90 hover:opacity-100"
                   }`}
                   title={swatch.label}
@@ -188,7 +188,7 @@ export function AccessibilityConfig({ data, onChange }: AccessibilityConfigProps
 
       {/* ── 5. DISPLAY OPTIONS ────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <label className="text-xs font-bold text-white tracking-wide block">
+        <label className="text-xs font-bold text-[#000000] tracking-wide block">
           Display Options
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

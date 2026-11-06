@@ -279,14 +279,14 @@ export function SelectedElementInspector({
   const tagBadge = tag ? tag.toUpperCase() : "ELEMENT";
 
   return (
-    <div className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#141414] text-[#F4F4F5]">
+    <div className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#141414] text-[#000000]">
       {/* Sleek Top Navigation Bar */}
-      <div className="shrink-0 border-b border-[#262626] bg-[#171717] px-3 py-2.5">
+      <div className="shrink-0 border-b border-[#E2E8F0] bg-[#171717] px-3 py-2.5">
         <div className="flex items-center justify-between gap-2">
           <button
             type="button"
             onClick={onClose}
-            className="group inline-flex items-center gap-1.5 text-xs font-medium text-[#94A3B8] transition hover:text-[#FACC15]"
+            className="group inline-flex items-center gap-1.5 text-xs font-medium text-[#94A3B8] transition hover:text-[#7137D8]"
             title="Return to section properties"
           >
             <ChevronLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
@@ -294,13 +294,13 @@ export function SelectedElementInspector({
           </button>
 
           <div className="flex items-center gap-1.5">
-            <span className="rounded-md border border-[#FACC15]/30 bg-[#FACC15]/10 px-2 py-0.5 text-[10px] font-bold text-[#FACC15] tracking-wider">
+            <span className="rounded-md border border-[#7137D8]/30 bg-[#EDE9FE] px-2 py-0.5 text-[10px] font-bold text-[#7137D8] tracking-wider">
               {tagBadge}
             </span>
             <button
               type="button"
               onClick={onClose}
-              className="flex h-6 w-6 items-center justify-center rounded-md text-[#71717A] transition hover:bg-[#242424] hover:text-[#F4F4F5]"
+              className="flex h-6 w-6 items-center justify-center rounded-md text-[#64748B] transition hover:bg-[#F1F5F9] hover:text-[#000000]"
               title="Deselect element"
             >
               <X className="h-3.5 w-3.5" />
@@ -313,14 +313,14 @@ export function SelectedElementInspector({
       <div className="flex-1 min-h-0 overflow-y-auto p-3 space-y-3">
         {/* 1. Content & Text Editor */}
         {isText && (
-          <div className="rounded-xl border border-[#262626] bg-[#181818] p-3 space-y-2">
+          <div className="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-3 space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-[11px] font-semibold text-[#A1A1AA] uppercase tracking-wider">
+              <label className="text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
                 Text Content
               </label>
             </div>
             <textarea
-              className="w-full min-h-[64px] max-h-[140px] resize-y rounded-lg border border-[#2D2D2D] bg-[#131313] p-2.5 text-xs text-[#F4F4F5] placeholder-[#71717A] outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/30"
+              className="w-full min-h-[64px] max-h-[140px] resize-y rounded-lg border border-[#CBD5E1] bg-white p-2.5 text-xs text-[#000000] placeholder-[#71717A] outline-none transition focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]/20"
               value={content}
               placeholder="Enter text..."
               onChange={(e) => handleContentChange(e.target.value)}
@@ -330,14 +330,14 @@ export function SelectedElementInspector({
 
         {/* Link / Button Action */}
         {isButtonOrLink && (
-          <div className="rounded-xl border border-[#262626] bg-[#181818] p-3 space-y-2">
-            <label className="flex items-center gap-1.5 text-[11px] font-semibold text-[#A1A1AA] uppercase tracking-wider">
-              <Link className="h-3 w-3 text-[#FACC15]" />
+          <div className="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-3 space-y-2">
+            <label className="flex items-center gap-1.5 text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
+              <Link className="h-3 w-3 text-[#7137D8]" />
               Link Destination (Href)
             </label>
             <input
               type="text"
-              className="h-8.5 w-full rounded-lg border border-[#2D2D2D] bg-[#131313] px-2.5 text-xs text-[#F4F4F5] placeholder-[#71717A] outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/30"
+              className="h-8.5 w-full rounded-lg border border-[#CBD5E1] bg-white px-2.5 text-xs text-[#000000] placeholder-[#71717A] outline-none transition focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]/20"
               value={href}
               placeholder="#section or https://..."
               onChange={(e) => handleHrefChange(e.target.value)}
@@ -347,14 +347,14 @@ export function SelectedElementInspector({
 
         {/* Image Source & Alt */}
         {isImage && (
-          <div className="rounded-xl border border-[#262626] bg-[#181818] p-3 space-y-3">
-            <label className="flex items-center gap-1.5 text-[11px] font-semibold text-[#A1A1AA] uppercase tracking-wider">
-              <ImageIcon className="h-3 w-3 text-[#FACC15]" />
+          <div className="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-3 space-y-3">
+            <label className="flex items-center gap-1.5 text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
+              <ImageIcon className="h-3 w-3 text-[#7137D8]" />
               Image Source
             </label>
             <input
               type="text"
-              className="h-8.5 w-full rounded-lg border border-[#2D2D2D] bg-[#131313] px-2.5 text-xs text-[#F4F4F5] placeholder-[#71717A] outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/30"
+              className="h-8.5 w-full rounded-lg border border-[#CBD5E1] bg-white px-2.5 text-xs text-[#000000] placeholder-[#71717A] outline-none transition focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]/20"
               value={src}
               placeholder="Image URL or data URI"
               onChange={(e) => {
@@ -365,12 +365,12 @@ export function SelectedElementInspector({
                 });
               }}
             />
-            <label className="text-[11px] font-semibold text-[#A1A1AA] uppercase tracking-wider block">
+            <label className="text-[11px] font-semibold text-[#000000] uppercase tracking-wider block">
               Alt Description
             </label>
             <input
               type="text"
-              className="h-8.5 w-full rounded-lg border border-[#2D2D2D] bg-[#131313] px-2.5 text-xs text-[#F4F4F5] placeholder-[#71717A] outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/30"
+              className="h-8.5 w-full rounded-lg border border-[#CBD5E1] bg-white px-2.5 text-xs text-[#000000] placeholder-[#71717A] outline-none transition focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]/20"
               value={alt}
               placeholder="Image description"
               onChange={(e) => {
@@ -386,10 +386,10 @@ export function SelectedElementInspector({
 
         {/* 2. Accessible Typography Panel */}
         {isText && (
-          <div className="rounded-xl border border-[#262626] bg-[#181818] p-3 space-y-3">
+          <div className="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-3 space-y-3">
             <div className="flex items-center justify-between border-b border-[#242424] pb-2">
-              <label className="flex items-center gap-1.5 text-[11px] font-semibold text-[#F4F4F5] uppercase tracking-wider">
-                <Type className="h-3.5 w-3.5 text-[#FACC15]" />
+              <label className="flex items-center gap-1.5 text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
+                <Type className="h-3.5 w-3.5 text-[#7137D8]" />
                 Typography
               </label>
             </div>
@@ -398,7 +398,7 @@ export function SelectedElementInspector({
             <div className="space-y-1">
               <label className="text-[11px] font-medium text-[#94A3B8]">Font Family</label>
               <select
-                className="h-8.5 w-full rounded-lg border border-[#2D2D2D] bg-[#131313] px-2 text-xs text-[#F4F4F5] outline-none transition focus:border-[#FACC15]"
+                className="h-8.5 w-full rounded-lg border border-[#CBD5E1] bg-white px-2 text-xs text-[#000000] outline-none transition focus:border-[#7137D8]"
                 value={fontFamily}
                 onChange={(e) => {
                   setFontFamily(e.target.value);
@@ -418,18 +418,18 @@ export function SelectedElementInspector({
               {/* Size with steppers */}
               <div className="space-y-1">
                 <label className="text-[11px] font-medium text-[#94A3B8]">Font Size</label>
-                <div className="flex items-center rounded-lg border border-[#2D2D2D] bg-[#131313] p-0.5">
+                <div className="flex items-center rounded-lg border border-[#CBD5E1] bg-white p-0.5">
                   <button
                     type="button"
                     onClick={() => handleFontSizeAdjust(-2)}
-                    className="flex h-7 w-7 items-center justify-center rounded text-[#94A3B8] transition hover:bg-[#202020] hover:text-[#F4F4F5]"
+                    className="flex h-7 w-7 items-center justify-center rounded text-[#94A3B8] transition hover:bg-[#F1F5F9] hover:text-[#000000]"
                     title="Decrease size"
                   >
                     <Minus className="h-3 w-3" />
                   </button>
                   <input
                     type="text"
-                    className="h-7 w-full flex-1 bg-transparent px-1 text-center text-xs font-semibold text-[#F4F4F5] outline-none"
+                    className="h-7 w-full flex-1 bg-transparent px-1 text-center text-xs font-semibold text-[#000000] outline-none"
                     value={fontSize}
                     onChange={(e) => {
                       setFontSize(e.target.value);
@@ -439,7 +439,7 @@ export function SelectedElementInspector({
                   <button
                     type="button"
                     onClick={() => handleFontSizeAdjust(2)}
-                    className="flex h-7 w-7 items-center justify-center rounded text-[#94A3B8] transition hover:bg-[#202020] hover:text-[#F4F4F5]"
+                    className="flex h-7 w-7 items-center justify-center rounded text-[#94A3B8] transition hover:bg-[#F1F5F9] hover:text-[#000000]"
                     title="Increase size"
                   >
                     <Plus className="h-3 w-3" />
@@ -451,7 +451,7 @@ export function SelectedElementInspector({
               <div className="space-y-1">
                 <label className="text-[11px] font-medium text-[#94A3B8]">Weight</label>
                 <select
-                  className="h-8.5 w-full rounded-lg border border-[#2D2D2D] bg-[#131313] px-2 text-xs text-[#F4F4F5] outline-none transition focus:border-[#FACC15]"
+                  className="h-8.5 w-full rounded-lg border border-[#CBD5E1] bg-white px-2 text-xs text-[#000000] outline-none transition focus:border-[#7137D8]"
                   value={fontWeight}
                   onChange={(e) => {
                     setFontWeight(e.target.value);
@@ -470,7 +470,7 @@ export function SelectedElementInspector({
             {/* Alignments Segmented Control */}
             <div className="space-y-1">
               <label className="text-[11px] font-medium text-[#94A3B8]">Text Alignment</label>
-              <div className="grid grid-cols-4 gap-1 rounded-lg border border-[#2D2D2D] bg-[#131313] p-1">
+              <div className="grid grid-cols-4 gap-1 rounded-lg border border-[#CBD5E1] bg-white p-1">
                 {[
                   { value: "left", icon: AlignLeft, label: "Left" },
                   { value: "center", icon: AlignCenter, label: "Center" },
@@ -485,8 +485,8 @@ export function SelectedElementInspector({
                       onClick={() => handleAlignment(value)}
                       className={`flex h-7 items-center justify-center rounded-md transition ${
                         isActive
-                          ? "bg-[#27272A] text-[#FACC15] shadow-xs"
-                          : "text-[#71717A] hover:bg-[#1E1E1E] hover:text-[#E4E4E7]"
+                          ? "bg-[#27272A] text-[#7137D8] shadow-xs"
+                          : "text-[#64748B] hover:bg-[#1E1E1E] hover:text-[#E4E4E7]"
                       }`}
                       title={`Align ${label}`}
                     >
@@ -500,12 +500,12 @@ export function SelectedElementInspector({
             {/* Formatting Style Toggles */}
             <div className="space-y-1">
               <label className="text-[11px] font-medium text-[#94A3B8]">Text Formatting</label>
-              <div className="grid grid-cols-4 gap-1 rounded-lg border border-[#2D2D2D] bg-[#131313] p-1">
+              <div className="grid grid-cols-4 gap-1 rounded-lg border border-[#CBD5E1] bg-white p-1">
                 <button
                   type="button"
                   onClick={toggleBold}
                   className={`flex h-7 items-center justify-center rounded-md transition ${
-                    isBold ? "bg-[#27272A] text-[#FACC15]" : "text-[#71717A] hover:bg-[#1E1E1E] hover:text-[#E4E4E7]"
+                    isBold ? "bg-[#27272A] text-[#7137D8]" : "text-[#64748B] hover:bg-[#1E1E1E] hover:text-[#E4E4E7]"
                   }`}
                   title="Bold"
                 >
@@ -515,7 +515,7 @@ export function SelectedElementInspector({
                   type="button"
                   onClick={toggleItalic}
                   className={`flex h-7 items-center justify-center rounded-md transition ${
-                    isItalic ? "bg-[#27272A] text-[#FACC15]" : "text-[#71717A] hover:bg-[#1E1E1E] hover:text-[#E4E4E7]"
+                    isItalic ? "bg-[#27272A] text-[#7137D8]" : "text-[#64748B] hover:bg-[#1E1E1E] hover:text-[#E4E4E7]"
                   }`}
                   title="Italic"
                 >
@@ -525,7 +525,7 @@ export function SelectedElementInspector({
                   type="button"
                   onClick={toggleUnderline}
                   className={`flex h-7 items-center justify-center rounded-md transition ${
-                    isUnderline ? "bg-[#27272A] text-[#FACC15]" : "text-[#71717A] hover:bg-[#1E1E1E] hover:text-[#E4E4E7]"
+                    isUnderline ? "bg-[#27272A] text-[#7137D8]" : "text-[#64748B] hover:bg-[#1E1E1E] hover:text-[#E4E4E7]"
                   }`}
                   title="Underline"
                 >
@@ -535,7 +535,7 @@ export function SelectedElementInspector({
                   type="button"
                   onClick={toggleStrike}
                   className={`flex h-7 items-center justify-center rounded-md transition ${
-                    isStrike ? "bg-[#27272A] text-[#FACC15]" : "text-[#71717A] hover:bg-[#1E1E1E] hover:text-[#E4E4E7]"
+                    isStrike ? "bg-[#27272A] text-[#7137D8]" : "text-[#64748B] hover:bg-[#1E1E1E] hover:text-[#E4E4E7]"
                   }`}
                   title="Strikethrough"
                 >
@@ -547,7 +547,7 @@ export function SelectedElementInspector({
             {/* Text Transform Control */}
             <div className="space-y-1">
               <label className="text-[11px] font-medium text-[#94A3B8]">Transform</label>
-              <div className="grid grid-cols-4 gap-1 rounded-lg border border-[#2D2D2D] bg-[#131313] p-1">
+              <div className="grid grid-cols-4 gap-1 rounded-lg border border-[#CBD5E1] bg-white p-1">
                 {[
                   { value: "none", label: "Aa", title: "Normal" },
                   { value: "uppercase", label: "AA", title: "Uppercase" },
@@ -562,8 +562,8 @@ export function SelectedElementInspector({
                       onClick={() => handleTransform(value)}
                       className={`flex h-7 items-center justify-center rounded-md text-xs font-semibold transition ${
                         isActive
-                          ? "bg-[#27272A] text-[#FACC15] shadow-xs"
-                          : "text-[#71717A] hover:bg-[#1E1E1E] hover:text-[#E4E4E7]"
+                          ? "bg-[#27272A] text-[#7137D8] shadow-xs"
+                          : "text-[#64748B] hover:bg-[#1E1E1E] hover:text-[#E4E4E7]"
                       }`}
                       title={title}
                     >
@@ -579,7 +579,7 @@ export function SelectedElementInspector({
               <div className="space-y-1">
                 <label className="text-[11px] font-medium text-[#94A3B8]">Line Height</label>
                 <select
-                  className="h-8.5 w-full rounded-lg border border-[#2D2D2D] bg-[#131313] px-2 text-xs text-[#F4F4F5] outline-none transition focus:border-[#FACC15]"
+                  className="h-8.5 w-full rounded-lg border border-[#CBD5E1] bg-white px-2 text-xs text-[#000000] outline-none transition focus:border-[#7137D8]"
                   value={lineHeight}
                   onChange={(e) => {
                     setLineHeight(e.target.value);
@@ -599,7 +599,7 @@ export function SelectedElementInspector({
                 <label className="text-[11px] font-medium text-[#94A3B8]">Letter Spacing</label>
                 <input
                   type="text"
-                  className="h-8.5 w-full rounded-lg border border-[#2D2D2D] bg-[#131313] px-2 text-xs text-[#F4F4F5] outline-none transition focus:border-[#FACC15]"
+                  className="h-8.5 w-full rounded-lg border border-[#CBD5E1] bg-white px-2 text-xs text-[#000000] outline-none transition focus:border-[#7137D8]"
                   value={letterSpacing}
                   placeholder="0px"
                   onChange={(e) => {
@@ -614,13 +614,13 @@ export function SelectedElementInspector({
 
         {/* 3. Text Color & Global Color Replacement */}
         {isText && (
-          <div className="rounded-xl border border-[#262626] bg-[#181818] p-3 space-y-3">
+          <div className="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-3 space-y-3">
             <div className="flex items-center justify-between border-b border-[#242424] pb-2">
-              <label className="flex items-center gap-1.5 text-[11px] font-semibold text-[#F4F4F5] uppercase tracking-wider">
-                <Palette className="h-3.5 w-3.5 text-[#FACC15]" />
+              <label className="flex items-center gap-1.5 text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
+                <Palette className="h-3.5 w-3.5 text-[#7137D8]" />
                 Text Color
               </label>
-              <span className="font-mono text-xs font-bold text-[#FACC15]">{color.toUpperCase()}</span>
+              <span className="font-mono text-xs font-bold text-[#7137D8]">{color.toUpperCase()}</span>
             </div>
 
             {/* Real-time Color Picker Row */}
@@ -640,7 +640,7 @@ export function SelectedElementInspector({
 
               <input
                 type="text"
-                className="h-8.5 flex-1 rounded-lg border border-[#2D2D2D] bg-[#131313] px-2.5 font-mono text-xs font-bold uppercase text-[#F4F4F5] outline-none transition focus:border-[#FACC15]"
+                className="h-8.5 flex-1 rounded-lg border border-[#CBD5E1] bg-white px-2.5 font-mono text-xs font-bold uppercase text-[#000000] outline-none transition focus:border-[#7137D8]"
                 value={color}
                 onChange={(e) => {
                   let val = e.target.value.trim();
@@ -666,7 +666,7 @@ export function SelectedElementInspector({
                       onClick={() => handleColorChange(swatch)}
                       className={`relative flex h-7 items-center justify-center rounded-md border transition-all ${
                         isSelected
-                          ? "border-[#FACC15] ring-2 ring-[#FACC15]/40 scale-105"
+                          ? "border-[#7137D8] ring-2 ring-[#FACC15]/40 scale-105"
                           : "border-white/10 hover:border-white/40"
                       }`}
                       style={{ backgroundColor: swatch }}
@@ -687,7 +687,7 @@ export function SelectedElementInspector({
             <button
               type="button"
               onClick={handleApplyGlobalColor}
-              className="mt-1 flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-[#FACC15]/40 bg-[#FACC15]/10 text-xs font-semibold text-[#FACC15] transition hover:bg-[#FACC15]/20 hover:border-[#FACC15]"
+              className="mt-1 flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-[#7137D8]/40 bg-[#EDE9FE] text-xs font-semibold text-[#7137D8] transition hover:bg-[#FACC15]/20 hover:border-[#7137D8]"
             >
               <Sparkles className="h-3.5 w-3.5" />
               Apply Color Globally to All Templates
@@ -696,8 +696,8 @@ export function SelectedElementInspector({
         )}
 
         {/* 4. Spacing & Shape Panel */}
-        <div className="rounded-xl border border-[#262626] bg-[#181818] p-3 space-y-3">
-          <label className="text-[11px] font-semibold text-[#F4F4F5] uppercase tracking-wider block border-b border-[#242424] pb-2">
+        <div className="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-3 space-y-3">
+          <label className="text-[11px] font-semibold text-[#000000] uppercase tracking-wider block border-b border-[#242424] pb-2">
             Spacing & Shape
           </label>
           <div className="grid grid-cols-2 gap-2">
@@ -705,7 +705,7 @@ export function SelectedElementInspector({
               <label className="text-[11px] font-medium text-[#94A3B8]">Padding</label>
               <input
                 type="text"
-                className="h-8.5 w-full rounded-lg border border-[#2D2D2D] bg-[#131313] px-2 text-xs text-[#F4F4F5] outline-none transition focus:border-[#FACC15]"
+                className="h-8.5 w-full rounded-lg border border-[#CBD5E1] bg-white px-2 text-xs text-[#000000] outline-none transition focus:border-[#7137D8]"
                 value={selectedElementStyle.padding || ""}
                 placeholder="e.g. 8px 16px"
                 onChange={(e) => applyStylePatch({ padding: e.target.value })}
@@ -715,7 +715,7 @@ export function SelectedElementInspector({
               <label className="text-[11px] font-medium text-[#94A3B8]">Margin</label>
               <input
                 type="text"
-                className="h-8.5 w-full rounded-lg border border-[#2D2D2D] bg-[#131313] px-2 text-xs text-[#F4F4F5] outline-none transition focus:border-[#FACC15]"
+                className="h-8.5 w-full rounded-lg border border-[#CBD5E1] bg-white px-2 text-xs text-[#000000] outline-none transition focus:border-[#7137D8]"
                 value={selectedElementStyle.margin || ""}
                 placeholder="e.g. 0 0 12px 0"
                 onChange={(e) => applyStylePatch({ margin: e.target.value })}
@@ -728,7 +728,7 @@ export function SelectedElementInspector({
               <label className="text-[11px] font-medium text-[#94A3B8]">Border Radius</label>
               <input
                 type="text"
-                className="h-8.5 w-full rounded-lg border border-[#2D2D2D] bg-[#131313] px-2 text-xs text-[#F4F4F5] outline-none transition focus:border-[#FACC15]"
+                className="h-8.5 w-full rounded-lg border border-[#CBD5E1] bg-white px-2 text-xs text-[#000000] outline-none transition focus:border-[#7137D8]"
                 value={selectedElementStyle.borderRadius || ""}
                 placeholder="e.g. 8px, 9999px"
                 onChange={(e) => applyStylePatch({ borderRadius: e.target.value })}

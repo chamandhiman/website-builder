@@ -33,7 +33,7 @@ export function SegmentedIconControl<T extends string>({
 
   return (
     <ControlWrapper label={label} hint={hint} tooltip={tooltip} htmlFor={id}>
-      <div className="flex items-center gap-2 rounded-lg border border-[#363636] bg-[#171717] p-1">
+      <div className="flex items-center gap-2 rounded-lg border border-[#CBD5E1] bg-white p-1">
         {options.map((option) => {
           const active = option.value === value;
           const optionDisabled = disabled || option.disabled;
@@ -47,8 +47,8 @@ export function SegmentedIconControl<T extends string>({
               onClick={() => !optionDisabled && onChange(option.value)}
               className={`flex h-10 w-10 items-center justify-center rounded-md transition duration-150 focus:outline-none focus:ring-2 focus:ring-[#FACC15]/40 ${
                 active
-                  ? "bg-[#FACC15]/10 text-[#FACC15] border border-[#FACC15]"
-                  : "bg-[#171717] text-[#D0D0D0] hover:bg-[#242424]"
+                  ? "bg-[#FACC15]/10 text-[#7137D8] border border-[#7137D8]"
+                  : "bg-white text-[#000000] hover:bg-[#242424]"
               } ${optionDisabled ? "cursor-not-allowed opacity-50" : ""}`}
             >
               {option.icon}

@@ -47,8 +47,8 @@ export function ButtonGroupControl<T extends string>({
               onClick={() => !optionDisabled && onChange(option.value)}
               className={`flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm transition duration-150 focus:outline-none focus:ring-2 focus:ring-[#FACC15]/40 ${
                 active
-                  ? "border-[#FACC15] bg-[#FACC15]/10 text-[#FACC15]"
-                  : "border-[#363636] bg-[#171717] text-[#D0D0D0] hover:border-[#363636] hover:bg-[#242424]"
+                  ? "border-[#7137D8] bg-[#FACC15]/10 text-[#7137D8]"
+                  : "border-[#CBD5E1] bg-white text-[#000000] hover:border-[#CBD5E1] hover:bg-[#242424]"
               } ${optionDisabled ? "cursor-not-allowed opacity-50" : ""}`}
             >
               {option.icon}

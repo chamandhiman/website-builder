@@ -25,9 +25,9 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
 const inputCls =
-  "h-8.5 w-full rounded-lg border border-[#2B2B2B] bg-[#141414] px-2.5 text-xs text-[#F4F4F5] shadow-none transition-colors outline-none focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20";
+  "h-8.5 w-full rounded-lg border border-[#CBD5E1] bg-white px-2.5 text-xs text-[#000000] shadow-xs transition-colors outline-none focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]/20";
 const selectCls =
-  "h-8.5 w-full rounded-lg border border-[#2B2B2B] bg-[#141414] px-2.5 text-xs text-[#F4F4F5] outline-none focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20";
+  "h-8.5 w-full rounded-lg border border-[#CBD5E1] bg-white px-2.5 text-xs text-[#000000] outline-none focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]/20";
  
 type PropertyFieldConfig = {
   label: string;
@@ -181,8 +181,8 @@ function PropertyToggle({
   onBlur?: () => void;
 }) {
   return (
-    <label className="flex items-center justify-between gap-3 rounded-lg border border-[#363636] bg-[#1F1F1F] px-3 py-2 transition-all duration-150 hover:border-[#4A4A4A]">
-      <span className="text-sm text-[#D0D0D0]">{label}</span>
+    <label className="flex items-center justify-between gap-3 rounded-lg border border-[#E2E8F0] bg-white px-3 py-2 transition-all duration-150 hover:bg-[#F8FAFC] shadow-xs">
+      <span className="text-sm font-semibold text-[#000000]">{label}</span>
       <button
         type="button"
         role="switch"
@@ -190,12 +190,12 @@ function PropertyToggle({
         onClick={() => onChange(!checked)}
         onBlur={onBlur}
         className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#FACC15]/30 ${
-          checked ? "border-[#FACC15] bg-[#FACC15]/15" : "border-[#3A3A3A] bg-[#2A2A2A]"
+          checked ? "border-[#7137D8] bg-[#7137D8]" : "border-[#CBD5E1] bg-[#F1F5F9]"
         }`}
       >
         <span
           className={`inline-block h-3.5 w-3.5 rounded-full transition-all duration-200 ${
-            checked ? "translate-x-4 bg-[#FACC15] shadow-sm" : "translate-x-0.5 bg-[#9A9A9A]"
+            checked ? "translate-x-4 bg-white shadow-xs" : "translate-x-0.5 bg-[#9A9A9A]"
           }`}
         />
       </button>
@@ -444,7 +444,7 @@ function ColorInput({ value, onChange, onBlur }: { value: string; onChange: (v: 
         ref={triggerRef}
         onClick={() => setOpen((prev) => !prev)}
         onBlur={onBlur}
-        className="h-8 w-9 shrink-0 rounded border border-[#363636] bg-[#1F1F1F] p-1 shadow-sm transition hover:bg-[#252525]"
+        className="h-8 w-9 shrink-0 rounded border border-[#CBD5E1] bg-white p-1 shadow-xs transition hover:bg-[#F8FAFC]"
         aria-label="Open color picker"
       >
         <span className="block h-full w-full rounded-sm border border-black/10" style={{ backgroundColor: swatchValue }} />
@@ -470,10 +470,10 @@ function ColorInput({ value, onChange, onBlur }: { value: string; onChange: (v: 
                   value={swatchValue}
                   onChange={(e) => onChange(e.target.value)}
                   onBlur={onBlur}
-                  className="h-9 w-9 cursor-pointer rounded border border-[#363636] bg-[#1F1F1F] p-0"
+                  className="h-9 w-9 cursor-pointer rounded border border-[#CBD5E1] bg-white p-0"
                 />
                 <input
-                  className="h-9 w-full rounded border border-[#363636] bg-[#1F1F1F] px-2 text-sm"
+                  className="h-9 w-full rounded border border-[#CBD5E1] bg-white px-2 text-sm text-[#000000]"
                   value={normalizedValue || ""}
                   onChange={(e) => onChange(e.target.value)}
                   onBlur={onBlur}
@@ -737,7 +737,7 @@ export function PropertiesPanel() {
 
   if (selectedChildWidget && SelectedChildPropertiesComponent) {
     return (
-      <div className="h-full overflow-hidden bg-[#171717]">
+      <div className="h-full overflow-hidden bg-white">
         <SelectedChildPropertiesComponent
           value={selectedChildWidget.childWidgetInstance}
           onClose={clearSelection}
@@ -778,13 +778,13 @@ export function PropertiesPanel() {
 
   if (widgetInstance && WidgetPropertiesComponent) {
     return (
-      <div className="h-full overflow-hidden bg-[#171717] flex flex-col">
+      <div className="h-full overflow-hidden bg-white flex flex-col">
         {isSuperAdmin && (
-          <div className="shrink-0 border-b border-[#363636] bg-[#171717] px-3 py-2">
+          <div className="shrink-0 border-b border-[#E2E8F0] bg-[#F8FAFC] px-3 py-2">
             <Button
               size="sm"
               onClick={() => setSaveDialogOpen(true)}
-              className="w-full bg-[#FACC15] text-[#111111] hover:bg-[#FDE047] h-8 rounded-md text-xs font-medium"
+              className="w-full bg-[#7137D8] text-white hover:bg-[#5b2ab5] h-8 rounded-md text-xs font-medium"
             >
               <Save className="mr-1.5 h-3.5 w-3.5" />
               {editingTemplateId ? "Save to Template" : "Save as Template"}
@@ -1023,7 +1023,7 @@ export function PropertiesPanel() {
   const contentTabContent = (
     <div className="space-y-4">
       {widgetInstance && WidgetPropertiesComponent ? (
-        <div className="rounded-md border border-[#363636] bg-[#1F1F1F] p-2">
+        <div className="rounded-xl border border-[#E2E8F0] bg-white p-3 shadow-xs">
           <div className="font-semibold text-foreground text-sm mb-2">Widget Properties</div>
           <WidgetPropertiesComponent
             value={widgetInstance}
@@ -1040,8 +1040,8 @@ export function PropertiesPanel() {
         if (!brand) return null;
         const brandMode = brand.mode || (brand.src ? "logo" : brand.text ? "text" : "hidden");
         return (
-          <div className="rounded-xl border border-[#363636] bg-[#1F1F1F] p-4">
-            <div className="text-xs uppercase tracking-wider text-[#969696]">Brand / Logo</div>
+          <div className="rounded-xl border border-[#E2E8F0] bg-white p-4 shadow-xs">
+            <div className="text-xs uppercase tracking-wider text-[#000000] font-bold">Brand / Logo</div>
             <div className="mt-2 space-y-3">
               <Field label="Display">
                 <select
@@ -1079,7 +1079,7 @@ export function PropertiesPanel() {
               {brandMode === "logo" ? (
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <div className="h-12 w-32 overflow-hidden rounded-md border border-[#363636] bg-[#1F1F1F] flex items-center justify-center">
+                    <div className="h-12 w-32 overflow-hidden rounded-md border border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-center">
                       {brand.src ? (
                         <img src={resolveAssetSrc(brand.src)} alt="logo" className="max-h-full max-w-full object-contain" />
                       ) : brand.hasPlaceholder ? (
@@ -1101,7 +1101,7 @@ export function PropertiesPanel() {
                       </button>
                     )}
                   </div>
-                  <label className="inline-flex items-center gap-2 rounded-md border border-[#363636] bg-[#1F1F1F] px-3 py-2 text-sm text-[#969696] cursor-pointer hover:bg-[#252525]">
+                  <label className="inline-flex items-center gap-2 rounded-md border border-[#E2E8F0] bg-white px-3 py-2 text-sm text-[#000000] font-semibold cursor-pointer hover:bg-[#F8FAFC]">
                     <UploadCloud className="h-4 w-4" />
                     Upload logo
                     <input
@@ -1137,17 +1137,17 @@ export function PropertiesPanel() {
         <Section title="Section CTAs">
           <div className="space-y-3">
             {sectionLinkItems.map((link, index) => (
-              <div key={`${link.text || "action"}-${index}`} className="rounded-lg border border-[#262626] bg-[#161616] p-2.5 transition hover:border-[#383838]">
+              <div key={`${link.text || "action"}-${index}`} className="rounded-lg border border-[#E2E8F0] bg-white p-2.5 shadow-xs transition hover:border-[#CBD5E1]">
                 <div className="mb-2.5 flex items-center justify-between">
                   <div className="min-w-0 pr-2">
-                    <h4 className="truncate text-xs font-semibold text-[#F4F4F5]">{link.text || `CTA ${index + 1}`}</h4>
-                    <p className="truncate text-[10px] text-[#71717A]">{link.href || "#"}</p>
+                    <h4 className="truncate text-xs font-bold text-[#000000]">{link.text || `CTA ${index + 1}`}</h4>
+                    <p className="truncate text-[10px] text-[#64748B]">{link.href || "#"}</p>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
-                    <button type="button" className="flex h-7 w-7 items-center justify-center rounded-md border border-[#2B2B2B] bg-[#1F1F1F] text-[#A1A1AA] transition hover:border-[#3E3E3E] hover:bg-[#282828] hover:text-[#FACC15]" title={link.hidden ? "Show CTA" : "Hide CTA"} onClick={() => { updateHtml(toggleLinkVisibility(section.html, index)); pushHistory(); }}>
+                    <button type="button" className="flex h-7 w-7 items-center justify-center rounded-md border border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B] transition hover:border-[#CBD5E1] hover:bg-[#F1F5F9] hover:text-[#7137D8]" title={link.hidden ? "Show CTA" : "Hide CTA"} onClick={() => { updateHtml(toggleLinkVisibility(section.html, index)); pushHistory(); }}>
                       {link.hidden ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                     </button>
-                    <button type="button" className="flex h-7 w-7 items-center justify-center rounded-md border border-[#2B2B2B] bg-[#1F1F1F] text-[#A1A1AA] transition hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-400" title="Delete CTA" onClick={() => { updateHtml(removeLinkItem(section.html, index)); pushHistory(); }}>
+                    <button type="button" className="flex h-7 w-7 items-center justify-center rounded-md border border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B] transition hover:border-red-500/40 hover:bg-red-50 hover:text-red-500" title="Delete CTA" onClick={() => { updateHtml(removeLinkItem(section.html, index)); pushHistory(); }}>
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   </div>
@@ -1174,15 +1174,15 @@ export function PropertiesPanel() {
                 <div key={`${item.text}-${index}`} className="grid grid-cols-[1fr_74px_28px] gap-1.5">
                   <input className={inputCls} value={item.text} aria-label={`Menu item ${index + 1} label`} onChange={(e) => updateHtml(updateMenuItem(section.html, index, { text: e.target.value }))} onBlur={pushHistory} />
                   <input className={inputCls} value={item.href} aria-label={`Menu item ${index + 1} link`} onChange={(e) => updateHtml(updateMenuItem(section.html, index, { href: e.target.value }))} onBlur={pushHistory} />
-                  <button type="button" className="inline-flex h-8.5 items-center justify-center rounded-lg border border-[#2B2B2B] bg-[#1A1A1A] text-[#A1A1AA] hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-400 transition" title="Remove menu item" onClick={() => { updateHtml(removeMenuItem(section.html, index)); pushHistory(); }}>
+                  <button type="button" className="inline-flex h-8.5 items-center justify-center rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B] hover:border-red-500/40 hover:bg-red-50 hover:text-red-500 transition" title="Remove menu item" onClick={() => { updateHtml(removeMenuItem(section.html, index)); pushHistory(); }}>
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
                 </div>
               ))
             ) : (
-              <div className="rounded-lg border border-[#262626] bg-[#161616] px-3 py-2 text-xs text-[#71717A]">No menu items detected in this header. Add one below to edit it here.</div>
+              <div className="rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] px-3 py-2 text-xs text-[#64748B]">No menu items detected in this header. Add one below to edit it here.</div>
             )}
-            <button type="button" className="inline-flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-[#262626] bg-[#181818] text-xs font-medium text-[#D4D4D8] hover:bg-[#222222] hover:text-[#FFFFFF] transition" onClick={() => { updateHtml(addMenuItem(section.html)); pushHistory(); }}>
+            <button type="button" className="inline-flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-[#E2E8F0] bg-white text-xs font-semibold text-[#000000] hover:bg-[#F8FAFC] hover:text-[#7137D8] transition" onClick={() => { updateHtml(addMenuItem(section.html)); pushHistory(); }}>
               <Plus className="h-3.5 w-3.5" /> Add menu item
             </button>
           </div>
@@ -1196,10 +1196,10 @@ export function PropertiesPanel() {
               <div key={index} className="grid grid-cols-[1fr_1fr_auto_auto] items-center gap-1.5">
                 <input className={inputCls} value={item.text} aria-label={`Link ${index + 1} label`} onChange={(e) => updateHtml(updateLinkItem(section.html, index, { text: e.target.value }))} onBlur={pushHistory} />
                 <input className={inputCls} value={item.href} aria-label={`Link ${index + 1} URL`} placeholder="https://…" onChange={(e) => updateHtml(updateLinkItem(section.html, index, { href: e.target.value }))} onBlur={pushHistory} />
-                <button type="button" className="inline-flex h-8.5 w-8.5 items-center justify-center rounded-lg border border-[#2B2B2B] bg-[#1A1A1A] text-[#A1A1AA] hover:border-[#3D3D3D] hover:bg-[#242424] hover:text-[#FACC15] transition" title={item.hidden ? "Show element" : "Hide element"} onClick={() => { updateHtml(toggleLinkVisibility(section.html, index)); pushHistory(); }}>
+                <button type="button" className="inline-flex h-8.5 w-8.5 items-center justify-center rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B] hover:border-[#CBD5E1] hover:bg-[#F1F5F9] hover:text-[#7137D8] transition" title={item.hidden ? "Show element" : "Hide element"} onClick={() => { updateHtml(toggleLinkVisibility(section.html, index)); pushHistory(); }}>
                   {item.hidden ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                 </button>
-                <button type="button" className="inline-flex h-8.5 w-8.5 items-center justify-center rounded-lg border border-[#2B2B2B] bg-[#1A1A1A] text-[#A1A1AA] hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-400 transition" title="Remove button" onClick={() => { updateHtml(removeLinkItem(section.html, index)); pushHistory(); }}>
+                <button type="button" className="inline-flex h-8.5 w-8.5 items-center justify-center rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B] hover:border-red-500/40 hover:bg-red-50 hover:text-red-500 transition" title="Remove button" onClick={() => { updateHtml(removeLinkItem(section.html, index)); pushHistory(); }}>
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </div>
@@ -1210,7 +1210,7 @@ export function PropertiesPanel() {
 
       {selectedElement?.kind === "text" && selectedTextItem && (
         <Section title="Text">
-          <div className="space-y-2 rounded-lg border border-[#262626] bg-[#161616] p-2.5">
+          <div className="space-y-2 rounded-lg border border-[#E2E8F0] bg-white p-2.5 shadow-xs">
             <Field label={selectedTextItem.label}>
               <input className={inputCls} value={selectedTextItem.text} aria-label={`${selectedTextItem.label} text`} onChange={(e) => updateHtml(updateTextItem(section.html, selectedElement.index ?? 0, e.target.value))} onBlur={pushHistory} />
             </Field>
@@ -1220,8 +1220,8 @@ export function PropertiesPanel() {
 
       {selectedElement?.kind === "image" && selectedImageItem ? (
         <Section title="Image">
-          <div className="space-y-2 rounded-lg border border-[#262626] bg-[#161616] p-2.5">
-            <div className="text-xs font-semibold text-[#969696]">{selectedImageItem.label}</div>
+          <div className="space-y-2 rounded-lg border border-[#E2E8F0] bg-white p-2.5 shadow-xs">
+            <div className="text-xs font-bold text-[#000000]">{selectedImageItem.label}</div>
             <Field label="ALT">
               <input className={inputCls} value={selectedImageItem.alt} placeholder="ALT" onChange={(e) => updateHtml(updateImageItem(section.html, selectedElement.index ?? 0, { alt: e.target.value }))} onBlur={pushHistory} />
             </Field>
@@ -1230,8 +1230,8 @@ export function PropertiesPanel() {
       ) : !isElementSelected && imageItems.length > 0 && (
         <Section title="Images">
           {imageItems.map((item, index) => (
-            <div key={`${item.label}-${index}`} className="space-y-2 rounded-lg border border-[#262626] bg-[#161616] p-2.5 mb-2">
-              <div className="text-xs font-semibold text-[#969696]">{item.label}</div>
+            <div key={`${item.label}-${index}`} className="space-y-2 rounded-lg border border-[#E2E8F0] bg-white p-2.5 shadow-xs mb-2">
+              <div className="text-xs font-bold text-[#000000]">{item.label}</div>
               <Field label="ALT">
                 <input className={inputCls} value={item.alt} placeholder="ALT" onChange={(e) => updateHtml(updateImageItem(section.html, index, { alt: e.target.value }))} onBlur={pushHistory} />
               </Field>
@@ -1248,7 +1248,7 @@ export function PropertiesPanel() {
           if (idx < 0) return null;
           return (
             <Section title="Link">
-              <div className="space-y-2 rounded-lg border border-[#262626] bg-[#161616] p-2.5">
+              <div className="space-y-2 rounded-lg border border-[#E2E8F0] bg-white p-2.5 shadow-xs">
                 <Field label="Href">
                   <input className={inputCls} value={curHref} placeholder="#" onChange={(e) => updateHtml(updateLinkItem(section.html, idx, { href: e.target.value }))} onBlur={pushHistory} />
                 </Field>
@@ -3521,8 +3521,8 @@ function TemplateSaveDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[calc(100vw-32px)] max-w-[480px] overflow-hidden rounded-[20px] border border-[#363636] bg-[#1F1F1F] p-0 shadow-2xl">
-        <DialogHeader className="border-b border-[#363636] px-5 pb-4 pt-5">
+      <DialogContent className="w-[calc(100vw-32px)] max-w-[480px] overflow-hidden rounded-[20px] border border-[#CBD5E1] bg-white p-0 shadow-2xl">
+        <DialogHeader className="border-b border-[#E2E8F0] bg-[#F8FAFC] px-5 pb-4 pt-5">
           <DialogTitle className="text-base font-semibold text-[#F5F5F5]">
             {editingTemplateId ? "Save to Template" : "Save as Template"}
           </DialogTitle>
@@ -3539,7 +3539,7 @@ function TemplateSaveDialog({
               value={templateName}
               onChange={(e) => onTemplateNameChange(e.target.value)}
               placeholder="Hero - Image Background"
-              className="h-9 rounded-lg border-[#363636] bg-[#171717] text-[#F5F5F5] placeholder:text-[#969696]"
+              className="h-9 rounded-lg border-[#CBD5E1] bg-white text-[#000000] placeholder:text-[#94A3B8]"
             />
           </div>
           <div className="space-y-1.5">
@@ -3548,7 +3548,7 @@ function TemplateSaveDialog({
               value={templateSlug}
               onChange={(e) => onTemplateSlugChange(e.target.value)}
               placeholder="hero-image-background"
-              className="h-9 rounded-lg border-[#363636] bg-[#171717] text-[#F5F5F5] placeholder:text-[#969696]"
+              className="h-9 rounded-lg border-[#CBD5E1] bg-white text-[#000000] placeholder:text-[#94A3B8]"
             />
           </div>
           <div className="space-y-1.5">
@@ -3558,7 +3558,7 @@ function TemplateSaveDialog({
               value={templateCategory}
               onChange={(e) => onTemplateCategoryChange(e.target.value)}
               placeholder="e.g. Business, Driving School, Agency..."
-              className="h-9 rounded-lg border-[#363636] bg-[#171717] text-[#F5F5F5] placeholder:text-[#969696]"
+              className="h-9 rounded-lg border-[#CBD5E1] bg-white text-[#000000] placeholder:text-[#94A3B8]"
             />
             <datalist id="template-categories-datalist">
               <option value="Business" />
@@ -3584,11 +3584,11 @@ function TemplateSaveDialog({
             </datalist>
           </div>
         </div>
-        <DialogFooter className="border-t border-[#363636] px-5 py-3">
-          <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={savingTemplate} className="text-[#969696] hover:text-[#F5F5F5] hover:bg-[#242424] h-8 px-3 rounded-md text-xs">
+        <DialogFooter className="border-t border-[#E2E8F0] bg-[#F8FAFC] px-5 py-3">
+          <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={savingTemplate} className="text-[#475569] hover:text-[#000000] hover:bg-[#F1F5F9] h-8 px-3 rounded-md text-xs">
             Cancel
           </Button>
-          <Button onClick={() => onSave()} disabled={savingTemplate || !templateName.trim() || !templateSlug.trim() || !templateCategory.trim()} className="bg-[#FACC15] text-[#111111] hover:bg-[#FDE047] h-8 px-4 rounded-md text-xs">
+          <Button onClick={() => onSave()} disabled={savingTemplate || !templateName.trim() || !templateSlug.trim() || !templateCategory.trim()} className="bg-[#7137D8] text-white hover:bg-[#5b2ab5] h-8 px-4 rounded-md text-xs">
             {savingTemplate ? "Saving..." : editingTemplateId ? "Update Template" : "Save Template"}
           </Button>
         </DialogFooter>

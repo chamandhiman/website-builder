@@ -316,9 +316,9 @@ function LegacyAccessibilityToolbarModal({
 
   return (
     <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-5 animate-in fade-in duration-150">
-      <div className="relative flex flex-col w-full max-w-6xl max-h-[94vh] rounded-2xl bg-[#121214] text-[#111827] border border-[#E2E8F0] shadow-2xl overflow-hidden">
+      <div className="relative flex flex-col w-full max-w-6xl max-h-[94vh] rounded-2xl bg-white text-[#000000] border border-[#E2E8F0] shadow-2xl overflow-hidden">
         {/* ── HEADER ───────────────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between border-b border-[#E2E8F0] px-6 py-4 bg-[#151518]">
+        <div className="flex items-center justify-between border-b border-[#E2E8F0] px-6 py-4 bg-[#F8FAFC]">
           <div className="flex items-center gap-3.5">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-md">
               <span
@@ -348,7 +348,7 @@ function LegacyAccessibilityToolbarModal({
         {/* ── MAIN CONTENT (2 COLUMNS) ────────────────────────────────────── */}
         <div className="flex flex-1 overflow-hidden flex-col lg:flex-row">
           {/* ── LEFT COLUMN: CONFIGURATION ─────────────────────────────────── */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-zinc-700 bg-[#121214]">
+          <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin bg-white">
             {/* 1. TOOLBAR STYLE SECTION */}
             <div className="space-y-4">
               <div className="flex items-center gap-2.5">
@@ -377,8 +377,8 @@ function LegacyAccessibilityToolbarModal({
                       onClick={() => setToolbarStyle(styleItem.key)}
                       className={`relative flex flex-col items-center justify-between p-3.5 rounded-xl transition ${
                         isSelected
-                          ? "border-2 border-[#FACC15] bg-[#1E1E24] shadow-sm"
-                          : "border border-[#2B2B30] bg-[#16161A] hover:border-zinc-500"
+                          ? "border-2 border-[#7137D8] bg-[#EDE9FE] shadow-sm text-[#7137D8] font-bold"
+                          : "border border-[#E2E8F0] bg-white hover:border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#475569]"
                       }`}
                     >
                       {/* Check badge on selected */}
@@ -395,7 +395,7 @@ function LegacyAccessibilityToolbarModal({
 
                       <span
                         className={`text-xs font-semibold mt-1 ${
-                          isSelected ? "text-[#FACC15]" : "text-[#334155]"
+                          isSelected ? "text-[#7137D8]" : "text-[#475569]"
                         }`}
                       >
                         {styleItem.label}
@@ -420,7 +420,7 @@ function LegacyAccessibilityToolbarModal({
                         style={{ backgroundColor: swatch.value }}
                         className={`h-7 w-7 rounded-full transition-transform active:scale-95 ${
                           isSelected
-                            ? "ring-2 ring-[#FACC15] ring-offset-2 ring-offset-[#121214] scale-110"
+                            ? "ring-2 ring-[#7137D8] ring-offset-2 ring-offset-white scale-110"
                             : "border border-[#CBD5E1]/60 hover:scale-105"
                         }`}
                       />
@@ -460,8 +460,8 @@ function LegacyAccessibilityToolbarModal({
                       onClick={() => setPosition(posItem.key)}
                       className={`relative flex flex-col items-center justify-between p-3 rounded-xl transition ${
                         isSelected
-                          ? "border-2 border-[#FACC15] bg-[#1E1E24] shadow-sm"
-                          : "border border-[#2B2B30] bg-[#16161A] hover:border-zinc-500"
+                          ? "border-2 border-[#7137D8] bg-[#EDE9FE] shadow-sm text-[#7137D8] font-bold"
+                          : "border border-[#E2E8F0] bg-white hover:border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#475569]"
                       }`}
                     >
                       {/* Check badge on selected */}
@@ -495,7 +495,7 @@ function LegacyAccessibilityToolbarModal({
 
                       <span
                         className={`text-xs font-semibold ${
-                          isSelected ? "text-[#FACC15]" : "text-[#334155]"
+                          isSelected ? "text-[#7137D8]" : "text-[#475569]"
                         }`}
                       >
                         {posItem.label}
@@ -526,7 +526,7 @@ function LegacyAccessibilityToolbarModal({
                       name="a11yPageTargeting"
                       checked={pageTargeting === "all"}
                       onChange={() => setPageTargeting("all")}
-                      className="accent-[#FACC15] h-3.5 w-3.5 cursor-pointer"
+                      className="accent-[#7137D8] h-3.5 w-3.5 cursor-pointer"
                     />
                     <span>All Pages</span>
                   </label>
@@ -541,7 +541,7 @@ function LegacyAccessibilityToolbarModal({
                           setSelectedPages([projectPages[0].id]);
                         }
                       }}
-                      className="accent-[#FACC15] h-3.5 w-3.5 cursor-pointer"
+                      className="accent-[#7137D8] h-3.5 w-3.5 cursor-pointer"
                     />
                     <span>Selected Pages</span>
                   </label>
@@ -557,7 +557,7 @@ function LegacyAccessibilityToolbarModal({
                             type="checkbox"
                             checked={selectedPages.includes(p.id)}
                             onChange={() => togglePageSelection(p.id)}
-                            className="accent-[#FACC15] h-3 w-3 rounded cursor-pointer"
+                            className="accent-[#7137D8] h-3 w-3 rounded cursor-pointer"
                           />
                           <span className="truncate">{p.name || p.slug || "Untitled Page"}</span>
                         </label>
@@ -576,7 +576,7 @@ function LegacyAccessibilityToolbarModal({
                       type="checkbox"
                       checked={showOnDesktop}
                       onChange={(e) => setShowOnDesktop(e.target.checked)}
-                      className="accent-[#FACC15] h-3.5 w-3.5 rounded cursor-pointer"
+                      className="accent-[#7137D8] h-3.5 w-3.5 rounded cursor-pointer"
                     />
                     <span>Desktop</span>
                   </label>
@@ -585,7 +585,7 @@ function LegacyAccessibilityToolbarModal({
                       type="checkbox"
                       checked={showOnMobile}
                       onChange={(e) => setShowOnMobile(e.target.checked)}
-                      className="accent-[#FACC15] h-3.5 w-3.5 rounded cursor-pointer"
+                      className="accent-[#7137D8] h-3.5 w-3.5 rounded cursor-pointer"
                     />
                     <span>Mobile</span>
                   </label>
@@ -614,9 +614,9 @@ function LegacyAccessibilityToolbarModal({
           <div className="w-full lg:w-[480px] shrink-0 border-t lg:border-t-0 lg:border-l border-[#E2E8F0] bg-[#0E0E10] p-6 flex flex-col justify-between">
             <div>
               {/* Realistic Browser Window Frame */}
-              <div className="mx-auto rounded-xl border border-[#2B2B32] bg-[#141418] shadow-2xl overflow-hidden w-full max-w-[440px]">
+              <div className="mx-auto rounded-xl border border-[#E2E8F0] bg-white shadow-xl overflow-hidden w-full max-w-[440px]">
                 {/* Browser Address Bar */}
-                <div className="flex items-center gap-2 px-3 py-2 bg-[#1A1A20] border-b border-[#25252C]">
+                <div className="flex items-center gap-2 px-3 py-2 bg-[#F8FAFC] border-b border-[#E2E8F0]">
                   <div className="flex items-center gap-1.5 shrink-0">
                     <span className="h-2 w-2 rounded-full bg-[#EF4444]" />
                     <span className="h-2 w-2 rounded-full bg-[#7137D8]" />
@@ -841,7 +841,7 @@ function LegacyAccessibilityToolbarModal({
             </div>
 
             {/* Note on live behavior */}
-            <div className="mt-4 p-3 rounded-xl bg-[#141418] border border-[#222228] text-[11px] text-[#64748B]">
+            <div className="mt-4 p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-[11px] text-[#64748B]">
               <span className="font-semibold text-[#111827]">Interactive Preview:</span>
               <p className="text-[10px] text-[#64748B] mt-0.5">
                 Click any tool inside the preview panel above to test font scaling, high contrast, readable font, and animation freezing in real-time.
@@ -851,7 +851,7 @@ function LegacyAccessibilityToolbarModal({
         </div>
 
         {/* ── FOOTER ACTIONS ──────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between border-t border-[#E2E8F0] px-6 py-4 bg-[#151518]">
+        <div className="flex items-center justify-between border-t border-[#E2E8F0] px-6 py-4 bg-[#F8FAFC]">
           <button
             type="button"
             onClick={onClose}

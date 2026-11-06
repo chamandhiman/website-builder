@@ -30,7 +30,7 @@ export function SliderControl({
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between gap-2">
-        <label className="text-[11px] font-medium text-[#969696]">{label}</label>
+        <label className="text-[11px] font-medium text-[#000000] font-bold">{label}</label>
         <input
           type="number"
           min={min}
@@ -42,7 +42,7 @@ export function SliderControl({
             setLocalValue(v);
             onChange(v);
           }}
-          className="w-16 rounded-md border border-[#363636] bg-[#171717] px-2 py-1 text-right text-[12px] text-[#F5F5F5] outline-none focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
+          className="w-16 rounded-md border border-[#CBD5E1] bg-white px-2 py-1 text-right text-[12px] text-[#000000] outline-none focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]/20"
         />
       </div>
 
@@ -66,7 +66,7 @@ export function SliderControl({
           />
         </div>
         {unit ? (
-          <span className="w-8 shrink-0 text-right text-[11px] text-[#707070]">{unit}</span>
+          <span className="w-8 shrink-0 text-right text-[11px] text-[#64748B]">{unit}</span>
         ) : null}
       </div>
     </div>

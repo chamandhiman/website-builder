@@ -39,7 +39,7 @@ export function FloatingCustomEmbedConfig({ data, onChange }: FloatingCustomEmbe
             value={data.name}
             onChange={(e) => update({ name: e.target.value })}
             placeholder="Custom Floating Embed"
-            className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
+            className="w-full h-11 px-3.5 rounded-xl border border-[#CBD5E1] bg-white text-xs font-semibold text-[#000000] placeholder-[#94A3B8] focus:outline-none focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]"
           />
         </div>
 
@@ -52,7 +52,7 @@ export function FloatingCustomEmbedConfig({ data, onChange }: FloatingCustomEmbe
             onChange={(e) => update({ snippetHtml: e.target.value })}
             placeholder="<div>Your floating code here...</div>"
             rows={5}
-            className="w-full p-3 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-mono text-emerald-400 placeholder-zinc-500 focus:outline-none focus:border-[#FACC15] resize-none"
+            className="w-full p-3 rounded-xl border border-[#CBD5E1] bg-white text-xs font-mono text-emerald-600 placeholder-[#94A3B8] focus:outline-none focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8] resize-none"
           />
         </div>
       </div>
@@ -79,13 +79,13 @@ export function FloatingCustomEmbedConfig({ data, onChange }: FloatingCustomEmbe
                 onClick={() => update({ position: posItem.key })}
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition ${
                   isSelected
-                    ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm text-white"
-                    : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 text-[#64748B]"
+                    ? "border-2 border-[#7137D8] bg-[#EDE9FE] shadow-sm text-[#7137D8] font-bold"
+                    : "border border-[#E2E8F0] bg-white hover:border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#475569]"
                 }`}
               >
                 <LayoutGrid
                   className={`h-4 w-4 shrink-0 ${
-                    isSelected ? "text-[#FACC15]" : "text-[#94A3B8]"
+                    isSelected ? "text-[#7137D8]" : "text-[#64748B]"
                   }`}
                 />
                 <span className="text-xs font-semibold truncate">{posItem.label}</span>
@@ -101,8 +101,8 @@ export function FloatingCustomEmbedConfig({ data, onChange }: FloatingCustomEmbe
           Display Options
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
-            <span className="text-xs font-semibold text-[#111827]">Show on Desktop</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#000000]">Show on Desktop</span>
             <Switch
               checked={data.showOnDesktop}
               onCheckedChange={(checked) => update({ showOnDesktop: checked })}
@@ -110,8 +110,8 @@ export function FloatingCustomEmbedConfig({ data, onChange }: FloatingCustomEmbe
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
-            <span className="text-xs font-semibold text-[#111827]">Show on Mobile</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#000000]">Show on Mobile</span>
             <Switch
               checked={data.showOnMobile}
               onCheckedChange={(checked) => update({ showOnMobile: checked })}

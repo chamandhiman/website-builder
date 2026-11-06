@@ -1288,9 +1288,9 @@ function CustomEmbedModalInner({
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-150">
-      <div className="relative flex max-h-[92vh] w-full max-w-4xl flex-col rounded-2xl border border-[#2B2B30] bg-[#121214] text-[#111827] shadow-2xl overflow-hidden">
+      <div className="relative flex max-h-[92vh] w-full max-w-4xl flex-col rounded-2xl border border-[#E2E8F0] bg-white text-[#000000] shadow-2xl overflow-hidden">
         {/* ── TOP HEADER (Matching Mockups 1, 2, 3) ───────────────────── */}
-        <div className="flex shrink-0 items-center justify-between border-b border-[#E2E8F0] bg-[#161619] px-6 py-4">
+        <div className="flex shrink-0 items-center justify-between border-b border-[#E2E8F0] bg-[#F8FAFC] px-6 py-4">
           <div className="flex items-center gap-3.5">
             {/* Top Left Plugin Icon */}
             {pluginType === "announcement" ? (
@@ -1358,7 +1358,7 @@ function CustomEmbedModalInner({
                       className={`group relative flex flex-col justify-between rounded-2xl border p-4 cursor-pointer transition-all ${
                         isSelected
                           ? "border-2 border-[#FACC15] bg-white shadow-xl shadow-[#FACC15]/5"
-                          : "border-[#E2E8F0] bg-[#161619] hover:border-[#CBD5E1] hover:bg-[#19191D]"
+                          : "border-[#E2E8F0] bg-[#F8FAFC] hover:border-[#CBD5E1] hover:bg-[#F1F5F9]"
                       }`}
                     >
                       {/* Checkmark Badge for Selected Card */}
@@ -1422,7 +1422,7 @@ function CustomEmbedModalInner({
                       className={`group relative flex flex-col justify-between rounded-2xl border p-4 cursor-pointer transition-all ${
                         isSelected
                           ? "border-2 border-[#FACC15] bg-white shadow-xl shadow-[#FACC15]/5"
-                          : "border-[#E2E8F0] bg-[#161619] hover:border-[#CBD5E1] hover:bg-[#19191D]"
+                          : "border-[#E2E8F0] bg-[#F8FAFC] hover:border-[#CBD5E1] hover:bg-[#F1F5F9]"
                       }`}
                     >
                       {isSelected && (
@@ -1470,7 +1470,7 @@ function CustomEmbedModalInner({
         {step === 2 && (
           <div className="flex flex-1 overflow-hidden">
             {/* Left Vertical Sub-Tabs */}
-            <div className="w-44 shrink-0 border-r border-[#E2E8F0] bg-[#141416] p-3 space-y-1 overflow-y-auto">
+            <div className="w-44 shrink-0 border-r border-[#E2E8F0] bg-[#F8FAFC] p-3 space-y-1 overflow-y-auto">
               <button
                 type="button"
                 onClick={() => setActiveSettingsTab("content")}
@@ -1564,7 +1564,7 @@ function CustomEmbedModalInner({
             </div>
 
             {/* Right Settings Area */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-5 bg-[#121214]">
+            <div className="flex-1 overflow-y-auto p-6 space-y-5 bg-white">
               {pluginType === "announcement" ? (
                 <>
                   {/* TAB: CONTENT */}
@@ -1579,7 +1579,7 @@ function CustomEmbedModalInner({
                           value={announcementText}
                           onChange={(e) => setAnnouncementText(e.target.value)}
                           placeholder="2027 Winter and Spring Schedules are now open for enrollment!"
-                          className="w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] p-3 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20 leading-relaxed"
+                          className="w-full rounded-xl border border-[#E2E8F0] bg-white p-3 text-xs text-[#000000] placeholder-[#94A3B8] outline-none transition focus:border-[#7137D8] focus:ring-1 focus:ring-[#FACC15]/20 leading-relaxed"
                         />
                       </div>
 
@@ -1611,7 +1611,7 @@ function CustomEmbedModalInner({
                                 className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all ${
                                   isSelected
                                     ? "border-[#FACC15] bg-[#7137D8]/15 text-[#FACC15] shadow-sm"
-                                    : "border-[#E2E8F0] bg-[#17171A] text-[#64748B] hover:text-white hover:border-[#CBD5E1]"
+                                    : "border-[#E2E8F0] bg-white text-[#475569] hover:text-[#000000] hover:border-[#CBD5E1]"
                                 }`}
                               >
                                 <IconCmp className="h-4 w-4" />
@@ -1632,7 +1632,7 @@ function CustomEmbedModalInner({
                             value={announcementLink}
                             onChange={(e) => setAnnouncementLink(e.target.value)}
                             placeholder="https://"
-                            className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
+                            className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-white px-3 text-xs text-[#000000] placeholder-[#94A3B8] outline-none transition focus:border-[#7137D8] focus:ring-1 focus:ring-[#FACC15]/20"
                           />
                           <label className="flex items-center gap-2 text-xs text-[#64748B] cursor-pointer">
                             <input
@@ -1656,7 +1656,7 @@ function CustomEmbedModalInner({
                           value={announcementBtnLabel}
                           onChange={(e) => setAnnouncementBtnLabel(e.target.value)}
                           placeholder="Learn More"
-                          className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
+                          className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-white px-3 text-xs text-[#000000] placeholder-[#94A3B8] outline-none transition focus:border-[#7137D8] focus:ring-1 focus:ring-[#FACC15]/20"
                         />
                       </div>
                     </div>
@@ -1681,7 +1681,7 @@ function CustomEmbedModalInner({
                             type="text"
                             value={announcementBg}
                             onChange={(e) => setAnnouncementBg(e.target.value)}
-                            className="h-9 w-28 rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 font-mono text-xs text-[#111827]"
+                            className="h-9 w-28 rounded-xl border border-[#E2E8F0] bg-white px-3 font-mono text-xs text-[#000000]"
                           />
                           <div className="flex items-center gap-1.5 flex-wrap">
                             {[
@@ -1722,7 +1722,7 @@ function CustomEmbedModalInner({
                             type="text"
                             value={announcementTextColor}
                             onChange={(e) => setAnnouncementTextColor(e.target.value)}
-                            className="h-9 w-28 rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 font-mono text-xs text-[#111827]"
+                            className="h-9 w-28 rounded-xl border border-[#E2E8F0] bg-white px-3 font-mono text-xs text-[#000000]"
                           />
                         </div>
                       </div>
@@ -1743,13 +1743,13 @@ function CustomEmbedModalInner({
                             type="text"
                             value={announcementIconColor}
                             onChange={(e) => setAnnouncementIconColor(e.target.value)}
-                            className="h-9 w-28 rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 font-mono text-xs text-[#111827]"
+                            className="h-9 w-28 rounded-xl border border-[#E2E8F0] bg-white px-3 font-mono text-xs text-[#000000]"
                           />
                         </div>
                       </div>
 
                       {/* Button Colors */}
-                      <div className="rounded-xl border border-[#E2E8F0] bg-[#161619] p-3.5 space-y-3">
+                      <div className="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-3.5 space-y-3">
                         <span className="text-xs font-bold text-[#334155]">
                           Button Appearance
                         </span>
@@ -1769,7 +1769,7 @@ function CustomEmbedModalInner({
                                 type="text"
                                 value={announcementBtnBg}
                                 onChange={(e) => setAnnouncementBtnBg(e.target.value)}
-                                className="h-8 w-24 rounded-lg border border-[#E2E8F0] bg-[#17171A] px-2 font-mono text-xs text-[#111827]"
+                                className="h-8 w-24 rounded-lg border border-[#E2E8F0] bg-white px-2 font-mono text-xs text-[#000000]"
                               />
                             </div>
                           </div>
@@ -1788,7 +1788,7 @@ function CustomEmbedModalInner({
                                 type="text"
                                 value={announcementBtnTextColor}
                                 onChange={(e) => setAnnouncementBtnTextColor(e.target.value)}
-                                className="h-8 w-24 rounded-lg border border-[#E2E8F0] bg-[#17171A] px-2 font-mono text-xs text-[#111827]"
+                                className="h-8 w-24 rounded-lg border border-[#E2E8F0] bg-white px-2 font-mono text-xs text-[#000000]"
                               />
                             </div>
                           </div>
@@ -1826,7 +1826,7 @@ function CustomEmbedModalInner({
                                 className={`flex items-center gap-2.5 rounded-xl border p-3 text-left transition-all ${
                                   isSelected
                                     ? "border-[#FACC15] bg-[#7137D8]/10 text-white"
-                                    : "border-[#E2E8F0] bg-[#17171A] text-[#64748B] hover:text-white hover:border-[#CBD5E1]"
+                                    : "border-[#E2E8F0] bg-white text-[#475569] hover:text-[#000000] hover:border-[#CBD5E1]"
                                 }`}
                               >
                                 <IconCmp className="h-4 w-4 shrink-0 text-[#FACC15]" />
@@ -1851,7 +1851,7 @@ function CustomEmbedModalInner({
                           value={announcementLink}
                           onChange={(e) => setAnnouncementLink(e.target.value)}
                           placeholder="https://example.com/special-offer"
-                          className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
+                          className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-white px-3 text-xs text-[#000000] placeholder-[#94A3B8] outline-none transition focus:border-[#7137D8] focus:ring-1 focus:ring-[#FACC15]/20"
                         />
                       </div>
 
@@ -1875,7 +1875,7 @@ function CustomEmbedModalInner({
                           value={announcementBtnLabel}
                           onChange={(e) => setAnnouncementBtnLabel(e.target.value)}
                           placeholder="Learn More"
-                          className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
+                          className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-white px-3 text-xs text-[#000000] placeholder-[#94A3B8] outline-none transition focus:border-[#7137D8] focus:ring-1 focus:ring-[#FACC15]/20"
                         />
                       </div>
                     </div>
@@ -2038,7 +2038,7 @@ function CustomEmbedModalInner({
                       value={contactPhone}
                       onChange={(e) => setContactPhone(e.target.value)}
                       placeholder="+1 (555) 000-0000"
-                      className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#FACC15]"
+                      className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-white px-3 text-xs text-[#000000] placeholder-[#94A3B8] outline-none transition focus:border-[#7137D8]"
                     />
                   </div>
                   <div>
@@ -2077,7 +2077,7 @@ function CustomEmbedModalInner({
                       value={waPhone}
                       onChange={(e) => setWaPhone(e.target.value)}
                       placeholder="+1234567890"
-                      className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] px-3 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#FACC15]"
+                      className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-white px-3 text-xs text-[#000000] placeholder-[#94A3B8] outline-none transition focus:border-[#7137D8]"
                     />
                   </div>
                   <div>
@@ -2160,7 +2160,7 @@ function CustomEmbedModalInner({
 
         {/* ── STEP 3: PREVIEW & SAVE (Matching Mockup 3) ──────────────── */}
         {step === 3 && (
-          <div className="flex-1 overflow-y-auto p-6 space-y-5 bg-[#121214]">
+          <div className="flex-1 overflow-y-auto p-6 space-y-5 bg-white">
             {/* Device Switcher Controls */}
             <div className="flex items-center justify-between">
               <div>
@@ -2339,7 +2339,7 @@ function CustomEmbedModalInner({
         )}
 
         {/* ── MODAL FOOTER BUTTONS ─────────────────────────────────────── */}
-        <div className="flex shrink-0 items-center justify-between border-t border-[#E2E8F0] bg-[#161619] px-6 py-4">
+        <div className="flex shrink-0 items-center justify-between border-t border-[#E2E8F0] bg-[#F8FAFC] px-6 py-4">
           {/* Left Action Button */}
           {step === 1 ? (
             <button

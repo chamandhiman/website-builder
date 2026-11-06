@@ -85,15 +85,15 @@ export function BuilderShell() {
 
   useEffect(() => {
     if (typeof document === "undefined") return;
-    document.documentElement.classList.toggle("dark", dark);
-  }, [dark]);
+    document.documentElement.classList.remove("dark");
+  }, []);
 
   if (!mounted || !hydrated) {
-    return <CenteredLoader details="Initializing editor…" className="bg-[#171717]/50" />;
+    return <CenteredLoader details="Initializing editor…" className="bg-white/80" />;
   }
 
   return (
-    <div className="builder-shell relative flex h-screen w-full overflow-hidden bg-[#171717] text-[#F5F5F5]">
+    <div className="builder-shell relative flex h-screen w-full overflow-hidden bg-[#F8FAFC] text-[#000000]">
       {/* DESKTOP LEFT SIDEBAR */}
       <div className="hidden md:flex h-full shrink-0">
         <AppSidebarNav compact />
@@ -103,10 +103,10 @@ export function BuilderShell() {
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden">
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
             onClick={() => setMobileMenuOpen(false)}
           />
-          <div className="relative z-10 flex h-full w-[280px] max-w-[85vw] flex-col bg-[#141414] border-r border-[#262626] shadow-2xl animate-in slide-in-from-left duration-200">
+          <div className="relative z-10 flex h-full w-[280px] max-w-[85vw] flex-col bg-white border-r border-[#E2E8F0] shadow-2xl animate-in slide-in-from-left duration-200">
             <AppSidebarNav compact={false} onClose={() => setMobileMenuOpen(false)} />
           </div>
         </div>
@@ -129,9 +129,9 @@ export function BuilderShell() {
           onToggleMobilePanel={() => setMobilePanelOpen((prev) => !prev)}
           mobilePanelOpen={mobilePanelOpen}
         />
-        <div className="canvas-workspace flex flex-1 min-h-0 overflow-auto bg-[#171717]">
+        <div className="canvas-workspace flex flex-1 min-h-0 overflow-auto bg-[#F1F5F9]">
           <div className="flex flex-1 min-h-0 items-center justify-center p-0 sm:p-2 md:p-6">
-            <div className="relative h-full w-full overflow-hidden sm:rounded-lg sm:border sm:border-[#2B2B2B] bg-white shadow-2xl">
+            <div className="relative h-full w-full overflow-hidden sm:rounded-xl sm:border sm:border-[#CBD5E1] bg-white shadow-lg">
               <Canvas />
             </div>
           </div>
@@ -147,10 +147,10 @@ export function BuilderShell() {
       {mobilePanelOpen && (
         <div className="fixed inset-0 z-50 flex justify-end md:hidden">
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
             onClick={() => setMobilePanelOpen(false)}
           />
-          <div className="relative z-10 flex h-full w-[340px] max-w-[90vw] flex-col bg-[#141414] border-l border-[#262626] shadow-2xl animate-in slide-in-from-right duration-200">
+          <div className="relative z-10 flex h-full w-[340px] max-w-[90vw] flex-col bg-white border-l border-[#E2E8F0] shadow-2xl animate-in slide-in-from-right duration-200">
             <RightContextPanel isMobile onClose={() => setMobilePanelOpen(false)} />
           </div>
         </div>

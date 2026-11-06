@@ -62,15 +62,15 @@ export function SpacingControl({ label = "Spacing", value = "0px", onChange }: S
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#707070]">{label}</div>
+        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#64748B]">{label}</div>
         <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => setDevice("desktop")}
             className={`rounded-md p-1.5 transition ${
               device === "desktop"
-                ? "border border-[#FACC15] bg-[#FACC15]/10 text-[#FACC15]"
-                : "border border-transparent text-[#707070] hover:bg-[#252525] hover:text-[#D0D0D0]"
+                ? "border border-[#7137D8] bg-[#FACC15]/10 text-[#7137D8]"
+                : "border border-transparent text-[#64748B] hover:bg-[#252525] hover:text-[#000000]"
             }`}
           >
             <FontAwesomeIcon icon={faDesktop} className="h-3.5 w-3.5" />
@@ -80,8 +80,8 @@ export function SpacingControl({ label = "Spacing", value = "0px", onChange }: S
             onClick={() => setDevice("tablet")}
             className={`rounded-md p-1.5 transition ${
               device === "tablet"
-                ? "border border-[#FACC15] bg-[#FACC15]/10 text-[#FACC15]"
-                : "border border-transparent text-[#707070] hover:bg-[#252525] hover:text-[#D0D0D0]"
+                ? "border border-[#7137D8] bg-[#FACC15]/10 text-[#7137D8]"
+                : "border border-transparent text-[#64748B] hover:bg-[#252525] hover:text-[#000000]"
             }`}
           >
             <FontAwesomeIcon icon={faTablet} className="h-3.5 w-3.5" />
@@ -91,8 +91,8 @@ export function SpacingControl({ label = "Spacing", value = "0px", onChange }: S
             onClick={() => setDevice("mobile")}
             className={`rounded-md p-1.5 transition ${
               device === "mobile"
-                ? "border border-[#FACC15] bg-[#FACC15]/10 text-[#FACC15]"
-                : "border border-transparent text-[#707070] hover:bg-[#252525] hover:text-[#D0D0D0]"
+                ? "border border-[#7137D8] bg-[#FACC15]/10 text-[#7137D8]"
+                : "border border-transparent text-[#64748B] hover:bg-[#252525] hover:text-[#000000]"
             }`}
           >
             <FontAwesomeIcon icon={faMobile} className="h-3.5 w-3.5" />
@@ -103,43 +103,43 @@ export function SpacingControl({ label = "Spacing", value = "0px", onChange }: S
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <div>
           <input
-            className={`h-9 w-full min-w-0 rounded-md border px-2 text-[13px] text-[#F5F5F5] outline-none transition focus:border-[#FACC15] ${
-              inherited ? "border-dashed border-[#404040] bg-[#161616]" : "border-[#363636] bg-[#171717]"
+            className={`h-9 w-full min-w-0 rounded-md border px-2 text-[13px] text-[#000000] outline-none transition focus:border-[#7137D8] ${
+              inherited ? "border-dashed border-[#404040] bg-[#161616]" : "border-[#CBD5E1] bg-white"
             }`}
             value={String(activeValue.top)}
             onChange={(e) => handleChangeSide("top", e.target.value)}
           />
-          <div className="mt-1 text-[11px] text-[#707070]">Top</div>
+          <div className="mt-1 text-[11px] text-[#64748B]">Top</div>
         </div>
         <div>
           <input
-            className={`h-9 w-full min-w-0 rounded-md border px-2 text-[13px] text-[#F5F5F5] outline-none transition focus:border-[#FACC15] ${
-              inherited ? "border-dashed border-[#404040] bg-[#161616]" : "border-[#363636] bg-[#171717]"
+            className={`h-9 w-full min-w-0 rounded-md border px-2 text-[13px] text-[#000000] outline-none transition focus:border-[#7137D8] ${
+              inherited ? "border-dashed border-[#404040] bg-[#161616]" : "border-[#CBD5E1] bg-white"
             }`}
             value={String(activeValue.right)}
             onChange={(e) => handleChangeSide("right", e.target.value)}
           />
-          <div className="mt-1 text-[11px] text-[#707070]">Right</div>
+          <div className="mt-1 text-[11px] text-[#64748B]">Right</div>
         </div>
         <div>
           <input
-            className={`h-9 w-full min-w-0 rounded-md border px-2 text-[13px] text-[#F5F5F5] outline-none transition focus:border-[#FACC15] ${
-              inherited ? "border-dashed border-[#404040] bg-[#161616]" : "border-[#363636] bg-[#171717]"
+            className={`h-9 w-full min-w-0 rounded-md border px-2 text-[13px] text-[#000000] outline-none transition focus:border-[#7137D8] ${
+              inherited ? "border-dashed border-[#404040] bg-[#161616]" : "border-[#CBD5E1] bg-white"
             }`}
             value={String(activeValue.bottom)}
             onChange={(e) => handleChangeSide("bottom", e.target.value)}
           />
-          <div className="mt-1 text-[11px] text-[#707070]">Bottom</div>
+          <div className="mt-1 text-[11px] text-[#64748B]">Bottom</div>
         </div>
         <div>
           <input
-            className={`h-9 w-full min-w-0 rounded-md border px-2 text-[13px] text-[#F5F5F5] outline-none transition focus:border-[#FACC15] ${
-              inherited ? "border-dashed border-[#404040] bg-[#161616]" : "border-[#363636] bg-[#171717]"
+            className={`h-9 w-full min-w-0 rounded-md border px-2 text-[13px] text-[#000000] outline-none transition focus:border-[#7137D8] ${
+              inherited ? "border-dashed border-[#404040] bg-[#161616]" : "border-[#CBD5E1] bg-white"
             }`}
             value={String(activeValue.left)}
             onChange={(e) => handleChangeSide("left", e.target.value)}
           />
-          <div className="mt-1 text-[11px] text-[#707070]">Left</div>
+          <div className="mt-1 text-[11px] text-[#64748B]">Left</div>
         </div>
       </div>
 
@@ -147,7 +147,7 @@ export function SpacingControl({ label = "Spacing", value = "0px", onChange }: S
         <select
           value={activeValue.unit}
           onChange={(e) => handleUnitChange(e.target.value)}
-          className="h-9 min-w-[84px] rounded-md border border-[#363636] bg-[#171717] px-2 text-[13px] text-[#F5F5F5] outline-none focus:border-[#FACC15]"
+          className="h-9 min-w-[84px] rounded-md border border-[#CBD5E1] bg-white px-2 text-[13px] text-[#000000] outline-none focus:border-[#7137D8]"
         >
           <option value="px">px</option>
           <option value="rem">rem</option>
@@ -156,7 +156,7 @@ export function SpacingControl({ label = "Spacing", value = "0px", onChange }: S
         <button
           type="button"
           onClick={() => setLinked((s) => !s)}
-          className="inline-flex h-9 items-center justify-center rounded-md border border-[#363636] bg-[#1F1F1F] p-2 text-[#969696] transition hover:bg-[#282828] hover:text-[#D0D0D0]"
+          className="inline-flex h-9 items-center justify-center rounded-md border border-[#CBD5E1] bg-white p-2 text-[#000000] font-bold transition hover:bg-[#F1F5F9] hover:text-[#000000]"
         >
           <FontAwesomeIcon icon={linked ? faLink : faLinkSlash} className="h-4 w-4" />
         </button>

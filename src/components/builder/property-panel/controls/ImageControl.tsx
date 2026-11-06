@@ -259,7 +259,7 @@ export function ImageControl({
                     handleApplyUrl();
                   }
                 }}
-                className="h-8 w-full rounded-md border border-[#363636] bg-[#171717] px-2.5 text-[13px] text-[#F5F5F5] placeholder-[#71717A] outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20 disabled:cursor-not-allowed disabled:opacity-50"
+                className="h-8 w-full rounded-md border border-[#CBD5E1] bg-white px-2.5 text-[13px] text-[#000000] placeholder-[#71717A] outline-none transition focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]/20 disabled:cursor-not-allowed disabled:opacity-50"
               />
               <p className="text-[10px] text-[#71717A]">Optional: paste a remote image URL</p>
             </div>
@@ -287,7 +287,7 @@ export function ImageControl({
                 disabled={disabled}
                 placeholder="Describe this image for accessibility"
                 onChange={(event) => onAltChange?.(event.target.value)}
-                className="h-8 w-full rounded-md border border-[#363636] bg-[#171717] px-2.5 text-[13px] text-[#F5F5F5] placeholder-[#71717A] outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20 disabled:cursor-not-allowed disabled:opacity-50"
+                className="h-8 w-full rounded-md border border-[#CBD5E1] bg-white px-2.5 text-[13px] text-[#000000] placeholder-[#71717A] outline-none transition focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]/20 disabled:cursor-not-allowed disabled:opacity-50"
               />
             </div>
           ) : (

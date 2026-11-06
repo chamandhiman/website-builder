@@ -79,15 +79,15 @@ export function WhatsAppChatConfig({ data, onChange }: WhatsAppChatConfigProps) 
               <span className="text-[11px] font-semibold text-[#334155]">WhatsApp Phone</span>
               <span className="text-rose-400">*</span>
             </div>
-            <div className="flex rounded-xl overflow-hidden border border-[#2B2B30] focus-within:border-[#FACC15] transition bg-[#17171A]">
-              <div className="relative shrink-0 border-r border-[#2B2B30]">
+            <div className="flex rounded-xl overflow-hidden border border-[#CBD5E1] focus-within:border-[#7137D8] focus-within:ring-1 focus-within:ring-[#7137D8] transition bg-white">
+              <div className="relative shrink-0 border-r border-[#CBD5E1]">
                 <select
                   value={data.countryCode}
                   onChange={(e) => update({ countryCode: e.target.value })}
-                  className="h-11 pl-3 pr-7 bg-transparent text-xs font-semibold text-[#111827] focus:outline-none cursor-pointer appearance-none"
+                  className="h-11 pl-3 pr-7 bg-transparent text-xs font-semibold text-[#000000] focus:outline-none cursor-pointer appearance-none"
                 >
                   {COUNTRY_CALLING_CODES.map((c) => (
-                    <option key={c.code} value={c.code} className="bg-[#17171A] text-white">
+                    <option key={c.code} value={c.code} className="bg-white text-[#000000]">
                       {c.code} ({c.country})
                     </option>
                   ))}
@@ -100,7 +100,7 @@ export function WhatsAppChatConfig({ data, onChange }: WhatsAppChatConfigProps) 
                 onChange={(e) => update({ phoneNumber: formatTenDigitPhoneNumber(e.target.value) })}
                 placeholder="(123)-456-7890"
                 maxLength={14}
-                className="h-11 flex-1 bg-transparent px-3 text-xs text-white placeholder-zinc-500 focus:outline-none font-mono"
+                className="h-11 flex-1 bg-transparent px-3 text-xs text-[#000000] placeholder-[#94A3B8] focus:outline-none font-mono"
               />
             </div>
           </div>
@@ -115,7 +115,7 @@ export function WhatsAppChatConfig({ data, onChange }: WhatsAppChatConfigProps) 
               value={data.agentName}
               onChange={(e) => update({ agentName: e.target.value })}
               placeholder="Customer Support"
-              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
+              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#000000] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
             />
           </div>
         </div>
@@ -130,7 +130,7 @@ export function WhatsAppChatConfig({ data, onChange }: WhatsAppChatConfigProps) 
             onChange={(e) => update({ prefilledMessage: e.target.value })}
             placeholder="Hello! I have a question about your services."
             rows={2}
-            className="w-full p-3 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15] resize-none"
+            className="w-full p-3 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#000000] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15] resize-none"
           />
         </div>
       </div>
@@ -158,8 +158,8 @@ export function WhatsAppChatConfig({ data, onChange }: WhatsAppChatConfigProps) 
                 onClick={() => update({ buttonStyle: s.key })}
                 className={`flex flex-col items-center justify-center p-3 rounded-xl transition ${
                   isSelected
-                    ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm text-white"
-                    : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 text-[#64748B]"
+                    ? "border-2 border-[#7137D8] bg-[#EDE9FE] shadow-sm text-[#7137D8] font-bold"
+                    : "border border-[#E2E8F0] bg-white hover:border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#475569]"
                 }`}
               >
                 <div
@@ -197,13 +197,13 @@ export function WhatsAppChatConfig({ data, onChange }: WhatsAppChatConfigProps) 
                 onClick={() => update({ position: posItem.key })}
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition ${
                   isSelected
-                    ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm text-white"
-                    : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 text-[#64748B]"
+                    ? "border-2 border-[#7137D8] bg-[#EDE9FE] shadow-sm text-[#7137D8] font-bold"
+                    : "border border-[#E2E8F0] bg-white hover:border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#475569]"
                 }`}
               >
                 <LayoutGrid
                   className={`h-4 w-4 shrink-0 ${
-                    isSelected ? "text-[#FACC15]" : "text-[#94A3B8]"
+                    isSelected ? "text-[#7137D8]" : "text-[#64748B]"
                   }`}
                 />
                 <span className="text-xs font-semibold truncate">{posItem.label}</span>
@@ -236,7 +236,7 @@ export function WhatsAppChatConfig({ data, onChange }: WhatsAppChatConfigProps) 
                     style={{ backgroundColor: swatch.value }}
                     className={`h-7 w-7 rounded-full border border-[#CBD5E1] transition-transform ${
                       isSelected
-                        ? "ring-2 ring-offset-2 ring-offset-[#121215] ring-[#FACC15] scale-110"
+                        ? "ring-2 ring-2 ring-offset-2 ring-offset-white ring-[#7137D8] scale-110"
                         : "hover:scale-105 opacity-90 hover:opacity-100"
                     }`}
                     title={swatch.label}
@@ -256,7 +256,7 @@ export function WhatsAppChatConfig({ data, onChange }: WhatsAppChatConfigProps) 
               value={data.tooltipText}
               onChange={(e) => update({ tooltipText: e.target.value })}
               placeholder="Chat with us 👋"
-              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
+              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#000000] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
             />
           </div>
         </div>
@@ -268,8 +268,8 @@ export function WhatsAppChatConfig({ data, onChange }: WhatsAppChatConfigProps) 
           Display Options
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
-            <span className="text-xs font-semibold text-[#111827]">Show on Desktop</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#000000]">Show on Desktop</span>
             <Switch
               checked={data.showOnDesktop}
               onCheckedChange={(checked) => update({ showOnDesktop: checked })}
@@ -277,8 +277,8 @@ export function WhatsAppChatConfig({ data, onChange }: WhatsAppChatConfigProps) 
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
-            <span className="text-xs font-semibold text-[#111827]">Show on Mobile</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#000000]">Show on Mobile</span>
             <Switch
               checked={data.showOnMobile}
               onCheckedChange={(checked) => update({ showOnMobile: checked })}
@@ -286,8 +286,8 @@ export function WhatsAppChatConfig({ data, onChange }: WhatsAppChatConfigProps) 
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
-            <span className="text-xs font-semibold text-[#111827]">Show Tooltip</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#000000]">Show Tooltip</span>
             <Switch
               checked={data.showTooltip}
               onCheckedChange={(checked) => update({ showTooltip: checked })}

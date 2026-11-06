@@ -33,13 +33,13 @@ export function SeoDialog({
         if (!v) onClose();
       }}
     >
-      <DialogContent className="max-w-2xl border border-[#363636] bg-[#1A1A1A] p-0 text-[#F5F5F5]">
+      <DialogContent className="max-w-2xl border border-[#E2E8F0] bg-white p-0 text-[#000000] shadow-2xl">
         <div className="max-h-[90vh] overflow-y-auto">
-          <DialogHeader className="border-b border-[#2A2A2A] px-6 py-5">
-            <DialogTitle className="text-[#F5F5F5]">
+          <DialogHeader className="border-b border-[#E2E8F0] bg-[#F8FAFC] px-6 py-5">
+            <DialogTitle className="text-[#000000]">
               SEO Settings
             </DialogTitle>
-            <DialogDescription className="text-[#969696]">
+            <DialogDescription className="text-[#64748B]">
               Configure page SEO metadata.
             </DialogDescription>
           </DialogHeader>
@@ -51,15 +51,15 @@ export function SeoDialog({
             />
           </div>
 
-          <DialogFooter className="border-t border-[#2A2A2A] px-6 py-4 flex justify-end gap-2">
+          <DialogFooter className="border-t border-[#E2E8F0] bg-[#F8FAFC] px-6 py-4 flex justify-end gap-2">
             <DialogClose asChild>
-              <button className="rounded-lg border border-[#363636] bg-[#242424] px-4 py-2 text-sm text-[#D0D0D0] transition hover:bg-[#2A2A2A] hover:text-[#FFFFFF]">
+              <button className="rounded-lg border border-[#CBD5E1] bg-white px-4 py-2 text-sm font-semibold text-[#475569] transition hover:bg-[#F1F5F9] hover:text-[#000000]">
                 Close
               </button>
             </DialogClose>
             <button
               onClick={onClose}
-              className="rounded-lg bg-[#FACC15] px-4 py-2 text-sm font-medium text-[#111111] transition hover:bg-[#FDE047]"
+              className="rounded-lg bg-[#7137D8] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#5b2ab5]"
             >
               Save
             </button>

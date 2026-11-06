@@ -24,8 +24,8 @@ export function ToggleControl({
 
   return (
     <div className="space-y-1">
-      <div className="flex items-center justify-between gap-3 rounded-lg border border-[#363636] bg-[#1F1F1F] px-2.5 py-2">
-        <label htmlFor={id} className="min-w-0 flex-1 truncate text-[12px] font-medium text-[#D0D0D0]" title={tooltip || label}>
+      <div className="flex items-center justify-between gap-3 rounded-lg border border-[#CBD5E1] bg-white px-2.5 py-2">
+        <label htmlFor={id} className="min-w-0 flex-1 truncate text-[12px] font-medium text-[#000000]" title={tooltip || label}>
           {label}
         </label>
         <button
@@ -36,7 +36,7 @@ export function ToggleControl({
           disabled={disabled}
           onClick={() => onChange(!effectiveChecked)}
           className={`relative inline-flex h-[18px] w-[34px] shrink-0 items-center rounded-full border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#FACC15]/30 ${
-            effectiveChecked ? "border-[#FACC15] bg-[#FACC15]/15" : "border-[#3A3A3A] bg-[#2A2A2A]"
+            effectiveChecked ? "border-[#7137D8] bg-[#FACC15]/15" : "border-[#3A3A3A] bg-[#2A2A2A]"
           } ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
         >
           <span
@@ -46,7 +46,7 @@ export function ToggleControl({
           />
         </button>
       </div>
-      {hint ? <p className="text-[10px] text-[#969696]">{hint}</p> : null}
+      {hint ? <p className="text-[10px] text-[#000000] font-bold">{hint}</p> : null}
     </div>
   );
 }

@@ -172,7 +172,7 @@ export function FloatingWidgetProperties({ widget, onClose }: FloatingWidgetProp
   };
 
   return (
-    <div className="flex h-full flex-col bg-white text-[#334155] text-xs">
+    <div className="flex h-full flex-col bg-white text-[#000000] text-xs">
       {/* Top Header */}
       <div className="flex items-center justify-between border-b border-[#E2E8F0] px-4 py-3 bg-[#F8FAFC]">
         <div className="flex items-center gap-2.5 min-w-0">
@@ -196,7 +196,7 @@ export function FloatingWidgetProperties({ widget, onClose }: FloatingWidgetProp
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-[#64748B] hover:text-white hover:bg-[#F1F5F9] transition"
+            className="p-1.5 rounded-lg text-[#64748B] hover:text-[#000000] hover:bg-[#F1F5F9] transition"
             title="Close panel"
           >
             <X className="w-4 h-4" />
@@ -208,7 +208,7 @@ export function FloatingWidgetProperties({ widget, onClose }: FloatingWidgetProp
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {/* Widget Name */}
         <div>
-          <label className="text-[11px] font-semibold text-[#334155] block mb-1">
+          <label className="text-[11px] font-semibold text-[#000000] block mb-1">
             Widget Name
           </label>
           <input
@@ -216,13 +216,13 @@ export function FloatingWidgetProperties({ widget, onClose }: FloatingWidgetProp
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="e.g. WhatsApp Live Chat"
-            className="w-full h-8 rounded-lg border border-[#E2E8F0] bg-white px-2.5 text-xs text-white placeholder-zinc-600 outline-none transition focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]/20"
+            className="w-full h-8 rounded-lg border border-[#E2E8F0] bg-white px-2.5 text-xs text-[#000000] placeholder-zinc-400 font-medium outline-none transition focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]/20"
           />
         </div>
 
         {/* Script URL Field */}
         <div>
-          <label className="text-[11px] font-semibold text-[#334155] block mb-1">
+          <label className="text-[11px] font-semibold text-[#000000] block mb-1">
             Embed Script URL
           </label>
           <input
@@ -247,7 +247,7 @@ export function FloatingWidgetProperties({ widget, onClose }: FloatingWidgetProp
 
             {/* Phone Number */}
             <div>
-              <label className="text-[11px] font-semibold text-[#334155] block mb-1">
+              <label className="text-[11px] font-semibold text-[#000000] block mb-1">
                 WhatsApp Phone Number
               </label>
               <input
@@ -255,14 +255,14 @@ export function FloatingWidgetProperties({ widget, onClose }: FloatingWidgetProp
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 placeholder="+1 555 123 4567"
-                className="w-full h-8 rounded-lg border border-[#E2E8F0] bg-white px-2.5 text-xs text-white placeholder-zinc-600 outline-none transition focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/30"
+                className="w-full h-8 rounded-lg border border-[#E2E8F0] bg-white px-2.5 text-xs text-[#000000] placeholder-zinc-400 font-medium outline-none transition focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/30"
               />
               <p className="text-[10px] text-[#94A3B8] mt-1">Include country code (e.g. +1 for US, +44 for UK)</p>
             </div>
 
             {/* Agent Name */}
             <div>
-              <label className="text-[11px] font-semibold text-[#334155] block mb-1">
+              <label className="text-[11px] font-semibold text-[#000000] block mb-1">
                 Agent / Support Name
               </label>
               <input
@@ -270,13 +270,13 @@ export function FloatingWidgetProperties({ widget, onClose }: FloatingWidgetProp
                 value={agentName}
                 onChange={(e) => setAgentName(e.target.value)}
                 placeholder="Customer Support"
-                className="w-full h-8 rounded-lg border border-[#E2E8F0] bg-white px-2.5 text-xs text-white placeholder-zinc-600 outline-none transition focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/30"
+                className="w-full h-8 rounded-lg border border-[#E2E8F0] bg-white px-2.5 text-xs text-[#000000] placeholder-zinc-400 font-medium outline-none transition focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/30"
               />
             </div>
 
             {/* Greeting / Prefilled Message */}
             <div>
-              <label className="text-[11px] font-semibold text-[#334155] block mb-1">
+              <label className="text-[11px] font-semibold text-[#000000] block mb-1">
                 Greeting / Prefilled Message
               </label>
               <textarea
@@ -284,13 +284,13 @@ export function FloatingWidgetProperties({ widget, onClose }: FloatingWidgetProp
                 onChange={(e) => setGreetingText(e.target.value)}
                 placeholder="Hi there! How can we help you today?"
                 rows={2}
-                className="w-full p-2 rounded-lg border border-[#E2E8F0] bg-white text-xs text-white placeholder-zinc-600 outline-none resize-none transition focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/30"
+                className="w-full p-2 rounded-lg border border-[#E2E8F0] bg-white text-xs text-[#000000] placeholder-zinc-400 font-medium outline-none resize-none transition focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/30"
               />
             </div>
 
             {/* Button Color Preset Picker */}
             <div>
-              <label className="text-[11px] font-semibold text-[#334155] block mb-1.5">
+              <label className="text-[11px] font-semibold text-[#000000] block mb-1.5">
                 Button Color
               </label>
               <div className="flex items-center gap-2">
@@ -328,7 +328,7 @@ export function FloatingWidgetProperties({ widget, onClose }: FloatingWidgetProp
 
         {/* Position & Offsets */}
         <div className="space-y-3 pt-3 border-t border-[#E2E8F0]/80">
-          <label className="text-[11px] font-semibold text-[#334155] block">
+          <label className="text-[11px] font-semibold text-[#000000] block">
             Position on Screen
           </label>
           <div className="grid grid-cols-2 gap-2 text-[11px]">
@@ -389,10 +389,10 @@ export function FloatingWidgetProperties({ widget, onClose }: FloatingWidgetProp
 
         {/* Device Visibility */}
         <div className="space-y-2 pt-3 border-t border-[#E2E8F0]/80">
-          <label className="text-[11px] font-semibold text-[#334155] block">
+          <label className="text-[11px] font-semibold text-[#000000] block">
             Device Visibility
           </label>
-          <div className="flex items-center gap-4 text-xs text-[#334155]">
+          <div className="flex items-center gap-4 text-xs text-[#000000]">
             <label className="flex items-center gap-2 cursor-pointer select-none">
               <input
                 type="checkbox"
@@ -416,7 +416,7 @@ export function FloatingWidgetProperties({ widget, onClose }: FloatingWidgetProp
 
         {/* Raw Embed Code Textarea (Expandable) */}
         <div className="space-y-1.5 pt-3 border-t border-[#E2E8F0]/80">
-          <label className="text-[11px] font-semibold text-[#334155] block">
+          <label className="text-[11px] font-semibold text-[#000000] block">
             Raw Embed HTML / Snippet
           </label>
           <textarea

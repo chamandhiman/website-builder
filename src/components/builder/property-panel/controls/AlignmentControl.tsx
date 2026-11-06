@@ -16,8 +16,8 @@ export function AlignmentControl({ label = "Alignment", value = "left", onChange
   ];
 
   return (
-    <label className="flex flex-col gap-1.5 text-sm text-[#D0D0D0]">
-      <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#707070]">{label}</span>
+    <label className="flex flex-col gap-1.5 text-sm text-[#000000]">
+      <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#64748B]">{label}</span>
       <div className="flex items-center gap-2">
         {choices.map((c) => {
           const active = value === c.key;
@@ -29,8 +29,8 @@ export function AlignmentControl({ label = "Alignment", value = "left", onChange
               onClick={() => onChange?.(c.key)}
               className={`flex h-8 w-8 items-center justify-center rounded border transition ${
                 active
-                  ? "border-[#FACC15] bg-[#FACC15]/10 text-[#FACC15]"
-                  : "border-[#363636] bg-[#1F1F1F] text-[#969696] hover:bg-[#282828] hover:text-[#D0D0D0]"
+                  ? "border-[#7137D8] bg-[#FACC15]/10 text-[#7137D8]"
+                  : "border-[#CBD5E1] bg-white text-[#000000] font-bold hover:bg-[#F1F5F9] hover:text-[#000000]"
               }`}
             >
               <FontAwesomeIcon icon={c.icon} className="h-3.5 w-3.5" />

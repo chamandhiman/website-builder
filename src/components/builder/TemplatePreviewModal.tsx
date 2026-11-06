@@ -225,14 +225,14 @@ export function TemplatePreviewModal({
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex flex-col bg-[#0b0c10]/95 backdrop-blur-md animate-in fade-in duration-200 select-none"
+      className="fixed inset-0 z-[9999] flex flex-col bg-[#F1F5F9]/95 backdrop-blur-md animate-in fade-in duration-200 select-none"
       onContextMenu={(e) => {
         e.preventDefault();
         toast.info("Right-click is protected in Preview. Click 'Use This Template' to edit in builder!");
       }}
     >
       {/* Top Header Toolbar */}
-      <header className="flex h-16 shrink-0 items-center justify-between border-b border-[#232938] bg-[#111622] px-3 sm:px-6 gap-2">
+      <header className="flex h-16 shrink-0 items-center justify-between border-b border-[#E2E8F0] bg-white px-3 sm:px-6 shadow-xs gap-2">
         {/* Left: WebToolOcean Official Brand Logo */}
         <div className="flex items-center gap-3 shrink-0">
           <div className="flex items-center gap-2.5">
@@ -248,7 +248,7 @@ export function TemplatePreviewModal({
 
           {/* Page Tabs for Multi-page templates */}
           {project && project.pages.length > 1 && (
-            <div className="hidden lg:flex items-center gap-1 ml-2 pl-3 border-l border-[#232938]">
+            <div className="hidden lg:flex items-center gap-1 ml-2 pl-3 border-l border-[#E2E8F0]">
               {project.pages.map((p) => {
                 const isActive = activePage?.id === p.id;
                 return (
@@ -258,8 +258,8 @@ export function TemplatePreviewModal({
                     onClick={() => setActivePageSlug(p.slug)}
                     className={`px-2.5 py-1 text-xs font-semibold rounded-md transition ${
                       isActive
-                        ? "bg-[#FACC15] text-[#0A0D14]"
-                        : "text-[#94A3B8] hover:text-white hover:bg-[#1E2536]"
+                        ? "bg-[#EDE9FE] text-[#7137D8] border border-[#7137D8]/30"
+                        : "text-[#64748B] hover:text-[#000000] hover:bg-[#F1F5F9]"
                     }`}
                   >
                     {p.name}
@@ -271,14 +271,14 @@ export function TemplatePreviewModal({
         </div>
 
         {/* Center: Device Switcher (Desktop, Tablet, Mobile) visible on all viewports */}
-        <div className="flex items-center rounded-xl border border-[#232D42] bg-[#0A0E17]/90 p-1 gap-1 shrink-0 shadow-inner">
+        <div className="flex items-center rounded-xl border border-[#E2E8F0] bg-[#F1F5F9] p-1 gap-1 shrink-0 shadow-xs">
           <button
             type="button"
             onClick={() => setDevice("desktop")}
             className={`flex h-8 w-8 items-center justify-center rounded-lg transition-all ${
               device === "desktop"
-                ? "bg-[#1E273A] text-[#FACC15] shadow-xs"
-                : "text-[#94A3B8] hover:text-white hover:bg-[#141B29]"
+                ? "bg-white text-[#7137D8] shadow-xs font-bold"
+                : "text-[#64748B] hover:text-[#000000] hover:bg-white/60"
             }`}
             title="Desktop View"
           >
@@ -289,8 +289,8 @@ export function TemplatePreviewModal({
             onClick={() => setDevice("tablet")}
             className={`flex h-8 w-8 items-center justify-center rounded-lg transition-all ${
               device === "tablet"
-                ? "bg-[#1E273A] text-[#FACC15] shadow-xs"
-                : "text-[#94A3B8] hover:text-white hover:bg-[#141B29]"
+                ? "bg-white text-[#7137D8] shadow-xs font-bold"
+                : "text-[#64748B] hover:text-[#000000] hover:bg-white/60"
             }`}
             title="Tablet View"
           >
@@ -301,8 +301,8 @@ export function TemplatePreviewModal({
             onClick={() => setDevice("mobile")}
             className={`flex h-8 w-8 items-center justify-center rounded-lg transition-all ${
               device === "mobile"
-                ? "bg-[#1E273A] text-[#FACC15] shadow-xs"
-                : "text-[#94A3B8] hover:text-white hover:bg-[#141B29]"
+                ? "bg-white text-[#7137D8] shadow-xs font-bold"
+                : "text-[#64748B] hover:text-[#000000] hover:bg-white/60"
             }`}
             title="Mobile View"
           >
@@ -318,10 +318,10 @@ export function TemplatePreviewModal({
               onClose();
               onUseTemplate(template);
             }}
-            className="group relative inline-flex h-10 items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-[#FACC15] via-[#FBBF24] to-[#F59E0B] px-4 sm:px-5 text-xs sm:text-sm font-extrabold text-[#0F172A] shadow-[0_4px_16px_rgba(250,204,21,0.35)] ring-1 ring-white/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_24px_rgba(250,204,21,0.5)] hover:brightness-105 active:translate-y-0 active:shadow-md cursor-pointer"
+            className="group relative inline-flex h-10 items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-[#7137D8] via-[#8B5CF6] to-[#7C3AED] px-4 sm:px-5 text-xs sm:text-sm font-extrabold text-white shadow-md hover:brightness-105 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_24px_rgba(250,204,21,0.5)] hover:brightness-105 active:translate-y-0 active:shadow-md cursor-pointer"
           >
             <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 ease-in-out group-hover:translate-x-full" />
-            <Sparkles className="h-4 w-4 shrink-0 fill-[#0F172A] text-[#0F172A] transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />
+            <Sparkles className="h-4 w-4 shrink-0 fill-white text-white transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />
             <span className="relative font-bold tracking-tight">Use This Template</span>
             <ArrowRight className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-1" />
           </button>
@@ -330,7 +330,7 @@ export function TemplatePreviewModal({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#232D42] bg-[#141B29]/90 text-[#94A3B8] shadow-sm transition hover:border-[#384566] hover:bg-[#1E273A] hover:text-white"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#E2E8F0] bg-white text-[#64748B] shadow-xs transition hover:border-[#CBD5E1] hover:bg-[#F1F5F9] hover:text-[#000000]"
             title="Close Preview (Esc)"
           >
             <X className="h-4 w-4" />

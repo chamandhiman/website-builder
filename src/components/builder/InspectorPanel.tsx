@@ -24,7 +24,7 @@ export function InspectorPanel() {
 
   if (floatingWidget) {
     return (
-      <div className="h-full overflow-hidden bg-[#171717]">
+      <div className="h-full overflow-hidden bg-white">
         <FloatingWidgetProperties
           widget={floatingWidget}
           onClose={() => selectFloatingWidget(null)}
@@ -37,12 +37,12 @@ export function InspectorPanel() {
 
   if (!section) {
     return (
-      <div className="flex h-full flex-col items-center justify-center bg-[#171717] p-6 text-center">
-        <div className="mb-3 rounded-full bg-[#202020] p-3 text-[#A1A1AA] border border-[#2B2B2B]">
+      <div className="flex h-full flex-col items-center justify-center bg-white p-6 text-center">
+        <div className="mb-3 rounded-full bg-[#F1F5F9] p-3 text-[#7137D8] border border-[#E2E8F0]">
           <MousePointerClick className="h-5 w-5" />
         </div>
-        <h4 className="text-xs font-semibold text-[#F4F4F5] mb-1">No Element Selected</h4>
-        <p className="text-[11px] text-[#71717A] max-w-[210px] leading-relaxed">
+        <h4 className="text-xs font-semibold text-[#000000] mb-1">No Element Selected</h4>
+        <p className="text-[11px] text-[#64748B] max-w-[210px] leading-relaxed">
           Click any element, heading, button, or image on the canvas to inspect and edit its properties.
         </p>
       </div>
@@ -82,7 +82,7 @@ export function InspectorPanel() {
 
   // Otherwise show section properties
   return (
-    <div className="h-full overflow-hidden bg-[#171717]">
+    <div className="h-full overflow-hidden bg-white">
       <PropertiesPanel />
     </div>
   );

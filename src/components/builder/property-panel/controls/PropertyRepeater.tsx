@@ -92,19 +92,19 @@ export function PropertyRepeater({
   };
 
   const actionBtnClass =
-    "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[#969696] transition hover:bg-[#242424] hover:text-[#F5F5F5] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-[#969696]";
+    "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[#000000] font-bold transition hover:bg-[#F8FAFC] hover:text-[#000000] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-[#000000] font-bold";
 
   return (
     <div className="min-w-0 w-full">
       <div className="mb-2 flex items-center justify-between gap-2">
-        <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#969696]">
+        <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#000000] font-bold">
           {title}
         </div>
         {onAdd ? (
           <button
             type="button"
             onClick={onAdd}
-            className="inline-flex shrink-0 items-center gap-1 text-[12px] font-medium text-[#FACC15] hover:text-[#FDE047]"
+            className="inline-flex shrink-0 items-center gap-1 text-[12px] font-medium text-[#7137D8] hover:text-[#FDE047]"
           >
             <FontAwesomeIcon icon={faPlus} className="h-3 w-3" />
             Add
@@ -124,8 +124,8 @@ export function PropertyRepeater({
               onDragOver={(event) => handleDragOver(event, index)}
               onDrop={(event) => handleDrop(event, index)}
               className={[
-                "min-w-0 overflow-hidden rounded-lg border bg-[#1F1F1F] transition",
-                isDropTarget ? "border-[#FACC15] bg-[#FACC15]/10" : "border-[#363636]",
+                "min-w-0 overflow-hidden rounded-lg border bg-white transition",
+                isDropTarget ? "border-[#7137D8] bg-[#FACC15]/10" : "border-[#CBD5E1]",
                 isDragging ? "opacity-60" : "",
               ].join(" ")}
             >
@@ -136,7 +136,7 @@ export function PropertyRepeater({
                   onDragEnd={handleDragEnd}
                   onClick={stop}
                   onMouseDown={(event) => event.stopPropagation()}
-                  className={`inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[#969696] ${onReorder ? "cursor-grab active:cursor-grabbing hover:bg-[#242424] hover:text-[#F5F5F5]" : ""}`}
+                  className={`inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[#000000] font-bold ${onReorder ? "cursor-grab active:cursor-grabbing hover:bg-[#F8FAFC] hover:text-[#000000]" : ""}`}
                   title="Drag to reorder"
                   aria-label="Drag to reorder"
                 >
@@ -146,7 +146,7 @@ export function PropertyRepeater({
                 <button
                   type="button"
                   onClick={() => setExpandedIndex(isExpanded ? null : index)}
-                  className="min-w-0 flex-1 truncate px-1 py-1 text-left text-[13px] font-medium text-[#F5F5F5]"
+                  className="min-w-0 flex-1 truncate px-1 py-1 text-left text-[13px] font-medium text-[#000000]"
                 >
                   {item.label || `Item ${index + 1}`}
                 </button>

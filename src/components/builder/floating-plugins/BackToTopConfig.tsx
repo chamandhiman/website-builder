@@ -37,8 +37,8 @@ export function BackToTopConfig({ data, onChange }: BackToTopConfigProps) {
             onClick={() => update({ shape: "round" })}
             className={`flex items-center justify-center gap-2 p-3 rounded-xl transition ${
               data.shape === "round"
-                ? "border-2 border-[#FACC15] bg-[#1A1A20] text-white"
-                : "border border-[#E2E8F0] bg-[#151518] text-[#64748B]"
+                ? "border-2 border-[#7137D8] bg-[#EDE9FE] text-[#7137D8] font-bold"
+                : "border border-[#E2E8F0] bg-white text-[#475569] hover:bg-[#F8FAFC]"
             }`}
           >
             <span className="h-6 w-6 rounded-full border border-zinc-500 flex items-center justify-center">
@@ -52,8 +52,8 @@ export function BackToTopConfig({ data, onChange }: BackToTopConfigProps) {
             onClick={() => update({ shape: "rounded_square" })}
             className={`flex items-center justify-center gap-2 p-3 rounded-xl transition ${
               data.shape === "rounded_square"
-                ? "border-2 border-[#FACC15] bg-[#1A1A20] text-white"
-                : "border border-[#E2E8F0] bg-[#151518] text-[#64748B]"
+                ? "border-2 border-[#7137D8] bg-[#EDE9FE] text-[#7137D8] font-bold"
+                : "border border-[#E2E8F0] bg-white text-[#475569] hover:bg-[#F8FAFC]"
             }`}
           >
             <span className="h-6 w-6 rounded-md border border-zinc-500 flex items-center justify-center">
@@ -84,13 +84,13 @@ export function BackToTopConfig({ data, onChange }: BackToTopConfigProps) {
                 onClick={() => update({ position: posItem.key })}
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition ${
                   isSelected
-                    ? "border-2 border-[#FACC15] bg-[#1A1A20] shadow-sm text-white"
-                    : "border border-[#E2E8F0] bg-[#151518] hover:border-zinc-600 text-[#64748B]"
+                    ? "border-2 border-[#7137D8] bg-[#EDE9FE] shadow-sm text-[#7137D8] font-bold"
+                    : "border border-[#E2E8F0] bg-white hover:border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#475569]"
                 }`}
               >
                 <LayoutGrid
                   className={`h-4 w-4 shrink-0 ${
-                    isSelected ? "text-[#FACC15]" : "text-[#94A3B8]"
+                    isSelected ? "text-[#7137D8]" : "text-[#64748B]"
                   }`}
                 />
                 <span className="text-xs font-semibold truncate">{posItem.label}</span>
@@ -110,14 +110,14 @@ export function BackToTopConfig({ data, onChange }: BackToTopConfigProps) {
             <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Background Color
             </span>
-            <div className="flex items-center gap-2 h-10 px-2 rounded-xl bg-[#17171A] border border-[#2B2B30]">
+            <div className="flex items-center gap-2 h-10 px-2 rounded-xl bg-[#F8FAFC] border border-[#CBD5E1]">
               <input
                 type="color"
                 value={data.backgroundColor}
                 onChange={(e) => update({ backgroundColor: e.target.value })}
                 className="h-6 w-6 rounded cursor-pointer border-0 p-0 bg-transparent"
               />
-              <span className="text-xs text-white font-mono">{data.backgroundColor}</span>
+              <span className="text-xs text-[#000000] font-mono">{data.backgroundColor}</span>
             </div>
           </div>
 
@@ -125,14 +125,14 @@ export function BackToTopConfig({ data, onChange }: BackToTopConfigProps) {
             <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
               Arrow Icon Color
             </span>
-            <div className="flex items-center gap-2 h-10 px-2 rounded-xl bg-[#17171A] border border-[#2B2B30]">
+            <div className="flex items-center gap-2 h-10 px-2 rounded-xl bg-[#F8FAFC] border border-[#CBD5E1]">
               <input
                 type="color"
                 value={data.textColor}
                 onChange={(e) => update({ textColor: e.target.value })}
                 className="h-6 w-6 rounded cursor-pointer border-0 p-0 bg-transparent"
               />
-              <span className="text-xs text-white font-mono">{data.textColor}</span>
+              <span className="text-xs text-[#000000] font-mono">{data.textColor}</span>
             </div>
           </div>
         </div>
@@ -144,8 +144,8 @@ export function BackToTopConfig({ data, onChange }: BackToTopConfigProps) {
           Display Options
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
-            <span className="text-xs font-semibold text-[#111827]">Show on Desktop</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#000000]">Show on Desktop</span>
             <Switch
               checked={data.showOnDesktop}
               onCheckedChange={(checked) => update({ showOnDesktop: checked })}
@@ -153,8 +153,8 @@ export function BackToTopConfig({ data, onChange }: BackToTopConfigProps) {
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
-            <span className="text-xs font-semibold text-[#111827]">Show on Mobile</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#000000]">Show on Mobile</span>
             <Switch
               checked={data.showOnMobile}
               onCheckedChange={(checked) => update({ showOnMobile: checked })}

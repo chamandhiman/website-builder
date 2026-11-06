@@ -6,9 +6,34 @@
 /* Force the app layout to light */
 .wto-app-layout,
 .wto-app-content-scroll,
+.builder-shell,
 [data-dashboard-theme] .wto-app-layout,
 [data-dashboard-theme] .wto-app-content-scroll {
   background-color: #F8FAFC !important;
+  color: #000000 !important;
+}
+
+/* Builder Canvas & Sidepanels — Always clean white theme */
+.builder-shell aside {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+}
+
+.builder-shell .canvas-workspace {
+  background-color: #F1F5F9 !important;
+}
+
+.builder-shell .text-\[\#9a9aa3\],
+.builder-shell .text-\[\#8e8e98\],
+.builder-shell .text-\[\#6b6b74\],
+.builder-shell .text-\[\#475569\],
+.builder-shell .text-\[\#64748B\],
+.builder-shell .text-\[\#111827\],
+.builder-shell .text-\[\#1E293B\],
+.builder-shell .text-\[\#334155\],
+.builder-shell .text-\[\#374151\],
+.builder-shell .text-\[\#71717A\],
+.builder-shell .text-\[\#A1A1AA\] {
   color: #000000 !important;
 }
 
@@ -196,3 +221,68 @@ aside.wto-sidebar nav button:hover,
   background-color: #FDF2F8 !important;
   border-color: #FBCFE8 !important;
 }
+
+/* Modals, Dialogs, Floating Plugins & Inner Popups - Universal Light Theme */
+[role="dialog"],
+div[role="dialog"],
+div[class*="z-[10000]"],
+div[class*="z-[9999]"],
+div[class*="z-[100000]"] {
+  color: #000000;
+}
+
+[role="dialog"] input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+[role="dialog"] textarea,
+[role="dialog"] select,
+div[class*="z-[10000]"] input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+div[class*="z-[10000]"] textarea,
+div[class*="z-[10000]"] select {
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
+  border-color: #CBD5E1 !important;
+}
+
+[role="dialog"] input::placeholder,
+[role="dialog"] textarea::placeholder,
+div[class*="z-[10000]"] input::placeholder,
+div[class*="z-[10000]"] textarea::placeholder {
+  color: #94A3B8 !important;
+}
+
+/* Builder Shell - Properties & Inspection Panels White Theme */
+.builder-shell aside,
+.builder-shell div[class*="overflow-y-auto"],
+.builder-shell [role="tabpanel"] {
+  color: #000000;
+}
+
+.builder-shell input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+.builder-shell select,
+.builder-shell textarea {
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
+  border-color: #CBD5E1 !important;
+}
+
+.builder-shell input::placeholder,
+.builder-shell textarea::placeholder {
+  color: #94A3B8 !important;
+}
+
+.builder-shell option {
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
+}
+
+.builder-shell [class*="bg-[#1F1F1F]"],
+.builder-shell [class*="bg-[#161616]"],
+.builder-shell [class*="bg-[#141414]"],
+.builder-shell [class*="bg-[#171717]"],
+.builder-shell [class*="bg-[#1A1A1A]"],
+.builder-shell [class*="bg-[#181818]"] {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  color: #000000 !important;
+}
+
+

@@ -152,7 +152,7 @@ function getSectionVisual(section: PageSection) {
     return {
       Icon: PanelTop,
       name: section.name || "Header",
-      iconBg: "bg-[#202024] border border-[#2F2F36]",
+      iconBg: "bg-[#F1F5F9] border border-[#E2E8F0]",
       iconColor: "text-[#7137D8]",
     };
   }
@@ -160,7 +160,7 @@ function getSectionVisual(section: PageSection) {
     return {
       Icon: PanelBottom,
       name: section.name || "Footer",
-      iconBg: "bg-[#202024] border border-[#2F2F36]",
+      iconBg: "bg-[#F1F5F9] border border-[#E2E8F0]",
       iconColor: "text-[#7137D8]",
     };
   }
@@ -174,7 +174,7 @@ function getSectionVisual(section: PageSection) {
     return {
       Icon: Code2,
       name: section.name || "Custom HTML",
-      iconBg: "bg-[#202024] border border-[#2F2F36]",
+      iconBg: "bg-[#F1F5F9] border border-[#E2E8F0]",
       iconColor: "text-[#7137D8]",
     };
   }
@@ -194,7 +194,7 @@ function getSectionVisual(section: PageSection) {
     return {
       Icon: Mail,
       name: section.name || "Contact",
-      iconBg: "bg-[#202024] border border-[#2F2F36]",
+      iconBg: "bg-[#F1F5F9] border border-[#E2E8F0]",
       iconColor: "text-[#7137D8]",
     };
   }
@@ -204,7 +204,7 @@ function getSectionVisual(section: PageSection) {
     return {
       Icon: Users,
       name: section.name || "Team",
-      iconBg: "bg-[#202024] border border-[#2F2F36]",
+      iconBg: "bg-[#F1F5F9] border border-[#E2E8F0]",
       iconColor: "text-[#7137D8]",
     };
   }
@@ -214,7 +214,7 @@ function getSectionVisual(section: PageSection) {
     return {
       Icon: Sparkles,
       name: section.name || "Banner",
-      iconBg: "bg-[#202024] border border-[#2F2F36]",
+      iconBg: "bg-[#F1F5F9] border border-[#E2E8F0]",
       iconColor: "text-[#7137D8]",
     };
   }
@@ -224,7 +224,7 @@ function getSectionVisual(section: PageSection) {
     return {
       Icon: UserCheck,
       name: section.name || "About Us",
-      iconBg: "bg-[#202024] border border-[#2F2F36]",
+      iconBg: "bg-[#F1F5F9] border border-[#E2E8F0]",
       iconColor: "text-[#7137D8]",
     };
   }
@@ -234,7 +234,7 @@ function getSectionVisual(section: PageSection) {
     return {
       Icon: Briefcase,
       name: section.name || "Services",
-      iconBg: "bg-[#202024] border border-[#2F2F36]",
+      iconBg: "bg-[#F1F5F9] border border-[#E2E8F0]",
       iconColor: "text-[#7137D8]",
     };
   }
@@ -244,7 +244,7 @@ function getSectionVisual(section: PageSection) {
     return {
       Icon: HelpCircle,
       name: section.name || "FAQ",
-      iconBg: "bg-[#202024] border border-[#2F2F36]",
+      iconBg: "bg-[#F1F5F9] border border-[#E2E8F0]",
       iconColor: "text-[#7137D8]",
     };
   }
@@ -254,7 +254,7 @@ function getSectionVisual(section: PageSection) {
     return {
       Icon: ImageIcon,
       name: section.name || "Gallery",
-      iconBg: "bg-[#202024] border border-[#2F2F36]",
+      iconBg: "bg-[#F1F5F9] border border-[#E2E8F0]",
       iconColor: "text-[#7137D8]",
     };
   }
@@ -264,7 +264,7 @@ function getSectionVisual(section: PageSection) {
     return {
       Icon: SlidersHorizontal,
       name: section.name || "Carousel",
-      iconBg: "bg-[#202024] border border-[#2F2F36]",
+      iconBg: "bg-[#F1F5F9] border border-[#E2E8F0]",
       iconColor: "text-[#7137D8]",
     };
   }
@@ -304,7 +304,7 @@ function getSectionVisual(section: PageSection) {
     return {
       Icon: Quote,
       name: section.name || "Testimonials",
-      iconBg: "bg-[#202024] border border-[#2F2F36]",
+      iconBg: "bg-[#F1F5F9] border border-[#E2E8F0]",
       iconColor: "text-[#7137D8]",
     };
   }
@@ -314,7 +314,7 @@ function getSectionVisual(section: PageSection) {
     return {
       Icon: Sparkles,
       name: section.name || "Call to Action",
-      iconBg: "bg-[#202024] border border-[#2F2F36]",
+      iconBg: "bg-[#F1F5F9] border border-[#E2E8F0]",
       iconColor: "text-[#7137D8]",
     };
   }
@@ -324,7 +324,7 @@ function getSectionVisual(section: PageSection) {
     return {
       Icon: Star,
       name: section.name || "Features",
-      iconBg: "bg-[#202024] border border-[#2F2F36]",
+      iconBg: "bg-[#F1F5F9] border border-[#E2E8F0]",
       iconColor: "text-[#7137D8]",
     };
   }
@@ -333,7 +333,7 @@ function getSectionVisual(section: PageSection) {
   return {
     Icon: Layout,
     name: section.name || "Section",
-    iconBg: "bg-[#202024] border border-[#2F2F36]",
+    iconBg: "bg-[#F1F5F9] border border-[#E2E8F0]",
     iconColor: "text-[#7137D8]",
   };
 }
@@ -348,7 +348,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
     return {
       Icon: PanelTop,
       accentColor: "text-[#7137D8]",
-      badgeBg: "bg-[#202024] border-[#2F2F36]",
+      badgeBg: "bg-[#F1F5F9] border-[#E2E8F0]",
       subtitle: "Navbar & brand navigation",
     };
   }
@@ -357,7 +357,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
     return {
       Icon: SlidersHorizontal,
       accentColor: "text-[#7137D8]",
-      badgeBg: "bg-[#202024] border-[#2F2F36]",
+      badgeBg: "bg-[#F1F5F9] border-[#E2E8F0]",
       subtitle: "Interactive image carousel slider",
     };
   }
@@ -366,7 +366,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
     return {
       Icon: Sparkles,
       accentColor: "text-[#7137D8]",
-      badgeBg: "bg-[#202024] border-[#2F2F36]",
+      badgeBg: "bg-[#F1F5F9] border-[#E2E8F0]",
       subtitle: "Hero banners & headline intros",
     };
   }
@@ -375,7 +375,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
     return {
       Icon: UserCheck,
       accentColor: "text-[#7137D8]",
-      badgeBg: "bg-[#202024] border-[#2F2F36]",
+      badgeBg: "bg-[#F1F5F9] border-[#E2E8F0]",
       subtitle: "Split story, features & imagery",
     };
   }
@@ -384,7 +384,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
     return {
       Icon: Briefcase,
       accentColor: "text-[#7137D8]",
-      badgeBg: "bg-[#202024] border-[#2F2F36]",
+      badgeBg: "bg-[#F1F5F9] border-[#E2E8F0]",
       subtitle: "Service cards & feature highlights",
     };
   }
@@ -393,7 +393,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
     return {
       Icon: Users,
       accentColor: "text-[#7137D8]",
-      badgeBg: "bg-[#202024] border-[#2F2F36]",
+      badgeBg: "bg-[#F1F5F9] border-[#E2E8F0]",
       subtitle: "Static grid or carousel slider",
     };
   }
@@ -402,7 +402,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
     return {
       Icon: HelpCircle,
       accentColor: "text-[#7137D8]",
-      badgeBg: "bg-[#202024] border-[#2F2F36]",
+      badgeBg: "bg-[#F1F5F9] border-[#E2E8F0]",
       subtitle: "Collapsible Q&A accordion",
     };
   }
@@ -411,7 +411,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
     return {
       Icon: Flame,
       accentColor: "text-[#7137D8]",
-      badgeBg: "bg-[#202024] border-[#2F2F36]",
+      badgeBg: "bg-[#F1F5F9] border-[#E2E8F0]",
       subtitle: "Conversion banners & actions",
     };
   }
@@ -420,7 +420,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
     return {
       Icon: CreditCard,
       accentColor: "text-[#7137D8]",
-      badgeBg: "bg-[#202024] border-[#2F2F36]",
+      badgeBg: "bg-[#F1F5F9] border-[#E2E8F0]",
       subtitle: "Pricing tiers & feature lists",
     };
   }
@@ -429,7 +429,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
     return {
       Icon: Layers,
       accentColor: "text-[#7137D8]",
-      badgeBg: "bg-[#202024] border-[#2F2F36]",
+      badgeBg: "bg-[#F1F5F9] border-[#E2E8F0]",
       subtitle: "Background image with overlay text",
     };
   }
@@ -438,7 +438,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
     return {
       Icon: Images,
       accentColor: "text-[#7137D8]",
-      badgeBg: "bg-[#202024] border-[#2F2F36]",
+      badgeBg: "bg-[#F1F5F9] border-[#E2E8F0]",
       subtitle: "Photo gallery & showcase grid",
     };
   }
@@ -447,7 +447,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
     return {
       Icon: MessageSquareQuote,
       accentColor: "text-[#7137D8]",
-      badgeBg: "bg-[#202024] border-[#2F2F36]",
+      badgeBg: "bg-[#F1F5F9] border-[#E2E8F0]",
       subtitle: "Reviews in static grid or carousel",
     };
   }
@@ -456,7 +456,7 @@ function getWidgetVisual(widget: WidgetRegistration) {
     return {
       Icon: Star,
       accentColor: "text-[#7137D8]",
-      badgeBg: "bg-[#202024] border-[#2F2F36]",
+      badgeBg: "bg-[#F1F5F9] border-[#E2E8F0]",
       subtitle: "Real-time Google Reviews & script widget",
     };
   }
@@ -465,14 +465,14 @@ function getWidgetVisual(widget: WidgetRegistration) {
     return {
       Icon: PanelBottom,
       accentColor: "text-[#7137D8]",
-      badgeBg: "bg-[#202024] border-[#2F2F36]",
+      badgeBg: "bg-[#F1F5F9] border-[#E2E8F0]",
       subtitle: "Site footer, columns & copyright",
     };
   }
   return {
     Icon: Boxes,
     accentColor: "text-[#64748B]",
-    badgeBg: "bg-[#202024] border-[#2F2F36]",
+    badgeBg: "bg-[#F1F5F9] border-[#E2E8F0]",
     subtitle: "Section widget",
   };
 }
@@ -785,13 +785,12 @@ export function RightContextPanel({
 
   return (
     <aside
-      className={`flex h-full flex-col bg-[#141414] transition-all duration-300 ease-in-out ${
-        isMobile ? "w-full border-l-0" : `border-l border-[#262626] ${collapsed ? "w-[48px]" : "w-[310px]"}`
-      }`}
+      className={`flex h-full flex-col bg-white transition-all duration-300 ease-in-out ${isMobile ? "w-full border-l-0" : `border-l border-[#E2E8F0] ${collapsed ? "w-[48px]" : "w-[310px]"}`
+        }`}
     >
-      <div className="flex h-11 shrink-0 items-center justify-between border-b border-[#262626] bg-[#141414] px-2.5">
+      <div className="flex h-11 shrink-0 items-center justify-between border-b border-[#E2E8F0] bg-white px-2.5">
         {!collapsed || isMobile ? (
-          <div className="flex items-center gap-1 rounded-lg border border-[#262626] bg-white p-1">
+          <div className="flex items-center gap-1 rounded-lg border border-[#E2E8F0] bg-white p-1">
             {TABS.map(({ key, label, Icon }) => {
               const isActive = activeTab === key;
               return (
@@ -799,32 +798,29 @@ export function RightContextPanel({
                   key={key}
                   type="button"
                   onClick={() => setActiveTab(key)}
-                  className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold transition-all ${
-                    isActive
-                      ? "border border-[#FACC15] bg-[#1E1E1E] text-[#FACC15] shadow-xs"
-                      : "border border-transparent text-[#94A3B8] hover:bg-[#202020] hover:text-[#F4F4F5]"
-                  }`}
+                  className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold transition-all ${isActive
+                      ? "border border-[#7137D8]/30 bg-[#EDE9FE] text-[#7137D8] shadow-xs"
+                      : "border border-transparent text-[#000000] hover:bg-[#F1F5F9] hover:text-[#7137D8]"
+                    }`}
                 >
                   <Icon className="h-3.5 w-3.5" />
                   <span className="truncate">{label}</span>
                   {key === "widgets" && (
                     <span
-                      className={`ml-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
-                        isActive
-                          ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                      className={`ml-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold ${isActive
+                          ? "bg-[#7137D8] text-white shadow-xs"
                           : "bg-[#F1F5F9] text-[#64748B]"
-                      }`}
+                        }`}
                     >
                       {totalTemplatesCount}
                     </span>
                   )}
                   {key === "embeds" && (
                     <span
-                      className={`ml-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
-                        isActive
-                          ? "bg-[#7137D8] text-zinc-950 shadow-xs"
+                      className={`ml-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold ${isActive
+                          ? "bg-[#7137D8] text-white shadow-xs"
                           : "bg-[#F1F5F9] text-[#64748B]"
-                      }`}
+                        }`}
                     >
                       {customEmbedsCount}
                     </span>
@@ -844,13 +840,12 @@ export function RightContextPanel({
                       <button
                         type="button"
                         onClick={() => { setActiveTab(key); setCollapsed(false); }}
-                        className={`relative flex h-8 w-8 items-center justify-center rounded-lg transition ${
-                          isActive ? "bg-[#27272A] text-[#FACC15]" : "text-[#94A3B8] hover:bg-[#202020] hover:text-[#F4F4F5]"
-                        }`}
+                        className={`relative flex h-8 w-8 items-center justify-center rounded-lg transition ${isActive ? "bg-[#EDE9FE] text-[#7137D8]" : "text-[#000000] hover:bg-[#F1F5F9] hover:text-[#7137D8]"
+                          }`}
                       >
                         <Icon className="h-4 w-4" />
                         {key === "embeds" && customEmbedsCount > 0 && (
-                          <span className="absolute top-0.5 right-0.5 flex h-2 w-2 rounded-full bg-amber-400 ring-2 ring-[#141414]" />
+                          <span className="absolute top-0.5 right-0.5 flex h-2 w-2 rounded-full bg-[#7137D8] ring-2 ring-white" />
                         )}
                       </button>
                     </TooltipTrigger>
@@ -867,7 +862,7 @@ export function RightContextPanel({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-7 w-7 items-center justify-center rounded-md text-[#71717A] transition hover:bg-[#202020] hover:text-[#F4F4F5]"
+            className="flex h-7 w-7 items-center justify-center rounded-md text-[#71717A] transition hover:bg-[#F1F5F9] hover:text-[#000000]"
             title="Close panel"
             aria-label="Close panel"
           >
@@ -877,7 +872,7 @@ export function RightContextPanel({
           <button
             type="button"
             onClick={() => setCollapsed(!collapsed)}
-            className="flex h-7 w-7 items-center justify-center rounded-md text-[#71717A] transition hover:bg-[#202020] hover:text-[#F4F4F5]"
+            className="flex h-7 w-7 items-center justify-center rounded-md text-[#71717A] transition hover:bg-[#F1F5F9] hover:text-[#000000]"
             title={collapsed ? "Expand panel" : "Collapse panel"}
           >
             {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
@@ -890,19 +885,18 @@ export function RightContextPanel({
           {activeTab === "widgets" && (
             <div className="flex h-full flex-col overflow-hidden">
               {/* Secondary Navigation Bar: Active (N) | + Add New | Search Toggle */}
-              <div className="shrink-0 border-b border-[#E2E8F0] bg-[#141416] p-3 space-y-2.5">
+              <div className="shrink-0 border-b border-[#E2E8F0] bg-[#F8FAFC] p-3 space-y-2.5">
                 <div className="flex items-center gap-2">
                   {/* Active (N) Button */}
                   <button
                     type="button"
                     onClick={() => setSectionsSubTab("active")}
-                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
-                      sectionsSubTab === "active"
-                        ? "border border-[#FACC15] bg-[#18181B] text-[#FACC15] shadow-xs"
-                        : "border border-[#E2E8F0] bg-[#161618] text-[#64748B] hover:text-white hover:border-[#CBD5E1]"
-                    }`}
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all ${sectionsSubTab === "active"
+                        ? "border border-[#7137D8] bg-[#F8FAFC] text-[#7137D8] shadow-xs"
+                        : "border border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B] hover:text-[#000000] hover:border-[#CBD5E1]"
+                      }`}
                   >
-                    <Layers className={`h-4 w-4 ${sectionsSubTab === "active" ? "text-[#FACC15]" : "text-[#64748B]"}`} />
+                    <Layers className={`h-4 w-4 ${sectionsSubTab === "active" ? "text-[#7137D8]" : "text-[#64748B]"}`} />
                     <span>Active ({activeSections.length})</span>
                   </button>
 
@@ -910,11 +904,10 @@ export function RightContextPanel({
                   <button
                     type="button"
                     onClick={() => setSectionsSubTab("add_new")}
-                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
-                      sectionsSubTab === "add_new"
-                        ? "bg-[#7137D8] text-zinc-950 shadow-sm"
-                        : "bg-[#7137D8] text-zinc-950 hover:bg-[#6025C5] shadow-xs"
-                    }`}
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all ${sectionsSubTab === "add_new"
+                        ? "bg-[#7137D8] text-white shadow-sm"
+                        : "bg-[#7137D8] text-white hover:bg-[#6025C5] shadow-xs"
+                      }`}
                   >
                     <Plus className="h-4 w-4 stroke-[2.5]" />
                     <span>Add New</span>
@@ -930,11 +923,10 @@ export function RightContextPanel({
                         return next;
                       });
                     }}
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border transition-all ${
-                      searchOpen || q
-                        ? "bg-[#7137D8] text-zinc-950 border-[#FACC15] shadow-xs"
-                        : "bg-[#161618] text-[#64748B] hover:text-white border-[#E2E8F0] hover:border-[#CBD5E1]"
-                    }`}
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border transition-all ${searchOpen || q
+                        ? "bg-[#7137D8] text-white border-[#7137D8] shadow-xs"
+                        : "bg-[#F8FAFC] text-[#64748B] hover:text-[#000000] border-[#E2E8F0] hover:border-[#CBD5E1]"
+                      }`}
                     title={searchOpen ? "Close search" : "Search sections"}
                     aria-label="Search sections"
                   >
@@ -951,13 +943,13 @@ export function RightContextPanel({
                       value={q}
                       onChange={(e) => setQ(e.target.value)}
                       placeholder={sectionsSubTab === "active" ? "Search active sections on this page..." : "Search sections & variants..."}
-                      className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-[#17171A] pl-8 pr-8 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15]/20"
+                      className="h-9 w-full rounded-xl border border-[#E2E8F0] bg-white pl-8 pr-8 text-xs text-[#111827] placeholder-zinc-500 outline-none transition focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]/20"
                     />
                     {q ? (
                       <button
                         type="button"
                         onClick={() => setQ("")}
-                        className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-full text-[#94A3B8] hover:text-white"
+                        className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-full text-[#94A3B8] hover:text-[#000000]"
                         title="Clear search"
                       >
                         <X className="h-3 w-3" />
@@ -969,7 +961,7 @@ export function RightContextPanel({
                           setSearchOpen(false);
                           setQ("");
                         }}
-                        className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-full text-[#94A3B8] hover:text-white"
+                        className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-full text-[#94A3B8] hover:text-[#000000]"
                         title="Close search"
                       >
                         <X className="h-3 w-3" />
@@ -991,7 +983,7 @@ export function RightContextPanel({
                 <div className="flex-1 overflow-y-auto">
                   {/* Info Callout Banner (Image 2) */}
                   <div className="p-3 pb-1">
-                    <div className="flex items-center gap-2 rounded-xl bg-[#161618] border border-[#E2E8F0]/80 px-3 py-2 text-[11px] text-[#64748B]">
+                    <div className="flex items-center gap-2 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]/80 px-3 py-2 text-[11px] text-[#64748B]">
                       <Info className="h-3.5 w-3.5 text-[#94A3B8] shrink-0" />
                       <span>Click a section to select it in the editor</span>
                     </div>
@@ -999,7 +991,7 @@ export function RightContextPanel({
 
                   {/* Active Sections Rows */}
                   {filteredActiveSections.length === 0 ? (
-                    <div className="my-8 flex flex-col items-center justify-center p-6 text-center rounded-2xl border border-dashed border-[#E2E8F0] bg-[#161619] mx-3">
+                    <div className="my-8 flex flex-col items-center justify-center p-6 text-center rounded-2xl border border-dashed border-[#E2E8F0] bg-[#F8FAFC] mx-3">
                       <Layers className="h-8 w-8 text-[#94A3B8] mb-2" />
                       <p className="text-xs font-semibold text-[#334155]">
                         {q ? "No matching active sections" : "No active sections on this page"}
@@ -1011,7 +1003,7 @@ export function RightContextPanel({
                         <button
                           type="button"
                           onClick={() => setSectionsSubTab("add_new")}
-                          className="mt-3 flex items-center gap-1.5 rounded-lg bg-[#7137D8] px-3.5 py-1.5 text-xs font-bold text-zinc-950 transition hover:bg-[#6025C5]"
+                          className="mt-3 flex items-center gap-1.5 rounded-lg bg-[#7137D8] px-3.5 py-1.5 text-xs font-bold text-white transition hover:bg-[#6025C5]"
                         >
                           <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
                           <span>Add Section</span>
@@ -1035,19 +1027,17 @@ export function RightContextPanel({
                             onDrop={(e) => handleSectionDrop(e, section.id)}
                             onDragEnd={handleSectionDragEnd}
                             onClick={() => handleEditSection(section.id)}
-                            className={`group relative flex items-center justify-between gap-2.5 px-3 py-2.5 transition-all duration-150 cursor-pointer ${
-                              isSelected
-                                ? "rounded-xl border border-[#FACC15] bg-[#18181B] shadow-md shadow-amber-400/5 ring-1 ring-[#FACC15]/20 my-1"
-                                : "border-b border-[#26262B] hover:bg-white/[0.03] rounded-lg"
-                            } ${dragOverSectionId === section.id ? "border-t-2 border-t-[#FACC15]" : ""} ${section.hidden ? "opacity-50" : ""}`}
+                            className={`group relative flex items-center justify-between gap-2.5 px-3 py-2.5 transition-all duration-150 cursor-pointer ${isSelected
+                                ? "rounded-xl border border-[#7137D8] bg-[#F8FAFC] shadow-sm ring-1 ring-[#7137D8]/20 my-1"
+                                : "border-b border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-lg"
+                              } ${dragOverSectionId === section.id ? "border-t-2 border-t-[#7137D8]" : ""} ${section.hidden ? "opacity-50" : ""}`}
                           >
                             {/* Far Left: Drag Handle */}
                             <div
-                              className={`shrink-0 p-0.5 text-[#94A3B8] transition-colors ${
-                                !isShared
+                              className={`shrink-0 p-0.5 text-[#94A3B8] transition-colors ${!isShared
                                   ? "cursor-grab active:cursor-grabbing hover:text-[#111827]"
                                   : "opacity-30 cursor-not-allowed"
-                              }`}
+                                }`}
                               title={isShared ? "Global section cannot be reordered" : "Drag to reorder section"}
                               onClick={(e) => e.stopPropagation()}
                             >
@@ -1056,7 +1046,7 @@ export function RightContextPanel({
 
                             {/* Section Icon: Compact 32px */}
                             <div
-                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F1F5F9] border border-[#E2E8F0] text-[#FACC15] shadow-xs"
+                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F1F5F9] border border-[#E2E8F0] text-[#7137D8] shadow-xs"
                             >
                               <VisualIcon className="h-4 w-4" />
                             </div>
@@ -1064,13 +1054,13 @@ export function RightContextPanel({
                             {/* Full Section Name (flexible width, readable font) */}
                             <div className="min-w-0 flex-1">
                               <span
-                                className="block truncate text-[13px] font-medium text-[#111827] group-hover:text-white leading-snug"
+                                className="block truncate text-[13px] font-bold text-[#000000] group-hover:text-[#7137D8] leading-snug"
                                 title={visual.name}
                               >
                                 {visual.name}
                               </span>
                               {isShared && (
-                                <span className="block text-[10.5px] text-[#FACC15] font-normal leading-tight mt-0.5">
+                                <span className="block text-[10.5px] text-[#7137D8] font-normal leading-tight mt-0.5">
                                   Global
                                 </span>
                               )}
@@ -1082,7 +1072,7 @@ export function RightContextPanel({
                               <Switch
                                 checked={!section.hidden}
                                 onCheckedChange={() => toggleHidden(section.id)}
-                                className="data-[state=checked]:bg-[#7137D8] data-[state=checked]:border-[#FACC15] shrink-0 scale-90"
+                                className="data-[state=checked]:bg-[#7137D8] data-[state=checked]:border-[#7137D8] shrink-0 scale-90"
                                 title={section.hidden ? "Show section" : "Hide section"}
                               />
 
@@ -1091,7 +1081,7 @@ export function RightContextPanel({
                                 <DropdownMenuTrigger asChild>
                                   <button
                                     type="button"
-                                    className="flex h-7 w-7 items-center justify-center rounded-lg text-[#64748B] hover:text-white hover:bg-[#F1F5F9] transition focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FACC15]"
+                                    className="flex h-7 w-7 items-center justify-center rounded-lg text-[#64748B] hover:text-[#000000] hover:bg-[#F1F5F9] transition focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#7137D8]"
                                     title="More actions"
                                   >
                                     <MoreVertical className="h-4 w-4" />
@@ -1100,11 +1090,11 @@ export function RightContextPanel({
                                 <DropdownMenuContent
                                   align="end"
                                   sideOffset={4}
-                                  className="w-40 rounded-xl border border-[#E2E8F0] bg-[#18181B]/98 backdrop-blur-xl p-1.5 shadow-2xl text-xs z-50 text-[#111827]"
+                                  className="w-40 rounded-xl border border-[#E2E8F0] bg-white p-1.5 shadow-xl text-xs z-50 text-[#000000]"
                                 >
                                   <DropdownMenuItem
                                     onSelect={() => handleEditSection(section.id)}
-                                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[#334155] hover:bg-[#F1F5F9] hover:text-white focus:bg-[#F1F5F9] focus:text-white transition cursor-pointer"
+                                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[#000000] hover:bg-[#F1F5F9] hover:text-[#7137D8] focus:bg-[#F1F5F9] focus:text-[#7137D8] transition cursor-pointer"
                                   >
                                     <Pencil className="h-3.5 w-3.5 text-[#64748B]" />
                                     <span>Edit Section</span>
@@ -1116,7 +1106,7 @@ export function RightContextPanel({
                                         duplicateSection(section.id);
                                         toast.success(`Duplicated "${visual.name}"`);
                                       }}
-                                      className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[#334155] hover:bg-[#F1F5F9] hover:text-white focus:bg-[#F1F5F9] focus:text-white transition cursor-pointer"
+                                      className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[#000000] hover:bg-[#F1F5F9] hover:text-[#7137D8] focus:bg-[#F1F5F9] focus:text-[#7137D8] transition cursor-pointer"
                                     >
                                       <Copy className="h-3.5 w-3.5 text-[#64748B]" />
                                       <span>Duplicate</span>
@@ -1125,7 +1115,7 @@ export function RightContextPanel({
 
                                   <DropdownMenuItem
                                     onSelect={() => toggleHidden(section.id)}
-                                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[#334155] hover:bg-[#F1F5F9] hover:text-white focus:bg-[#F1F5F9] focus:text-white transition cursor-pointer"
+                                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[#000000] hover:bg-[#F1F5F9] hover:text-[#7137D8] focus:bg-[#F1F5F9] focus:text-[#7137D8] transition cursor-pointer"
                                   >
                                     {section.hidden ? (
                                       <Eye className="h-3.5 w-3.5 text-[#64748B]" />
@@ -1161,210 +1151,208 @@ export function RightContextPanel({
               {/* VIEW 2: ADD NEW TEMPLATES */}
               {sectionsSubTab === "add_new" && (
                 <div className="flex-1 overflow-y-auto p-2.5 space-y-2">
-                {/* Shortcut to Plugins Panel */}
-                <div
-                  onClick={() => setActiveTab("embeds")}
-                  className="flex items-center justify-between rounded-xl border border-[#7137D8]/25 bg-amber-400/5 p-2.5 transition hover:border-[#7137D8]/50 hover:bg-amber-400/10 cursor-pointer shadow-xs group"
-                >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-400/15 border border-[#7137D8]/30 text-[#7137D8]">
-                      <Puzzle className="h-4 w-4" />
-                    </span>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[12px] font-bold text-[#111827] truncate">Plugins & Tools</span>
-                        <span className="rounded-full bg-amber-400/20 px-1.5 py-0.2 text-[9px] font-bold text-[#7137D8]">
-                          {customEmbedsCount}
+                  {/* Shortcut to Plugins Panel */}
+                  <div
+                    onClick={() => setActiveTab("embeds")}
+                    className="flex items-center justify-between rounded-xl border border-[#7137D8]/25 bg-[#EDE9FE]/30 p-2.5 transition hover:border-[#7137D8]/50 hover:bg-[#EDE9FE]/60 cursor-pointer shadow-xs group"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#EDE9FE] border border-[#7137D8]/30 text-[#7137D8]">
+                        <Puzzle className="h-4 w-4" />
+                      </span>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[12px] font-bold text-[#000000] truncate">Plugins & Tools</span>
+                          <span className="rounded-full bg-[#EDE9FE] px-1.5 py-0.2 text-[9px] font-bold text-[#7137D8]">
+                            {customEmbedsCount}
+                          </span>
+                        </div>
+                        <span className="block text-[10.5px] text-[#64748B] truncate">
+                          Add & manage plugins, embeds and tools
                         </span>
                       </div>
-                      <span className="block text-[10.5px] text-[#A1A1AA] truncate">
-                        Add & manage plugins, embeds and tools
-                      </span>
                     </div>
+                    <span className="text-[11px] font-bold text-[#7137D8] flex items-center gap-0.5 shrink-0 ml-2 group-hover:translate-x-0.5 transition-transform">
+                      <span>Manage</span>
+                      <span>→</span>
+                    </span>
                   </div>
-                  <span className="text-[11px] font-bold text-[#7137D8] flex items-center gap-0.5 shrink-0 ml-2 group-hover:translate-x-0.5 transition-transform">
-                    <span>Manage</span>
-                    <span>→</span>
-                  </span>
-                </div>
-                {visibleWidgets.length === 0 && visibleMediaEmbedSections.length === 0 ? (
-                  <div className="rounded-xl border border-dashed border-[#2B2B2B] bg-[#18181A] p-6 text-center">
-                    <Boxes className="mx-auto h-6 w-6 text-[#71717A] mb-2" />
-                    <p className="text-xs font-medium text-[#D4D4D8]">No sections found</p>
-                    <p className="mt-1 text-[11px] text-[#71717A]">Try searching for something else</p>
-                  </div>
-                ) : (
-                  <>
-                    {visibleWidgets.length > 0 && (
-                      <div className="space-y-2">
-                        {visibleWidgets.map((widget) => {
-                          const open = q.trim() ? true : openWidgetId === widget.id;
-                          const visual = getWidgetVisual(widget);
-                          const IconComponent = visual.Icon;
-                          return (
-                            <div
-                              key={widget.id}
-                              className={`overflow-hidden rounded-xl border transition-all duration-200 ${
-                                open
-                                  ? "border-[#3F3F46] bg-[#18181B] shadow-sm"
-                                  : "border-[#262626] bg-[#161618] hover:border-[#38383D] hover:bg-[#F8FAFC]"
-                              }`}
-                            >
-                              <div
-                                role="button"
-                                tabIndex={0}
-                                className="flex h-[52px] w-full cursor-grab items-center gap-3 px-3 text-left transition select-none active:cursor-grabbing"
-                                draggable
-                                onDragStart={(event) => beginWidgetDrag(event, widget)}
-                                onDragEnd={endLibraryDrag}
-                                onClick={() => {
-                                  if (q.trim()) return;
-                                  setOpenWidgetId((prev) => (prev === widget.id ? null : widget.id));
-                                }}
-                                onKeyDown={(event) => {
-                                  if (event.key !== "Enter" && event.key !== " ") return;
-                                  event.preventDefault();
-                                  if (q.trim()) return;
-                                  setOpenWidgetId((prev) => (prev === widget.id ? null : widget.id));
-                                }}
-                              >
-                                <span className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${visual.badgeBg}`}>
-                                  <IconComponent className={`h-4 w-4 ${visual.accentColor}`} />
-                                </span>
-                                <div className="min-w-0 flex-1">
-                                  <span className="block truncate text-[13px] font-semibold text-[#F4F4F5]">
-                                    {widget.displayName}
-                                  </span>
-                                  <span className="block truncate text-[10.5px] text-[#71717A] mt-0.5 leading-tight">
-                                    {visual.subtitle}
-                                  </span>
-                                </div>
-                                <div className="flex items-center gap-2 shrink-0">
-                                  <span
-                                    className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#202024] px-1.5 text-[10px] font-medium text-[#A1A1AA] border border-[#2F2F36]"
-                                    title={`${widget.supportedVariants.length} styles available`}
-                                  >
-                                    {widget.supportedVariants.length}
-                                  </span>
-                                  <span className={`flex h-5 w-5 items-center justify-center text-[#71717A] transition-transform duration-200 ${
-                                    open ? "rotate-90 text-[#FACC15]" : ""
-                                  }`}>
-                                    <ChevronRight className="h-3.5 w-3.5" />
-                                  </span>
-                                </div>
-                              </div>
-
-                              {open ? (
-                                <div className="border-t border-[#26262B] bg-[#111113] p-2.5">
-                                  <div className="mb-2 flex items-center justify-between px-0.5">
-                                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717A]">
-                                      Styles &amp; Variants ({widget.supportedVariants.length})
-                                    </span>
-                                    <span className="flex items-center gap-1 text-[10px] text-[#71717A]">
-                                      <GripVertical className="h-3 w-3 text-[#52525B]" />
-                                      Drag to add
-                                    </span>
-                                  </div>
-                                  <div className="grid grid-cols-2 gap-1.5">
-                                    {widget.supportedVariants.map((variant) => {
-                                      const variantKey = `${widget.id}-${variant}`;
-                                      return (
-                                        <div
-                                          key={variantKey}
-                                          role="button"
-                                          tabIndex={0}
-                                          draggable
-                                          onDragStart={(event) => {
-                                            event.stopPropagation();
-                                            beginWidgetDrag(event, widget, variant);
-                                          }}
-                                          onDragEnd={(event) => {
-                                            event.stopPropagation();
-                                            endLibraryDrag();
-                                          }}
-                                          className="group relative flex flex-col justify-between rounded-lg border border-[#E2E8F0] bg-[#18181B] p-2 text-left cursor-grab transition-all duration-150 hover:border-[#3F3F46] hover:bg-[#202024] active:cursor-grabbing hover:shadow-xs"
-                                          title={`Drag to add "${variant}" to canvas`}
-                                        >
-                                          <div className="flex items-start justify-between gap-1">
-                                            <span className="text-[11px] font-medium leading-snug text-[#E4E4E7] group-hover:text-[#F4F4F5] line-clamp-2">
-                                              {variant}
-                                            </span>
-                                            <span className="shrink-0 flex h-4 w-4 items-center justify-center rounded bg-[#27272A] text-[#A1A1AA] transition-colors group-hover:bg-[#7137D8] group-hover:text-[#111111]">
-                                              <Plus className="h-2.5 w-2.5" />
-                                            </span>
-                                          </div>
-                                          <div className="mt-2 flex items-center justify-between border-t border-[#222226] pt-1 text-[9px] text-[#71717A]">
-                                            <span className="capitalize">{widget.category || "Widget"}</span>
-                                            <span className="flex items-center gap-0.5 text-[#52525B] group-hover:text-[#A1A1AA]">
-                                              <GripVertical className="h-2.5 w-2.5" />
-                                              Drag
-                                            </span>
-                                          </div>
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              ) : null}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-
-                    {/* ── Media & Embeds Category ────────────────────────────────── */}
-                    {visibleMediaEmbedSections.length > 0 && (
-                      <div className="mt-3">
-                        <div className="mb-2 flex items-center gap-2 px-1">
-                          <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717A]">Media &amp; Embeds</span>
-                          <div className="flex-1 h-px bg-[#262626]" />
-                        </div>
-                        <div className="space-y-1.5">
-                          {visibleMediaEmbedSections.map((item) => {
-                            const IconComponent = item.Icon;
-                            const reg = widgetRegistryEntries.find(
-                              (w) => w.type === item.widgetType || w.id === item.widgetType || w.id === `${item.widgetType}-v1`
-                            );
+                  {visibleWidgets.length === 0 && visibleMediaEmbedSections.length === 0 ? (
+                    <div className="rounded-xl border border-dashed border-[#2B2B2B] bg-white p-6 text-center">
+                      <Boxes className="mx-auto h-6 w-6 text-[#71717A] mb-2" />
+                      <p className="text-xs font-medium text-[#000000]">No sections found</p>
+                      <p className="mt-1 text-[11px] text-[#71717A]">Try searching for something else</p>
+                    </div>
+                  ) : (
+                    <>
+                      {visibleWidgets.length > 0 && (
+                        <div className="space-y-2">
+                          {visibleWidgets.map((widget) => {
+                            const open = q.trim() ? true : openWidgetId === widget.id;
+                            const visual = getWidgetVisual(widget);
+                            const IconComponent = visual.Icon;
                             return (
                               <div
-                                key={item.id}
-                                role="button"
-                                tabIndex={0}
-                                draggable={!!reg}
-                                onDragStart={(event) => {
-                                  if (reg) {
-                                    beginWidgetDrag(event, reg);
-                                  }
-                                }}
-                                onDragEnd={endLibraryDrag}
-                                className="flex h-[52px] w-full cursor-grab items-center gap-3 rounded-xl border border-[#262626] bg-[#161618] px-3 transition-all hover:border-[#38383D] hover:bg-[#F8FAFC] select-none group active:cursor-grabbing"
-
+                                key={widget.id}
+                                className={`overflow-hidden rounded-xl border transition-all duration-200 ${open
+                                    ? "border-[#3F3F46] bg-[#F8FAFC] shadow-sm"
+                                    : "border-[#E2E8F0] bg-[#F8FAFC] hover:border-[#38383D] hover:bg-[#F8FAFC]"
+                                  }`}
                               >
-                                <span className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white ${item.iconBg}`}>
-                                  <IconComponent className="h-4 w-4" />
-                                </span>
-                                <div className="min-w-0 flex-1">
-                                  <span className="block truncate text-[13px] font-semibold text-[#F4F4F5]">
-                                    {item.label}
-                                  </span>
-                                  <span className="block truncate text-[10.5px] text-[#71717A] mt-0.5 leading-tight">
-                                    {item.subtitle}
-                                  </span>
-                                </div>
-                                <span
-                                  className="shrink-0 flex h-6 w-6 items-center justify-center rounded-lg bg-[#202024] text-[#71717A] transition-colors group-hover:bg-[#7137D8] group-hover:text-[#111111]"
-                                  title={`Add ${item.label}`}
+                                <div
+                                  role="button"
+                                  tabIndex={0}
+                                  className="flex h-[52px] w-full cursor-grab items-center gap-3 px-3 text-left transition select-none active:cursor-grabbing"
+                                  draggable
+                                  onDragStart={(event) => beginWidgetDrag(event, widget)}
+                                  onDragEnd={endLibraryDrag}
+                                  onClick={() => {
+                                    if (q.trim()) return;
+                                    setOpenWidgetId((prev) => (prev === widget.id ? null : widget.id));
+                                  }}
+                                  onKeyDown={(event) => {
+                                    if (event.key !== "Enter" && event.key !== " ") return;
+                                    event.preventDefault();
+                                    if (q.trim()) return;
+                                    setOpenWidgetId((prev) => (prev === widget.id ? null : widget.id));
+                                  }}
                                 >
-                                  <Plus className="h-3.5 w-3.5" />
-                                </span>
+                                  <span className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${visual.badgeBg}`}>
+                                    <IconComponent className={`h-4 w-4 ${visual.accentColor}`} />
+                                  </span>
+                                  <div className="min-w-0 flex-1">
+                                    <span className="block truncate text-[13px] font-semibold text-[#000000]">
+                                      {widget.displayName}
+                                    </span>
+                                    <span className="block truncate text-[10.5px] text-[#71717A] mt-0.5 leading-tight">
+                                      {visual.subtitle}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-2 shrink-0">
+                                    <span
+                                      className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#F1F5F9] px-1.5 text-[10px] font-medium text-[#A1A1AA] border border-[#2F2F36]"
+                                      title={`${widget.supportedVariants.length} styles available`}
+                                    >
+                                      {widget.supportedVariants.length}
+                                    </span>
+                                    <span className={`flex h-5 w-5 items-center justify-center text-[#71717A] transition-transform duration-200 ${open ? "rotate-90 text-[#7137D8]" : ""
+                                      }`}>
+                                      <ChevronRight className="h-3.5 w-3.5" />
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {open ? (
+                                  <div className="border-t border-[#E2E8F0] bg-[#F8FAFC] p-2.5">
+                                    <div className="mb-2 flex items-center justify-between px-0.5">
+                                      <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717A]">
+                                        Styles &amp; Variants ({widget.supportedVariants.length})
+                                      </span>
+                                      <span className="flex items-center gap-1 text-[10px] text-[#71717A]">
+                                        <GripVertical className="h-3 w-3 text-[#52525B]" />
+                                        Drag to add
+                                      </span>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-1.5">
+                                      {widget.supportedVariants.map((variant) => {
+                                        const variantKey = `${widget.id}-${variant}`;
+                                        return (
+                                          <div
+                                            key={variantKey}
+                                            role="button"
+                                            tabIndex={0}
+                                            draggable
+                                            onDragStart={(event) => {
+                                              event.stopPropagation();
+                                              beginWidgetDrag(event, widget, variant);
+                                            }}
+                                            onDragEnd={(event) => {
+                                              event.stopPropagation();
+                                              endLibraryDrag();
+                                            }}
+                                            className="group relative flex flex-col justify-between rounded-lg border border-[#E2E8F0] bg-white p-2 text-left cursor-grab transition-all duration-150 hover:border-[#7137D8] hover:bg-[#F8FAFC] active:cursor-grabbing hover:shadow-xs"
+                                            title={`Drag to add "${variant}" to canvas`}
+                                          >
+                                            <div className="flex items-start justify-between gap-1">
+                                              <span className="text-[11px] font-medium leading-snug text-[#000000] group-hover:text-[#000000] line-clamp-2">
+                                                {variant}
+                                              </span>
+                                              <span className="shrink-0 flex h-4 w-4 items-center justify-center rounded bg-[#27272A] text-[#A1A1AA] transition-colors group-hover:bg-[#7137D8] group-hover:text-[#111111]">
+                                                <Plus className="h-2.5 w-2.5" />
+                                              </span>
+                                            </div>
+                                            <div className="mt-2 flex items-center justify-between border-t border-[#222226] pt-1 text-[9px] text-[#71717A]">
+                                              <span className="capitalize">{widget.category || "Widget"}</span>
+                                              <span className="flex items-center gap-0.5 text-[#52525B] group-hover:text-[#A1A1AA]">
+                                                <GripVertical className="h-2.5 w-2.5" />
+                                                Drag
+                                              </span>
+                                            </div>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                ) : null}
                               </div>
                             );
                           })}
                         </div>
-                      </div>
-                    )}
-                  </>
-                )}
+                      )}
+
+                      {/* ── Media & Embeds Category ────────────────────────────────── */}
+                      {visibleMediaEmbedSections.length > 0 && (
+                        <div className="mt-3">
+                          <div className="mb-2 flex items-center gap-2 px-1">
+                            <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717A]">Media &amp; Embeds</span>
+                            <div className="flex-1 h-px bg-[#262626]" />
+                          </div>
+                          <div className="space-y-1.5">
+                            {visibleMediaEmbedSections.map((item) => {
+                              const IconComponent = item.Icon;
+                              const reg = widgetRegistryEntries.find(
+                                (w) => w.type === item.widgetType || w.id === item.widgetType || w.id === `${item.widgetType}-v1`
+                              );
+                              return (
+                                <div
+                                  key={item.id}
+                                  role="button"
+                                  tabIndex={0}
+                                  draggable={!!reg}
+                                  onDragStart={(event) => {
+                                    if (reg) {
+                                      beginWidgetDrag(event, reg);
+                                    }
+                                  }}
+                                  onDragEnd={endLibraryDrag}
+                                  className="flex h-[52px] w-full cursor-grab items-center gap-3 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] px-3 transition-all hover:border-[#38383D] hover:bg-[#F8FAFC] select-none group active:cursor-grabbing"
+
+                                >
+                                  <span className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white ${item.iconBg}`}>
+                                    <IconComponent className="h-4 w-4" />
+                                  </span>
+                                  <div className="min-w-0 flex-1">
+                                    <span className="block truncate text-[13px] font-semibold text-[#000000]">
+                                      {item.label}
+                                    </span>
+                                    <span className="block truncate text-[10.5px] text-[#71717A] mt-0.5 leading-tight">
+                                      {item.subtitle}
+                                    </span>
+                                  </div>
+                                  <span
+                                    className="shrink-0 flex h-6 w-6 items-center justify-center rounded-lg bg-[#F1F5F9] text-[#71717A] transition-colors group-hover:bg-[#7137D8] group-hover:text-[#111111]"
+                                    title={`Add ${item.label}`}
+                                  >
+                                    <Plus className="h-3.5 w-3.5" />
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               )}
             </div>

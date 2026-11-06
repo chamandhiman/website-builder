@@ -65,7 +65,7 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
                 style={{ backgroundColor: tpl.bgColor, color: tpl.textColor }}
                 className={`flex items-center justify-between p-2.5 rounded-xl transition text-xs font-bold shadow-xs ${
                   isSelected
-                    ? "ring-2 ring-offset-2 ring-offset-[#121215] ring-[#FACC15]"
+                    ? "ring-2 ring-2 ring-offset-2 ring-offset-white ring-[#7137D8]"
                     : "opacity-85 hover:opacity-100"
                 }`}
               >
@@ -91,7 +91,7 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
             onChange={(e) => update({ text: e.target.value })}
             placeholder="2027 Winter and Spring Schedules are now open for enrollment!"
             rows={2}
-            className="w-full p-3 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15] resize-none"
+            className="w-full p-3 rounded-xl border border-[#CBD5E1] bg-white text-xs font-semibold text-[#000000] placeholder-[#94A3B8] focus:outline-none focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8] resize-none"
           />
         </div>
 
@@ -105,7 +105,7 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
               value={data.ctaLabel}
               onChange={(e) => update({ ctaLabel: e.target.value })}
               placeholder="Learn More"
-              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
+              className="w-full h-11 px-3.5 rounded-xl border border-[#CBD5E1] bg-white text-xs font-semibold text-[#000000] placeholder-[#94A3B8] focus:outline-none focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]"
             />
           </div>
 
@@ -118,7 +118,7 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
               value={data.ctaUrl}
               onChange={(e) => update({ ctaUrl: e.target.value })}
               placeholder="https://example.com/special-offer"
-              className="w-full h-11 px-3.5 rounded-xl border border-[#2B2B30] bg-[#17171A] text-xs font-semibold text-[#111827] placeholder-zinc-500 focus:outline-none focus:border-[#FACC15]"
+              className="w-full h-11 px-3.5 rounded-xl border border-[#CBD5E1] bg-white text-xs font-semibold text-[#000000] placeholder-[#94A3B8] focus:outline-none focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]"
             />
           </div>
         </div>
@@ -141,8 +141,8 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
                 onClick={() => update({ position: "top_fixed" })}
                 className={`py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition ${
                   data.position === "top_fixed"
-                    ? "border-2 border-[#FACC15] bg-[#1A1A20] text-white"
-                    : "border border-[#E2E8F0] bg-[#151518] text-[#64748B]"
+                    ? "border-2 border-[#7137D8] bg-[#EDE9FE] text-[#7137D8] font-bold"
+                    : "border border-[#E2E8F0] bg-white text-[#475569] hover:bg-[#F8FAFC]"
                 }`}
               >
                 <span>Sticky Top</span>
@@ -167,14 +167,14 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
               <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
                 Bar Color
               </span>
-              <div className="flex items-center gap-2 h-10 px-2 rounded-xl bg-[#17171A] border border-[#2B2B30]">
+              <div className="flex items-center gap-2 h-10 px-2 rounded-xl bg-[#F8FAFC] border border-[#CBD5E1]">
                 <input
                   type="color"
                   value={data.backgroundColor}
                   onChange={(e) => update({ backgroundColor: e.target.value })}
                   className="h-6 w-6 rounded cursor-pointer border-0 p-0 bg-transparent"
                 />
-                <span className="text-xs text-white font-mono">{data.backgroundColor}</span>
+                <span className="text-xs text-[#000000] font-mono">{data.backgroundColor}</span>
               </div>
             </div>
 
@@ -182,14 +182,14 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
               <span className="text-[11px] font-semibold text-[#334155] block mb-1.5">
                 Button Color
               </span>
-              <div className="flex items-center gap-2 h-10 px-2 rounded-xl bg-[#17171A] border border-[#2B2B30]">
+              <div className="flex items-center gap-2 h-10 px-2 rounded-xl bg-[#F8FAFC] border border-[#CBD5E1]">
                 <input
                   type="color"
                   value={data.btnBgColor}
                   onChange={(e) => update({ btnBgColor: e.target.value })}
                   className="h-6 w-6 rounded cursor-pointer border-0 p-0 bg-transparent"
                 />
-                <span className="text-xs text-white font-mono">{data.btnBgColor}</span>
+                <span className="text-xs text-[#000000] font-mono">{data.btnBgColor}</span>
               </div>
             </div>
           </div>
@@ -202,8 +202,8 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
           Display Options
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
-            <span className="text-xs font-semibold text-[#111827]">Show on Desktop</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#000000]">Show on Desktop</span>
             <Switch
               checked={data.showOnDesktop}
               onCheckedChange={(checked) => update({ showOnDesktop: checked })}
@@ -211,8 +211,8 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
-            <span className="text-xs font-semibold text-[#111827]">Show on Mobile</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#000000]">Show on Mobile</span>
             <Switch
               checked={data.showOnMobile}
               onCheckedChange={(checked) => update({ showOnMobile: checked })}
@@ -220,8 +220,8 @@ export function AnnouncementBarConfig({ data, onChange }: AnnouncementBarConfigP
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#17171A] border border-[#E2E8F0]">
-            <span className="text-xs font-semibold text-[#111827]">Close Button</span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+            <span className="text-xs font-semibold text-[#000000]">Close Button</span>
             <Switch
               checked={data.allowDismiss}
               onCheckedChange={(checked) => update({ allowDismiss: checked })}

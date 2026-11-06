@@ -45,35 +45,35 @@ export function AddPageDialog({ open, onOpenChange, onAddPage }: AddPageDialogPr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md border border-[#363636] bg-[#1F1F1F] text-[#F5F5F5]">
+      <DialogContent className="max-w-md border border-[#E2E8F0] bg-white text-[#000000] shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="text-[#F5F5F5]">Add new page</DialogTitle>
-          <DialogDescription className="text-[#969696]">Create a new page for your website. The slug will be auto-generated from the page name.</DialogDescription>
+          <DialogTitle className="text-[#000000]">Add new page</DialogTitle>
+          <DialogDescription className="text-[#64748B]">Create a new page for your website. The slug will be auto-generated from the page name.</DialogDescription>
         </DialogHeader>
 
         <div className="mt-4 space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-[#969696]" htmlFor="add-page-name">
+            <label className="text-xs font-medium text-[#64748B]" htmlFor="add-page-name">
               Page name
             </label>
             <Input
               id="add-page-name"
               value={name}
               onChange={(e) => handleNameChange(e.target.value)}
-              className="border-[#363636] bg-[#171717] text-[#F5F5F5] focus:border-[#FACC15]"
+              className="border-[#CBD5E1] bg-white text-[#000000] focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]"
               autoFocus
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-[#969696]" htmlFor="add-page-slug">
+            <label className="text-xs font-medium text-[#64748B]" htmlFor="add-page-slug">
               Page slug
             </label>
             <Input
               id="add-page-slug"
               value={slug}
               onChange={(e) => handleSlugChange(e.target.value)}
-              className="border-[#363636] bg-[#171717] text-[#F5F5F5] focus:border-[#FACC15]"
+              className="border-[#CBD5E1] bg-white text-[#000000] focus:border-[#7137D8] focus:ring-1 focus:ring-[#7137D8]"
             />
           </div>
         </div>
@@ -81,14 +81,14 @@ export function AddPageDialog({ open, onOpenChange, onAddPage }: AddPageDialogPr
         <DialogFooter className="mt-6 flex justify-end gap-2">
           <button
             type="button"
-            className="inline-flex h-9 items-center justify-center rounded-md border border-[#363636] bg-[#242424] px-4 text-sm text-[#D0D0D0] transition hover:bg-[#2A2A2A] hover:text-[#FFFFFF]"
+            className="inline-flex h-9 items-center justify-center rounded-md border border-[#E2E8F0] bg-white px-4 text-sm text-[#475569] transition hover:bg-[#F1F5F9] hover:text-[#000000]"
             onClick={() => onOpenChange(false)}
           >
             Cancel
           </button>
           <button
             type="button"
-            className="inline-flex h-9 items-center justify-center rounded-md bg-[#FACC15] px-4 text-sm font-medium text-[#111111] transition hover:bg-[#FDE047]"
+            className="inline-flex h-9 items-center justify-center rounded-md bg-[#7137D8] px-4 text-sm font-semibold text-white transition hover:bg-[#5b2ab5]"
             onClick={handleAdd}
           >
             Add Page
