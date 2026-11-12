@@ -3776,6 +3776,7 @@ export function sectionAttrs(s: PageSection) {
     if (s.animation?.repeat) parts.push('data-anim-repeat="1"');
   }
   if (s.sticky) parts.push('data-wto-sticky="1"');
+  if (s.shared) parts.push(`data-wto-shared="${s.shared}"`);
   if ((s as any).hiddenMobile) parts.push('data-wto-hidden-mobile="1"');
   if ((s as any).hiddenTablet) parts.push('data-wto-hidden-tablet="1"');
   if ((s as any).hiddenDesktop) parts.push('data-wto-hidden-desktop="1"');
@@ -4162,13 +4163,34 @@ ${previewStyles}
   .wl-header,
   .wto-shared-header,
   [data-wto-shared="header"],
+  .wto-section[data-wto-shared="header"],
+  nav.navbar,
+  .navbar.sticky-top,
+  .navbar.fixed-top,
   [data-role="header"],
   [data-section-role="header"],
   #wto-shared-header {
     position: sticky !important;
     top: var(--wto-header-top, 0px) !important;
-    z-index: 1000 !important;
+    z-index: 1030 !important;
     width: 100% !important;
+  }
+  /* Single crisp hamburger icon reset (prevents duplicate stacked lines) */
+  .navbar-toggler {
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    border-radius: 8px !important;
+    padding: 6px 10px !important;
+    box-shadow: none !important;
+    outline: none !important;
+    background: transparent;
+  }
+  .navbar-toggler-icon {
+    border: none !important;
+  }
+  .navbar-toggler-icon:before,
+  .navbar-toggler-icon:after {
+    display: none !important;
+    content: none !important;
   }
   ${RUNTIME_CSS}
   ${editableStyles}
@@ -4321,7 +4343,7 @@ ${vendorJs}
   const cssContent = dedupeCssBlocks([
     ...(standalone ? [] : [`@import url("${FONT_AWESOME_HREF}");`, `@import url("${GOOGLE_FONTS_HREF}");`]),
     RUNTIME_CSS,
-    `header, .site-header, .wl-header, .wto-shared-header, [data-wto-shared="header"] { position: sticky !important; top: 0 !important; z-index: 1000 !important; width: 100% !important; }`,
+    `header, .site-header, .wl-header, .wto-shared-header, [data-wto-shared="header"], nav.navbar, .navbar.sticky-top, .navbar.fixed-top, [data-role="header"], [data-section-role="header"] { position: sticky !important; top: 0 !important; z-index: 1030 !important; width: 100% !important; }`,
     floatingResult.css,
     ...widgetCssBlocks,
     globalCss || "",
@@ -4495,7 +4517,7 @@ export async function buildSiteExport(project: Project) {
   const written = new Set<string>();
   const cssBlocks: string[] = [
     RUNTIME_CSS,
-    `header, .site-header, .wl-header, .wto-shared-header, [data-wto-shared="header"], [data-role="header"], [data-section-role="header"] { position: sticky !important; top: 0 !important; z-index: 1000 !important; width: 100% !important; }`,
+    `header, .site-header, .wl-header, .wto-shared-header, [data-wto-shared="header"], nav.navbar, .navbar.sticky-top, .navbar.fixed-top, [data-role="header"], [data-section-role="header"] { position: sticky !important; top: 0 !important; z-index: 1030 !important; width: 100% !important; }`,
     project.globalCss || "",
   ];
   const jsBlocks: string[] = [

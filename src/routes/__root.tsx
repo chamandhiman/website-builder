@@ -152,8 +152,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "apple-touch-icon", href: "/favicon.png" },
       { rel: "manifest", href: "/manifest.json" },
     ],
-    scripts: [
-      { src: "https://www.googletagmanager.com/gtag/js?id=G-4C1PP726EZ", async: true },
+    headScripts: [
+      {
+        src: "https://www.googletagmanager.com/gtag/js?id=G-4C1PP726EZ",
+        async: true,
+      },
+      {
+        children: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-4C1PP726EZ', { send_page_view: false });`,
+      },
     ],
   }),
   shellComponent: RootShell,
